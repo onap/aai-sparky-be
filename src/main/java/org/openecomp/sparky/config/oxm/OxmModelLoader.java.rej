@@ -1,0 +1,124 @@
+diff a/src/main/java/org/openecomp/sparky/config/oxm/OxmModelLoader.java b/src/main/java/org/openecomp/sparky/config/oxm/OxmModelLoader.java	(rejected hunks)
+@@ -79,9 +79,6 @@ public class OxmModelLoader {
+   
+   private Map<String, HashMap<String, String>> suggestionSearchEntityOxmModel =
+       new LinkedHashMap<String, HashMap<String, String>>();
+-  
+-  private List<String> suggestionSearchEntityProperties = 
+-      new ArrayList<String>();
+ 
+   private Map<String, OxmEntityDescriptor> entityDescriptors =
+       new HashMap<String, OxmEntityDescriptor>();
+@@ -209,30 +207,42 @@ public class OxmModelLoader {
+             }
+           } else if (entry.getKey().equalsIgnoreCase("containsSuggestibleProps")) {
+ 
++            oxmProperties.put("containsSuggestibleProps", "true");
++            
+             Vector<DatabaseMapping> descriptorMaps = entity.getDescriptor().getMappings();
++            List<String> listOfSuggestableAttributes = new ArrayList<String>();
+             
+             for (DatabaseMapping descMap : descriptorMaps) {
+               if (descMap.isAbstractDirectMapping()) {
+                 
+-                String suggestableOnSearchString = String.valueOf(
+-                    descMap.getProperties().get("suggestibleOnSearch"));
+-                
+-                if (suggestableOnSearchString != null) {
++                if (descMap.getProperties().get("suggestibleOnSearch") != null) {
++                  String suggestableOnSearchString = String.valueOf(
++                      descMap.getProperties().get("suggestibleOnSearch"));
++                  
+                   boolean isSuggestibleOnSearch = Boolean.valueOf(suggestableOnSearchString);
+ 
+                   if (isSuggestibleOnSearch) {
++                    /* Grab attribute types for suggestion */
+                     String attributeName = descMap.getField().getName()
+                         .replaceAll("/text\\(\\)", "");
+-                    suggestionSearchEntityProperties.add(attributeName);
+-                    
+-                    String suggestionVerbsString = String.valueOf(
+-                        descMap.getProperties().get("suggestionVerbs"));
++                    listOfSuggestableAttributes.add(attributeName);
+                     
+-                    oxmProperties.put("suggestionVerbs", suggestionVerbsString);
++                    if (descMap.getProperties().get("suggestionVerbs") != null) {
++                      String suggestionVerbsString = String.valueOf(
++                          descMap.getProperties().get("suggestionVerbs"));
++                      
++                      oxmProperties.put("suggestionVerbs", suggestionVerbsString);
++                    }
+                   }
+                 }
+               }
+             }
++            if (!listOfSuggestableAttributes.isEmpty()) {
++              oxmProperties.put("suggestibleAttributes", String.join(",", 
++                  listOfSuggestableAttributes));
++            }
++          } else if (entry.getKey().equalsIgnoreCase("suggestionAliases")) {
++            oxmProperties.put("suggestionAliases", entry.getValue());
+           }
+         }
+       }
+@@ -252,7 +262,7 @@ public class OxmModelLoader {
+         geoEntityOxmModel.put(entityName, oxmProperties);
+       }
+       
+-      if (oxmProperties.containsKey("suggestionVerbs")) {
++      if (oxmProperties.containsKey("containsSuggestibleProps")) {
+         suggestionSearchEntityOxmModel.put(entityName, oxmProperties);
+       }
+     }
+@@ -294,9 +304,7 @@ public class OxmModelLoader {
+         
+         if (attribute.containsKey("suggestionVerbs")) {
+           String entityName = attribute.get("entityName");
+-          SuggestionSearchEntity suggestionSearchEntity = new SuggestionSearchEntity(this,
+-              Arrays.asList(attribute.get("suggestionVerbs").split(",")),
+-              suggestionSearchEntityProperties);
++          SuggestionSearchEntity suggestionSearchEntity = new SuggestionSearchEntity(this);
+           suggestionSearchEntity.setEntityType(entityName);
+           
+           entity.setSuggestionSearchEntity(suggestionSearchEntity);
+@@ -357,17 +365,34 @@ public class OxmModelLoader {
+     for (Entry<String, HashMap<String, String>> suggestionEntityModel :
+         suggestionSearchEntityOxmModel.entrySet()) {
+       HashMap<String, String> attribute = suggestionEntityModel.getValue();
+-      OxmEntityDescriptor entity = new OxmEntityDescriptor();
++      
+       String entityName = attribute.get("entityName");
++      SuggestionSearchEntity suggestionSearchEntity = new SuggestionSearchEntity(this);
++      suggestionSearchEntity.setEntityType(entityName);
+       
+-      entity.setEntityName(entityName);
++      if (attribute.get("suggestionVerbs") != null) {
++        suggestionSearchEntity.setSuggestionConnectorWords(Arrays.asList(
++            attribute.get("suggestionVerbs").split(",")));
++      }
+       
+-      SuggestionSearchEntity suggestionSearchEntity = new SuggestionSearchEntity(this,
+-          Arrays.asList(attribute.get("suggestionVerbs").split(",")),
+-          suggestionSearchEntityProperties);
+-      suggestionSearchEntity.setEntityType(entityName);
++      if (attribute.get("suggestionAliases") != null) {
++        suggestionSearchEntity.setSuggestionAliases(Arrays.asList(
++            attribute.get("suggestionAliases").split(",")));
++      }
+       
++      if (attribute.get("suggestibleAttributes") != null) {
++        suggestionSearchEntity.setSuggestionPropertyTypes(Arrays.asList(
++            attribute.get("suggestibleAttributes").split(",")));
++      }
++      
++      OxmEntityDescriptor entity = new OxmEntityDescriptor();
+       entity.setSuggestionSearchEntity(suggestionSearchEntity);
++      entity.setEntityName(entityName);
++      
++      if (attribute.get("primaryKeyAttributeNames") != null) {
++        entity.setPrimaryKeyAttributeName(
++            Arrays.asList(attribute.get("primaryKeyAttributeNames").replace(" ", "").split(",")));
++      }
+       
+       suggestionSearchEntityDescriptors.put(entityName, entity);
+     }

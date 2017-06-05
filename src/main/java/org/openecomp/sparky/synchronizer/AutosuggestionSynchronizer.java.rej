@@ -1,0 +1,457 @@
+diff a/src/main/java/org/openecomp/sparky/synchronizer/AutosuggestionSynchronizer.java b/src/main/java/org/openecomp/sparky/synchronizer/AutosuggestionSynchronizer.java	(rejected hunks)
+@@ -122,10 +251,9 @@ public class AutosuggestionSynchronizer extends AbstractEntitySynchronizer
+   /**
+    * Process entity type self links.
+    *
+-   * @param entityType the entity type
+    * @param operationResult the operation result
+    */
+-  private void processEntityTypeSelfLinks(String entityType, OperationResult operationResult) {
++  private void processEntityTypeSelfLinks(OperationResult operationResult) {
+ 
+     JsonNode rootNode = null;
+ 
+@@ -136,19 +264,439 @@ public class AutosuggestionSynchronizer extends AbstractEntitySynchronizer
+       try {
+         rootNode = mapper.readTree(jsonResult);
+       } catch (IOException exc) {
+-        LOG.error(AaiUiMsgs.JSON_PROCESSING_ERROR, exc.getMessage());
+-        return;
++        String message =
++            "Could not deserialize JSON (representing operation result) as node tree. " +
++            "Operation result = " + jsonResult + ". " + exc.getLocalizedMessage();
++        LOG.error(AaiUiMsgs.JSON_PROCESSING_ERROR, message);
+       }
+ 
+       JsonNode resultData = rootNode.get("result-data");
+       ArrayNode resultDataArrayNode = null;
+ 
+-      if (resultData != null && resultData.isArray()) {
++      if (resultData.isArray()) {
+         resultDataArrayNode = (ArrayNode) resultData;
+-        entityCounters.put(entityType, new AtomicInteger(resultDataArrayNode.size()));
++
++        Iterator<JsonNode> elementIterator = resultDataArrayNode.elements();
++        JsonNode element = null;
++
++        while (elementIterator.hasNext()) {
++          element = elementIterator.next();
++
++          final String resourceType = NodeUtils.getNodeFieldAsText(element, "resource-type");
++          final String resourceLink = NodeUtils.getNodeFieldAsText(element, "resource-link");
++
++          OxmEntityDescriptor descriptor = null;
++
++          if (resourceType != null && resourceLink != null) {
++
++            descriptor = oxmModelLoader.getEntityDescriptor(resourceType);
++
++            if (descriptor == null) {
++              LOG.error(AaiUiMsgs.MISSING_ENTITY_DESCRIPTOR, resourceType);
++              // go to next element in iterator
++              continue;
++            }
++
++            if (descriptor.hasSuggestionSearchEntity()) {
++              selflinks.add(new SelfLinkDescriptor(resourceLink,
++                  SynchronizerConfiguration.NODES_ONLY_MODIFIER, resourceType));
++            }
++
++          }
++        }
++      }
++    }
++  }
++  
++  /**
++   * Sync entity types.
++   */
++  private void syncEntityTypes() {
++
++    while (selflinks.peek() != null) {
++
++      SelfLinkDescriptor linkDescriptor = selflinks.poll();
++      aaiWorkOnHand.decrementAndGet();
++
++      OxmEntityDescriptor descriptor = null;
++
++      if (linkDescriptor.getSelfLink() != null && linkDescriptor.getEntityType() != null) {
++
++        descriptor = oxmModelLoader.getEntityDescriptor(linkDescriptor.getEntityType());
++
++        if (descriptor == null) {
++          LOG.error(AaiUiMsgs.MISSING_ENTITY_DESCRIPTOR, linkDescriptor.getEntityType());
++          // go to next element in iterator
++          continue;
++        }
++
++        NetworkTransaction txn = new NetworkTransaction();
++        txn.setDescriptor(descriptor);
++        txn.setLink(linkDescriptor.getSelfLink());
++        txn.setOperationType(HttpMethod.GET);
++        txn.setEntityType(linkDescriptor.getEntityType());
++
++        aaiWorkOnHand.incrementAndGet();
++
++        supplyAsync(new PerformActiveInventoryRetrieval(txn, aaiDataProvider), aaiExecutor)
++            .whenComplete((result, error) -> {
++
++              aaiWorkOnHand.decrementAndGet();
++
++              if (error != null) {
++                LOG.error(AaiUiMsgs.AAI_RETRIEVAL_FAILED_GENERIC, error.getLocalizedMessage());
++              } else {
++                if (result == null) {
++                  LOG.error(AaiUiMsgs.AAI_RETRIEVAL_FAILED_FOR_SELF_LINK,
++                      linkDescriptor.getSelfLink());
++                } else {
++                  updateActiveInventoryCounters(result);
++                  fetchDocumentForUpsert(result);
++                }
++              }
++            });
++      }
++
++    }
++
++  }
++  
++  /**
++   * Fetch document for upsert.
++   *
++   * @param txn the txn
++   */
++  private void fetchDocumentForUpsert(NetworkTransaction txn) {
++    if (!txn.getOperationResult().wasSuccessful()) {
++      String message = "Self link failure. Result - " + txn.getOperationResult().getResult();
++      LOG.error(AaiUiMsgs.ERROR_GENERIC, message);
++      return;
++    }
++
++    try {
++      if (txn.getDescriptor().hasSuggestionSearchEntity()) {
++
++        final String jsonResult = txn.getOperationResult().getResult();
++        if (jsonResult != null && jsonResult.length() > 0) {
++
++          SuggestionSearchEntity sse = new SuggestionSearchEntity();
++          sse.setLink( txn.getLink() );
++          populateSuggestionSearchEntityDocument(sse, jsonResult, txn.getDescriptor());
++          sse.deriveFields();
++
++          String link = null;
++          try {
++            link = getElasticFullUrl("/" + sse.getId(), getIndexName());
++          } catch (Exception exc) {
++            LOG.error(AaiUiMsgs.ES_FAILED_TO_CONSTRUCT_QUERY, exc.getLocalizedMessage());
++          }
++
++          if (link != null) {
++            NetworkTransaction n2 = new NetworkTransaction();
++            n2.setLink(link);
++            n2.setEntityType(txn.getEntityType());
++            n2.setDescriptor(txn.getDescriptor());
++            n2.setOperationType(HttpMethod.GET);
++
++            esWorkOnHand.incrementAndGet();
++
++            supplyAsync(new PerformElasticSearchRetrieval(n2, esDataProvider), esExecutor)
++                .whenComplete((result, error) -> {
++
++                  esWorkOnHand.decrementAndGet();
++
++                  if (error != null) {
++                    LOG.error(AaiUiMsgs.ES_RETRIEVAL_FAILED, error.getLocalizedMessage());
++                  } else {
++                    updateElasticSearchCounters(result);
++                    performDocumentUpsert(result, sse);
++                  }
++                });
++          }
++        }
++
++      }
++    } catch (JsonProcessingException exc) {
++      // TODO -> LOG, waht should be logged here?
++    } catch (IOException exc) {
++      // TODO -> LOG, waht should be logged here?
++    }
++  }
++  
++  protected void populateSuggestionSearchEntityDocument(SuggestionSearchEntity sse, String result,
++      OxmEntityDescriptor resultDescriptor) throws JsonProcessingException, IOException {
++
++    sse.setEntityType(resultDescriptor.getEntityName());
++
++    JsonNode entityNode = mapper.readTree(result);
++
++    List<String> primaryKeyValues = new ArrayList<String>();
++    String pkeyValue = null;
++
++    for (String keyName : resultDescriptor.getPrimaryKeyAttributeName()) {
++      pkeyValue = NodeUtils.getNodeFieldAsText(entityNode, keyName);
++      if (pkeyValue != null) {
++        primaryKeyValues.add(pkeyValue);
++      } else {
++        String message = "populateSuggestionSearchEntityDocument(),"
++            + " pKeyValue is null for entityType = "
++            + resultDescriptor.getEntityName();
++        LOG.warn(AaiUiMsgs.WARN_GENERIC, message);
++      }
++    }
++
++    final String primaryCompositeKeyValue = NodeUtils.concatArray(primaryKeyValues, "/");
++    sse.setEntityPrimaryKeyValue(primaryCompositeKeyValue);
++
++    final List<String> attributeNames = resultDescriptor.getSuggestionSearchEntity().getSuggestionPropertyTypes();
++
++    sse.generateSuggestionInputPermutations();
++
++  }
++  
++  protected void performDocumentUpsert(NetworkTransaction esGetTxn, SuggestionSearchEntity sse) {
++    /**
++     * <p>
++     * <ul>
++     * As part of the response processing we need to do the following:
++     * <li>1. Extract the version (if present), it will be the ETAG when we use the
++     * Search-Abstraction-Service
++     * <li>2. Spawn next task which is to do the PUT operation into elastic with or with the version
++     * tag
++     * <li>a) if version is null or RC=404, then standard put, no _update with version tag
++     * <li>b) if version != null, do PUT with _update?version= versionNumber in the URI to elastic
++     * </ul>
++     * </p>
++     */
++    String link = null;
++    try {
++      link = getElasticFullUrl("/" + sse.getId(), getIndexName());
++    } catch (Exception exc) {
++      LOG.error(AaiUiMsgs.ES_LINK_UPSERT, exc.getLocalizedMessage());
++      return;
++    }
++
++    String versionNumber = null;
++    boolean wasEntryDiscovered = false;
++    if (esGetTxn.getOperationResult().getResultCode() == 404) {
++      LOG.info(AaiUiMsgs.ES_SIMPLE_PUT, sse.getEntityPrimaryKeyValue());
++    } else if (esGetTxn.getOperationResult().getResultCode() == 200) {
++      wasEntryDiscovered = true;
++      try {
++        versionNumber = NodeUtils.extractFieldValueFromObject(
++            NodeUtils.convertJsonStrToJsonNode(esGetTxn.getOperationResult().getResult()),
++            "_version");
++      } catch (IOException exc) {
++        String message =
++            "Error extracting version number from response, aborting suggestion search entity sync of "
++                + sse.getEntityPrimaryKeyValue() + ". Error - " + exc.getLocalizedMessage();
++        LOG.error(AaiUiMsgs.ERROR_EXTRACTING_FROM_RESPONSE, message);
++        return;
++      }
++    } else {
++      /*
++       * Not being a 200 does not mean a failure. eg 201 is returned for created. TODO -> Should we
++       * return.
++       */
++      LOG.error(AaiUiMsgs.ES_OPERATION_RETURN_CODE,
++          String.valueOf(esGetTxn.getOperationResult().getResultCode()));
++      return;
++    }
++
++    try {
++      String jsonPayload = null;
++      if (wasEntryDiscovered) {
++        try {
++          ArrayList<JsonNode> sourceObject = new ArrayList<JsonNode>();
++          NodeUtils.extractObjectsByKey(
++              NodeUtils.convertJsonStrToJsonNode(esGetTxn.getOperationResult().getResult()),
++              "_source", sourceObject);
++
++          if (!sourceObject.isEmpty()) {
++            String responseSource = NodeUtils.convertObjectToJson(sourceObject.get(0), false);
++            MergableEntity me = mapper.readValue(responseSource, MergableEntity.class);
++            ObjectReader updater = mapper.readerForUpdating(me);
++            MergableEntity merged = updater.readValue(sse.getIndexDocumentJson());
++            jsonPayload = mapper.writeValueAsString(merged);
++          }
++        } catch (IOException exc) {
++          String message =
++              "Error extracting source value from response, aborting suggestion search entity sync of "
++                  + sse.getEntityPrimaryKeyValue() + ". Error - " + exc.getLocalizedMessage();
++          LOG.error(AaiUiMsgs.ERROR_EXTRACTING_FROM_RESPONSE, message);
++          return;
++        }
++      } else {
++        jsonPayload = sse.getIndexDocumentJson();
++      }
++
++      if (wasEntryDiscovered) {
++        if (versionNumber != null && jsonPayload != null) {
++
++          String requestPayload = esDataProvider.buildBulkImportOperationRequest(getIndexName(),
++              ElasticSearchConfig.getConfig().getType(), sse.getId(), versionNumber, jsonPayload);
++
++          NetworkTransaction transactionTracker = new NetworkTransaction();
++          transactionTracker.setEntityType(esGetTxn.getEntityType());
++          transactionTracker.setDescriptor(esGetTxn.getDescriptor());
++          transactionTracker.setOperationType(HttpMethod.PUT);
++
++          esWorkOnHand.incrementAndGet();
++          supplyAsync(new PerformElasticSearchUpdate(ElasticSearchConfig.getConfig().getBulkUrl(),
++              requestPayload, esDataProvider, transactionTracker), esPutExecutor)
++                  .whenComplete((result, error) -> {
++
++                    esWorkOnHand.decrementAndGet();
++
++                    if (error != null) {
++                      String message = "Suggestion search entity sync UPDATE PUT error - "
++                          + error.getLocalizedMessage();
++                      LOG.error(AaiUiMsgs.ES_SUGGESTION_SEARCH_ENTITY_SYNC_ERROR, message);
++                    } else {
++                      updateElasticSearchCounters(result);
++                      processStoreDocumentResult(result, esGetTxn, sse);
++                    }
++                  });
++        }
++
++      } else {
++        if (link != null && jsonPayload != null) {
++
++          NetworkTransaction updateElasticTxn = new NetworkTransaction();
++          updateElasticTxn.setLink(link);
++          updateElasticTxn.setEntityType(esGetTxn.getEntityType());
++          updateElasticTxn.setDescriptor(esGetTxn.getDescriptor());
++          updateElasticTxn.setOperationType(HttpMethod.PUT);
++
++          esWorkOnHand.incrementAndGet();
++          supplyAsync(new PerformElasticSearchPut(jsonPayload, updateElasticTxn, esDataProvider),
++              esPutExecutor).whenComplete((result, error) -> {
++
++                esWorkOnHand.decrementAndGet();
++
++                if (error != null) {
++                  String message =
++                      "Suggestion search entity sync UPDATE PUT error - " + error.getLocalizedMessage();
++                  LOG.error(AaiUiMsgs.ES_SUGGESTION_SEARCH_ENTITY_SYNC_ERROR, message);
++                } else {
++                  updateElasticSearchCounters(result);
++                  processStoreDocumentResult(result, esGetTxn, sse);
++                }
++              });
++        }
++      }
++    } catch (Exception exc) {
++      String message = "Exception caught during suggestion search entity sync PUT operation. Message - "
++          + exc.getLocalizedMessage();
++      LOG.error(AaiUiMsgs.ES_SUGGESTION_SEARCH_ENTITY_SYNC_ERROR, message);
++    }
++  }
++  
++  private void processStoreDocumentResult(NetworkTransaction esPutResult,
++      NetworkTransaction esGetResult, SuggestionSearchEntity sse) {
++
++    OperationResult or = esPutResult.getOperationResult();
++
++    if (!or.wasSuccessful()) {
++      if (or.getResultCode() == VERSION_CONFLICT_EXCEPTION_CODE) {
++
++        if (shouldAllowRetry(sse.getId())) {
++          esWorkOnHand.incrementAndGet();
++
++          RetrySuggestionEntitySyncContainer rssec =
++              new RetrySuggestionEntitySyncContainer(esGetResult, sse);
++          retryQueue.push(rssec);
++
++          String message = "Store document failed during suggestion search entity synchronization"
++              + " due to version conflict. Entity will be re-synced.";
++          LOG.warn(AaiUiMsgs.ES_SUGGESTION_SEARCH_ENTITY_SYNC_ERROR, message);
++        }
++      } else {
++        String message =
++            "Store document failed during suggestion search entity synchronization with result code "
++                + or.getResultCode() + " and result message " + or.getResult();
++        LOG.error(AaiUiMsgs.ES_SUGGESTION_SEARCH_ENTITY_SYNC_ERROR, message);
++      }
++    }
++  }
++  
++  /**
++   * Perform retry sync.
++   */
++  private void performRetrySync() {
++    while (retryQueue.peek() != null) {
++
++      RetrySuggestionEntitySyncContainer susc = retryQueue.poll();
++      if (susc != null) {
++
++        SuggestionSearchEntity sus = susc.getSuggestionSearchEntity();
++        NetworkTransaction txn = susc.getNetworkTransaction();
++
++        String link = null;
++        try {
++          /*
++           * In this retry flow the se object has already derived its fields
++           */
++          link = getElasticFullUrl("/" + sus.getId(), getIndexName());
++        } catch (Exception exc) {
++          LOG.error(AaiUiMsgs.ES_FAILED_TO_CONSTRUCT_URI, exc.getLocalizedMessage());
++        }
++
++        if (link != null) {
++          NetworkTransaction retryTransaction = new NetworkTransaction();
++          retryTransaction.setLink(link);
++          retryTransaction.setEntityType(txn.getEntityType());
++          retryTransaction.setDescriptor(txn.getDescriptor());
++          retryTransaction.setOperationType(HttpMethod.GET);
++
++          /*
++           * IMPORTANT - DO NOT incrementAndGet the esWorkOnHand as this is a retry flow! We already
++           * called incrementAndGet when queuing the failed PUT!
++           */
++
++          supplyAsync(new PerformElasticSearchRetrieval(retryTransaction, esDataProvider),
++              esExecutor).whenComplete((result, error) -> {
++
++                esWorkOnHand.decrementAndGet();
++
++                if (error != null) {
++                  LOG.error(AaiUiMsgs.ES_RETRIEVAL_FAILED_RESYNC, error.getLocalizedMessage());
++                } else {
++                  updateElasticSearchCounters(result);
++                  performDocumentUpsert(result, sus);
++                }
++              });
++        }
++
++      }
++    }
++  }
++
++  /**
++   * Should allow retry.
++   *
++   * @param id the id
++   * @return true, if successful
++   */
++  private boolean shouldAllowRetry(String id) {
++    boolean isRetryAllowed = true;
++    if (retryLimitTracker.get(id) != null) {
++      Integer currentCount = retryLimitTracker.get(id);
++      if (currentCount.intValue() >= RETRY_COUNT_PER_ENTITY_LIMIT.intValue()) {
++        isRetryAllowed = false;
++        String message = "Searchable entity re-sync limit reached for " + id
++            + ", re-sync will no longer be attempted for this entity";
++        LOG.error(AaiUiMsgs.ES_SEARCHABLE_ENTITY_SYNC_ERROR, message);
++      } else {
++        Integer newCount = new Integer(currentCount.intValue() + 1);
++        retryLimitTracker.put(id, newCount);
+       }
++    } else {
++      Integer firstRetryCount = new Integer(1);
++      retryLimitTracker.put(id, firstRetryCount);
+     }
+ 
++    return isRetryAllowed;
+   }
+ 
+   /**

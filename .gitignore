@@ -1,0 +1,9 @@
+.classpath
+.project
+.settings/
+aaiOffline/
+ElasticSearchServletTest.txt
+target/
+logs/
+debug-logs/
+

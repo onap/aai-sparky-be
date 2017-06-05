@@ -1,0 +1,47 @@
+# Source of Truth mappings.  This file maps an enitity path to a source of truth identifier 
+# AAI v7
+/v7/network/ipsec-configurations/ipsec-configuration/requested-vig-address-type=service-manager
+/v7/network/ipsec-configurations/ipsec-configuration/requested-encryption-strength=service-manager
+/v7/network/ipsec-configurations/ipsec-configuration/requested-dmz-type=service-manager
+/v7/network/ipsec-configurations/ipsec-configuration/shared-dmz-network-address=service-manager
+/v7/network/ipsec-configurations/ipsec-configuration/requested-customer-name=service-manager
+/v7/network/ipsec-configurations/ipsec-configuration/ike-version=service-manager
+/v7/network/ipsec-configurations/ipsec-configuration/ikev1-authentication=service-manager
+/v7/network/ipsec-configurations/ipsec-configuration/ikev1-encryption=service-manager
+/v7/network/ipsec-configurations/ipsec-configuration/ikev1-dh-group=service-manager
+/v7/network/ipsec-configurations/ipsec-configuration/ikev1-am-group-id=service-manager
+/v7/network/ipsec-configurations/ipsec-configuration/ikev1-am-password=service-manager
+/v7/network/ipsec-configurations/ipsec-configuration/ikev1-sa-lifetime=service-manager
+/v7/network/ipsec-configurations/ipsec-configuration/ipsec-authentication=service-manager
+/v7/network/ipsec-configurations/ipsec-configuration/ipsec-encryption=service-manager
+/v7/network/ipsec-configurations/ipsec-configuration/ipsec-sa-lifetime=service-manager
+/v7/network/ipsec-configurations/ipsec-configuration/ipsec-pfs=service-manager
+/v7/network/ipsec-configurations/ipsec-configuration/xauth-userid=service-manager
+/v7/network/ipsec-configurations/ipsec-configuration/xauth-user-password=service-manager
+/v7/network/ipsec-configurations/ipsec-configuration/dpd-interval=service-manager
+/v7/network/ipsec-configurations/ipsec-configuration/dpd-frequency=service-manager
+/v7/network/ipsec-configurations/ipsec-configuration/vig-servers=service-manager
+
+# AAI v8
+/v8/network/ipsec-configurations/ipsec-configuration/requested-vig-address-type=service-manager
+/v8/network/ipsec-configurations/ipsec-configuration/requested-encryption-strength=service-manager
+/v8/network/ipsec-configurations/ipsec-configuration/requested-dmz-type=service-manager
+/v8/network/ipsec-configurations/ipsec-configuration/shared-dmz-network-address=service-manager
+/v8/network/ipsec-configurations/ipsec-configuration/requested-customer-name=service-manager
+/v8/network/ipsec-configurations/ipsec-configuration/ike-version=service-manager
+/v8/network/ipsec-configurations/ipsec-configuration/ikev1-authentication=service-manager
+/v8/network/ipsec-configurations/ipsec-configuration/ikev1-encryption=service-manager
+/v8/network/ipsec-configurations/ipsec-configuration/ikev1-dh-group=service-manager
+/v8/network/ipsec-configurations/ipsec-configuration/ikev1-am-group-id=service-manager
+/v8/network/ipsec-configurations/ipsec-configuration/ikev1-am-password=service-manager
+/v8/network/ipsec-configurations/ipsec-configuration/ikev1-sa-lifetime=service-manager
+/v8/network/ipsec-configurations/ipsec-configuration/ipsec-authentication=service-manager
+/v8/network/ipsec-configurations/ipsec-configuration/ipsec-encryption=service-manager
+/v8/network/ipsec-configurations/ipsec-configuration/ipsec-sa-lifetime=service-manager
+/v8/network/ipsec-configurations/ipsec-configuration/ipsec-pfs=service-manager
+/v8/network/ipsec-configurations/ipsec-configuration/xauth-userid=service-manager
+/v8/network/ipsec-configurations/ipsec-configuration/xauth-user-password=service-manager
+/v8/network/ipsec-configurations/ipsec-configuration/dpd-interval=service-manager
+/v8/network/ipsec-configurations/ipsec-configuration/dpd-frequency=service-manager
+/v8/network/ipsec-configurations/ipsec-configuration/vig-servers=service-manager
+

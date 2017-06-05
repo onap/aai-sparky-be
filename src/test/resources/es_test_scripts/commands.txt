@@ -1,0 +1,3 @@
+commands histoty
+curl -XPUT localhost:9200/topographyhistorysearchindex?pretty --data-binary @topoHistoryConfigSettings.json
+curl -XPUT localhost:9200/_bulk?pretty --data-binary @topoHistoryBulkLoad.json
