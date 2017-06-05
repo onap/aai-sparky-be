@@ -1,0 +1,78 @@
+/* 
+* ============LICENSE_START=======================================================
+* SPARKY (AAI UI service)
+* ================================================================================
+* Copyright © 2017 AT&T Intellectual Property.
+* Copyright © 2017 Amdocs
+* All rights reserved.
+* ================================================================================
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+* 
+*      http://www.apache.org/licenses/LICENSE-2.0
+* 
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+* ============LICENSE_END=========================================================
+* 
+* ECOMP and OpenECOMP are trademarks
+* and service marks of AT&T Intellectual Property.
+*/
+
+package org.openecomp.sparky.synchronizer.task;
+
+import java.util.function.Supplier;
+
+import org.openecomp.sparky.dal.NetworkTransaction;
+import org.openecomp.sparky.dal.aai.ActiveInventoryDataProvider;
+import org.openecomp.sparky.dal.rest.OperationResult;
+
+/**
+ * The Class CollectEntityTypeSelfLinksTask.
+ */
+public class CollectEntityTypeSelfLinksTask implements Supplier<NetworkTransaction> {
+
+  private ActiveInventoryDataProvider aaiProvider;
+
+  private NetworkTransaction txn;
+
+  /**
+   * Instantiates a new collect entity type self links task.
+   *
+   * @param txn the txn
+   * @param provider the provider
+   */
+  public CollectEntityTypeSelfLinksTask(NetworkTransaction txn,
+      ActiveInventoryDataProvider provider) {
+    this.aaiProvider = provider;
+    this.txn = txn;
+  }
+
+  /* (non-Javadoc)
+   * @see java.util.function.Supplier#get()
+   */
+  @Override
+  public NetworkTransaction get() {
+
+    txn.setTaskAgeInMs();
+
+    long startTimeInMs = System.currentTimeMillis();
+    OperationResult result = null;
+    try {
+      result = aaiProvider.queryActiveInventoryWithRetries(txn.getLink(), "application/json", 5);
+    } catch (Exception exc) {
+      result = new OperationResult(500,
+          "Caught an exception while trying to resolve link = " + exc.getMessage());
+    } finally {
+      result.setResponseTimeInMs(System.currentTimeMillis() - startTimeInMs);
+      txn.setOperationResult(result);
+    }
+
+    return txn;
+  }
+
+}

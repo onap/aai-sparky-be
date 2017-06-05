@@ -1,0 +1,24 @@
+{
+  "mappings": {
+    "default": {
+      "properties": {
+        "pkey": {
+          "type": "string"
+        },
+        "entityType": {
+          "type": "string"
+        },
+        "longitude": {
+          "type": "string"
+        },
+        "latitude": {
+          "type": "string"
+        },
+        "selfLink": {
+          "type": "string"
+        }
+      }
+    }
+
+  }
+}
