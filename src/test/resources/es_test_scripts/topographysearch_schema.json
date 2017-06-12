@@ -1,0 +1,9 @@
+{
+       "fields": [
+              {"name": "pkey", "data-type": "string", "searchable": "false"},
+              {"name": "entityType", "data-type": "string", "searchable": "false"},
+              {"name": "latitude", "data-type": "string", "searchable": "false"},
+              {"name": "longitude", "data-type": "string", "searchable": "false"},
+              {"name": "selfLink", "data-type": "string", "searchable": "false"}
+       ]
+}

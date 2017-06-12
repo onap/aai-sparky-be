@@ -1,0 +1,4 @@
+complex.TEST1,complex,-82.089844,33.642063,http://localhost:8443/complex/TEST1,
+complex.TEST2,complex,-114.785156,37.640335,http://localhost:8443/complex/TEST2,
+complex.TEST3,complex,-97.910156,27.595935,http://localhost:8443/complex/TEST3,
+pserver.TEST1,pserver,-97.910156,27.595935,http://localhost:8443/pserver/TEST1

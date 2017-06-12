@@ -1,0 +1,6 @@
+{"index":{"_index":"topographicalsearchindex-localhost","_type":"default"}
+{"pkey": "complex.TEST1", "entityType": "complex", "longitude": "-82.089844", "latitude": "33.642063", "selfLink": "http://localhost:8443/complex/TEST1"}
+{"index":{"_index":"topographicalsearchindex-localhost","_type":"default"}
+{"pkey": "complex.TEST2", "entityType": "complex", "longitude": "-114.785156", "latitude": "37.640335", "selfLink": "http://localhost:8443/complex/TEST2"}
+{"index":{"_index":"topographicalsearchindex-localhost","_type":"default"}
+{"pkey": "complex.TEST3", "entityType": "complex", "longitude": "-97.910156", "latitude": "27.595935", "selfLink": "http://localhost:8443/complex/TEST3"}
