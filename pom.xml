@@ -230,7 +230,6 @@
 									</executableDependency>
 									<additionalClasspathElements>
 										<additionalClasspathElement>${basedir}/ajsc-shared-config/etc</additionalClasspathElement>
-										<additionalClasspathElement>${basedir}/appconfig-local</additionalClasspathElement>
 									</additionalClasspathElements>
 
 									<environmentVariables>

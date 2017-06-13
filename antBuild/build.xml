@@ -154,9 +154,6 @@
 			failonerror="true">
 			<fileset dir="${basedir}/bundleconfig-local" includes="**/**" />
 		</copy>
-		<copy toDir="${basedir}/target/swm/package/nix/dist_files${distFilesRoot}/appconfig" failonerror="true">
-			<fileset dir="${basedir}/appconfig-local" includes="**/**" />
-		</copy>
 		<copy
 			toDir="${basedir}/target/swm/package/nix/dist_files${distFilesRoot}/bundleconfig/etc"
 			failonerror="true">
