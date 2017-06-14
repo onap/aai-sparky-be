@@ -500,7 +500,7 @@
                     <verbose>true</verbose>
                     <serverId>docker-hub</serverId>
                     <imageName>${docker.push.registry}/openecomp/${project.artifactId}</imageName>                              
-                    <dockerDirectory>${docker.location}</dockerDirectory>
+                    <dockerDirectory>${basedir}/target</dockerDirectory>
                     <imageTags>
                         <imageTag>latest</imageTag>
                     </imageTags>
