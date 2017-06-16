@@ -7,8 +7,8 @@
 		<groupId>com.att.ajsc</groupId>
 		<version>2.0.0</version>
 	</parent>
-	<groupId>org.openecomp.aai</groupId>
-	<artifactId>inventory-ui-service</artifactId>
+	<groupId>org.openecomp.aai.sparky-be</groupId>
+	<artifactId>sparky-be</artifactId>
 	<version>1.0-SNAPSHOT</version>
 
 	<properties>
@@ -577,5 +577,16 @@
 
 		</plugins>
 	</build>
-
+	<distributionManagement>
+        <repository>
+            <id>ecomp-releases</id>
+            <name>ECOMP Release Repository</name>
+            <url>${nexusproxy}/content/repositories/releases/</url>
+        </repository>
+        <snapshotRepository>
+            <id>ecomp-snapshots</id>
+            <name>ECOMP Snapshot Repository</name>
+            <url>${nexusproxy}/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
 </project>
