@@ -63,7 +63,7 @@ public abstract class AbstractEntitySynchronizer {
   protected final Logger logger;
   protected ObjectMapper mapper;
   protected OxmModelLoader oxmModelLoader;
-
+  protected long syncDurationInMs;
   /**
    * The Enum StatFlag.
    */
@@ -99,7 +99,8 @@ public abstract class AbstractEntitySynchronizer {
   protected String synchronizerName;
 
   protected abstract boolean isSyncDone();
-
+  protected boolean shouldSkipSync;
+  
   public String getActiveInventoryStatisticsReport() {
 
     StringBuilder sb = new StringBuilder(128);
@@ -293,7 +294,18 @@ public abstract class AbstractEntitySynchronizer {
     
     String txnID = NodeUtils.getRandomTxnId();
 	MdcContext.initialize(txnID, "AbstractEntitySynchronizer", "", "Sync", "");
+	
+	this.shouldSkipSync = false;
+    this.syncStartedTimeStampInMs = System.currentTimeMillis();
+    this.syncDurationInMs = -1;
+  }
 
+  public boolean shouldSkipSync() {
+    return shouldSkipSync;
+  }
+
+  public void setShouldSkipSync(boolean shouldSkipSync) {
+    this.shouldSkipSync = shouldSkipSync;
   }
 
   /**

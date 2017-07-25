@@ -26,15 +26,18 @@
 package org.openecomp.sparky.dal.aai.config;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Properties;
 
 import javax.ws.rs.core.UriBuilder;
 
+import org.openecomp.cl.api.Logger;
+import org.openecomp.cl.eelf.LoggerFactory;
+import org.openecomp.sparky.logging.AaiUiMsgs;
 import org.openecomp.sparky.synchronizer.config.TaskProcessorConfig;
 import org.openecomp.sparky.util.ConfigHelper;
 import org.openecomp.sparky.util.Encryptor;
 import org.openecomp.sparky.viewandinspect.config.TierSupportUiConstants;
-
 /**
  * The Class ActiveInventoryConfig.
  */
@@ -45,7 +48,8 @@ public class ActiveInventoryConfig {
   public static final String CONFIG_FILE =
       TierSupportUiConstants.DYNAMIC_CONFIG_APP_LOCATION + "aai.properties";
   private static ActiveInventoryConfig instance;
-  
+  private static final Logger LOG = LoggerFactory.getInstance().getLogger(
+	      ActiveInventoryConfig.class);
   private static final String HTTP_SCHEME = "http";
   private static final String HTTPS_SCHEME = "https";
 
@@ -141,7 +145,16 @@ public class ActiveInventoryConfig {
     return builder.build().toString();
 
   }
-
+  
+  public static String extractResourcePath(String selflink) {
+	    try {
+	      return new URI(selflink).getPath();
+	    } catch (URISyntaxException uriSyntaxException) {
+	      LOG.error(AaiUiMsgs.ERROR_EXTRACTING_RESOURCE_PATH_FROM_LINK, uriSyntaxException.getMessage());
+	      return selflink;
+	    }
+	  }
+  
   /* (non-Javadoc)
    * @see java.lang.Object#toString()
    */

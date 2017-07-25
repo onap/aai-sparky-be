@@ -28,8 +28,6 @@ package org.openecomp.sparky.synchronizer;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Deque;
@@ -41,6 +39,7 @@ import java.util.function.Supplier;
 
 import org.openecomp.cl.api.Logger;
 import org.openecomp.cl.eelf.LoggerFactory;
+import org.openecomp.cl.mdc.MdcContext;
 import org.openecomp.sparky.config.oxm.OxmEntityDescriptor;
 import org.openecomp.sparky.dal.NetworkTransaction;
 import org.openecomp.sparky.dal.elasticsearch.config.ElasticSearchConfig;
@@ -56,7 +55,6 @@ import org.openecomp.sparky.synchronizer.task.StoreDocumentTask;
 import org.openecomp.sparky.util.NodeUtils;
 import org.slf4j.MDC;
 
-import org.openecomp.cl.mdc.MdcContext;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -90,7 +88,7 @@ public class GeoSynchronizer extends AbstractEntitySynchronizer implements Index
     this.geoDescriptorMap = oxmModelLoader.getGeoEntityDescriptors();
     this.aaiEntityStats.initializeCountersFromOxmEntityDescriptors(geoDescriptorMap);
     this.esEntityStats.initializeCountersFromOxmEntityDescriptors(geoDescriptorMap);
-
+    this.syncDurationInMs = -1;
   }
 
 
@@ -126,6 +124,7 @@ public class GeoSynchronizer extends AbstractEntitySynchronizer implements Index
     }
 
     if (geoDescriptorMap.isEmpty()) {
+      setShouldSkipSync(true);
       LOG.error(AaiUiMsgs.OXM_FAILED_RETRIEVAL, "geo entities");
       return OperationState.ERROR;
     }
@@ -401,8 +400,8 @@ public class GeoSynchronizer extends AbstractEntitySynchronizer implements Index
    */
   @Override
   public String getStatReport(boolean showFinalReport) {
-    return this.getStatReport(System.currentTimeMillis() - syncStartedTimeStampInMs,
-        showFinalReport);
+	  syncDurationInMs = System.currentTimeMillis() - syncStartedTimeStampInMs;
+	  return this.getStatReport(syncDurationInMs, showFinalReport);
   }
 
   /* (non-Javadoc)

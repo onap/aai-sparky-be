@@ -28,8 +28,6 @@ package org.openecomp.sparky.synchronizer;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -47,8 +45,10 @@ import java.util.function.Supplier;
 
 import org.openecomp.cl.api.Logger;
 import org.openecomp.cl.eelf.LoggerFactory;
+import org.openecomp.cl.mdc.MdcContext;
 import org.openecomp.sparky.config.oxm.OxmEntityDescriptor;
 import org.openecomp.sparky.dal.NetworkTransaction;
+import org.openecomp.sparky.dal.aai.config.ActiveInventoryConfig;
 import org.openecomp.sparky.dal.rest.HttpMethod;
 import org.openecomp.sparky.dal.rest.OperationResult;
 import org.openecomp.sparky.logging.AaiUiMsgs;
@@ -64,11 +64,6 @@ import org.openecomp.sparky.util.NodeUtils;
 import org.openecomp.sparky.util.SuggestionsPermutation;
 import org.slf4j.MDC;
 
-import org.openecomp.cl.mdc.MdcContext;
-
-import org.openecomp.cl.mdc.MdcContext;
-
-import org.openecomp.cl.mdc.MdcContext;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -135,6 +130,7 @@ public class AutosuggestionSynchronizer extends AbstractEntitySynchronizer
     this.syncInProgress = false;
     this.contextMap = MDC.getCopyOfContextMap();
     this.esPutExecutor = NodeUtils.createNamedExecutor("SUES-ES-PUT", 5, LOG);
+    this.syncDurationInMs = -1;
   }
 
   /**
@@ -232,6 +228,8 @@ public class AutosuggestionSynchronizer extends AbstractEntitySynchronizer
    */
   @Override
   public OperationState doSync() {
+	this.syncDurationInMs = -1;
+	syncStartedTimeStampInMs = System.currentTimeMillis();
     String txnID = NodeUtils.getRandomTxnId();
     MdcContext.initialize(txnID, "AutosuggestionSynchronizer", "", "Sync", "");
     
@@ -400,6 +398,7 @@ public class AutosuggestionSynchronizer extends AbstractEntitySynchronizer
           sse.setSuggestableAttr(uniqueList);
           sse.setPayloadFromResponse(entityNode);
           sse.setLink(txn.getLink());
+          sse.setLink(ActiveInventoryConfig.extractResourcePath(txn.getLink()));
           populateSuggestionSearchEntityDocument(sse, jsonResult, txn);
           // The unique id for the document will be created at derive fields
           sse.deriveFields();
@@ -676,8 +675,8 @@ public class AutosuggestionSynchronizer extends AbstractEntitySynchronizer
    */
   @Override
   public String getStatReport(boolean showFinalReport) {
-    return getStatReport(System.currentTimeMillis() - this.syncStartedTimeStampInMs,
-        showFinalReport);
+	  syncDurationInMs = System.currentTimeMillis() - syncStartedTimeStampInMs;
+	  return getStatReport(syncDurationInMs, showFinalReport);
   }
 
   /*

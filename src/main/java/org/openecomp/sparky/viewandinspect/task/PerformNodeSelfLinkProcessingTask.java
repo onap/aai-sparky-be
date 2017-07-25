@@ -48,6 +48,7 @@ public class PerformNodeSelfLinkProcessingTask implements Supplier<NodeProcessin
   private NodeProcessingTransaction txn;
   private ActiveInventoryDataProvider aaiProvider;
   private Map<String, String> contextMap;
+  private ActiveInventoryConfig aaiConfig;
 
   /**
    * Instantiates a new perform node self link processing task.
@@ -57,10 +58,11 @@ public class PerformNodeSelfLinkProcessingTask implements Supplier<NodeProcessin
    * @param aaiProvider the aai provider
    */
   public PerformNodeSelfLinkProcessingTask(NodeProcessingTransaction txn, String requestParameters,
-      ActiveInventoryDataProvider aaiProvider) {
+      ActiveInventoryDataProvider aaiProvider, ActiveInventoryConfig aaiConfig) {
     this.aaiProvider = aaiProvider;
     this.txn = txn;
     this.contextMap = MDC.getCopyOfContextMap();
+    this.aaiConfig = aaiConfig;
   }
 
   /* (non-Javadoc)
@@ -69,10 +71,9 @@ public class PerformNodeSelfLinkProcessingTask implements Supplier<NodeProcessin
   @Override
   public NodeProcessingTransaction get() {
     MDC.setContextMap(contextMap);
-    String link = txn.getSelfLinkWithModifiers();
-
+    OperationResult opResult = new OperationResult();
+    String link = txn.getSelfLink();
     if (link == null) {
-      OperationResult opResult = new OperationResult();
       opResult.setResult(500, "Aborting self-link processing because self link is null");
       txn.setOpResult(opResult);
       return txn;
@@ -82,7 +83,6 @@ public class PerformNodeSelfLinkProcessingTask implements Supplier<NodeProcessin
       logger.debug(AaiUiMsgs.DEBUG_GENERIC, "Collecting " + link);
     }
 
-    OperationResult opResult = null;
     try {
       opResult = aaiProvider.queryActiveInventoryWithRetries(link, "application/json",
           ActiveInventoryConfig.getConfig().getAaiRestConfig().getNumRequestRetries());

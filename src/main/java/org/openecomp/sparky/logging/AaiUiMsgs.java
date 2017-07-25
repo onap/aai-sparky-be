@@ -411,8 +411,9 @@ public enum AaiUiMsgs implements LogMessageEnum {
   /** Arguments: {0} = Exception */
   ERROR_D3_GRAPH_VISUALIZATION,
   /** Arguments: {0} = Exception */
-  ERROR_AAI_QUERY_WITH_RETRY;
-
+  ERROR_AAI_QUERY_WITH_RETRY,
+  /** Arguments: Error extracting resource path from self-link.  Error = {0} */
+  ERROR_EXTRACTING_RESOURCE_PATH_FROM_LINK;
   /**
    * Static initializer to ensure the resource bundles for this class are loaded...
    */

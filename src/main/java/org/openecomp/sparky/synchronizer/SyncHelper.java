@@ -438,7 +438,7 @@ public class SyncHelper {
           new HistoricalEntitySummarizer(esConfig.getEntityCountHistoryIndex());
       historicalSummarizer.setAaiDataProvider(aaiAdapter);
       historicalSummarizer.setEsDataProvider(esAdapter);
-      //entityCounterHistorySummarizer.registerEntitySynchronizer(historicalSummarizer);
+      entityCounterHistorySummarizer.registerEntitySynchronizer(historicalSummarizer);
 
     } catch (Exception exc) {
       String message = "Error: failed to sync with message = " + exc.getMessage();

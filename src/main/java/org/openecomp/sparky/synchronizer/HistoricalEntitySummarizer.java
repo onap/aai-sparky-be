@@ -28,8 +28,6 @@ package org.openecomp.sparky.synchronizer;
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
 import java.io.IOException;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Collection;
@@ -45,6 +43,7 @@ import javax.json.Json;
 
 import org.openecomp.cl.api.Logger;
 import org.openecomp.cl.eelf.LoggerFactory;
+import org.openecomp.cl.mdc.MdcContext;
 import org.openecomp.sparky.config.oxm.OxmEntityDescriptor;
 import org.openecomp.sparky.dal.rest.HttpMethod;
 import org.openecomp.sparky.dal.rest.OperationResult;
@@ -54,9 +53,6 @@ import org.openecomp.sparky.synchronizer.enumeration.SynchronizerState;
 import org.openecomp.sparky.util.NodeUtils;
 import org.slf4j.MDC;
 
-import org.openecomp.cl.mdc.MdcContext;
-
-import org.openecomp.cl.mdc.MdcContext;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
@@ -89,6 +85,7 @@ public class HistoricalEntitySummarizer extends AbstractEntitySynchronizer
     this.enabledStatFlags = EnumSet.of(StatFlag.AAI_REST_STATS, StatFlag.ES_REST_STATS);
     this.syncInProgress = false;
     this.contextMap = MDC.getCopyOfContextMap(); 
+    this.syncDurationInMs = -1;
   }
 
   /**
@@ -319,8 +316,8 @@ public class HistoricalEntitySummarizer extends AbstractEntitySynchronizer
    */
   @Override
   public String getStatReport(boolean showFinalReport) {
-    return getStatReport(System.currentTimeMillis() - this.syncStartedTimeStampInMs,
-        showFinalReport);
+	  syncDurationInMs = System.currentTimeMillis() - syncStartedTimeStampInMs;
+	  return this.getStatReport(syncDurationInMs, showFinalReport);
   }
 
   /* (non-Javadoc)

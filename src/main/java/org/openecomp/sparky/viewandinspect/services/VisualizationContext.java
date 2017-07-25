@@ -405,6 +405,7 @@ public class VisualizationContext {
                           
                       } else {
                         selfLink = ((JsonNode) entityLinks.toArray()[0]).asText();
+                        selfLink = ActiveInventoryConfig.extractResourcePath(selfLink);
 
                         newChildNode.setSelfLink(selfLink);
                         newChildNode.setNodeId(NodeUtils.generateUniqueShaDigest(selfLink));
@@ -677,7 +678,7 @@ public class VisualizationContext {
       txn.setRequestParameters(depthModifier);
       aaiWorkOnHand.incrementAndGet();
       supplyAsync(
-          new PerformNodeSelfLinkProcessingTask(txn, depthModifier, aaiProvider),
+          new PerformNodeSelfLinkProcessingTask(txn, depthModifier, aaiProvider, aaiConfig),
           aaiExecutorService).whenComplete((nodeTxn, error) -> {
             aaiWorkOnHand.decrementAndGet();
             if (error != null) {
@@ -1184,17 +1185,17 @@ public class VisualizationContext {
 
     Relationship[] relationshipArray = relationshipList.getRelationshipList();
     OxmEntityDescriptor descriptor = null;
-    String repairedSelfLink = null;
 
     if (relationshipArray != null) {
 
       ActiveInventoryNode newNode = null;
+      String resourcePath = null;
 
       for (Relationship r : relationshipArray) {
 
-        repairedSelfLink = aaiConfig.repairSelfLink(r.getRelatedLink());
+        resourcePath = ActiveInventoryConfig.extractResourcePath(r.getRelatedLink());
         
-        String nodeId = NodeUtils.generateUniqueShaDigest(repairedSelfLink);
+        String nodeId = NodeUtils.generateUniqueShaDigest(resourcePath);
 
         if (nodeId == null) {
 
@@ -1218,7 +1219,7 @@ public class VisualizationContext {
 
         newNode.setNodeId(nodeId);
         newNode.setEntityType(entityType);
-        newNode.setSelfLink(repairedSelfLink);
+        newNode.setSelfLink(resourcePath);
 
         processingNode.addOutboundNeighbor(nodeId);
 

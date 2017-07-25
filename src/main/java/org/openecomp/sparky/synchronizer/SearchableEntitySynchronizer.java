@@ -54,6 +54,7 @@ import org.openecomp.cl.api.Logger;
 import org.openecomp.cl.eelf.LoggerFactory;
 import org.openecomp.sparky.config.oxm.OxmEntityDescriptor;
 import org.openecomp.sparky.dal.NetworkTransaction;
+import org.openecomp.sparky.dal.aai.config.ActiveInventoryConfig;
 import org.openecomp.sparky.dal.elasticsearch.config.ElasticSearchConfig;
 import org.openecomp.sparky.dal.rest.HttpMethod;
 import org.openecomp.sparky.dal.rest.OperationResult;
@@ -131,6 +132,7 @@ public class SearchableEntitySynchronizer extends AbstractEntitySynchronizer
         oxmModelLoader.getSearchableEntityDescriptors());
     this.esEntityStats.initializeCountersFromOxmEntityDescriptors(
         oxmModelLoader.getSearchableEntityDescriptors());
+    this.syncDurationInMs = -1;
   }
 
   /**
@@ -228,6 +230,7 @@ public class SearchableEntitySynchronizer extends AbstractEntitySynchronizer
    */
   @Override
   public OperationState doSync() {
+	this.syncDurationInMs = -1;
     String txnID = NodeUtils.getRandomTxnId();
     MdcContext.initialize(txnID, "SearchableEntitySynchronizer", "", "Sync", "");
     
@@ -562,7 +565,7 @@ public class SearchableEntitySynchronizer extends AbstractEntitySynchronizer
         if (jsonResult != null && jsonResult.length() > 0) {
 
           SearchableEntity se = new SearchableEntity(oxmModelLoader);
-          se.setLink( txn.getLink() );
+          se.setLink(ActiveInventoryConfig.extractResourcePath(txn.getLink()));
           populateSearchableEntityDocument(se, jsonResult, txn.getDescriptor());
           se.deriveFields();
 
@@ -734,8 +737,8 @@ public class SearchableEntitySynchronizer extends AbstractEntitySynchronizer
    */
   @Override
   public String getStatReport(boolean showFinalReport) {
-    return this.getStatReport(System.currentTimeMillis() - syncStartedTimeStampInMs,
-        showFinalReport);
+	  syncDurationInMs = System.currentTimeMillis() - syncStartedTimeStampInMs;
+	  return this.getStatReport(syncDurationInMs, showFinalReport);
   }
 
   /* (non-Javadoc)

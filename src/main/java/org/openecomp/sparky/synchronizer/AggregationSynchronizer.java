@@ -54,6 +54,7 @@ import org.openecomp.cl.api.Logger;
 import org.openecomp.cl.eelf.LoggerFactory;
 import org.openecomp.sparky.config.oxm.OxmEntityDescriptor;
 import org.openecomp.sparky.dal.NetworkTransaction;
+import org.openecomp.sparky.dal.aai.config.ActiveInventoryConfig;
 import org.openecomp.sparky.dal.elasticsearch.config.ElasticSearchConfig;
 import org.openecomp.sparky.dal.rest.HttpMethod;
 import org.openecomp.sparky.dal.rest.OperationResult;
@@ -554,7 +555,7 @@ public class AggregationSynchronizer extends AbstractEntitySynchronizer
         if (jsonResult != null && jsonResult.length() > 0) {
 
           AggregationEntity ae = new AggregationEntity(oxmModelLoader);
-          ae.setLink( txn.getLink() );
+          ae.setLink(ActiveInventoryConfig.extractResourcePath(txn.getLink()));
           populateAggregationEntityDocument(ae, jsonResult, txn.getDescriptor());
           ae.deriveFields();
 
@@ -680,6 +681,8 @@ public class AggregationSynchronizer extends AbstractEntitySynchronizer
    */
   @Override
   public OperationState doSync() {
+	this.syncDurationInMs = -1;
+	syncStartedTimeStampInMs = System.currentTimeMillis();
     String txnID = NodeUtils.getRandomTxnId();
     MdcContext.initialize(txnID, "AggregationSynchronizer", "", "Sync", "");
     
@@ -704,8 +707,8 @@ public class AggregationSynchronizer extends AbstractEntitySynchronizer
    */
   @Override
   public String getStatReport(boolean showFinalReport) {
-    return getStatReport(System.currentTimeMillis() - this.syncStartedTimeStampInMs,
-        showFinalReport);
+	syncDurationInMs = System.currentTimeMillis() - syncStartedTimeStampInMs;
+	return getStatReport(syncDurationInMs, showFinalReport);
   }
 
   public String getEntityType() {

@@ -422,30 +422,31 @@ public class SyncController {
 
     boolean allDone = false;
     long nextReportTimeStampInMs = System.currentTimeMillis() + 30000L;
+    boolean dumpPeriodicStatReport = false;
 
     while (!allDone) {
-
-      // allDone = false;
 
       int totalFinished = 0;
 
       for (IndexSynchronizer synchronizer : registeredSynchronizers) {
-        if (System.currentTimeMillis() > nextReportTimeStampInMs) {
-
-          nextReportTimeStampInMs = System.currentTimeMillis() + 30000L;
-
-          String statReport = synchronizer.getStatReport(false);
-
-          if (statReport != null) {
-            LOG.info(AaiUiMsgs.INFO_GENERIC, statReport);
-          }
-        }
-
-        if (synchronizer.getState() == SynchronizerState.IDLE) {
-          totalFinished++;
-        }
+    	  if (dumpPeriodicStatReport) {
+              if (synchronizer.getState() != SynchronizerState.IDLE) {
+                String statReport = synchronizer.getStatReport(false);
+	          if (statReport != null) {
+		            LOG.info(AaiUiMsgs.INFO_GENERIC, statReport);
+		          }
+              }
+	        if (synchronizer.getState() == SynchronizerState.IDLE) {
+	          totalFinished++;
+	        }
+    	  }
       }
-
+      if ( System.currentTimeMillis() > nextReportTimeStampInMs) {
+          dumpPeriodicStatReport = true;
+          nextReportTimeStampInMs = System.currentTimeMillis() + 30000L; 
+        } else {
+          dumpPeriodicStatReport = false;
+        }
       allDone = (totalFinished == registeredSynchronizers.size());
 
       try {

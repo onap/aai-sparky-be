@@ -106,7 +106,8 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
 
   private static final Logger LOG =
       LoggerFactory.getInstance().getLogger(CrossEntityReferenceSynchronizer.class);
-
+  
+  private static final String SERVICE_INSTANCE = "service-instance";
   private Deque<SelfLinkDescriptor> selflinks;
   private Deque<RetryCrossEntitySyncContainer> retryQueue;
   private Map<String, Integer> retryLimitTracker;
@@ -133,6 +134,7 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
     this.esEntityStats.initializeCountersFromOxmEntityDescriptors(
         oxmModelLoader.getCrossReferenceEntityDescriptors());
     this.aaiConfig = aaiConfig;
+    this.syncDurationInMs = -1;
   }
 
   /* (non-Javadoc)
@@ -140,6 +142,7 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
    */
   @Override
   public OperationState doSync() {
+	this.syncDurationInMs = -1;
 	String txnID = NodeUtils.getRandomTxnId();
     MdcContext.initialize(txnID, "CrossEntitySynchronizer", "", "Sync", "");
 	
@@ -163,8 +166,8 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
    */
   @Override
   public String getStatReport(boolean showFinalReport) {
-    return this.getStatReport(System.currentTimeMillis() - syncStartedTimeStampInMs,
-        showFinalReport);
+	  syncDurationInMs = System.currentTimeMillis() - syncStartedTimeStampInMs;
+	  return getStatReport(syncDurationInMs, showFinalReport);
   }
 
   /* (non-Javadoc)
@@ -483,18 +486,23 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
                    * Build generic-query to query child instance self-link from AAI
                    */
                   List<String> orderedQueryKeyParams = new ArrayList<String>();
-                  orderedQueryKeyParams.add(parentEntityQueryString);
-                  orderedQueryKeyParams.add(childEntityQueryKeyString);
+                  if (SERVICE_INSTANCE.equals(childEntityType)) {
+                      orderedQueryKeyParams.clear();
+                      orderedQueryKeyParams.add(childEntityQueryKeyString);
+                    } else {
+                      orderedQueryKeyParams.add(parentEntityQueryString);
+                      orderedQueryKeyParams.add(childEntityQueryKeyString);
+                    }
                   String genericQueryStr = null;
                   try {
                     genericQueryStr = aaiDataProvider.getGenericQueryForSelfLink(childEntityType, orderedQueryKeyParams);
                     
                     if (genericQueryStr != null) {
-
+                      aaiWorkOnHand.incrementAndGet();
                       OperationResult aaiQueryResult = aaiDataProvider.queryActiveInventoryWithRetries(
                           genericQueryStr, "application/json",
                           aaiConfig.getAaiRestConfig().getNumRequestRetries());
-                      
+                      aaiWorkOnHand.decrementAndGet();
                       if (aaiQueryResult!= null && aaiQueryResult.wasSuccessful()) {
                         
                         Collection<JsonNode> entityLinks = new ArrayList<JsonNode>();
@@ -527,7 +535,7 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
                                       parentCrossEntityReferenceAttributeValue);
                                 }
                                 
-                                icer.setLink(selfLink);
+                                icer.setLink(ActiveInventoryConfig.extractResourcePath(selfLink));
 
                                 icer.deriveFields();
 

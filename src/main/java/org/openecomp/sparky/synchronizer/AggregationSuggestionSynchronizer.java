@@ -27,15 +27,12 @@ package org.openecomp.sparky.synchronizer;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
-import org.openecomp.cl.mdc.MdcContext;
-
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
 import org.openecomp.cl.api.Logger;
 import org.openecomp.cl.eelf.LoggerFactory;
+import org.openecomp.cl.mdc.MdcContext;
 import org.openecomp.sparky.dal.NetworkTransaction;
 import org.openecomp.sparky.dal.rest.HttpMethod;
 import org.openecomp.sparky.dal.rest.OperationResult;
@@ -87,7 +84,8 @@ public class AggregationSuggestionSynchronizer extends AbstractEntitySynchronize
   @Override
   public OperationState doSync() {
     isSyncInProgress = true;
-
+    this.syncDurationInMs = -1;
+    syncStartedTimeStampInMs = System.currentTimeMillis();
     syncEntity();
 
     while (!isSyncDone()) {
@@ -176,8 +174,8 @@ public class AggregationSuggestionSynchronizer extends AbstractEntitySynchronize
 
   @Override
   public String getStatReport(boolean shouldDisplayFinalReport) {
-    return getStatReport(System.currentTimeMillis() - this.syncStartedTimeStampInMs,
-        shouldDisplayFinalReport);
+	syncDurationInMs = System.currentTimeMillis() - syncStartedTimeStampInMs;
+	return getStatReport(syncDurationInMs, shouldDisplayFinalReport);
   }
 
   @Override
