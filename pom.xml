@@ -41,6 +41,14 @@
 		<testEnv>DEV</testEnv>
 		<checkstyle.config.location>google_checks.xml</checkstyle.config.location>
         <nexusproxy>https://nexus.onap.org</nexusproxy>
+        
+        <!-- Sonar Configuration -->
+        <sonar.language>java</sonar.language>
+       <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+       <sonar.surefire.reportsPath>${project.build.directory}/surefire-reports</sonar.surefire.reportsPath>
+       <sonar.jacoco.reportPath>${project.build.directory}/coverage-reports/jacoco.exec</sonar.jacoco.reportPath>
+       <sonar.jacoco.reportMissing.force.zero>false</sonar.jacoco.reportMissing.force.zero>
+       <sonar.projectVersion>${project.version}</sonar.projectVersion>
 	</properties>
 
 	<dependencies>
