@@ -443,7 +443,7 @@ public class ActiveInventoryNode {
   }
 
   public boolean isDirectSelfLink() {
-    // https://aai-int1.test.att.com:8443/aai/v8/resources/id/2458124400
+    // https://<AAI-Hostname>:8443/aai/v8/resources/id/2458124400
     return isDirectSelfLink(this.selfLink);
   }
 
@@ -454,7 +454,7 @@ public class ActiveInventoryNode {
    * @return true, if is direct self link
    */
   public static boolean isDirectSelfLink(String link) {
-    // https://aai-int1.test.att.com:8443/aai/v8/resources/id/2458124400
+    // https://<AAI-Hostname>:8443/aai/v8/resources/id/2458124400
 
     if (link == null) {
       return false;

@@ -69,7 +69,7 @@ public class SyncControllerBuilder {
           new ElasticSearchAdapter(nonCachingRestProvider, esConfig);
 
       String payload =
-          "{ \"entityType\": \"complex\", \"pkey\": \"MORRISTOWN0075\", \"location\": { \"lat\": \"40.793414\", \"lon\": \"-74.480432\" }, \"selfLink\": \"https://aai-int1.test.att.com:8443/aai/v8/cloud-infrastructure/complexes/complex/MORRISTOWN0075?nodes-only\" }\n";
+          "{ \"entityType\": \"complex\", \"pkey\": \"MORRISTOWN0075\", \"location\": { \"lat\": \"40.793414\", \"lon\": \"-74.480432\" }, \"selfLink\": \"https://aai-hostname:8443/aai/v8/cloud-infrastructure/complexes/complex/MORRISTOWN0075?nodes-only\" }\n";
 
       String updateRequest = elasticSearchDataProvider.buildBulkImportOperationRequest(
           "topographysearchindex-localhost", "default",

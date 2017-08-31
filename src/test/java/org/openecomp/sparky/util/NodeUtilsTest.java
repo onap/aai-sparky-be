@@ -51,15 +51,15 @@ public class NodeUtilsTest {
 
 
   private static final String TEST_LINK1 =
-      "https://aai-ext1.test.att.com:9292/aai/v7/network/generic-vnfs/generic-vnf/cafaeb02-b54d-4918-bd06-85406dad19e7/l-interfaces/l-interface/WAN1_1123_GAMMA2016.04_PWT/l3-interface-ipv4-address-list/155.196.36.1/";
+      "https://aai-hostname:9292/aai/v7/network/generic-vnfs/generic-vnf/cafaeb02-b54d-4918-bd06-85406dad19e7/l-interfaces/l-interface/WAN1_1123_GAMMA2016.04_PWT/l3-interface-ipv4-address-list/155.196.36.1/";
   private static final String TEST_LINK2 =
-      "https://aai-ext1.test.att.com:9292/aai/v7/network/generic-vnfs/generic-vnf/cafaeb02-b54d-4918-bd06-85406dad19e7/l-interfaces/l-interface/WAN1_1123_GAMMA2016.04_PWT/l3-interface-ipv4-address-list/155.196.36.1";
+      "https://aai-hostname:9292/aai/v7/network/generic-vnfs/generic-vnf/cafaeb02-b54d-4918-bd06-85406dad19e7/l-interfaces/l-interface/WAN1_1123_GAMMA2016.04_PWT/l3-interface-ipv4-address-list/155.196.36.1";
   private static final String TEST_LINK3 =
-      "https://aai-ext1.test.att.com:9292/aai/v7/network/generic-vnfs/generic-vnf/cafaeb02-b54d-4918-bd06-85406dad19e7/l-interfaces/l-interface/WAN1_1123_GAMMA2016.04_PWT/l3-interface-ipv4-address-list/ge-0%2f1%2f0";
+      "https://aai-hostname:9292/aai/v7/network/generic-vnfs/generic-vnf/cafaeb02-b54d-4918-bd06-85406dad19e7/l-interfaces/l-interface/WAN1_1123_GAMMA2016.04_PWT/l3-interface-ipv4-address-list/ge-0%2f1%2f0";
   private static final String TEST_LINK4 =
-      "https://aai-ext1.test.att.com:9292/aai/v7/network/generic-vnfs/generic-vnf/cafaeb02-b54d-4918-bd06-85406dad19e7/l-interfaces/l-interface/WAN1_1123_GAMMA2016.04_PWT/l3-interface-ipv4-address-list/ge-%bad%wolf%timelord";
+      "https://aai-hostname:9292/aai/v7/network/generic-vnfs/generic-vnf/cafaeb02-b54d-4918-bd06-85406dad19e7/l-interfaces/l-interface/WAN1_1123_GAMMA2016.04_PWT/l3-interface-ipv4-address-list/ge-%bad%wolf%timelord";
   private static final String TEST_LINK5_NO_RESOURCE_ID =
-      "https://aai-ext1.test.att.com:9292/aai/v7/network/generic-vnfs/generic-vnf/cafaeb02-b54d-4918-bd06-85406dad19e7/l-interfaces/l-interface/WAN1_1123_GAMMA2016.04_PWT/l3-interface-ipv4-address-list//";
+      "https://aai-hostname:9292/aai/v7/network/generic-vnfs/generic-vnf/cafaeb02-b54d-4918-bd06-85406dad19e7/l-interfaces/l-interface/WAN1_1123_GAMMA2016.04_PWT/l3-interface-ipv4-address-list//";
   private static final int NODE_UTILS_TAB_WIDTH = 3;
 
   /**

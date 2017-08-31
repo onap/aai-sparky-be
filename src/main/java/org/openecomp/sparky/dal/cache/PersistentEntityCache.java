@@ -221,61 +221,6 @@ public class PersistentEntityCache implements EntityCache {
 
   }
 
-  /**
-   * The main method.
-   *
-   * @param args the arguments
-   * @throws URISyntaxException the URI syntax exception
-   */
-  public static void main(String[] args) throws URISyntaxException {
-
-    OperationResult or = new OperationResult();
-    or.setResult("asdjashdkajsdhaksdj");
-    or.setResultCode(200);
-
-    String url1 = "https://aai-int1.dev.att.com:8443/aai/v8/search/nodes-query?"
-        + "search-node-type=tenant&filter=tenant-id:EXISTS";
-
-    or.setRequestLink(url1);
-
-    PersistentEntityCache pec = new PersistentEntityCache("e:\\my_special_folder", 5);
-    String k1 = NodeUtils.generateUniqueShaDigest(url1);
-    pec.put(k1, or);
-
-    String url2 =
-        "https://aai-int1.dev.att.com:8443/aai/v8/network/vnfcs/vnfc/trial-vnfc?nodes-only";
-    or.setRequestLink(url2);
-    String k2 = NodeUtils.generateUniqueShaDigest(url2);
-    pec.put(k2, or);
-
-    String url3 = "https://1.2.3.4:8443/aai/v8/network/vnfcs/vnfc/trial-vnfc?nodes-only";
-    or.setRequestLink(url3);
-    String k3 = NodeUtils.generateUniqueShaDigest(url3);
-    pec.put(k3, or);
-
-    pec.shutdown();
-
-    /*
-     * URI uri1 = new URI(url1);
-     * 
-     * System.out.println("schemea = " + uri1.getScheme()); System.out.println("host = " +
-     * uri1.getHost());
-     * 
-     * String host = uri1.getHost(); String[] tokens = host.split("\\.");
-     * System.out.println(Arrays.asList(tokens)); ArrayList<String> tokenList = new
-     * ArrayList(Arrays.asList(tokens)); //tokenList.remove(tokens.length-1); String
-     * hostAsPathElement = NodeUtils.concatArray(tokenList, "_");
-     * 
-     * System.out.println("hostAsPathElement = " + hostAsPathElement);
-     * 
-     * 
-     * System.out.println("port = " + uri1.getPort()); System.out.println("path = " +
-     * uri1.getPath()); System.out.println("query = " + uri1.getQuery()); System.out.println(
-     * "fragment = " + uri1.getFragment());
-     */
-
-
-  }
 
   /* (non-Javadoc)
    * @see org.openecomp.sparky.dal.cache.EntityCache#shutdown()

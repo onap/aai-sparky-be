@@ -51,7 +51,7 @@ public class ActiveInventoryConfigTest {
     props.put("aai.rest.cache.storageFolderOverride","");
     props.put("aai.rest.cache.maxTimeToLiveInMs","-1");
     
-    props.put("aai.rest.shallowEntities","cloud-region,complex,vnf-image,att-aic,image");
+    props.put("aai.rest.shallowEntities","cloud-region,complex,vnf-image,image");
     
     props.put("aai.ssl.truststore.filename","synchronizer.jks");
     props.put("aai.ssl.truststore.type","jks");

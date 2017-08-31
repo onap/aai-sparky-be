@@ -80,7 +80,7 @@ public class EcompSso {
    * then searches for a CSP cookie; if not found, for a WebJunction header.
    *
    * @param request
-   * @return ATT UID if the ECOMP cookie is present and the sign-on process established an ATT UID;
+   * @return User ID if the ECOMP cookie is present and the sign-on process established an User ID;
    *         else null.
    */
   public static String validateEcompSso(HttpServletRequest request) {
@@ -98,23 +98,23 @@ public class EcompSso {
   }
 
   /**
-   * Searches the specified request for the CSP cookie, decodes it and gets the ATT UID.
+   * Searches the specified request for the CSP cookie, decodes it and gets the User ID.
    *
    * @param request
-   * @return ATTUID if the cookie is present in the request and can be decoded successfully (expired
+   * @return User ID if the cookie is present in the request and can be decoded successfully (expired
    *         cookies do not decode); else null.
    */
   private static String getLoginIdFromCookie(HttpServletRequest request) {
-    String attuid = null;
+    String userid = null;
     try {
       String[] cspFields = getCspData(request);
       if (cspFields != null && cspFields.length > 5)
-        attuid = cspFields[5];
+        userid = cspFields[5];
     } catch (Throwable t) {
       LOG.info(AaiUiMsgs.LOGIN_FILTER_INFO,
           "getLoginIdFromCookie failed " + t.getLocalizedMessage());
     }
-    return attuid;
+    return userid;
   }
 
   /**

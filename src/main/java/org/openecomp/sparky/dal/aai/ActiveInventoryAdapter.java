@@ -251,7 +251,6 @@ public class ActiveInventoryAdapter extends RestfulDataAccessor
           "Failed to getSelfLinkForEntity() because primaryKeyValue is null");
     }
 
-    // https://aai-int1.test.att.com:8443/aai/v8/search/generic-query?key=complex.physical-location-id:atlngade&start-node-type=complex
 
     /*
      * Try to protect ourselves from illegal URI formatting exceptions caused by characters that

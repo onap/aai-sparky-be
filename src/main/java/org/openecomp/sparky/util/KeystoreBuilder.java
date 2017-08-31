@@ -244,8 +244,8 @@ public class KeystoreBuilder {
   private X509Certificate[] getCertificateChainForRemoteEndpoint(String hostname, int port)
       throws UnknownHostException, IOException {
 
-    System.out.println("Opening connection to localhost:8442..");
-    SSLSocket socket = (SSLSocket) sslSocketFactory.createSocket("aai-int1.dev.att.com", 8440);
+    System.out.println("Opening connection to "+hostname+":"+port+"..");
+    SSLSocket socket = (SSLSocket) sslSocketFactory.createSocket(hostname, port);
     socket.setSoTimeout(10000);
 
     try {
@@ -498,8 +498,6 @@ public class KeystoreBuilder {
    * @throws Exception the exception
    */
   public static void main(String[] args) throws Exception {
-
-    // String endpointList = "aai-int1.test.att.com:8440;aai-int1.dev.att.com:8442";
 
     /*
      * Examples: localhost:8440;localhost:8442 d:\1\adhoc_keystore.jks aaiDomain2 false
