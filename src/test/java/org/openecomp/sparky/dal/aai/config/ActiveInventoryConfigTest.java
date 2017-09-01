@@ -179,4 +179,35 @@ public class ActiveInventoryConfigTest {
     assertEquals("https://aai-host:9191/aai/v10/business/customers/customer/1234",
         config.repairSelfLink("/aai/v10/business/customers/customer/1234"));
   }
+  
+  @Test
+  public void validateResourcePathExtraction() throws Exception {
+    // https with API version
+    assertEquals("/aai/v10/business/customers/customer/1234", ActiveInventoryConfig
+        .extractResourcePath("https://aai-host:9191/aai/v10/business/customers/customer/1234"));
+
+    // https without API version
+    assertEquals("/business/customers/customer/1234", ActiveInventoryConfig
+        .extractResourcePath("https://aai-host:9191/business/customers/customer/1234"));
+
+    // http with API version
+    assertEquals("/aai/v10/business/customers/customer/1234", ActiveInventoryConfig
+        .extractResourcePath("http://aai-host:9191/aai/v10/business/customers/customer/1234"));
+
+    // http without API verison
+    assertEquals("/business/customers/customer/1234", ActiveInventoryConfig
+        .extractResourcePath("http://aai-host:9191/business/customers/customer/1234"));
+
+    // no scheme, host, or port
+    assertEquals("business/customers/customer/1234", ActiveInventoryConfig
+        .extractResourcePath("business/customers/customer/1234"));
+
+    // no scheme, host, or port with API version
+    assertEquals("/aai/v10/business/customers/customer/1234", ActiveInventoryConfig
+        .extractResourcePath("/aai/v10/business/customers/customer/1234"));
+
+    // no scheme, host, or port with API version
+    assertEquals("", ActiveInventoryConfig
+        .extractResourcePath(""));
+  }
 }

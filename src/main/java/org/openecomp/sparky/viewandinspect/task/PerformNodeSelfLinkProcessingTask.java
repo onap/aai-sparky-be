@@ -75,7 +75,25 @@ public class PerformNodeSelfLinkProcessingTask implements Supplier<NodeProcessin
       txn.setOpResult(opResult);
       return txn;
     }
+    /**
+     * Rebuild the self link:
+     *  
+     * <li>build the base url with the configured scheme + authority (server:port)
+     * <li>recombine baseUrl + originalEncodedLink + queryStringParameters
+     * 
+     */
 
+    final String urlSchemeAndAuthority = aaiConfig.repairSelfLink("");
+
+    String parameters = txn.getRequestParameters();
+    link = urlSchemeAndAuthority + link;
+    
+    if (parameters != null) {
+      link += parameters;
+    }
+
+
+    
     if (logger.isDebugEnabled()) {
       logger.debug(AaiUiMsgs.DEBUG_GENERIC, "Collecting " + link);
     }
