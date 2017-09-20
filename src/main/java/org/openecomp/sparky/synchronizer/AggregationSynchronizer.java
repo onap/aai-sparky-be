@@ -632,6 +632,7 @@ public class AggregationSynchronizer extends AbstractEntitySynchronizer
             "Could not deserialize JSON (representing operation result) as node tree. " +
             "Operation result = " + jsonResult + ". " + exc.getLocalizedMessage();
         LOG.error(AaiUiMsgs.JSON_PROCESSING_ERROR, message);
+        return;
       }
 
       JsonNode resultData = rootNode.get("result-data");
