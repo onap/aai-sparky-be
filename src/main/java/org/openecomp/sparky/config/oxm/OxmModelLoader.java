@@ -50,7 +50,6 @@ import org.openecomp.sparky.logging.AaiUiMsgs;
 import org.openecomp.sparky.synchronizer.entity.SuggestionSearchEntity;
 import org.openecomp.sparky.viewandinspect.config.TierSupportUiConstants;
 
-
 /**
  * The Class OxmModelLoader.
  */
@@ -133,27 +132,26 @@ public class OxmModelLoader {
    */
   public void loadModel(String version) {
     String fileName = loadOxmFileName(version);
-    InputStream inputStream;
-    try {
-      inputStream = new FileInputStream(new File(fileName));
+    
+    try(FileInputStream inputStream = new FileInputStream(new File(fileName))) {
+        Map<String, Object> properties = new HashMap<String, Object>();
+        properties.put(JAXBContextProperties.OXM_METADATA_SOURCE, inputStream);
+
+        final DynamicJAXBContext oxmContext = DynamicJAXBContextFactory
+                                               .createContextFromOXM(Thread.currentThread()
+                                               .getContextClassLoader(), properties);
+        parseOxmContext(oxmContext);
+        // populateSearchableOxmModel();
+        LOG.info(AaiUiMsgs.OXM_LOAD_SUCCESS);
+
     } catch (FileNotFoundException fnf) {
-      LOG.info(AaiUiMsgs.OXM_READ_ERROR_NONVERBOSE);
-      LOG.error(AaiUiMsgs.OXM_READ_ERROR_VERBOSE, fileName);
-      return;
-    }
-
-    Map<String, Object> properties = new HashMap<String, Object>();
-    properties.put(JAXBContextProperties.OXM_METADATA_SOURCE, inputStream);
-    try {
-      final DynamicJAXBContext oxmContext = DynamicJAXBContextFactory
-          .createContextFromOXM(Thread.currentThread().getContextClassLoader(), properties);
-
-      parseOxmContext(oxmContext);
-      // populateSearchableOxmModel();
-      LOG.info(AaiUiMsgs.OXM_LOAD_SUCCESS);
+        LOG.info(AaiUiMsgs.OXM_READ_ERROR_NONVERBOSE);
+        LOG.error(AaiUiMsgs.OXM_READ_ERROR_VERBOSE, fileName);
+        return;
     } catch (Exception exc) {
-      LOG.info(AaiUiMsgs.OXM_PARSE_ERROR_NONVERBOSE);
-      LOG.error(AaiUiMsgs.OXM_PARSE_ERROR_VERBOSE, fileName, exc.getMessage());
+        LOG.info(AaiUiMsgs.OXM_PARSE_ERROR_NONVERBOSE);
+        LOG.error(AaiUiMsgs.OXM_PARSE_ERROR_VERBOSE, fileName, exc.getMessage());
+        return;
     }
   }
 
