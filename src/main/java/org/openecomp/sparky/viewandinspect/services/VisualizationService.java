@@ -353,6 +353,10 @@ public class VisualizationService {
       LOG.error(AaiUiMsgs.FAILURE_TO_PROCESS_REQUEST, exc.getLocalizedMessage());
     }
 
+    if (output == null) {
+        return jsonResponse;
+    }
+
     output.setInlineMessage(visContext.getInlineMessage());
     output.getGraphMeta().setNumLinkResolveFailed(visContext.getNumFailedLinkResolve());
     output.getGraphMeta().setNumLinksResolvedSuccessfullyFromCache(
