@@ -347,10 +347,9 @@ public class VisualizationService {
     try {
       output = transformer
           .generateVisualizationOutput((System.currentTimeMillis() - opStartTimeInMs), graphMeta);
-    } catch (JsonProcessingException exc) {
-      throw new ServletException("Caught an exception while generation visualization output", exc);
-    } catch (IOException exc) {
+    } catch (Exception exc) {
       LOG.error(AaiUiMsgs.FAILURE_TO_PROCESS_REQUEST, exc.getLocalizedMessage());
+      throw new ServletException("Caught an exception while generation visualization output", exc);
     }
 
     output.setInlineMessage(visContext.getInlineMessage());
