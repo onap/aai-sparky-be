@@ -22,6 +22,18 @@
  */
 package org.openecomp.sparky.config.oxm;
 
+import org.eclipse.persistence.dynamic.DynamicType;
+import org.eclipse.persistence.internal.oxm.mappings.Descriptor;
+import org.eclipse.persistence.jaxb.JAXBContextProperties;
+import org.eclipse.persistence.jaxb.dynamic.DynamicJAXBContext;
+import org.eclipse.persistence.jaxb.dynamic.DynamicJAXBContextFactory;
+import org.eclipse.persistence.mappings.DatabaseMapping;
+import org.openecomp.cl.api.Logger;
+import org.openecomp.cl.eelf.LoggerFactory;
+import org.openecomp.sparky.logging.AaiUiMsgs;
+import org.openecomp.sparky.synchronizer.entity.SuggestionSearchEntity;
+import org.openecomp.sparky.viewandinspect.config.TierSupportUiConstants;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -37,18 +49,6 @@ import java.util.Map.Entry;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.eclipse.persistence.dynamic.DynamicType;
-import org.eclipse.persistence.internal.oxm.mappings.Descriptor;
-import org.eclipse.persistence.jaxb.JAXBContextProperties;
-import org.eclipse.persistence.jaxb.dynamic.DynamicJAXBContext;
-import org.eclipse.persistence.jaxb.dynamic.DynamicJAXBContextFactory;
-import org.eclipse.persistence.mappings.DatabaseMapping;
-import org.openecomp.cl.api.Logger;
-import org.openecomp.cl.eelf.LoggerFactory;
-import org.openecomp.sparky.logging.AaiUiMsgs;
-import org.openecomp.sparky.synchronizer.entity.SuggestionSearchEntity;
-import org.openecomp.sparky.viewandinspect.config.TierSupportUiConstants;
 
 
 /**
@@ -152,6 +152,11 @@ public class OxmModelLoader {
       // populateSearchableOxmModel();
       LOG.info(AaiUiMsgs.OXM_LOAD_SUCCESS);
     } catch (Exception exc) {
+      try {
+        inputStream.close();
+      } catch (IOException e) {
+        //omitted.
+      }
       LOG.info(AaiUiMsgs.OXM_PARSE_ERROR_NONVERBOSE);
       LOG.error(AaiUiMsgs.OXM_PARSE_ERROR_VERBOSE, fileName, exc.getMessage());
     }
