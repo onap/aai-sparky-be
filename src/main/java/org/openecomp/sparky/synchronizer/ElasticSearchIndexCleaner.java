@@ -521,11 +521,6 @@ public class ElasticSearchIndexCleaner implements IndexCleaner {
     }
 
     JsonNode rootNode = parseElasticSearchResult(opResult.getResult());
-    boolean timedOut = Boolean.parseBoolean(getFieldValue(rootNode, "timed_out"));
-    final String tookStr = getFieldValue(rootNode, "took");
-    int tookInMs = (tookStr == null) ? 0 : Integer.parseInt(tookStr);
-
-    JsonNode hitsNode = rootNode.get("hits");
 
     /*
      * Check the result for success / failure, and enumerate all the index ids that resulted in
@@ -533,6 +528,11 @@ public class ElasticSearchIndexCleaner implements IndexCleaner {
      */
 
     if (rootNode != null) {
+      boolean timedOut = Boolean.parseBoolean(getFieldValue(rootNode, "timed_out"));
+      final String tookStr = getFieldValue(rootNode, "took");
+      int tookInMs = (tookStr == null) ? 0 : Integer.parseInt(tookStr);
+
+      JsonNode hitsNode = rootNode.get("hits");
 
       if (timedOut) {
         LOG.info(AaiUiMsgs.COLLECT_TIME_WITH_ERROR, "Scroll Context", String.valueOf(tookInMs));
@@ -576,6 +576,9 @@ public class ElasticSearchIndexCleaner implements IndexCleaner {
         }
 
       }
+    } else {
+      // scroll context get failed, nothing else to do
+      LOG.error(AaiUiMsgs.ERROR_GENERIC, opResult.toString());
     }
 
     return OperationState.OK;
