@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a437d4f_74403e34",
+        "filename": "src/main/java/org/openecomp/sparky/config/oxm/OxmModelLoader.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 135,
+      "author": {
+        "id": 703
+      },
+      "writtenOn": "2017-09-21T11:04:35Z",
+      "side": 1,
+      "message": "Missing close bracket. Changes should always be made in an IDE and be built locally (ensuring all unit tests pass) before submission.",
+      "revId": "7434f8b8e695256a227e55720f0c2d3abbcdf16f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
