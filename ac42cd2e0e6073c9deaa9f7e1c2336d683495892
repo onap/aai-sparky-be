@@ -1,0 +1,89 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a437d4f_99ccfb6b",
+        "filename": "src/main/java/org/openecomp/sparky/config/oxm/OxmModelLoader.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 25,
+      "author": {
+        "id": 703
+      },
+      "writtenOn": "2017-09-21T09:07:44Z",
+      "side": 1,
+      "message": "Why are the imports no longer in alphabetical order as specified by the ONAP coding standards?",
+      "revId": "ac42cd2e0e6073c9deaa9f7e1c2336d683495892",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_59745335",
+        "filename": "src/main/java/org/openecomp/sparky/config/oxm/OxmModelLoader.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 137,
+      "author": {
+        "id": 703
+      },
+      "writtenOn": "2017-09-21T09:07:44Z",
+      "side": 1,
+      "message": "This try could be converted to a try-with-resources with the InputStream",
+      "revId": "ac42cd2e0e6073c9deaa9f7e1c2336d683495892",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_39718f44",
+        "filename": "src/main/java/org/openecomp/sparky/config/oxm/OxmModelLoader.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 139,
+      "author": {
+        "id": 703
+      },
+      "writtenOn": "2017-09-21T09:07:44Z",
+      "side": 1,
+      "message": "This catch could be merged with the second try-catch block below to cover the whole method.",
+      "revId": "ac42cd2e0e6073c9deaa9f7e1c2336d683495892",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_d9972339",
+        "filename": "src/main/java/org/openecomp/sparky/config/oxm/OxmModelLoader.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 147,
+      "author": {
+        "id": 703
+      },
+      "writtenOn": "2017-09-21T09:07:44Z",
+      "side": 1,
+      "message": "This try-catch block could be merged with the one above.",
+      "revId": "ac42cd2e0e6073c9deaa9f7e1c2336d683495892",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_39a86f76",
+        "filename": "src/main/java/org/openecomp/sparky/config/oxm/OxmModelLoader.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 156,
+      "author": {
+        "id": 703
+      },
+      "writtenOn": "2017-09-21T09:07:44Z",
+      "side": 1,
+      "message": "This try-catch, along with the call to close would not be necessary if the try-with-resources is implemented above.",
+      "revId": "ac42cd2e0e6073c9deaa9f7e1c2336d683495892",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
