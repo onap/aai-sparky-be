@@ -166,7 +166,7 @@ public class ActiveInventoryNode {
   
   public void addQueryParams(Collection<String> params) {
 
-    if (params != null & params.size() > 0) {
+    if (params != null && !params.isEmpty()) {
 
       for (String param : params) {
         addQueryParam(param);
