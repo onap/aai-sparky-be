@@ -338,7 +338,10 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
       try {
         rootNode = mapper.readTree(jsonResult);
       } catch (IOException exc) {
-        // TODO // TODO -> LOG, waht should be logged here?
+        String message = "Could not deserialize JSON (representing operation result) as node tree. "
+                + "Operation result = " + jsonResult + ". " + exc.getLocalizedMessage();
+        LOG.error(AaiUiMsgs.JSON_PROCESSING_ERROR, message);
+        return;
       }
 
       JsonNode resultData = rootNode.get("result-data");
@@ -576,7 +579,7 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
                         }
                         
                       } else {
-                        String message = "Entity sync failed because AAI query failed with error " + aaiQueryResult.getResult(); 
+                        String message = "Entity sync failed because AAI query failed with error ";
                         LOG.error(AaiUiMsgs.ENTITY_SYNC_FAILED_QUERY_ERROR, message);
                       }
                       
