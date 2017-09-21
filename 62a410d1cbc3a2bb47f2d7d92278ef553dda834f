@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a437d4f_74aefee7",
+        "filename": "src/main/java/org/openecomp/sparky/config/oxm/OxmModelLoader.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 703
+      },
+      "writtenOn": "2017-09-21T11:27:39Z",
+      "side": 1,
+      "message": "Unnecessary return statement.",
+      "revId": "62a410d1cbc3a2bb47f2d7d92278ef553dda834f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_54b77a3a",
+        "filename": "src/main/java/org/openecomp/sparky/config/oxm/OxmModelLoader.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 154,
+      "author": {
+        "id": 703
+      },
+      "writtenOn": "2017-09-21T11:27:39Z",
+      "side": 1,
+      "message": "Unnecessary return statement.",
+      "revId": "62a410d1cbc3a2bb47f2d7d92278ef553dda834f",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
