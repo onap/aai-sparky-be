@@ -250,6 +250,7 @@ public class GeoSynchronizer extends AbstractEntitySynchronizer implements Index
         rootNode = mapper.readTree(jsonResult);
       } catch (IOException exc) {
         LOG.error(AaiUiMsgs.ERROR_GENERIC, exc);
+        return;
       }
 
       JsonNode resultData = rootNode.get("result-data");
