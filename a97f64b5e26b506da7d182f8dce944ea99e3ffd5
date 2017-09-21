@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9a437d4f_99fbdbc0",
+        "filename": "src/main/java/org/openecomp/sparky/viewandinspect/services/VisualizationService.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 353,
+      "author": {
+        "id": 703
+      },
+      "writtenOn": "2017-09-21T08:47:08Z",
+      "side": 1,
+      "message": "Should we not be catching all exceptions here, and throwing a ServletException? It is not possible to continue processing if output is not set.",
+      "revId": "a97f64b5e26b506da7d182f8dce944ea99e3ffd5",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9a437d4f_79f837c3",
+        "filename": "src/main/java/org/openecomp/sparky/viewandinspect/services/VisualizationService.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 356,
+      "author": {
+        "id": 703
+      },
+      "writtenOn": "2017-09-21T08:47:08Z",
+      "side": 1,
+      "message": "This block will not be necessary if the suggestion above is applied.",
+      "revId": "a97f64b5e26b506da7d182f8dce944ea99e3ffd5",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
