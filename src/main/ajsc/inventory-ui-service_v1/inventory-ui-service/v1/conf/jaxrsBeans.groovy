@@ -3,7 +3,7 @@ beans{
 	xmlns jaxrs: "http://cxf.apache.org/jaxrs"
 	xmlns util: "http://www.springframework.org/schema/util"
 	
-	echoService(org.openecomp.sparky.JaxrsEchoService)
+	echoService(org.onap.aai.sparky.JaxrsEchoService)
 	
 	util.list(id: 'jaxrsServices') {
 		ref(bean:'echoService')

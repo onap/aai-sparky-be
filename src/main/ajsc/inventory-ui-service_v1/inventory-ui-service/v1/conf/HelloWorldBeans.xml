@@ -4,5 +4,5 @@
 	       http://www.springframework.org/schema/beans
 	       http://www.springframework.org/schema/beans/spring-beans.xsd">
 	<bean id="helloWorld" name="helloWorld"
-		class="org.openecomp.sparky.HelloWorld" />
+		class="org.onap.aai.sparky.HelloWorld" />
 </beans>		

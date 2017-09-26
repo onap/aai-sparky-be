@@ -27,29 +27,29 @@
 
 	<servlet>
 		<servlet-name>VisualizationServlet</servlet-name>
-		<servlet-class>org.openecomp.sparky.viewandinspect.servlet.VisualizationServlet</servlet-class>
+		<servlet-class>org.onap.aai.sparky.viewandinspect.servlet.VisualizationServlet</servlet-class>
 	</servlet>
 
 	<servlet>
 		<servlet-name>GeoVisualizationServlet</servlet-name>
-		<servlet-class>org.openecomp.sparky.inventory.servlet.GeoVisualizationServlet</servlet-class>
+		<servlet-class>org.onap.aai.sparky.inventory.servlet.GeoVisualizationServlet</servlet-class>
 	</servlet>
 
 	<servlet>
 		<servlet-name>EntityCountHistoryServlet</servlet-name>
-		<servlet-class>org.openecomp.sparky.inventory.servlet.EntityCountHistoryServlet</servlet-class>
+		<servlet-class>org.onap.aai.sparky.inventory.servlet.EntityCountHistoryServlet</servlet-class>
 	</servlet>
 
     
 
 	<filter>
 		<filter-name>ElasticSearchSynchronizerFilter</filter-name>
-		<filter-class>org.openecomp.sparky.synchronizer.filter.ElasticSearchSynchronizerFilter</filter-class>
+		<filter-class>org.onap.aai.sparky.synchronizer.filter.ElasticSearchSynchronizerFilter</filter-class>
 	</filter>
 
 	<filter>
 		<filter-name>OxmModelLoaderFilter</filter-name>
-		<filter-class>org.openecomp.sparky.config.oxm.OxmModelLoaderFilter</filter-class>
+		<filter-class>org.onap.aai.sparky.config.oxm.OxmModelLoaderFilter</filter-class>
 	</filter>
 
 	<filter>
@@ -73,7 +73,7 @@
 
 	<servlet>
 		<servlet-name>SearchServlet</servlet-name>
-		<servlet-class>org.openecomp.sparky.viewandinspect.servlet.SearchServlet</servlet-class>
+		<servlet-class>org.onap.aai.sparky.viewandinspect.servlet.SearchServlet</servlet-class>
 	</servlet>
 
 	<filter>
