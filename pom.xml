@@ -515,6 +515,10 @@
                         <imageTag>latest</imageTag>
                     </imageTags>
                     <forceTags>true</forceTags>
+                    <buildArgs>
+                        <HTTP_PROXY>${HTTP_PROXY}</HTTP_PROXY>
+                        <HTTPS_PROXY>${HTTPS_PROXY}</HTTPS_PROXY>
+                    </buildArgs>
                 </configuration>
             </plugin>
             <!-- license plugin -->
