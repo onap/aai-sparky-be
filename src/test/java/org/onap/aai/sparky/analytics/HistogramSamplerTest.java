@@ -31,12 +31,12 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.onap.aai.sparky.analytics.HistogramSampler;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.runners.MockitoJUnitRunner;
 
 /**
  * The Class HistogramSamplerTest.
  */
-@RunWith(PowerMockRunner.class)
+@RunWith(MockitoJUnitRunner.class) 
 public class HistogramSamplerTest {
 
   protected SecureRandom random = new SecureRandom();

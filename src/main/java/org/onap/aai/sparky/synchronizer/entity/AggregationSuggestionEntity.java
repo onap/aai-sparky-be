@@ -35,6 +35,41 @@ import org.onap.aai.sparky.util.NodeUtils;
 public class AggregationSuggestionEntity extends IndexableEntity implements IndexDocument {
 
   private List<String> inputs = new ArrayList<String>();
+  /**
+   * @return the inputs
+   */
+  public List<String> getInputs() {
+    return inputs;
+  }
+
+  /**
+   * @param inputs the inputs to set
+   */
+  public void setInputs(List<String> inputs) {
+    this.inputs = inputs;
+  }
+
+  /**
+   * @return the mapper
+   */
+  public ObjectMapper getMapper() {
+    return mapper;
+  }
+
+  /**
+   * @param mapper the mapper to set
+   */
+  public void setMapper(ObjectMapper mapper) {
+    this.mapper = mapper;
+  }
+
+  /**
+   * @return the outputString
+   */
+  public String getOutputString() {
+    return outputString;
+  }
+
   private final String outputString = "VNFs";
   protected ObjectMapper mapper = new ObjectMapper();
   

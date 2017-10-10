@@ -32,9 +32,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.onap.aai.sparky.config.oxm.OxmModelLoader;
 import org.onap.aai.sparky.util.LogValidator;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 import ch.qos.logback.classic.Level;
 
@@ -42,7 +42,7 @@ import ch.qos.logback.classic.Level;
 /**
  * The Class IndexDocumentTest.
  */
-@RunWith(PowerMockRunner.class)
+@RunWith(MockitoJUnitRunner.class) 
 public class IndexDocumentTest {
 
   private LogValidator logValidator;

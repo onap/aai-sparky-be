@@ -92,7 +92,15 @@ public class SyncHelper {
 
     private boolean isInitialSync;
 
-    /**
+    public boolean isInitialSync() {
+		return isInitialSync;
+	}
+
+	public void setInitialSync(boolean isInitialSync) {
+		this.isInitialSync = isInitialSync;
+	}
+
+	/**
      * Instantiates a new sync task.
      *
      * @param initialSync the initial sync

@@ -32,13 +32,13 @@ import static org.junit.Assert.assertNull;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.onap.aai.sparky.viewandinspect.entity.QuerySearchEntity;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 /**
  * The Class ViewAndInspectSearchRequestTest.
  */
-@RunWith(PowerMockRunner.class)
+@RunWith(MockitoJUnitRunner.class) 
 public class ViewAndInspectSearchRequestTest {
 
   /**

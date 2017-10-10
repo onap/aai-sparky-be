@@ -34,13 +34,12 @@ import java.security.NoSuchAlgorithmException;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.onap.aai.sparky.viewandinspect.entity.EntityEntry;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.runners.MockitoJUnitRunner;
 
 /**
  * The Class EntityEntryTest.
  */
-@RunWith(PowerMockRunner.class)
+@RunWith(MockitoJUnitRunner.class) 
 public class EntityEntryTest {
 
   /**

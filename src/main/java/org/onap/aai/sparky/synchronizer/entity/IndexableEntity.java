@@ -35,7 +35,43 @@ public abstract class IndexableEntity {
   protected String entityType;
   protected String entityPrimaryKeyValue;
   protected String lastmodTimestamp;
-  protected String link;
+
+  /**
+   * @return the lastmodTimestamp
+   */
+  public String getLastmodTimestamp() {
+    return lastmodTimestamp;
+  }
+
+  /**
+   * @param lastmodTimestamp the lastmodTimestamp to set
+   */
+  public void setLastmodTimestamp(String lastmodTimestamp) {
+    this.lastmodTimestamp = lastmodTimestamp;
+  }
+
+  /**
+   * @return the loader
+   */
+  public OxmModelLoader getLoader() {
+    return loader;
+  }
+
+  /**
+   * @param loader the loader to set
+   */
+  public void setLoader(OxmModelLoader loader) {
+    this.loader = loader;
+  }
+
+  /**
+   * @return the timestampFormat
+   */
+  public static String getTimestampFormat() {
+    return TIMESTAMP_FORMAT;
+  }
+
+protected String link;
   protected OxmModelLoader loader;
 
   private static final String TIMESTAMP_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";

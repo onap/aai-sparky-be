@@ -42,6 +42,77 @@ public class SuggestionSearchEntity extends IndexableEntity implements IndexDocu
   private String entityType;
   private List<String> suggestionConnectorWords = new ArrayList<String>();
   private List<String> suggestionAttributeTypes = new ArrayList<String>();
+  /**
+   * @return the suggestionAttributeTypes
+   */
+  public List<String> getSuggestionAttributeTypes() {
+    return suggestionAttributeTypes;
+  }
+
+  /**
+   * @param suggestionAttributeTypes the suggestionAttributeTypes to set
+   */
+  public void setSuggestionAttributeTypes(List<String> suggestionAttributeTypes) {
+    this.suggestionAttributeTypes = suggestionAttributeTypes;
+  }
+
+  /**
+   * @return the suggestionTypeAliases
+   */
+  public List<String> getSuggestionTypeAliases() {
+    return suggestionTypeAliases;
+  }
+
+  /**
+   * @param suggestionTypeAliases the suggestionTypeAliases to set
+   */
+  public void setSuggestionTypeAliases(List<String> suggestionTypeAliases) {
+    this.suggestionTypeAliases = suggestionTypeAliases;
+  }
+
+  /**
+   * @return the suggestableAttr
+   */
+  public List<String> getSuggestableAttr() {
+    return suggestableAttr;
+  }
+
+  /**
+   * @param suggestableAttr the suggestableAttr to set
+   */
+  public void setSuggestableAttr(List<String> suggestableAttr) {
+    this.suggestableAttr = suggestableAttr;
+  }
+
+  /**
+   * @return the outputString
+   */
+  public StringBuffer getOutputString() {
+    return outputString;
+  }
+
+  /**
+   * @param outputString the outputString to set
+   */
+  public void setOutputString(StringBuffer outputString) {
+    this.outputString = outputString;
+  }
+
+  /**
+   * @return the mapper
+   */
+  public ObjectMapper getMapper() {
+    return mapper;
+  }
+
+  /**
+   * @param mapper the mapper to set
+   */
+  public void setMapper(ObjectMapper mapper) {
+    this.mapper = mapper;
+  }
+
+
   private List<String> suggestionAttributeValues = new ArrayList<String>();
   private List<String> suggestionTypeAliases = new ArrayList<String>();
   private List<String> suggestionInputPermutations = new ArrayList<String>();

@@ -33,15 +33,29 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.onap.aai.sparky.analytics.AveragingRingBuffer;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.runners.MockitoJUnitRunner;
 
 /**
  * The Class AveragingRingBufferTest.
  */
-@RunWith(PowerMockRunner.class)
+@RunWith(MockitoJUnitRunner.class) 
 public class AveragingRingBufferTest {
 
   protected SecureRandom random = new SecureRandom();
+
+  /**
+   * @return the random
+   */
+  public SecureRandom getRandom() {
+    return random;
+  }
+
+  /**
+   * @param random the random to set
+   */
+  public void setRandom(SecureRandom random) {
+    this.random = random;
+  }
 
   /**
    * Inits the.

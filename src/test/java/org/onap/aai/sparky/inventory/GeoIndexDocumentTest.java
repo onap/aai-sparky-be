@@ -31,13 +31,13 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.onap.aai.sparky.inventory.entity.GeoIndexDocument;
-import org.powermock.modules.junit4.PowerMockRunner;
 
 /**
  * The Class GeoIndexDocumentTest.
  */
-@RunWith(PowerMockRunner.class)
+@RunWith(MockitoJUnitRunner.class) 
 public class GeoIndexDocumentTest {
 
   /**

@@ -38,7 +38,49 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class IndexableCrossEntityReference extends IndexableEntity implements IndexDocument {
 
   protected String crossReferenceEntityValues;
-  protected ArrayList<String> crossEntityReferenceCollection = new ArrayList<String>();
+  /**
+ * @return the crossReferenceEntityValues
+ */
+  public String getCrossReferenceEntityValues() {
+    return crossReferenceEntityValues;
+  }
+
+  /**
+   * @param crossReferenceEntityValues the crossReferenceEntityValues to set
+   */
+  public void setCrossReferenceEntityValues(String crossReferenceEntityValues) {
+    this.crossReferenceEntityValues = crossReferenceEntityValues;
+  }
+
+  /**
+   * @return the crossEntityReferenceCollection
+   */
+  public ArrayList<String> getCrossEntityReferenceCollection() {
+    return crossEntityReferenceCollection;
+  }
+
+  /**
+   * @param crossEntityReferenceCollection the crossEntityReferenceCollection to set
+   */
+  public void setCrossEntityReferenceCollection(ArrayList<String> crossEntityReferenceCollection) {
+    this.crossEntityReferenceCollection = crossEntityReferenceCollection;
+  }
+
+/**
+ * @return the mapper
+ */
+public ObjectMapper getMapper() {
+	return mapper;
+}
+
+/**
+ * @param mapper the mapper to set
+ */
+public void setMapper(ObjectMapper mapper) {
+	this.mapper = mapper;
+}
+
+protected ArrayList<String> crossEntityReferenceCollection = new ArrayList<String>();
   protected ObjectMapper mapper = new ObjectMapper();
 
   /**

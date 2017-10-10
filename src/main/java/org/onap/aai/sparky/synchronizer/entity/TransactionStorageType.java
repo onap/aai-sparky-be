@@ -30,7 +30,22 @@ public enum TransactionStorageType {
       "aaiOffline/active-inventory-query");
 
   private Integer index;
-  private String outputFolder;
+
+  /**
+   * @param index the index to set
+   */
+  public void setIndex(Integer index) {
+    this.index = index;
+  }
+
+  /**
+   * @param outputFolder the outputFolder to set
+   */
+  public void setOutputFolder(String outputFolder) {
+    this.outputFolder = outputFolder;
+  }
+
+private String outputFolder;
 
   /**
    * Instantiates a new transaction storage type.

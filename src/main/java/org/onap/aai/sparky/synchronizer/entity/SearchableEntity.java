@@ -36,6 +36,48 @@ import org.onap.aai.sparky.util.NodeUtils;
  */
 public class SearchableEntity extends IndexableEntity implements IndexDocument {
   protected List<String> searchTagCollection = new ArrayList<String>();
+  /**
+   * @return the mapper
+   */
+  public ObjectMapper getMapper() {
+    return mapper;
+  }
+
+  /**
+   * @param mapper the mapper to set
+   */
+  public void setMapper(ObjectMapper mapper) {
+    this.mapper = mapper;
+  }
+
+  /**
+   * @param searchTagCollection the searchTagCollection to set
+   */
+  public void setSearchTagCollection(List<String> searchTagCollection) {
+    this.searchTagCollection = searchTagCollection;
+  }
+
+  /**
+   * @param searchTagIdCollection the searchTagIdCollection to set
+   */
+  public void setSearchTagIdCollection(List<String> searchTagIdCollection) {
+    this.searchTagIdCollection = searchTagIdCollection;
+  }
+
+  /**
+   * @param searchTags the searchTags to set
+   */
+  public void setSearchTags(String searchTags) {
+    this.searchTags = searchTags;
+  }
+
+  /**
+   * @param searchTagIDs the searchTagIDs to set
+   */
+  public void setSearchTagIDs(String searchTagIDs) {
+    this.searchTagIDs = searchTagIDs;
+  }
+
   protected List<String> searchTagIdCollection = new ArrayList<String>();
   protected ObjectMapper mapper = new ObjectMapper();
 

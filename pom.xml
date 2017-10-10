@@ -187,6 +187,12 @@
 		</dependency>
 		
 		<dependency>
+		    <groupId>com.openpojo</groupId>
+		    <artifactId>openpojo</artifactId>
+		    <version>0.8.6</version>
+		</dependency>
+		
+		<dependency>
 			<groupId>org.onap.portal.sdk</groupId>
 			<artifactId>epsdk-fw</artifactId>
 			<version>1.3.0 </version>

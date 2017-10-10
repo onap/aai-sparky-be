@@ -93,7 +93,35 @@ public class AggregationEntity extends IndexableEntity implements IndexDocument 
     return rootNode.toString();
   }
 
-  @Override
+  /**
+   * @return the attributes
+   */
+  public Map<String, String> getAttributes() {
+    return attributes;
+  }
+
+  /**
+   * @param attributes the attributes to set
+   */
+  public void setAttributes(Map<String, String> attributes) {
+    this.attributes = attributes;
+  }
+
+  /**
+   * @return the mapper
+   */
+  public ObjectMapper getMapper() {
+    return mapper;
+  }
+
+  /**
+   * @param mapper the mapper to set
+   */
+  public void setMapper(ObjectMapper mapper) {
+    this.mapper = mapper;
+  }
+
+@Override
   public ObjectNode getBulkImportEntity() {
     // TODO Auto-generated method stub
     return null;

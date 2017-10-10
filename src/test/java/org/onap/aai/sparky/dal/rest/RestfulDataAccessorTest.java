@@ -36,10 +36,7 @@ import static org.mockito.Mockito.mock;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.onap.aai.sparky.dal.rest.OperationResult;
-import org.onap.aai.sparky.dal.rest.RestClientBuilder;
-import org.onap.aai.sparky.dal.rest.RestfulDataAccessor;
-import org.powermock.modules.junit4.PowerMockRunner;
+import org.mockito.runners.MockitoJUnitRunner;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -49,7 +46,7 @@ import com.sun.jersey.api.client.WebResource.Builder;
 /**
  * The Class RestfulDataAccessorTest.
  */
-@RunWith(PowerMockRunner.class)
+@RunWith(MockitoJUnitRunner.class) 
 public class RestfulDataAccessorTest {
 
   private RestClientBuilder clientBuilderMock;

@@ -145,8 +145,8 @@ public class ElasticSearchIndexCleaner implements IndexCleaner {
 
     if (sizeAfter > 0) {
 
-      Collection<String> presyncIds = before.getImportedObjectIds();
-      presyncIds.removeAll(after.getImportedObjectIds());
+      Collection<String> presyncIds = before.getImportedObjectIdsAsValues();
+      presyncIds.removeAll(after.getImportedObjectIdsAsValues());
 
       try {
         LOG.info(AaiUiMsgs.ES_SYNC_SELECTIVE_DELETE, indexName, indexType,
@@ -165,7 +165,7 @@ public class ElasticSearchIndexCleaner implements IndexCleaner {
 
           if (numItemsInBulkRequest >= this.numItemsToGetBulkRequest) {
             LOG.info(AaiUiMsgs.ES_BULK_DELETE, indexName, String.valueOf(bulkIds.getSize()));
-            OperationResult bulkDeleteResult = bulkDelete(bulkIds.getImportedObjectIds());
+            OperationResult bulkDeleteResult = bulkDelete(bulkIds.getImportedObjectIdsAsValues());
             // pegCountersForElasticBulkDelete(bulkDeleteResult);
             numItemsRemainingToBeDeleted -= numItemsInBulkRequest;
             numItemsInBulkRequest = 0;
@@ -175,7 +175,7 @@ public class ElasticSearchIndexCleaner implements IndexCleaner {
 
         if (numItemsRemainingToBeDeleted > 0) {
           LOG.info(AaiUiMsgs.ES_BULK_DELETE, indexName, String.valueOf(bulkIds.getSize()));
-          OperationResult bulkDeleteResult = bulkDelete(bulkIds.getImportedObjectIds());
+          OperationResult bulkDeleteResult = bulkDelete(bulkIds.getImportedObjectIdsAsValues());
           // pegCountersForElasticBulkDelete(bulkDeleteResult);
         }
 

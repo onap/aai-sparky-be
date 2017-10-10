@@ -34,9 +34,24 @@ public class ObjectIdCollection {
   protected ConcurrentHashMap<String, String> importedObjectIds =
       new ConcurrentHashMap<String, String>();
 
-  public Collection<String> getImportedObjectIds() {
-    return importedObjectIds.values();
-  }
+	/**
+	 * @return the importedObjectIds
+	 */
+	public ConcurrentHashMap<String, String> getImportedObjectIds() {
+		return importedObjectIds;
+	}
+
+	/**
+	 * @param importedObjectIds
+	 *            the importedObjectIds to set
+	 */
+	public void setImportedObjectIds(ConcurrentHashMap<String, String> importedObjectIds) {
+		this.importedObjectIds = importedObjectIds;
+	}
+
+	public Collection<String> getImportedObjectIdsAsValues() {
+		return importedObjectIds.values();
+	}
 
   /**
    * Adds the object id.
