@@ -336,11 +336,4 @@ public class VnfSearchService {
   public static void setEsConfig(ElasticSearchConfig esConfig) {
     VnfSearchService.esConfig = esConfig;
   }
-
-  public static void main(String agrs[]) {
-    VnfSearchService vnfs = new VnfSearchService();
-    Date start = new Date();
-    Date end = start;
-  }
-
 }

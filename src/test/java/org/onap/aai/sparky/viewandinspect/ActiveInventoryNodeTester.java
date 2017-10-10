@@ -352,28 +352,4 @@ public class ActiveInventoryNodeTester {
     // }
 
   }
-
-
-
-  /**
-   * The main method.
-   *
-   * @param args the arguments
-   * @throws JsonProcessingException the json processing exception
-   * @throws IOException Signals that an I/O exception has occurred.
-   */
-  public static void main(String[] args) throws JsonProcessingException, IOException {
-
-    System.getProperties().setProperty("AJSC_HOME", "d:\\3\\");
-    ActiveInventoryNodeTester tester = new ActiveInventoryNodeTester();
-    // tester.doTest2(true);
-
-    tester.parseDirectSelfLinkJsonResponse(DIRECT_COMPLEX_SELF_LINK_JSON_RESPONSE);
-    System.out.println("---");
-    tester.parseDirectSelfLinkJsonResponse(DIRECT_PSERVER_SELF_LINK_JSON_RESPONSE);
-
-
-
-  }
-
 }

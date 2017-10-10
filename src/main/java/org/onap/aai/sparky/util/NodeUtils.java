@@ -690,22 +690,4 @@ public class NodeUtils {
     body = stringBuilder.toString();
     return body;
   }
-
-  /**
-   * The main method.
-   *
-   * @param args the arguments
-   * @throws ParseException the parse exception
-   */
-  public static void main(String[] args) throws ParseException {
-    String date = "20170110T112312Z";
-    SimpleDateFormat originalFormat = new SimpleDateFormat("yyyyMMdd'T'hhmmss'Z'");
-    Date toDate = originalFormat.parse(date);
-    SimpleDateFormat newFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss'Z'");
-    System.out.println(newFormat.format(toDate));
-
-  }
-
-
-
 }

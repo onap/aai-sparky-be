@@ -15,21 +15,23 @@ import org.onap.aai.sparky.viewandinspect.config.TierSupportUiConstants;
 @RunWith(MockitoJUnitRunner.class)
 public class SyncHelperTest {
 
-	private SyncHelper syncHelper;
+  private SyncHelper syncHelper;
+
   @BeforeClass
   public static void initBeforeClass() throws IOException {
-    String configHomePath = (new File(".").getCanonicalPath() + "/src/test/resources/sync").replace('\\', '/');
+    String configHomePath =
+        (new File(".").getCanonicalPath() + "/src/test/resources/sync").replace('\\', '/');
     TierSupportUiConstants.AJSC_HOME = configHomePath;
     TierSupportUiConstants.CONFIG_HOME = configHomePath;
   }
 
 
-@Test
-public void testGetOxmModelLoader() throws Exception {
-	syncHelper = new SyncHelper(new OxmModelLoader());
-	OxmModelLoader oxmLoader = new OxmModelLoader();
-	syncHelper.setOxmModelLoader(oxmLoader);
-	assertEquals(oxmLoader, syncHelper.getOxmModelLoader());
-}
+  @Test
+  public void testGetOxmModelLoader() throws Exception {
+    syncHelper = new SyncHelper(new OxmModelLoader());
+    OxmModelLoader oxmLoader = new OxmModelLoader();
+    syncHelper.setOxmModelLoader(oxmLoader);
+    assertEquals(oxmLoader, syncHelper.getOxmModelLoader());
+  }
 
 }

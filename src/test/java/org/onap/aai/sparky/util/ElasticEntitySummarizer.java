@@ -44,6 +44,49 @@ import org.onap.aai.sparky.synchronizer.config.TaskProcessorConfig;
 public class ElasticEntitySummarizer {
 
   private RestDataProvider syncAdapter;
+  /**
+   * @return the syncAdapter
+   */
+  public RestDataProvider getSyncAdapter() {
+    return syncAdapter;
+  }
+
+  /**
+   * @param syncAdapter the syncAdapter to set
+   */
+  public void setSyncAdapter(RestDataProvider syncAdapter) {
+    this.syncAdapter = syncAdapter;
+  }
+
+  /**
+   * @return the elasticConfig
+   */
+  public ElasticSearchConfig getElasticConfig() {
+    return elasticConfig;
+  }
+
+  /**
+   * @param elasticConfig the elasticConfig to set
+   */
+  public void setElasticConfig(ElasticSearchConfig elasticConfig) {
+    this.elasticConfig = elasticConfig;
+  }
+
+  /**
+   * @return the entityCounters
+   */
+  public Map<String, AtomicInteger> getEntityCounters() {
+    return entityCounters;
+  }
+
+  /**
+   * @param entityCounters the entityCounters to set
+   */
+  public void setEntityCounters(Map<String, AtomicInteger> entityCounters) {
+    this.entityCounters = entityCounters;
+  }
+
+
   private ElasticSearchConfig elasticConfig;
   private Map<String, AtomicInteger> entityCounters;
 
@@ -150,24 +193,4 @@ public class ElasticEntitySummarizer {
 
 
   }
-
-
-  /**
-   * The main method.
-   *
-   * @param args the arguments
-   * @throws ElasticSearchOperationException the elastic search operation exception
-   */
-  public static void main(String[] args) throws ElasticSearchOperationException {
-
-
-    // ElasticEntitySummarizer summarizer = new ElasticEntitySummarizer();
-    // summarizer.enumerateEntities();
-
-
-
-  }
-
-
-
 }

@@ -109,6 +109,20 @@ public class KeystoreBuilder {
   private List<EndPoint> endpoints = new ArrayList<EndPoint>();
 
   /**
+   * @return the endpoints
+   */
+  public List<EndPoint> getEndpoints() {
+    return endpoints;
+  }
+
+  /**
+   * @param endpoints the endpoints to set
+   */
+  public void setEndpoints(List<EndPoint> endpoints) {
+    this.endpoints = endpoints;
+  }
+
+  /**
    * Initialize end points list.
    *
    * @param endpointList the endpoint list

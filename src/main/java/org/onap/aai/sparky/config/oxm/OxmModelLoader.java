@@ -504,24 +504,4 @@ public class OxmModelLoader {
     return suggestionSearchEntityDescriptors;
   }
 
-  /**
-   * The main method.
-   *
-   * @param args the arguments
-   */
-  public static void main(String[] args) {
-    try {
-      System.setProperty("AJSC_HOME", new File(".").getCanonicalPath().replace('\\', '/'));
-
-    } catch (IOException exc) {
-      // TODO Auto-generated catch block
-      exc.printStackTrace();
-    }
-    Map<String, OxmEntityDescriptor> temp =
-        OxmModelLoader.getInstance().getSearchableEntityDescriptors();
-    Map<String, OxmEntityDescriptor> temp2 = OxmModelLoader.getInstance().getEntityDescriptors();
-
-    System.out.println("Completed");
-  }
-
 }

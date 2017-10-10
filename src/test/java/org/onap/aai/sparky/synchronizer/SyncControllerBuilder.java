@@ -522,49 +522,4 @@ public class SyncControllerBuilder {
     }
   }
 
-
-  /**
-   * The main method.
-   *
-   * @param args the arguments
-   */
-  public static void main(String[] args) {
-    boolean runSearchableEntitySync = false;
-    boolean runGeoEntitySync = true;
-
-    System.setProperty("AJSC_HOME", "e:\\dev");
-    // System.getProperties().setProperty("AJSC_HOME",
-    // "c:\\rpo\\tier-support-ui\\target\\swm\\package\\nix\\"
-    // + "dist_files\\opt\\app\\ajsc-tier-support-ui");
-    System.setProperty("AJSC_HOME", "d:\\AAI\\tier_support_ui\\tier-support-ui\\target\\swm\\package\\nix\\dist_files\\appl\\inventory-ui-service\\1.0-SNAPSHOT");
-
-    ch.qos.logback.classic.Logger root = (ch.qos.logback.classic.Logger) LoggerFactory
-        .getLogger(ch.qos.logback.classic.Logger.ROOT_LOGGER_NAME);
-    // root.detachAndStopAllAppenders();
-    // logger = new CaptureLoggerAppender();
-    root.setLevel(Level.INFO);
-    // root.addAppender(logger);
-
-
-    SyncControllerBuilder syncBuilder = new SyncControllerBuilder();
-
-    /*
-     * if (runSearchableEntitySync) syncBuilder.doSearchableEntitysync();
-     */
-
-    //syncBuilder.doSearchableEntitysync();
-    // syncBuilder.doCrossEntityReferenceSync();
-    // syncBuilder.doHistoricalEntitySync();
-    // syncBuilder.doGeoEntitySync();
-    syncBuilder.doSuggestionEntitySync();
-
-    // syncBuilder.testElasticSearchUpdateAPI();
-
-    /*
-     * if (runGeoEntitySync) { syncBuilder.doGeoEntitySync(); }
-     */
-
-
-
-  }
 }

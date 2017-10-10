@@ -171,28 +171,4 @@ public class VnfSearchQueryBuilder {
     return jsonBuilder.build();
   }
 
-
-  /**
-   * The main method.
-   *
-   * @param args the arguments
-   */
-  public static void main(String[] args) {
-    Date start = new Date(System.currentTimeMillis() - Integer.MAX_VALUE);
-    Date end = new Date();
-    String timezone = "-05:00";
-    // JsonObject arr = createDateHistogramQuery(start, end, timezone);
-
-    // System.out.println(arr.toString());
-
-
-    // JsonObject table = createTableQuery(start, end, timezone, 0, 25);
-    // JsonObject aggre = createAuditQuery(start, end, timezone, "entityType", null, null);
-
-    // System.out.println(arr.toString());
-    // System.out.println(table.toString());
-    // System.out.println(aggre.toString());
-
-
-  }
 }

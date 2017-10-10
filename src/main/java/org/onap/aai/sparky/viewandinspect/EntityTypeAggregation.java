@@ -57,36 +57,4 @@ public class EntityTypeAggregation {
   public ConcurrentHashMap<String, AtomicInteger> getCounters() {
     return counters;
   }
-
-  /**
-   * The main method.
-   *
-   * @param args the arguments
-   * @throws JsonProcessingException the json processing exception
-   */
-  public static void main(String[] args) throws JsonProcessingException {
-    // TODO Auto-generated method stub
-
-    EntityTypeAggregation eta = new EntityTypeAggregation();
-
-    eta.pegCounter("c1");
-    eta.pegCounter("c1");
-    eta.pegCounter("c1");
-
-    eta.pegCounter("x2");
-    eta.pegCounter("x2");
-    eta.pegCounter("x2");
-    eta.pegCounter("x2");
-
-    eta.pegCounter("z2");
-    eta.pegCounter("z2");
-    eta.pegCounter("z2");
-    eta.pegCounter("z2");
-    eta.pegCounter("z2");
-    eta.pegCounter("z2");
-
-    System.out.println(NodeUtils.convertObjectToJson(eta, true));
-
-  }
-
 }

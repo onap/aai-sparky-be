@@ -133,32 +133,6 @@ public class ActiveInventoryAdapter extends RestfulDataAccessor
   }
 
   /**
-   * The main method.
-   *
-   * @param args the arguments
-   */
-  public static void main(String[] args) {
-
-    // TODO Auto-generated method stub
-    RestClientBuilder builder = new RestClientBuilder();
-    RestfulDataAccessor accessor;
-    try {
-      accessor = new ActiveInventoryAdapter(builder);
-      OperationResult or =
-          accessor.doGet("/cloud-infrastructure/pservers/pserver/SQLTEST006", "application/json");
-      String jsonPatch = "{ \"hostname\" : \"SQLTEST006\", \"prov-status\" : \"PREPROV\","
-          + " \"in-maint\" : \"false\", \"is-closed-loop\" : \"false\" }";
-      or = accessor.doPatch("/cloud-infrastructure/pservers/pserver/SQLTEST006", jsonPatch,
-          "application/json");
-      // System.out.println("PATCH or = " + or.getResultCode() + " : " + or.toString());
-    } catch (ElasticSearchOperationException | IOException exc) {
-      // TODO Auto-generated catch block
-      exc.printStackTrace();
-    }
-
-  }
-
-  /**
    * Gets the full url.
    *
    * @param resourceUrl the resource url

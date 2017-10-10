@@ -59,6 +59,13 @@ public class LogValidator {
   }
 
   /**
+   * @param logger the logger to set
+   */
+  public void setLogger(CaptureLoggerAppender logger) {
+    this.logger = logger;
+  }
+
+  /**
    * Dump and count logs.
    *
    * @param logToConsole the log to console
