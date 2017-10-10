@@ -206,72 +206,6 @@ public class SyncHelper {
 
   }
 
-  /**
-   * The Class HistoricalEntityCountSummaryTask.
-   */
-  private class HistoricalEntityCountSummaryTask implements Runnable {
-
-    /**
-     * Instantiates a new historical entity count summary task.
-     */
-    public HistoricalEntityCountSummaryTask() {}
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see java.lang.Runnable#run()
-     */
-    @Override
-    public void run() {
-
-      long opStartTime = System.currentTimeMillis();
-      MDC.setContextMap(contextMap);
-      LOG.info(AaiUiMsgs.HISTORICAL_ENTITY_COUNT_SUMMARIZER_STARTING, sdf.format(opStartTime)
-          .replaceAll(SynchronizerConstants.TIME_STD, SynchronizerConstants.TIME_CONFIG_STD));
-
-      try {
-        if (entityCounterHistorySummarizer == null) {
-          LOG.error(AaiUiMsgs.HISTORICAL_ENTITY_COUNT_SUMMARIZER_NOT_STARTED);
-          return;
-        }
-
-        LOG.info(AaiUiMsgs.INFO_GENERIC,
-            "EntityCounterHistorySummarizer, starting syncrhonization");
-
-        entityCounterHistorySummarizer.performAction(SyncActions.SYNCHRONIZE);
-
-        while (entityCounterHistorySummarizer
-            .getState() == SynchronizerState.PERFORMING_SYNCHRONIZATION) {
-          Thread.sleep(1000);
-        }
-
-        long opEndTime = System.currentTimeMillis();
-
-        LOG.info(AaiUiMsgs.HISTORICAL_SYNC_DURATION,
-            entityCounterHistorySummarizer.getControllerName(),
-            String.valueOf(opEndTime - opStartTime));
-
-        long taskFrequencyInMs =
-            syncConfig.getHistoricalEntitySummarizedFrequencyInMinutes() * 60 * 1000;
-
-        if (syncConfig.isHistoricalEntitySummarizerEnabled()) {
-          String time = sdf.format(System.currentTimeMillis() + taskFrequencyInMs)
-              .replaceAll(SynchronizerConstants.TIME_STD, SynchronizerConstants.TIME_CONFIG_STD);
-
-          LOG.info(AaiUiMsgs.HISTORICAL_SYNC_TO_BEGIN, time);
-        }
-
-
-      } catch (Exception exc) {
-        String message = "Caught an exception while attempting to populate entity country "
-            + "history elasticsearch table with an error cause = "
-            + ErrorUtil.extractStackTraceElements(5, exc);
-        LOG.error(AaiUiMsgs.ERROR_GENERIC, message);
-      }
-
-    }
-
-  }
 
   /**
    * Gets the first sync time.
@@ -368,11 +302,6 @@ public class SyncHelper {
       cers.setEsDataProvider(esAdapter);
       syncController.registerEntitySynchronizer(cers);
 
-      GeoSynchronizer geo = new GeoSynchronizer(esConfig.getTopographicalSearchIndex());
-      geo.setAaiDataProvider(aaiAdapter);
-      geo.setEsDataProvider(esAdapter);
-      syncController.registerEntitySynchronizer(geo);
-
       if (syncConfig.isAutosuggestSynchronizationEnabled()) {
         initAutoSuggestionSynchronizer(esConfig, aaiAdapter, esAdapter, nonCachingRestProvider);
         initAggregationSynchronizer(esConfig, aaiAdapter, esAdapter, nonCachingRestProvider);
@@ -389,58 +318,11 @@ public class SyncHelper {
 
       syncController.registerIndexCleaner(searchableIndexCleaner);
 
-      IndexCleaner geoIndexCleaner = new ElasticSearchIndexCleaner(nonCachingRestProvider,
-          esConfig.getTopographicalSearchIndex(), esConfig.getType(), esConfig.getIpAddress(),
-          esConfig.getHttpPort(), syncConfig.getScrollContextTimeToLiveInMinutes(),
-          syncConfig.getNumScrollContextItemsToRetrievePerRequest());
-
-      syncController.registerIndexCleaner(geoIndexCleaner);
-
-
     } catch (Exception exc) {
       String message = "Error: failed to sync with message = " + exc.getMessage();
       LOG.error(AaiUiMsgs.ERROR_GENERIC, message);
     }
 
-  }
-
-  /**
-   * Inits the entity counter history summarizer.
-   */
-  private void initEntityCounterHistorySummarizer() {
-
-    LOG.info(AaiUiMsgs.INFO_GENERIC, "initEntityCounterHistorySummarizer");
-
-    try {
-      entityCounterHistorySummarizer = new SyncController("entityCounterHistorySummarizer");
-
-      ActiveInventoryAdapter aaiAdapter = new ActiveInventoryAdapter(new RestClientBuilder());
-      aaiAdapter.setCacheEnabled(false);
-
-      RestClientBuilder clientBuilder = new RestClientBuilder();
-      clientBuilder.setUseHttps(false);
-
-      RestfulDataAccessor nonCachingRestProvider = new RestfulDataAccessor(clientBuilder);
-      ElasticSearchConfig esConfig = ElasticSearchConfig.getConfig();
-      ElasticSearchAdapter esAdapter = new ElasticSearchAdapter(nonCachingRestProvider, esConfig);
-
-      IndexIntegrityValidator entityCounterHistoryValidator =
-          new IndexIntegrityValidator(nonCachingRestProvider, esConfig.getEntityCountHistoryIndex(),
-              esConfig.getType(), esConfig.getIpAddress(), esConfig.getHttpPort(),
-              esConfig.buildElasticSearchEntityCountHistoryTableConfig());
-
-      entityCounterHistorySummarizer.registerIndexValidator(entityCounterHistoryValidator);
-
-      HistoricalEntitySummarizer historicalSummarizer =
-          new HistoricalEntitySummarizer(esConfig.getEntityCountHistoryIndex());
-      historicalSummarizer.setAaiDataProvider(aaiAdapter);
-      historicalSummarizer.setEsDataProvider(esAdapter);
-      entityCounterHistorySummarizer.registerEntitySynchronizer(historicalSummarizer);
-
-    } catch (Exception exc) {
-      String message = "Error: failed to sync with message = " + exc.getMessage();
-      LOG.error(AaiUiMsgs.ERROR_GENERIC, message);
-    }
   }
 
   private List<String> getAutosuggestableEntitiesFromOXM() {
@@ -583,13 +465,6 @@ public class SyncHelper {
       if (syncConfig.isConfigOkForStartupSync() || syncConfig.isConfigOkForPeriodicSync()) {
         initializeSyncController();
       }
-      
-      if (syncConfig.isHistoricalEntitySummarizerEnabled()) {
-        initEntityCounterHistorySummarizer(); 
-      } else { 
-        LOG.info(AaiUiMsgs.INFO_GENERIC, "history summarizer disabled"); 
-      }
-       
 
       // schedule startup synchronization
       if (syncConfig.isConfigOkForStartupSync()) {
@@ -641,11 +516,6 @@ public class SyncHelper {
         }
       }
 
-      // schedule periodic synchronization
-      if (syncConfig.isHistoricalEntitySummarizerEnabled()) {
-        scheduleHistoricalCounterSyncTask();
-      }
-
     } catch (Exception exc) {
       String message = "Caught an exception while starting up the SyncHelper. Error cause = \n"
           + ErrorUtil.extractStackTraceElements(5, exc);
@@ -653,17 +523,6 @@ public class SyncHelper {
     }
   }
 
-  /**
-   * Schedule historical counter sync task.
-   */
-  private void scheduleHistoricalCounterSyncTask() {
-    long taskFrequencyInMs =
-        syncConfig.getHistoricalEntitySummarizedFrequencyInMinutes() * 60 * 1000;
-    historicalExecutor.scheduleWithFixedDelay(new HistoricalEntityCountSummaryTask(), 0,
-        taskFrequencyInMs, TimeUnit.MILLISECONDS);
-    LOG.info(AaiUiMsgs.INFO_GENERIC,
-        "Historical Entity Count Summarizer synchronization is enabled.");
-  }
 
   /**
    * Shutdown.

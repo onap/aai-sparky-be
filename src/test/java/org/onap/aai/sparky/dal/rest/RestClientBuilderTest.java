@@ -41,6 +41,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.onap.aai.sparky.dal.rest.RestClientBuilder;
 import org.onap.aai.sparky.security.SecurityContextFactory;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -50,18 +51,9 @@ import ch.qos.logback.classic.Level;
 /**
  * The Class RestClientBuilderTest.
  */
-@RunWith(PowerMockRunner.class) 
+@RunWith(MockitoJUnitRunner.class)
 public class RestClientBuilderTest {
 
-
-  /**
-   * Inits the.
-   *
-   * @throws Exception the exception
-   */
-  @Before
-  public void init() throws Exception {
-  }
 
   /**
    * Basic construction test.

@@ -29,6 +29,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
@@ -470,6 +471,23 @@ public class NodeUtilsTest {
     assertEquals(validTimeStamp, result);
   }
   
+  /**
+   * Test isNumeric expect true
+   */
+  @Test
+  public void test_isNumeric_expectFalse(){
+	  String invalidNumber="number";
+	  assertFalse(NodeUtils.isNumeric(invalidNumber));
+  }
+  
+  /**
+   * Test isNumeric expect true
+   */
+  @Test
+  public void test_isNumeric_expectTrue(){
+	  String validNumber="123";
+	  assertTrue(NodeUtils.isNumeric(validNumber));
+  }
   /**
    * test calculate edit attributes urls
    */

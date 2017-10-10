@@ -29,6 +29,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Properties;
+import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -60,7 +61,6 @@ public class SynchronizerConfiguration {
 
     if (instance == null) {
       instance = new SynchronizerConfiguration();
-      instance.initialize();
     }
 
     return instance;
@@ -69,18 +69,20 @@ public class SynchronizerConfiguration {
   /**
    * Instantiates a new synchronizer configuration.
    */
-  public SynchronizerConfiguration() {
-    // test method
-  }
+	public SynchronizerConfiguration() throws Exception {
+		Properties props = ConfigHelper.loadConfigFromExplicitPath(CONFIG_FILE);
+		initialize(props);
+	}
 
+	public SynchronizerConfiguration(Properties props) throws Exception {
+		initialize(props);
+	}
   /**
    * Initialize.
    *
    * @throws Exception the exception
    */
-  protected void initialize() throws Exception {
-
-    Properties props = ConfigHelper.loadConfigFromExplicitPath(CONFIG_FILE);
+  protected void initialize(Properties props) throws Exception {
 
     // parse config for startup sync
     try {
@@ -173,11 +175,6 @@ public class SynchronizerConfiguration {
     nodesOnlyModifierEnabled =
         Boolean.parseBoolean(props.getProperty("synchronizer.applyNodesOnlyModifier"));
 
-    historicalEntitySummarizerEnabled = Boolean
-        .parseBoolean(props.getProperty("synchronizer.historicalEntitySummarizerEnabled", "true"));
-    historicalEntitySummarizedFrequencyInMinutes = Long.parseLong(
-        props.getProperty("synchronizer.historicalEntitySummarizedFrequencyInMinutes", "60"));
-    
     autosuggestSynchronizationEnabled = Boolean
         .parseBoolean(props.getProperty("synchronizer.autosuggestSynchronizationEnabled", "true"));
     
@@ -208,24 +205,6 @@ public class SynchronizerConfiguration {
 
   public void setDisplayVerboseQueueManagerStats(boolean displayVerboseQueueManagerStats) {
     this.displayVerboseQueueManagerStats = displayVerboseQueueManagerStats;
-  }
-
-  public boolean isHistoricalEntitySummarizerEnabled() {
-    return historicalEntitySummarizerEnabled;
-  }
-
-  public void setHistoricalEntitySummarizerEnabled(boolean historicalEntitySummarizerEnabled) {
-    this.historicalEntitySummarizerEnabled = historicalEntitySummarizerEnabled;
-  }
-
-  public long getHistoricalEntitySummarizedFrequencyInMinutes() {
-    return historicalEntitySummarizedFrequencyInMinutes;
-  }
-
-  public void setHistoricalEntitySummarizedFrequencyInMinutes(
-      long historicalEntitySummarizedFrequencyInMinutes) {
-    this.historicalEntitySummarizedFrequencyInMinutes =
-        historicalEntitySummarizedFrequencyInMinutes;
   }
 
   private int syncTaskInitialDelayInMs;
@@ -262,12 +241,7 @@ public class SynchronizerConfiguration {
 
   private boolean nodesOnlyModifierEnabled;
 
-  private boolean historicalEntitySummarizerEnabled;
-  
   private boolean  autosuggestSynchronizationEnabled;
-
-  private long historicalEntitySummarizedFrequencyInMinutes;
-
 
   private boolean configOkForStartupSync = true;
 
@@ -413,7 +387,72 @@ public class SynchronizerConfiguration {
   public void setAutosuggestSynchronizationEnabled(boolean autosuggestSynchronizationEnabled) {
     this.autosuggestSynchronizationEnabled = autosuggestSynchronizationEnabled;
   }
+  
+	public Calendar getTargetSyncTime() {
 
+		TimeZone tz = TimeZone.getTimeZone(getSyncTaskStartTimeTimeZone());
+		Calendar targetSyncTime = Calendar.getInstance(tz);
+
+		targetSyncTime.set(Calendar.HOUR_OF_DAY, getSyncTaskStartTimeHr());
+		targetSyncTime.set(Calendar.MINUTE, getSyncTaskStartTimeMin());
+		targetSyncTime.set(Calendar.SECOND, getSyncTaskStartTimeSec());
+
+		return targetSyncTime;
+
+	}
+
+	public long getDefaultInitialSyncDelayInMs(Calendar timeNow) {
+
+		int taskFrequencyInDays = getSyncTaskFrequencyInDay();
+
+		long nextSyncTimeInMs = getNextSyncTime(getTargetSyncTime(), timeNow.getTimeInMillis(),
+				taskFrequencyInDays * 86400);
+
+		/*
+		 * If the the current time is after the scheduled start time, then delay
+		 * by the initial task delay configuration value
+		 */
+		long delayUntilNextSyncInMs = Math.max(getSyncTaskInitialDelayInMs(),
+				nextSyncTimeInMs - timeNow.getTimeInMillis());
+
+		return delayUntilNextSyncInMs;
+
+	}
+
+	public long getNextSyncTime(Calendar syncTime, int taskFrequencyInSeconds) {
+
+		TimeZone tz = TimeZone.getTimeZone(getSyncTaskStartTimeTimeZone());
+		Calendar timeNow = Calendar.getInstance(tz);
+
+		return getNextSyncTime(syncTime, timeNow.getTimeInMillis(), taskFrequencyInSeconds);
+	}
+
+	/**
+	 * Gets the first sync time.
+	 *
+	 * @param calendar
+	 *            the calendar
+	 * @param timeNow
+	 *            the time now in ms
+	 * @param taskFrequencyInMs
+	 *            task period in ms
+	 * @return the first sync time
+	 */
+	public long getNextSyncTime(Calendar syncTime, long timeNowInMs, int taskFrequencyInSeconds) {
+		if (taskFrequencyInSeconds == 0) {
+			return 0;
+		} else if (timeNowInMs > syncTime.getTimeInMillis()) {
+
+			/*
+			 * If current time is after the scheduled sync start time, then
+			 * we'll skip ahead to the next sync time period
+			 */
+
+			syncTime.add(Calendar.SECOND, taskFrequencyInSeconds);
+		}
+
+		return syncTime.getTimeInMillis();
+	}
   /* (non-Javadoc)
    * @see java.lang.Object#toString()
    */

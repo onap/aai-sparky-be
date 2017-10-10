@@ -38,8 +38,6 @@ import org.onap.aai.sparky.dal.rest.RestfulDataAccessor;
 import org.onap.aai.sparky.synchronizer.AutosuggestionSynchronizer;
 import org.onap.aai.sparky.synchronizer.CrossEntityReferenceSynchronizer;
 import org.onap.aai.sparky.synchronizer.ElasticSearchIndexCleaner;
-import org.onap.aai.sparky.synchronizer.GeoSynchronizer;
-import org.onap.aai.sparky.synchronizer.HistoricalEntitySummarizer;
 import org.onap.aai.sparky.synchronizer.IndexCleaner;
 import org.onap.aai.sparky.synchronizer.IndexIntegrityValidator;
 import org.onap.aai.sparky.synchronizer.SearchableEntitySynchronizer;
@@ -142,17 +140,6 @@ public class SyncControllerBuilder {
 
       syncController.registerIndexValidator(entityCounterHistoryValidator);
 
-
-      //////
-
-
-
-      HistoricalEntitySummarizer historicalSummarizer =
-          new HistoricalEntitySummarizer(esConfig.getEntityCountHistoryIndex());
-      historicalSummarizer.setAaiDataProvider(aaiAdapter);
-      historicalSummarizer.setEsDataProvider(esAdapter);
-      syncController.registerEntitySynchronizer(historicalSummarizer);
-
       ////
 
       /*
@@ -234,13 +221,6 @@ public class SyncControllerBuilder {
       SyncController syncController = new SyncController("geoEntitySyncTestController");
       syncController.registerIndexValidator(entitySearchIndexValidator);
 
-
-      //////
-
-      GeoSynchronizer geoSync = new GeoSynchronizer("topographysearchindex-localhost");
-      geoSync.setAaiDataProvider(aaiAdapter);
-      geoSync.setEsDataProvider(esAdapter);
-      syncController.registerEntitySynchronizer(geoSync);
 
       ////
 

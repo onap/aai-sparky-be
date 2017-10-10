@@ -68,8 +68,6 @@ public class ElasticSearchConfig {
 
   private String auditIndexName;
 
-  private String topographicalSearchIndex;
-
   private String entityCountHistoryIndex;
 
   private String autosuggestIndexname;
@@ -185,8 +183,6 @@ public class ElasticSearchConfig {
     mappingsFileName = props.getProperty("elasticsearch.mappingsFileName");
     settingsFileName = props.getProperty("elasticsearch.settingsFileName");
     auditIndexName = props.getProperty("elasticsearch.auditIndexName", AUDIT_INDEX_NAME_DEFAULT);
-    topographicalSearchIndex =
-        props.getProperty("elasticsearch.topographicalIndexName", TOPOGRAPHICAL_INDEX_NAME_DEFAULT);
     entityCountHistoryIndex = props.getProperty("elasticsearch.entityCountHistoryIndexName",
         ENTITY_COUNT_HISTORY_INDEX_NAME_DEFAULT);
     entityCountHistoryMappingsFileName =
@@ -288,14 +284,6 @@ public class ElasticSearchConfig {
 
   public void setAuditIndexName(String auditIndexName) {
     this.auditIndexName = auditIndexName;
-  }
-
-  public String getTopographicalSearchIndex() {
-    return topographicalSearchIndex;
-  }
-
-  public void setTopographicalSearchIndex(String topographicalSearchIndex) {
-    this.topographicalSearchIndex = topographicalSearchIndex;
   }
 
   public String getEntityCountHistoryIndex() {
@@ -529,7 +517,7 @@ public class ElasticSearchConfig {
         + ", clusterName=" + clusterName + ", mappingsFileName=" + mappingsFileName
         + ", settingsFileName=" + settingsFileName + ", syncAdapterMaxConcurrentWorkers="
         + syncAdapterMaxConcurrentWorkers + ", auditIndexName=" + auditIndexName
-        + ", topographicalSearchIndex=" + topographicalSearchIndex + ", entityCountHistoryIndex="
+        + ", entityCountHistoryIndex=" 
         + entityCountHistoryIndex + ", autosuggestIndexname=" + autosuggestIndexname
         + ", entityCountHistoryMappingsFileName=" + entityCountHistoryMappingsFileName
         + ", autoSuggestSettingsFileName=" + autoSuggestSettingsFileName
