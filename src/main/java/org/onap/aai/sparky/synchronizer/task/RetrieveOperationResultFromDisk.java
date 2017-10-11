@@ -86,4 +86,46 @@ public class RetrieveOperationResultFromDisk implements Supplier<OperationResult
     return null;
   }
 
+  /**
+   * @return the fullPath
+   */
+  public String getFullPath() {
+    return fullPath;
+  }
+
+  /**
+   * @param fullPath the fullPath to set
+   */
+  public void setFullPath(String fullPath) {
+    this.fullPath = fullPath;
+  }
+
+  /**
+   * @return the mapper
+   */
+  public ObjectMapper getMapper() {
+    return mapper;
+  }
+
+  /**
+   * @param mapper the mapper to set
+   */
+  public void setMapper(ObjectMapper mapper) {
+    this.mapper = mapper;
+  }
+
+  /**
+   * @return the logger
+   */
+  public Logger getLogger() {
+    return logger;
+  }
+
+  /**
+   * @param logger the logger to set
+   */
+  public void setLogger(Logger logger) {
+    this.logger = logger;
+  }
+
 }

@@ -77,4 +77,74 @@ public class PerformElasticSearchUpdate implements Supplier<NetworkTransaction> 
     return operationTracker;
   }
 
+  /**
+   * @return the esDataProvider
+   */
+  public ElasticSearchDataProvider getEsDataProvider() {
+    return esDataProvider;
+  }
+
+  /**
+   * @param esDataProvider the esDataProvider to set
+   */
+  public void setEsDataProvider(ElasticSearchDataProvider esDataProvider) {
+    this.esDataProvider = esDataProvider;
+  }
+
+  /**
+   * @return the operationTracker
+   */
+  public NetworkTransaction getOperationTracker() {
+    return operationTracker;
+  }
+
+  /**
+   * @param operationTracker the operationTracker to set
+   */
+  public void setOperationTracker(NetworkTransaction operationTracker) {
+    this.operationTracker = operationTracker;
+  }
+
+  /**
+   * @return the updatePayload
+   */
+  public String getUpdatePayload() {
+    return updatePayload;
+  }
+
+  /**
+   * @param updatePayload the updatePayload to set
+   */
+  public void setUpdatePayload(String updatePayload) {
+    this.updatePayload = updatePayload;
+  }
+
+  /**
+   * @return the updateUrl
+   */
+  public String getUpdateUrl() {
+    return updateUrl;
+  }
+
+  /**
+   * @param updateUrl the updateUrl to set
+   */
+  public void setUpdateUrl(String updateUrl) {
+    this.updateUrl = updateUrl;
+  }
+
+  /**
+   * @return the contextMap
+   */
+  public Map<String, String> getContextMap() {
+    return contextMap;
+  }
+
+  /**
+   * @param contextMap the contextMap to set
+   */
+  public void setContextMap(Map<String, String> contextMap) {
+    this.contextMap = contextMap;
+  }
+
 }

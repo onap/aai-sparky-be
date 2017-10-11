@@ -635,6 +635,153 @@ public class ElasticSearchIndexCleaner implements IndexCleaner {
 
   }
 
+  /**
+   * @return the before
+   */
+  public ObjectIdCollection getBefore() {
+    return before;
+  }
+
+  /**
+   * @param before the before to set
+   */
+  public void setBefore(ObjectIdCollection before) {
+    this.before = before;
+  }
+
+  /**
+   * @return the after
+   */
+  public ObjectIdCollection getAfter() {
+    return after;
+  }
+
+  /**
+   * @param after the after to set
+   */
+  public void setAfter(ObjectIdCollection after) {
+    this.after = after;
+  }
+
+  /**
+   * @return the host
+   */
+  public String getHost() {
+    return host;
+  }
+
+  /**
+   * @param host the host to set
+   */
+  public void setHost(String host) {
+    this.host = host;
+  }
+
+  /**
+   * @return the port
+   */
+  public String getPort() {
+    return port;
+  }
+
+  /**
+   * @param port the port to set
+   */
+  public void setPort(String port) {
+    this.port = port;
+  }
+
+  /**
+   * @return the indexType
+   */
+  public String getIndexType() {
+    return indexType;
+  }
+
+  /**
+   * @param indexType the indexType to set
+   */
+  public void setIndexType(String indexType) {
+    this.indexType = indexType;
+  }
+
+  /**
+   * @return the scrollContextTimeToLiveInMinutes
+   */
+  public int getScrollContextTimeToLiveInMinutes() {
+    return scrollContextTimeToLiveInMinutes;
+  }
+
+  /**
+   * @param scrollContextTimeToLiveInMinutes the scrollContextTimeToLiveInMinutes to set
+   */
+  public void setScrollContextTimeToLiveInMinutes(int scrollContextTimeToLiveInMinutes) {
+    this.scrollContextTimeToLiveInMinutes = scrollContextTimeToLiveInMinutes;
+  }
+
+  /**
+   * @return the numItemsToGetBulkRequest
+   */
+  public int getNumItemsToGetBulkRequest() {
+    return numItemsToGetBulkRequest;
+  }
+
+  /**
+   * @param numItemsToGetBulkRequest the numItemsToGetBulkRequest to set
+   */
+  public void setNumItemsToGetBulkRequest(int numItemsToGetBulkRequest) {
+    this.numItemsToGetBulkRequest = numItemsToGetBulkRequest;
+  }
+
+  /**
+   * @return the restDataProvider
+   */
+  public RestDataProvider getRestDataProvider() {
+    return restDataProvider;
+  }
+
+  /**
+   * @param restDataProvider the restDataProvider to set
+   */
+  public void setRestDataProvider(RestDataProvider restDataProvider) {
+    this.restDataProvider = restDataProvider;
+  }
+
+  /**
+   * @return the mapper
+   */
+  public ObjectMapper getMapper() {
+    return mapper;
+  }
+
+  /**
+   * @param mapper the mapper to set
+   */
+  public void setMapper(ObjectMapper mapper) {
+    this.mapper = mapper;
+  }
+
+  /**
+   * @return the log
+   */
+  public static Logger getLog() {
+    return LOG;
+  }
+
+  /**
+   * @return the bulkOpLineTemplate
+   */
+  public static String getBulkOpLineTemplate() {
+    return BULK_OP_LINE_TEMPLATE;
+  }
+
+  /**
+   * @return the timestampFormat
+   */
+  public static String getTimestampFormat() {
+    return TIMESTAMP_FORMAT;
+  }
+
   /*
   
   */

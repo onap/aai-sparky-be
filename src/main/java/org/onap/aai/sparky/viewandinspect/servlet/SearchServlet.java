@@ -55,6 +55,42 @@ public class SearchServlet extends HttpServlet {
 
   private static final long serialVersionUID = 1L;
 
+  /**
+   * @return the searchWrapper
+   */
+  public SearchServiceWrapper getSearchWrapper() {
+    return searchWrapper;
+  }
+
+  /**
+   * @param searchWrapper the searchWrapper to set
+   */
+  public void setSearchWrapper(SearchServiceWrapper searchWrapper) {
+    this.searchWrapper = searchWrapper;
+  }
+
+  /**
+   * @return the serialversionuid
+   */
+  public static long getSerialversionuid() {
+    return serialVersionUID;
+  }
+
+  /**
+   * @return the log
+   */
+  public static Logger getLog() {
+    return LOG;
+  }
+
+  /**
+   * @return the keyPayload
+   */
+  public static String getKeyPayload() {
+    return KEY_PAYLOAD;
+  }
+
+
   private static final Logger LOG = LoggerFactory.getInstance().getLogger(SearchServlet.class);
 
   private SearchServiceWrapper searchWrapper = null;

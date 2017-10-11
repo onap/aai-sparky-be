@@ -33,6 +33,62 @@ public class HistoricalCounter {
 
   private double min;
 
+  /**
+   * @return the totalOfSamples
+   */
+  public double getTotalOfSamples() {
+    return totalOfSamples;
+  }
+
+  /**
+   * @param totalOfSamples the totalOfSamples to set
+   */
+  public void setTotalOfSamples(double totalOfSamples) {
+    this.totalOfSamples = totalOfSamples;
+  }
+
+  /**
+   * @return the maintainSingleValue
+   */
+  public boolean isMaintainSingleValue() {
+    return maintainSingleValue;
+  }
+
+  /**
+   * @param maintainSingleValue the maintainSingleValue to set
+   */
+  public void setMaintainSingleValue(boolean maintainSingleValue) {
+    this.maintainSingleValue = maintainSingleValue;
+  }
+
+  /**
+   * @param min the min to set
+   */
+  public void setMin(double min) {
+    this.min = min;
+  }
+
+  /**
+   * @param max the max to set
+   */
+  public void setMax(double max) {
+    this.max = max;
+  }
+
+  /**
+   * @param numSamples the numSamples to set
+   */
+  public void setNumSamples(long numSamples) {
+    this.numSamples = numSamples;
+  }
+
+  /**
+   * @param value the value to set
+   */
+  public void setValue(double value) {
+    this.value = value;
+  }
+
   private double max;
 
   private double totalOfSamples;

@@ -159,4 +159,25 @@ public class ElasticSearchAdapter implements ElasticSearchDataProvider {
     return doGet( url, "application/json");
   }
 
+  /**
+   * @return the bulkImportIndexTemplate
+   */
+  public static String getBulkImportIndexTemplate() {
+    return BULK_IMPORT_INDEX_TEMPLATE;
+  }
+
+  /**
+   * @return the restDataProvider
+   */
+  public RestDataProvider getRestDataProvider() {
+    return restDataProvider;
+  }
+
+  /**
+   * @return the esConfig
+   */
+  public ElasticSearchConfig getEsConfig() {
+    return esConfig;
+  }
+
 }

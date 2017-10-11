@@ -31,6 +31,34 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class AbstractStatistics implements ComponentStatistics {
 
   private HashMap<String, AtomicInteger> namedCounters;
+  /**
+   * @return the namedCounters
+   */
+  public HashMap<String, AtomicInteger> getNamedCounters() {
+    return namedCounters;
+  }
+
+  /**
+   * @param namedCounters the namedCounters to set
+   */
+  public void setNamedCounters(HashMap<String, AtomicInteger> namedCounters) {
+    this.namedCounters = namedCounters;
+  }
+
+  /**
+   * @return the namedHistograms
+   */
+  public HashMap<String, HistogramSampler> getNamedHistograms() {
+    return namedHistograms;
+  }
+
+  /**
+   * @param namedHistograms the namedHistograms to set
+   */
+  public void setNamedHistograms(HashMap<String, HistogramSampler> namedHistograms) {
+    this.namedHistograms = namedHistograms;
+  }
+
   private HashMap<String, HistogramSampler> namedHistograms;
 
   /**

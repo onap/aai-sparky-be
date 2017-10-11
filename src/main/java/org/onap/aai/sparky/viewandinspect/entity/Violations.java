@@ -107,5 +107,19 @@ public class Violations {
     this.errorMessage = errorMessage;
   }
 
+  /**
+   * @return the details
+   */
+  public String getDetails() {
+    return details;
+  }
+
+  /**
+   * @param details the details to set
+   */
+  public void setDetails(String details) {
+    this.details = details;
+  }
+
 
 }

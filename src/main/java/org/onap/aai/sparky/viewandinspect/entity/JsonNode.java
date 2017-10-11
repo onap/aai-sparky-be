@@ -177,6 +177,55 @@ public class JsonNode {
     return isRootNode;
   }
 
+  /**
+   * @return the inboundNeighbors
+   */
+  public Collection<String> getInboundNeighbors() {
+    return inboundNeighbors;
+  }
+
+  /**
+   * @param inboundNeighbors the inboundNeighbors to set
+   */
+  public void setInboundNeighbors(Collection<String> inboundNeighbors) {
+    this.inboundNeighbors = inboundNeighbors;
+  }
+
+  /**
+   * @return the outboundNeighbors
+   */
+  public Collection<String> getOutboundNeighbors() {
+    return outboundNeighbors;
+  }
+
+  /**
+   * @param outboundNeighbors the outboundNeighbors to set
+   */
+  public void setOutboundNeighbors(Collection<String> outboundNeighbors) {
+    this.outboundNeighbors = outboundNeighbors;
+  }
+
+  /**
+   * @return the log
+   */
+  public static Logger getLog() {
+    return LOG;
+  }
+
+  /**
+   * @param itemProperties the itemProperties to set
+   */
+  public void setItemProperties(Map<String, String> itemProperties) {
+    this.itemProperties = itemProperties;
+  }
+
+  /**
+   * @param isRootNode the isRootNode to set
+   */
+  public void setRootNode(boolean isRootNode) {
+    this.isRootNode = isRootNode;
+  }
+
   @Override
   public String toString() {
     return "JsonNode [" + (id != null ? "id=" + id + ", " : "")

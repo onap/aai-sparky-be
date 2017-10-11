@@ -42,6 +42,20 @@ public class RelationshipList {
     this.relationship = relationship;
   }
 
+  /**
+   * @return the relationship
+   */
+  public Relationship[] getRelationship() {
+    return relationship;
+  }
+
+  /**
+   * @param relationship the relationship to set
+   */
+  public void setRelationship(Relationship[] relationship) {
+    this.relationship = relationship;
+  }
+
   /* (non-Javadoc)
    * @see java.lang.Object#toString()
    */

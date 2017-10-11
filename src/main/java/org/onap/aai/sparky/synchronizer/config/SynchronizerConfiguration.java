@@ -453,6 +453,62 @@ public class SynchronizerConfiguration {
 
 		return syncTime.getTimeInMillis();
 	}
+  /**
+   * @return the instance
+   */
+  public static SynchronizerConfiguration getInstance() {
+    return instance;
+  }
+
+  /**
+   * @param instance the instance to set
+   */
+  public static void setInstance(SynchronizerConfiguration instance) {
+    SynchronizerConfiguration.instance = instance;
+  }
+
+  /**
+   * @return the log
+   */
+  public static Logger getLog() {
+    return LOG;
+  }
+
+  /**
+   * @return the configFile
+   */
+  public static String getConfigFile() {
+    return CONFIG_FILE;
+  }
+
+  /**
+   * @return the depthModifier
+   */
+  public static String getDepthModifier() {
+    return DEPTH_MODIFIER;
+  }
+
+  /**
+   * @return the depthAllModifier
+   */
+  public static String getDepthAllModifier() {
+    return DEPTH_ALL_MODIFIER;
+  }
+
+  /**
+   * @return the depthAndNodesOnlyModifier
+   */
+  public static String getDepthAndNodesOnlyModifier() {
+    return DEPTH_AND_NODES_ONLY_MODIFIER;
+  }
+
+  /**
+   * @return the nodesOnlyModifier
+   */
+  public static String getNodesOnlyModifier() {
+    return NODES_ONLY_MODIFIER;
+  }
+
   /* (non-Javadoc)
    * @see java.lang.Object#toString()
    */

@@ -84,34 +84,6 @@ public class ElasticSearchConfigTest {
   }
 
   /**
-   * Failure to initialize properties results in config defaults.
-   */
-  @Test
-  public void failureToInitializePropertiesResultsInConfigDefaults() {
-    try {
-      ElasticSearchConfig config = ElasticSearchConfig.getConfig();
-
-      /*
-       * Now verify that all the internal members have been set to default values
-       */
-
-      assertEquals(config.getIpAddress(), "localhost");
-      assertEquals(config.getHttpPort(), "" + 9200);
-      assertEquals(config.getJavaApiPort(), "" + 9300);
-      assertEquals(config.getIndexName(), "entitySearchIndex");
-      assertEquals(config.getType(), "aaiEntities");
-      assertEquals(config.getClusterName(), "elasticsearch");
-      assertEquals(config.getMappingsFileName(), null);
-      assertEquals(config.getSettingsFileName(), null);
-      assertEquals(config.getAuditIndexName(), "auditdataindex");
-
-    } catch (Exception exc) {
-      assertEquals("null", exc.getLocalizedMessage());
-    }
-  }
-
-
-  /**
    * Validate accessors.
    *
    * @throws IOException Signals that an I/O exception has occurred.

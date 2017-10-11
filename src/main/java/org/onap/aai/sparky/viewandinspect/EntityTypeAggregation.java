@@ -38,6 +38,13 @@ public class EntityTypeAggregation {
   private ConcurrentHashMap<String, AtomicInteger> counters;
 
   /**
+   * @param counters the counters to set
+   */
+  public void setCounters(ConcurrentHashMap<String, AtomicInteger> counters) {
+    this.counters = counters;
+  }
+
+  /**
    * Instantiates a new entity type aggregation.
    */
   public EntityTypeAggregation() {

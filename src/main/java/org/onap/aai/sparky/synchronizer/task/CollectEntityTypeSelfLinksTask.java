@@ -72,4 +72,32 @@ public class CollectEntityTypeSelfLinksTask implements Supplier<NetworkTransacti
     return txn;
   }
 
+  /**
+   * @return the aaiProvider
+   */
+  public ActiveInventoryDataProvider getAaiProvider() {
+    return aaiProvider;
+  }
+
+  /**
+   * @param aaiProvider the aaiProvider to set
+   */
+  public void setAaiProvider(ActiveInventoryDataProvider aaiProvider) {
+    this.aaiProvider = aaiProvider;
+  }
+
+  /**
+   * @return the txn
+   */
+  public NetworkTransaction getTxn() {
+    return txn;
+  }
+
+  /**
+   * @param txn the txn to set
+   */
+  public void setTxn(NetworkTransaction txn) {
+    this.txn = txn;
+  }
+
 }

@@ -170,6 +170,27 @@ public class VisualizationConfig {
     this.vnfEntityTypes = vnfEntityTypes;
   }
 
+  /**
+   * @return the instance
+   */
+  public static VisualizationConfig getInstance() {
+    return instance;
+  }
+
+  /**
+   * @param instance the instance to set
+   */
+  public static void setInstance(VisualizationConfig instance) {
+    VisualizationConfig.instance = instance;
+  }
+
+  /**
+   * @return the makeAllNeighborsBidirectional
+   */
+  public boolean isMakeAllNeighborsBidirectional() {
+    return makeAllNeighborsBidirectional;
+  }
+
   @Override
   public String toString() {
     return "VisualizationConfig [maxSelfLinkTraversalDepth=" + maxSelfLinkTraversalDepth

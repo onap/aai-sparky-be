@@ -6,6 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.File;
 import java.util.Properties;
 
 import org.junit.Before;
@@ -15,6 +16,7 @@ import org.onap.aai.sparky.dal.aai.config.ActiveInventoryRestConfig;
 import org.onap.aai.sparky.dal.aai.config.ActiveInventorySslConfig;
 import org.onap.aai.sparky.dal.aai.enums.RestAuthenticationMode;
 import org.onap.aai.sparky.synchronizer.config.TaskProcessorConfig;
+import org.onap.aai.sparky.viewandinspect.config.TierSupportUiConstants;
 
 public class ActiveInventoryConfigTest {
 
@@ -24,7 +26,13 @@ public class ActiveInventoryConfigTest {
    * @throws Exception the exception
    */
   @Before
-  public void init() throws Exception {}
+  public void init() throws Exception {
+    String configHomePath =
+        (new File(".").getCanonicalPath() + "/src/test/resources/appconfig/").replace('\\', '/');
+    TierSupportUiConstants.AJSC_HOME = configHomePath;
+    TierSupportUiConstants.CONFIG_HOME = configHomePath;
+    TierSupportUiConstants.DYNAMIC_CONFIG_APP_LOCATION = configHomePath;
+  }
 
   @Test
   public void validateBasicConstruction_emptyProperties() throws Exception {

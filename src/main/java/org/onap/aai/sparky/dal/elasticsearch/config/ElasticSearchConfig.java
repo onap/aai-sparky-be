@@ -505,6 +505,125 @@ public class ElasticSearchConfig {
 
   }
   
+  /**
+   * @return the instance
+   */
+  public static ElasticSearchConfig getInstance() {
+    return instance;
+  }
+
+  /**
+   * @param instance the instance to set
+   */
+  public static void setInstance(ElasticSearchConfig instance) {
+    ElasticSearchConfig.instance = instance;
+  }
+
+  /**
+   * @return the configFile
+   */
+  public static String getConfigFile() {
+    return CONFIG_FILE;
+  }
+
+  /**
+   * @return the ipAddressDefault
+   */
+  public static String getIpAddressDefault() {
+    return IP_ADDRESS_DEFAULT;
+  }
+
+  /**
+   * @return the httpPortDefault
+   */
+  public static String getHttpPortDefault() {
+    return HTTP_PORT_DEFAULT;
+  }
+
+  /**
+   * @return the javaApiPortDefault
+   */
+  public static String getJavaApiPortDefault() {
+    return JAVA_API_PORT_DEFAULT;
+  }
+
+  /**
+   * @return the typeDefault
+   */
+  public static String getTypeDefault() {
+    return TYPE_DEFAULT;
+  }
+
+  /**
+   * @return the clusterNameDefault
+   */
+  public static String getClusterNameDefault() {
+    return CLUSTER_NAME_DEFAULT;
+  }
+
+  /**
+   * @return the indexNameDefault
+   */
+  public static String getIndexNameDefault() {
+    return INDEX_NAME_DEFAULT;
+  }
+
+  /**
+   * @return the auditIndexNameDefault
+   */
+  public static String getAuditIndexNameDefault() {
+    return AUDIT_INDEX_NAME_DEFAULT;
+  }
+
+  /**
+   * @return the topographicalIndexNameDefault
+   */
+  public static String getTopographicalIndexNameDefault() {
+    return TOPOGRAPHICAL_INDEX_NAME_DEFAULT;
+  }
+
+  /**
+   * @return the entityCountHistoryIndexNameDefault
+   */
+  public static String getEntityCountHistoryIndexNameDefault() {
+    return ENTITY_COUNT_HISTORY_INDEX_NAME_DEFAULT;
+  }
+
+  /**
+   * @return the entityAutoSuggestIndexNameDefault
+   */
+  public static String getEntityAutoSuggestIndexNameDefault() {
+    return ENTITY_AUTO_SUGGEST_INDEX_NAME_DEFAULT;
+  }
+
+  /**
+   * @return the entityAutoSuggestSettingsFileDefault
+   */
+  public static String getEntityAutoSuggestSettingsFileDefault() {
+    return ENTITY_AUTO_SUGGEST_SETTINGS_FILE_DEFAULT;
+  }
+
+  /**
+   * @return the entityAutoSuggestMappingsFileDefault
+   */
+  public static String getEntityAutoSuggestMappingsFileDefault() {
+    return ENTITY_AUTO_SUGGEST_MAPPINGS_FILE_DEFAULT;
+  }
+
+  /**
+   * @return the entityDynamicMappingsFileDefault
+   */
+  public static String getEntityDynamicMappingsFileDefault() {
+    return ENTITY_DYNAMIC_MAPPINGS_FILE_DEFAULT;
+  }
+
+  /**
+   * @return the bulkApi
+   */
+  public static String getBulkApi() {
+    return BULK_API;
+  }
+
   /*
    * (non-Javadoc)
    * 

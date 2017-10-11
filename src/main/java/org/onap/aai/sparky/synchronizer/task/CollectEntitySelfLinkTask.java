@@ -71,4 +71,32 @@ public class CollectEntitySelfLinkTask implements Supplier<NetworkTransaction> {
     return txn;
   }
 
+  /**
+   * @return the txn
+   */
+  public NetworkTransaction getTxn() {
+    return txn;
+  }
+
+  /**
+   * @param txn the txn to set
+   */
+  public void setTxn(NetworkTransaction txn) {
+    this.txn = txn;
+  }
+
+  /**
+   * @return the provider
+   */
+  public ActiveInventoryDataProvider getProvider() {
+    return provider;
+  }
+
+  /**
+   * @param provider the provider to set
+   */
+  public void setProvider(ActiveInventoryDataProvider provider) {
+    this.provider = provider;
+  }
+
 }

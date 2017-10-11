@@ -87,4 +87,60 @@ public class PerformActiveInventoryRetrieval implements Supplier<NetworkTransact
     return txn;
   }
 
+  /**
+   * @return the logger
+   */
+  public static Logger getLogger() {
+    return logger;
+  }
+
+  /**
+   * @param logger the logger to set
+   */
+  public static void setLogger(Logger logger) {
+    PerformActiveInventoryRetrieval.logger = logger;
+  }
+
+  /**
+   * @return the txn
+   */
+  public NetworkTransaction getTxn() {
+    return txn;
+  }
+
+  /**
+   * @param txn the txn to set
+   */
+  public void setTxn(NetworkTransaction txn) {
+    this.txn = txn;
+  }
+
+  /**
+   * @return the aaiProvider
+   */
+  public ActiveInventoryDataProvider getAaiProvider() {
+    return aaiProvider;
+  }
+
+  /**
+   * @param aaiProvider the aaiProvider to set
+   */
+  public void setAaiProvider(ActiveInventoryDataProvider aaiProvider) {
+    this.aaiProvider = aaiProvider;
+  }
+
+  /**
+   * @return the contextMap
+   */
+  public Map<String, String> getContextMap() {
+    return contextMap;
+  }
+
+  /**
+   * @param contextMap the contextMap to set
+   */
+  public void setContextMap(Map<String, String> contextMap) {
+    this.contextMap = contextMap;
+  }
+
 }

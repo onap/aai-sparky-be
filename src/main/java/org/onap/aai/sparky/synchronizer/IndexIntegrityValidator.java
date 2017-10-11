@@ -39,6 +39,62 @@ public class IndexIntegrityValidator implements IndexValidator {
       LoggerFactory.getInstance().getLogger(IndexIntegrityValidator.class);
 
   private String host;
+  /**
+   * @return the host
+   */
+  public String getHost() {
+    return host;
+  }
+
+  /**
+   * @param host the host to set
+   */
+  public void setHost(String host) {
+    this.host = host;
+  }
+
+  /**
+   * @return the port
+   */
+  public String getPort() {
+    return port;
+  }
+
+  /**
+   * @param port the port to set
+   */
+  public void setPort(String port) {
+    this.port = port;
+  }
+
+  /**
+   * @return the tableConfigJson
+   */
+  public String getTableConfigJson() {
+    return tableConfigJson;
+  }
+
+  /**
+   * @param tableConfigJson the tableConfigJson to set
+   */
+  public void setTableConfigJson(String tableConfigJson) {
+    this.tableConfigJson = tableConfigJson;
+  }
+
+  /**
+   * @return the log
+   */
+  public static Logger getLog() {
+    return LOG;
+  }
+
+  /**
+   * @return the restDataProvider
+   */
+  public RestDataProvider getRestDataProvider() {
+    return restDataProvider;
+  }
+
   private String port;
   private String indexName;
   private String indexType;

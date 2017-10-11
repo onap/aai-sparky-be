@@ -80,6 +80,76 @@ public class PersistOperationResultToDisk implements Supplier<Void> {
     return null;
   }
 
+  /**
+   * @return the fullPath
+   */
+  public String getFullPath() {
+    return fullPath;
+  }
+
+  /**
+   * @param fullPath the fullPath to set
+   */
+  public void setFullPath(String fullPath) {
+    this.fullPath = fullPath;
+  }
+
+  /**
+   * @return the dataToStore
+   */
+  public OperationResult getDataToStore() {
+    return dataToStore;
+  }
+
+  /**
+   * @param dataToStore the dataToStore to set
+   */
+  public void setDataToStore(OperationResult dataToStore) {
+    this.dataToStore = dataToStore;
+  }
+
+  /**
+   * @return the mapper
+   */
+  public ObjectMapper getMapper() {
+    return mapper;
+  }
+
+  /**
+   * @param mapper the mapper to set
+   */
+  public void setMapper(ObjectMapper mapper) {
+    this.mapper = mapper;
+  }
+
+  /**
+   * @return the logger
+   */
+  public Logger getLogger() {
+    return logger;
+  }
+
+  /**
+   * @param logger the logger to set
+   */
+  public void setLogger(Logger logger) {
+    this.logger = logger;
+  }
+
+  /**
+   * @return the contextMap
+   */
+  public Map<String, String> getContextMap() {
+    return contextMap;
+  }
+
+  /**
+   * @param contextMap the contextMap to set
+   */
+  public void setContextMap(Map<String, String> contextMap) {
+    this.contextMap = contextMap;
+  }
+
 
 
 }

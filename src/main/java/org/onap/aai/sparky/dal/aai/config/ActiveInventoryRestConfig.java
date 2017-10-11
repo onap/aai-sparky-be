@@ -36,6 +36,27 @@ public class ActiveInventoryRestConfig {
 
   private String host;
 
+  /**
+   * @return the cacheFailures
+   */
+  public boolean isCacheFailures() {
+    return cacheFailures;
+  }
+
+  /**
+   * @param cacheFailures the cacheFailures to set
+   */
+  public void setCacheFailures(boolean cacheFailures) {
+    this.cacheFailures = cacheFailures;
+  }
+
+  /**
+   * @param shallowEntities the shallowEntities to set
+   */
+  public void setShallowEntities(List<String> shallowEntities) {
+    this.shallowEntities = shallowEntities;
+  }
+
   private String port;
 
   private int connectTimeoutInMs;

@@ -198,6 +198,20 @@ public class ActiveInventorySslConfig {
     return "Basic " + java.util.Base64.getEncoder().encodeToString(usernameAndPassword.getBytes());
   }
 
+  /**
+   * @return the enableSslDebug
+   */
+  public boolean isEnableSslDebug() {
+    return enableSslDebug;
+  }
+
+  /**
+   * @param enableSslDebug the enableSslDebug to set
+   */
+  public void setEnableSslDebug(boolean enableSslDebug) {
+    this.enableSslDebug = enableSslDebug;
+  }
+
   /* (non-Javadoc)
    * @see java.lang.Object#toString()
    */

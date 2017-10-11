@@ -104,4 +104,25 @@ public class ElasticSearchSynchronizerFilter implements Filter {
 
   }
 
+  /**
+   * @return the syncHelper
+   */
+  public SyncHelper getSyncHelper() {
+    return syncHelper;
+  }
+
+  /**
+   * @param syncHelper the syncHelper to set
+   */
+  public void setSyncHelper(SyncHelper syncHelper) {
+    this.syncHelper = syncHelper;
+  }
+
+  /**
+   * @return the log
+   */
+  public static Logger getLog() {
+    return LOG;
+  }
+
 }

@@ -129,5 +129,61 @@ public class TaskProcessingStats extends AbstractStatistics {
 
   }
 
+  /**
+   * @return the tASK_AGE_STATS
+   */
+  public static String getTASK_AGE_STATS() {
+    return TASK_AGE_STATS;
+  }
+
+  /**
+   * @param tASK_AGE_STATS the tASK_AGE_STATS to set
+   */
+  public static void setTASK_AGE_STATS(String tASK_AGE_STATS) {
+    TASK_AGE_STATS = tASK_AGE_STATS;
+  }
+
+  /**
+   * @return the tASK_RESPONSE_STATS
+   */
+  public static String getTASK_RESPONSE_STATS() {
+    return TASK_RESPONSE_STATS;
+  }
+
+  /**
+   * @param tASK_RESPONSE_STATS the tASK_RESPONSE_STATS to set
+   */
+  public static void setTASK_RESPONSE_STATS(String tASK_RESPONSE_STATS) {
+    TASK_RESPONSE_STATS = tASK_RESPONSE_STATS;
+  }
+
+  /**
+   * @return the rESPONSE_SIZE_IN_BYTES
+   */
+  public static String getRESPONSE_SIZE_IN_BYTES() {
+    return RESPONSE_SIZE_IN_BYTES;
+  }
+
+  /**
+   * @param rESPONSE_SIZE_IN_BYTES the rESPONSE_SIZE_IN_BYTES to set
+   */
+  public static void setRESPONSE_SIZE_IN_BYTES(String rESPONSE_SIZE_IN_BYTES) {
+    RESPONSE_SIZE_IN_BYTES = rESPONSE_SIZE_IN_BYTES;
+  }
+
+  /**
+   * @return the tPS
+   */
+  public static String getTPS() {
+    return TPS;
+  }
+
+  /**
+   * @param tPS the tPS to set
+   */
+  public static void setTPS(String tPS) {
+    TPS = tPS;
+  }
+
 
 }

@@ -92,6 +92,34 @@ public class D3VisualizationOutput {
   }
 
   /**
+   * @return the nodes
+   */
+  public List<JsonNode> getNodes() {
+    return nodes;
+  }
+
+  /**
+   * @param nodes the nodes to set
+   */
+  public void setNodes(List<JsonNode> nodes) {
+    this.nodes = nodes;
+  }
+
+  /**
+   * @return the links
+   */
+  public List<JsonNodeLink> getLinks() {
+    return links;
+  }
+
+  /**
+   * @param links the links to set
+   */
+  public void setLinks(List<JsonNodeLink> links) {
+    this.links = links;
+  }
+
+  /**
    * The main method.
    *
    * @param args the arguments

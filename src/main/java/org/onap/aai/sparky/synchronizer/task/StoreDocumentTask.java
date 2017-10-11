@@ -38,6 +38,62 @@ public class StoreDocumentTask implements Supplier<NetworkTransaction> {
 
   private IndexDocument doc;
 
+  /**
+   * @return the doc
+   */
+  public IndexDocument getDoc() {
+    return doc;
+  }
+
+  /**
+   * @param doc the doc to set
+   */
+  public void setDoc(IndexDocument doc) {
+    this.doc = doc;
+  }
+
+  /**
+   * @return the txn
+   */
+  public NetworkTransaction getTxn() {
+    return txn;
+  }
+
+  /**
+   * @param txn the txn to set
+   */
+  public void setTxn(NetworkTransaction txn) {
+    this.txn = txn;
+  }
+
+  /**
+   * @return the esDataProvider
+   */
+  public RestDataProvider getEsDataProvider() {
+    return esDataProvider;
+  }
+
+  /**
+   * @param esDataProvider the esDataProvider to set
+   */
+  public void setEsDataProvider(RestDataProvider esDataProvider) {
+    this.esDataProvider = esDataProvider;
+  }
+
+  /**
+   * @return the contextMap
+   */
+  public Map<String, String> getContextMap() {
+    return contextMap;
+  }
+
+  /**
+   * @param contextMap the contextMap to set
+   */
+  public void setContextMap(Map<String, String> contextMap) {
+    this.contextMap = contextMap;
+  }
+
   private NetworkTransaction txn;
 
   private RestDataProvider esDataProvider;

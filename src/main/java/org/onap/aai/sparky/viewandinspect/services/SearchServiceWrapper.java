@@ -801,6 +801,174 @@ public class SearchServiceWrapper {
       out.close();
     }
   }
+
+  /**
+   * @return the mapper
+   */
+  public ObjectMapper getMapper() {
+    return mapper;
+  }
+
+  /**
+   * @param mapper the mapper to set
+   */
+  public void setMapper(ObjectMapper mapper) {
+    this.mapper = mapper;
+  }
+
+  /**
+   * @return the serialversionuid
+   */
+  public static long getSerialversionuid() {
+    return serialVersionUID;
+  }
+
+  /**
+   * @return the log
+   */
+  public static Logger getLog() {
+    return LOG;
+  }
+
+  /**
+   * @return the searchString
+   */
+  public static String getSearchString() {
+    return SEARCH_STRING;
+  }
+
+  /**
+   * @return the countString
+   */
+  public static String getCountString() {
+    return COUNT_STRING;
+  }
+
+  /**
+   * @return the querySearch
+   */
+  public static String getQuerySearch() {
+    return QUERY_SEARCH;
+  }
+
+  /**
+   * @return the summaryByEntityTypeApi
+   */
+  public static String getSummaryByEntityTypeApi() {
+    return SUMMARY_BY_ENTITY_TYPE_API;
+  }
+
+  /**
+   * @return the summaryByEntityTypeCountApi
+   */
+  public static String getSummaryByEntityTypeCountApi() {
+    return SUMMARY_BY_ENTITY_TYPE_COUNT_API;
+  }
+
+  /**
+   * @return the valueAnykey
+   */
+  public static String getValueAnykey() {
+    return VALUE_ANYKEY;
+  }
+
+  /**
+   * @return the valueQuery
+   */
+  public static String getValueQuery() {
+    return VALUE_QUERY;
+  }
+
+  /**
+   * @return the keyHashId
+   */
+  public static String getKeyHashId() {
+    return KEY_HASH_ID;
+  }
+
+  /**
+   * @return the keyGroupBy
+   */
+  public static String getKeyGroupBy() {
+    return KEY_GROUP_BY;
+  }
+
+  /**
+   * @return the keySearchResult
+   */
+  public static String getKeySearchResult() {
+    return KEY_SEARCH_RESULT;
+  }
+
+  /**
+   * @return the keyHits
+   */
+  public static String getKeyHits() {
+    return KEY_HITS;
+  }
+
+  /**
+   * @return the keyPayload
+   */
+  public static String getKeyPayload() {
+    return KEY_PAYLOAD;
+  }
+
+  /**
+   * @return the keyDocument
+   */
+  public static String getKeyDocument() {
+    return KEY_DOCUMENT;
+  }
+
+  /**
+   * @return the keyContent
+   */
+  public static String getKeyContent() {
+    return KEY_CONTENT;
+  }
+
+  /**
+   * @return the keySearchTagIds
+   */
+  public static String getKeySearchTagIds() {
+    return KEY_SEARCH_TAG_IDS;
+  }
+
+  /**
+   * @return the keySearchTags
+   */
+  public static String getKeySearchTags() {
+    return KEY_SEARCH_TAGS;
+  }
+
+  /**
+   * @return the keyLink
+   */
+  public static String getKeyLink() {
+    return KEY_LINK;
+  }
+
+  /**
+   * @return the keyEntityType
+   */
+  public static String getKeyEntityType() {
+    return KEY_ENTITY_TYPE;
+  }
+
+  /**
+   * @return the viSuggestionRoute
+   */
+  public static String getViSuggestionRoute() {
+    return VI_SUGGESTION_ROUTE;
+  }
+
+  /**
+   * @return the viuiSearchTemplate
+   */
+  public static String getViuiSearchTemplate() {
+    return VIUI_SEARCH_TEMPLATE;
+  }
   
 
   

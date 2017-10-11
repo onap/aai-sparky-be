@@ -63,4 +63,46 @@ public class PerformElasticSearchRetrieval implements Supplier<NetworkTransactio
     return txn;
   }
 
+  /**
+   * @return the txn
+   */
+  public NetworkTransaction getTxn() {
+    return txn;
+  }
+
+  /**
+   * @param txn the txn to set
+   */
+  public void setTxn(NetworkTransaction txn) {
+    this.txn = txn;
+  }
+
+  /**
+   * @return the restDataProvider
+   */
+  public RestDataProvider getRestDataProvider() {
+    return restDataProvider;
+  }
+
+  /**
+   * @param restDataProvider the restDataProvider to set
+   */
+  public void setRestDataProvider(RestDataProvider restDataProvider) {
+    this.restDataProvider = restDataProvider;
+  }
+
+  /**
+   * @return the contextMap
+   */
+  public Map<String, String> getContextMap() {
+    return contextMap;
+  }
+
+  /**
+   * @param contextMap the contextMap to set
+   */
+  public void setContextMap(Map<String, String> contextMap) {
+    this.contextMap = contextMap;
+  }
+
 }

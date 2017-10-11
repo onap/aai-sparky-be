@@ -68,6 +68,34 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 public class NodeUtils {
   private static SecureRandom sRandom = new SecureRandom();
   
+  /**
+   * @return the sRandom
+   */
+  public static SecureRandom getsRandom() {
+    return sRandom;
+  }
+
+  /**
+   * @param sRandom the sRandom to set
+   */
+  public static void setsRandom(SecureRandom sRandom) {
+    NodeUtils.sRandom = sRandom;
+  }
+
+  /**
+   * @return the entityResourceKeyFormat
+   */
+  public static String getEntityResourceKeyFormat() {
+    return ENTITY_RESOURCE_KEY_FORMAT;
+  }
+
+  /**
+   * @return the timeBreakDownFormat
+   */
+  public static String getTimeBreakDownFormat() {
+    return TIME_BREAK_DOWN_FORMAT;
+  }
+
   public static synchronized String getRandomTxnId(){
       byte bytes[] = new byte[6];
       sRandom.nextBytes(bytes);

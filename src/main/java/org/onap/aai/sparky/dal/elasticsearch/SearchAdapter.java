@@ -53,6 +53,41 @@ public class SearchAdapter {
   
   private RestClient client;
 
+  /**
+   * @return the client
+   */
+  public RestClient getClient() {
+    return client;
+  }
+
+  /**
+   * @param client the client to set
+   */
+  public void setClient(RestClient client) {
+    this.client = client;
+  }
+
+  /**
+   * @return the commonHeaders
+   */
+  public Map<String, List<String>> getCommonHeaders() {
+    return commonHeaders;
+  }
+
+  /**
+   * @param commonHeaders the commonHeaders to set
+   */
+  public void setCommonHeaders(Map<String, List<String>> commonHeaders) {
+    this.commonHeaders = commonHeaders;
+  }
+
+  /**
+   * @return the log
+   */
+  public static Logger getLog() {
+    return LOG;
+  }
+
   private Map<String, List<String>> commonHeaders;
   private SearchServiceConfig sasConfig;
 

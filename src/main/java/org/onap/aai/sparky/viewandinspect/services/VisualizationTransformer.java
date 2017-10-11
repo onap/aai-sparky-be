@@ -314,4 +314,76 @@ public class VisualizationTransformer {
     }
     return false;
   }
+
+
+  /**
+   * @return the flatNodeArray
+   */
+  public List<JsonNode> getFlatNodeArray() {
+    return flatNodeArray;
+  }
+
+
+  /**
+   * @param flatNodeArray the flatNodeArray to set
+   */
+  public void setFlatNodeArray(List<JsonNode> flatNodeArray) {
+    this.flatNodeArray = flatNodeArray;
+  }
+
+
+  /**
+   * @return the enrichableUriPrefixes
+   */
+  public Set<String> getEnrichableUriPrefixes() {
+    return enrichableUriPrefixes;
+  }
+
+
+  /**
+   * @param enrichableUriPrefixes the enrichableUriPrefixes to set
+   */
+  public void setEnrichableUriPrefixes(Set<String> enrichableUriPrefixes) {
+    this.enrichableUriPrefixes = enrichableUriPrefixes;
+  }
+
+
+  /**
+   * @return the linkArrayOutput
+   */
+  public List<JsonNodeLink> getLinkArrayOutput() {
+    return linkArrayOutput;
+  }
+
+
+  /**
+   * @param linkArrayOutput the linkArrayOutput to set
+   */
+  public void setLinkArrayOutput(List<JsonNodeLink> linkArrayOutput) {
+    this.linkArrayOutput = linkArrayOutput;
+  }
+
+
+  /**
+   * @return the visualizationConfig
+   */
+  public VisualizationConfig getVisualizationConfig() {
+    return visualizationConfig;
+  }
+
+
+  /**
+   * @param visualizationConfig the visualizationConfig to set
+   */
+  public void setVisualizationConfig(VisualizationConfig visualizationConfig) {
+    this.visualizationConfig = visualizationConfig;
+  }
+
+
+  /**
+   * @return the log
+   */
+  public static Logger getLog() {
+    return LOG;
+  }
 }

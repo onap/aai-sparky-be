@@ -37,6 +37,20 @@ public class MyErrorHandler implements ErrorHandler {
   private PrintWriter out;
 
   /**
+   * @return the out
+   */
+  public PrintWriter getOut() {
+    return out;
+  }
+
+  /**
+   * @param out the out to set
+   */
+  public void setOut(PrintWriter out) {
+    this.out = out;
+  }
+
+  /**
    * Instantiates a new my error handler.
    *
    * @param out the out
