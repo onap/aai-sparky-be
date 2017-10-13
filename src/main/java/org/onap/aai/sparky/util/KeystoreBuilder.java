@@ -207,7 +207,7 @@ public class KeystoreBuilder {
       } else {
         System.out.println("keystore file doesn't exist, preloading new file with jssecacerts");
       }
-      password = "changeit";
+      password = keystorePassword;
 
     }
 

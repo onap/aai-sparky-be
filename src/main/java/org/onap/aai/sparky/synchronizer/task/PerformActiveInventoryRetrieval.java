@@ -27,6 +27,7 @@ import java.util.function.Supplier;
 
 import org.onap.aai.sparky.dal.NetworkTransaction;
 import org.onap.aai.sparky.dal.aai.ActiveInventoryDataProvider;
+import org.onap.aai.sparky.dal.aai.config.ActiveInventoryConfig;
 import org.onap.aai.sparky.dal.rest.OperationResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -74,7 +75,8 @@ public class PerformActiveInventoryRetrieval implements Supplier<NetworkTransact
     OperationResult result = null;
     try {
       // todo: use proper config instead of hard-coding parameters
-      result = aaiProvider.queryActiveInventoryWithRetries(txn.getLink(), "application/json", 5);
+      final String absoluteSelfLink = ActiveInventoryConfig.getConfig().repairSelfLink(txn.getLink());
+      result = aaiProvider.queryActiveInventoryWithRetries(absoluteSelfLink, "application/json", 5);
     } catch (Exception exc) {
       logger.error("Failure to resolve self link from AAI.  Error = ", exc);
       result = new OperationResult(500,
