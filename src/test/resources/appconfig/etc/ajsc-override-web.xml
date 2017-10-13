@@ -26,16 +26,6 @@
 		<url-pattern>/visualization/*</url-pattern>
 	</servlet-mapping>
 
-	<servlet-mapping>
-		<servlet-name>GeoVisualizationServlet</servlet-name>
-		<url-pattern>/visualization/geovisualization/*</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>EntityCountHistoryServlet</servlet-name>
-		<url-pattern>/visualization/entityCountHistory/*</url-pattern>
-	</servlet-mapping>
-
 	<filter-mapping>
 		<filter-name>springSecurityFilterChain</filter-name>
 		<url-pattern>/*</url-pattern>

@@ -30,18 +30,6 @@
 		<servlet-class>org.onap.aai.sparky.viewandinspect.servlet.VisualizationServlet</servlet-class>
 	</servlet>
 
-	<servlet>
-		<servlet-name>GeoVisualizationServlet</servlet-name>
-		<servlet-class>org.onap.aai.sparky.inventory.servlet.GeoVisualizationServlet</servlet-class>
-	</servlet>
-
-	<servlet>
-		<servlet-name>EntityCountHistoryServlet</servlet-name>
-		<servlet-class>org.onap.aai.sparky.inventory.servlet.EntityCountHistoryServlet</servlet-class>
-	</servlet>
-
-    
-
 	<filter>
 		<filter-name>ElasticSearchSynchronizerFilter</filter-name>
 		<filter-class>org.onap.aai.sparky.synchronizer.filter.ElasticSearchSynchronizerFilter</filter-class>
