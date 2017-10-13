@@ -32,6 +32,7 @@ import java.util.Properties;
 import java.util.TimeZone;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import org.onap.aai.sparky.logging.AaiUiMsgs;
 import org.onap.aai.sparky.util.ConfigHelper;
@@ -69,12 +70,12 @@ public class SynchronizerConfiguration {
   /**
    * Instantiates a new synchronizer configuration.
    */
-	public SynchronizerConfiguration() throws Exception {
+	public SynchronizerConfiguration() throws NumberFormatException,PatternSyntaxException,Exception {
 		Properties props = ConfigHelper.loadConfigFromExplicitPath(CONFIG_FILE);
 		initialize(props);
 	}
 
-	public SynchronizerConfiguration(Properties props) throws Exception {
+	public SynchronizerConfiguration(Properties props) throws NumberFormatException, PatternSyntaxException, Exception {
 		initialize(props);
 	}
   /**
@@ -82,7 +83,7 @@ public class SynchronizerConfiguration {
    *
    * @throws Exception the exception
    */
-  protected void initialize(Properties props) throws Exception {
+  protected void initialize(Properties props) throws NumberFormatException, PatternSyntaxException, Exception {
 
     // parse config for startup sync
     try {
@@ -90,9 +91,9 @@ public class SynchronizerConfiguration {
           Integer.parseInt(props.getProperty("synchronizer.syncTask.initialDelayInMs",
               SynchronizerConstants.DEFAULT_INITIAL_DELAY_IN_MS));
       if (syncTaskInitialDelayInMs < 0) {
-        throw new Exception();
+        throw new NumberFormatException("Error. Sync Task Delay has to be positive");
       }
-    } catch (Exception exc) {
+    } catch (NumberFormatException exc) {
       this.setConfigOkForStartupSync(false);
       syncTaskInitialDelayInMs = SynchronizerConstants.DEFAULT_CONFIG_ERROR_INT_VALUE;
       String message = "Invalid configuration for synchronizer parameter:"
@@ -106,9 +107,9 @@ public class SynchronizerConfiguration {
           Integer.parseInt(props.getProperty("synchronizer.syncTask.taskFrequencyInDay",
               SynchronizerConstants.DEFAULT_TASK_FREQUENCY_IN_DAY));
       if (syncTaskFrequencyInDay < 0) {
-        throw new Exception();
+        throw new NumberFormatException("Error. Sync Task Frequency has to be positive");
       }
-    } catch (Exception exc) {
+    } catch (NumberFormatException exc) {
       this.setConfigOkForPeriodicSync(false);
       syncTaskFrequencyInDay = SynchronizerConstants.DEFAULT_CONFIG_ERROR_INT_VALUE;
       String message = "Invalid configuration for synchronizer parameter:"
@@ -122,7 +123,7 @@ public class SynchronizerConfiguration {
       Pattern pattern = Pattern.compile(SynchronizerConstants.TIMESTAMP24HOURS_PATTERN);
       Matcher matcher = pattern.matcher(syncTaskStartTime);
       if (!matcher.matches()) {
-        throw new Exception();
+        throw new PatternSyntaxException("Pattern Mismatch","The erroneous pattern is not available",-1);
       }
 
       List<String> timestampVal = Arrays.asList(syncTaskStartTime.split(" "));

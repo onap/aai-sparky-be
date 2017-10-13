@@ -49,12 +49,8 @@ public class Encryptor {
   public String decryptValue(String value) {
     String decyptedValue = "";
     
-    try {
       decyptedValue = Password.deobfuscate(value);
-    } catch (Exception exc) {
-      System.err.println("Cannot decrypt '" + value + "': " + exc.toString());
-    }
-
+  
     return decyptedValue;
   }
 
