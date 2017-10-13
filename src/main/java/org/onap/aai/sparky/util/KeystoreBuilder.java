@@ -207,7 +207,7 @@ public class KeystoreBuilder {
       } else {
         System.out.println("keystore file doesn't exist, preloading new file with jssecacerts");
       }
-      password = "changeit";
+      password = keystorePassword;
 
     }
 
@@ -270,6 +270,7 @@ public class KeystoreBuilder {
       System.exit(0);
     } catch (SSLException exc) {
       System.out.println("\nCaught SSL exception, we are not authorized to access this server yet");
+      throw new SSLException("\nCaught SSL exception, we are not authorized to access this server yet"); 
       // e.printStackTrace(System.out);
     }
 
