@@ -24,6 +24,7 @@ package org.onap.aai.sparky.synchronizer.config;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.text.ParseException; 
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -70,12 +71,12 @@ public class SynchronizerConfiguration {
   /**
    * Instantiates a new synchronizer configuration.
    */
-	public SynchronizerConfiguration() throws NumberFormatException,PatternSyntaxException,Exception {
+	public SynchronizerConfiguration() throws NumberFormatException,PatternSyntaxException,ParseException {
 		Properties props = ConfigHelper.loadConfigFromExplicitPath(CONFIG_FILE);
 		initialize(props);
 	}
 
-	public SynchronizerConfiguration(Properties props) throws NumberFormatException, PatternSyntaxException, Exception {
+	public SynchronizerConfiguration(Properties props) throws NumberFormatException, PatternSyntaxException, ParseException {
 		initialize(props);
 	}
   /**
@@ -83,7 +84,7 @@ public class SynchronizerConfiguration {
    *
    * @throws Exception the exception
    */
-  protected void initialize(Properties props) throws NumberFormatException, PatternSyntaxException, Exception {
+  protected void initialize(Properties props) throws NumberFormatException, PatternSyntaxException, ParseException {
 
     // parse config for startup sync
     try {
@@ -145,7 +146,7 @@ public class SynchronizerConfiguration {
       } else {
         LOG.info(AaiUiMsgs.SYNC_START_TIME);
       }
-    } catch (Exception exc) {
+    } catch (ParseException exc) {
       this.setConfigOkForPeriodicSync(false);
       String message = "Invalid configuration for synchronizer parameter:"
           + " 'synchronizer.syncTask.startTimestamp'";

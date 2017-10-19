@@ -144,7 +144,7 @@ public void validateSynchronizer(){
      new FilterByContainsClassName("AutosuggestionSynchronizer"),new FilterByContainsClassName("CrossEntityReferenceSynchronizer"),
      new FilterByContainsClassName("SyncController"),new FilterByContainsClassName("SyncHelper"),
      new FilterByContainsClassName("TransactionRateController"),new FilterByContainsClassName("AggregationSuggestionSynchronizer"),
-     new FilterByContainsClassName("AbstractEntitySynchronizer"));
+     new FilterByContainsClassName("AbstractEntitySynchronizer"),new FilterByContainsClassName("SynchronizerConfiguration"));
   synchronizerPojoClasses = PojoClassFactory.getPojoClassesRecursively(packageName,filterChainByClassNameForSynchronizer);
   validateAll(synchronizerPojoClasses);
 }
