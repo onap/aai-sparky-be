@@ -16,20 +16,20 @@ At this time, _Sparky_ has two views available for use:
 [VNFs](./VNFS.md) - Aggregation based view of VNFs within AAI.
 
 
-================
+===============
 Getting Started
-================
+===============
 
 
 Building _Sparky_
-------------------
+-----------------
 After cloning the project, execute the following Maven command from the project's top level directory to build the project:
 
     > mvn clean install
 
 After a successful install, build the docker image:
 
-    > docker build -t openecomp/sparky target 
+    > docker build -t onap/sparky target
 
 Deploying _Sparky_
 ------------------
@@ -75,7 +75,7 @@ elasticsearch.javaApiPort=<java api port of the elasticsearch that this instance
 **portal/portal.properties**
 **portal/portal-authentication.properties**
 
-If this instance of _Sparky_ will be served in an eCOMP Portal instance, use the two files above to configure against the proper Portal instance.
+If this instance of _Sparky_ will be served in an ONAP Portal instance, use the two files above to configure against the proper Portal instance.
 
 ============
 Dependencies
@@ -85,4 +85,4 @@ _Sparky_ requires:
 - AAI instance as the main driver behind data.
 - Elasticsearch instance for data storage.
 - search-data-service instance for search functionality.
-- eCOMP Portal instance for authentication.
+- ONAP Portal instance for authentication.
