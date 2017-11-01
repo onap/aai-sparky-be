@@ -1,88 +1,173 @@
 .. This work is licensed under a Creative Commons Attribution 4.0 International License.
 
+=============================
 Sparky - Inventory UI Service
-==============================
+=============================
 
+Architecture
+============
+Sparky a service that interacts with AAI and provides users with a user interface to view and analyze AAI data. The main goal behind Sparky is to provide a clear and user friendly view of AAI data.
 
-***************
-Overview
-***************
-Sparky a service that interacts with AAI and provides users a UI to view and analyze AAI data. The main goal behind _Sparky_ is providing a more user friendly and clear view of AAI data.
+It is divided into both a front-end (the code that constructs the GUI) and a back-end (the Java code and other technologies that provide the front-end with its data). When Sparky is to be deployed, a .war file containing the front-end needs to be copied into the ``/src/main/resources/extApps`` directory. The back-end will then use this .war to present the front-end to users.
 
-At this time, _Sparky_ has two views available for use:
+At this time, Sparky has two views available for use:
 
-[View and Inspect](./VIEW_INSPECT.md) - Graph based view of entities within AAI.
+`View and Inspect <./VIEW_INSPECT.md>`_ - Graph-based view of entities within AAI
 
-[VNFs](./VNFS.md) - Aggregation based view of VNFs within AAI.
+`VNFs <./VNFS.md>`_ - Aggregation-based view of VNFs within AAI
 
+Interactions
+------------
+Sparky requires connections to the following additional services:
 
-===============
-Getting Started
-===============
+Front-end:
 
+- A Sparky back-end to serve the front-end
 
-Building _Sparky_
------------------
-After cloning the project, execute the following Maven command from the project's top level directory to build the project:
+Back-end:
 
-    > mvn clean install
+- An AAI instance as the main driver behind data
+- An Elasticsearch instance for data storage (a Synapse service instance is an implicit dependency which populates the Elasticsearch indexes)
+- A Search Data Service instance for search functionality
+- An eCOMP Portal instance for authentication
+
+Logging
+=======
+Sparky uses the Logback framework to generate logs. The logback.xml file can be found under the ``src/main/resources/`` folder
+
+Installation
+============
+
+Steps: Back-end
+---------------
+
+Clone Git Repository
+********************
+Clone the Sparky back-end Git repository
+
+Build
+*****
+
+After cloning the project, build the project by executing the following Maven command from the project's top level directory:
+
+.. code-block:: bash
+
+   mvn clean install
 
 After a successful install, build the docker image:
 
-    > docker build -t onap/sparky target
+.. code-block:: bash
 
-Deploying _Sparky_
-------------------
+   docker build -t openecomp/sparky target
 
-Push the Docker image that you have built to your Docker repository and pull it down to the location that you will be running _Sparky_.
+Deploy
+******
 
-**Create the following directories on the host machine:**
+Push the Docker image that you have built to your Docker repository and pull it down to the location that you will be running Sparky.
 
-    /logs
-    /opt/app/sparky/appconfig
+Create the following directories on the host machine:
+
+- /logs
+- /opt/app/sparky/appconfig
 
 You will be mounting these as data volumes when you start the Docker container.
 
-Clone Configuration Repo
-------------------------
+Clone Configuration Repository
+******************************
 
 Clone the "test-config" repo to a seperate directory.
-Navigate to <test-config repo location>/sparky/appconfig (will contain files such as aai.properties).
-Copy the entire contents of <test-config repo location>/sparky/appconfig into the /opt/app/sparky/appconfig directory you created in an above step.
+Navigate to ``[test-config repo location]/sparky/appconfig`` (will contain files such as ``aai.properties``).
 
-====================================================
-Edits to property files in /opt/app/sparky/appconfig
-====================================================
+Copy the entire contents of ``[test-config repo location]]/sparky/appconfig`` into the ``/opt/app/sparky/appconfig`` directory you created in an above step.
 
-Listed below are the values that will need to be updated to make _Sparky_ operate properly. The config files contain comments on the contents not listed here.
+Steps: Front-end
+----------------
 
-**search-service.properties**
+Clone Git Repository
+********************
+Clone the ``sparky-fe.git`` Sparky back-end Git repository
 
-search-service.ipAddress=<ip address / hostname of the search-data-service that this instance will use>
-search-service.httpPort=<http port of the search-data-service that this instance will use>
+Install Required Tools
+**********************
+You will need to install the following tools:
 
-**aai.properties**
+- node.js, including the Node Package Manager (NPM) (if there issues installing the latest version, try 6.10.1)
+- Python 2.7.13
 
-aai.rest.host=<ip address / hostname of the aai that this instance will use>
-aai.rest.port=<rest port of the aai that this instance will use>
+After installing node.js and NPM, you need to install the required node.js packages by executing:
 
-**elasticsearch.properties**
+.. code-block:: bash
 
-elasticsearch.ipAddress=<ip address / hostname of the elasticsearch that this instance will use>
-elasticsearch.httpPort=<http port of the elasticsearch that this instance will use>
-elasticsearch.javaApiPort=<java api port of the elasticsearch that this instance will use>
+ npm install
 
-**portal/portal.properties**
-**portal/portal-authentication.properties**
+Build
+*****
 
-If this instance of _Sparky_ will be served in an ONAP Portal instance, use the two files above to configure against the proper Portal instance.
+**To build the front-end (generate a .war file)**:
 
-============
-Dependencies
-============
-_Sparky_ requires:
+Execute:
 
-- AAI instance as the main driver behind data.
-- Elasticsearch instance for data storage.
-- search-data-service instance for search functionality.
-- ONAP Portal instance for authentication.
+.. code-block:: bash
+
+ gulp build
+
+The build will create a directory called ``dist`` and add the ``aai.war`` file to it.
+
+If changes to the build flow are required, updating ``webpack.config.js`` and ``gulpfile.js`` will likely provide any build tuning that is required.
+
+**To run the front-end:**
+
+Execute:
+
+.. code-block:: bash
+
+ npm start
+
+By default the local instance of the UI will be served to ``https://localhost:8001/aai/#/viewInspect``.
+
+This can be configured in the file ``webpack.devConfig.js``.
+
+Deploy
+******
+
+Push the Docker image that you have built to your Docker repository and pull it down to the location that you will be running Sparky.
+
+**Create the following directories on the host machine:**
+
+- /logs
+- /opt/app/sparky/appconfig
+
+You will be mounting these as data volumes when you start the Docker container.
+
+Configuration
+=============
+
+Steps: Back-end
+---------------
+
+Edit property files in /opt/app/sparky/appconfig
+************************************************
+
+Listed below are the values that will need to be updated to make Sparky operate properly. The configuration files contain comments for contents not listed here.
+
+**search-service.properties:**
+
+search-service.ipAddress=*[ip address / hostname of the search-data-service that this instance will use]*
+search-service.httpPort=[http port of the search-data-service that this instance will use]
+
+**aai.properties:**
+
+aai.rest.host= *[ip address / hostname of the aai that this instance will use]*
+
+aai.rest.port= *[rest port of the aai that this instance will use]*
+
+**elasticsearch.properties:**
+
+elasticsearch.ipAddress= *[ip address / hostname of the elasticsearch that this instance will use*]
+elasticsearch.httpPort=*[http port of the elasticsearch that this instance will use*]
+elasticsearch.javaApiPort=*[java api port of the elasticsearch that this instance will use*]
+
+**portal/portal.properties:**
+**portal/portal-authentication.properties:**
+
+If this instance of Sparky will be served in an eCOMP Portal instance, use the two files above to configure against the proper Portal instance.
