@@ -12,9 +12,11 @@ It is divided into both a front-end (the code that constructs the GUI) and a bac
 
 At this time, Sparky has two views available for use:
 
-`View and Inspect <./VIEW_INSPECT.md>`_ - Graph-based view of entities within AAI
+.. toctree::
+   :maxdepth: 1
 
-`VNFs <./VNFS.md>`_ - Aggregation-based view of VNFs within AAI
+   Graph-based view of entities within AAI <./view_inspect>
+   Aggregation-based view of VNFs within AAI VNFs <./vnfs>
 
 Interactions
 ------------
