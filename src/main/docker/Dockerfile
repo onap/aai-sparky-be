@@ -15,7 +15,7 @@ RUN export JAVA_HOME
 
 # Build up the deployment folder structure
 RUN mkdir -p $MICRO_HOME
-copy swm/package/nix/dist_files/appl/sparky-be/1.0-SNAPSHOT/ $MICRO_HOME/
+copy swm/package/nix/dist_files/appl/sparky-be/1.1.0-SNAPSHOT/ $MICRO_HOME/
 RUN ls -la $MICRO_HOME/
 RUN mkdir -p $BIN_HOME
 COPY *.sh $BIN_HOME/
