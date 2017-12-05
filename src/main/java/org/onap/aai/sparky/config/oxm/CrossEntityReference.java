@@ -20,7 +20,6 @@
  *
  * ECOMP is a trademark and service mark of AT&T Intellectual Property.
  */
-
 package org.onap.aai.sparky.config.oxm;
 
 import java.util.ArrayList;

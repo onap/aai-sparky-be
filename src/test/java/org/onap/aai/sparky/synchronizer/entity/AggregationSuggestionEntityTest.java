@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.Scanner;
 
 import org.junit.Test;
+import org.onap.aai.sparky.sync.entity.AggregationSuggestionEntity;
 
 public class AggregationSuggestionEntityTest {
   public String getResourceFileContents(String filePath) {
@@ -60,10 +61,13 @@ public class AggregationSuggestionEntityTest {
   public void testGetIndexDocumentJson() {
     AggregationSuggestionEntity aggregationSuggestionEntity = new AggregationSuggestionEntity();
 
+    List<String> filterIds = new ArrayList<>(Arrays.asList("1", "2", "7", "8"));
+    aggregationSuggestionEntity.setFilterIds(filterIds);
+
     String expectedFilterListPayload = getResourceFileContents(
-        "sync/entity/AggregationSuggestionEntity_getIndexDocumentJson_expected.json");
+        "filters/AggregationSuggestionEntity_getIndexDocumentJson_expected.json");
 
     assertTrue(
-        aggregationSuggestionEntity.getIndexDocumentJson().contains(expectedFilterListPayload.trim()));
+        aggregationSuggestionEntity.getAsJson().contains(expectedFilterListPayload.trim()));
   }
 }

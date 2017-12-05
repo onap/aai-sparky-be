@@ -29,20 +29,17 @@ import java.util.Map;
 
 import javax.ws.rs.core.MediaType;
 
-import org.onap.aai.sparky.dal.rest.OperationResult;
+import org.onap.aai.cl.api.Logger;
+import org.onap.aai.cl.eelf.LoggerFactory;
+import org.onap.aai.cl.mdc.MdcContext;
+import org.onap.aai.restclient.client.Headers;
+import org.onap.aai.restclient.client.OperationResult;
+import org.onap.aai.restclient.client.RestClient;
 import org.onap.aai.sparky.dal.sas.config.SearchServiceConfig;
 import org.onap.aai.sparky.util.Encryptor;
 import org.onap.aai.sparky.viewandinspect.config.TierSupportUiConstants;
-import org.onap.aai.cl.api.Logger;
-import org.onap.aai.cl.eelf.LoggerFactory;
 import org.slf4j.MDC;
 
-import org.onap.aai.restclient.client.RestClient;
-import org.onap.aai.restclient.enums.RestAuthenticationMode;
-import org.onap.aai.restclient.client.Headers;
-import org.onap.aai.cl.mdc.MdcContext;
-
-import org.onap.aai.cl.mdc.MdcContext;
 
 /**
  * The Class SearchAdapter.
@@ -52,41 +49,6 @@ public class SearchAdapter {
   private static final Logger LOG = LoggerFactory.getInstance().getLogger(SearchAdapter.class);
   
   private RestClient client;
-
-  /**
-   * @return the client
-   */
-  public RestClient getClient() {
-    return client;
-  }
-
-  /**
-   * @param client the client to set
-   */
-  public void setClient(RestClient client) {
-    this.client = client;
-  }
-
-  /**
-   * @return the commonHeaders
-   */
-  public Map<String, List<String>> getCommonHeaders() {
-    return commonHeaders;
-  }
-
-  /**
-   * @param commonHeaders the commonHeaders to set
-   */
-  public void setCommonHeaders(Map<String, List<String>> commonHeaders) {
-    this.commonHeaders = commonHeaders;
-  }
-
-  /**
-   * @return the log
-   */
-  public static Logger getLog() {
-    return LOG;
-  }
 
   private Map<String, List<String>> commonHeaders;
   private SearchServiceConfig sasConfig;
@@ -98,8 +60,8 @@ public class SearchAdapter {
   public SearchAdapter() throws Exception {
     sasConfig = SearchServiceConfig.getConfig();
     Encryptor encryptor = new Encryptor();
-    client = new RestClient().authenticationMode(RestAuthenticationMode.SSL_CERT)
-        .validateServerHostname(false).validateServerCertChain(false)
+
+    client = new RestClient().validateServerHostname(false).validateServerCertChain(false)
         .clientCertFile(TierSupportUiConstants.CONFIG_AUTH_LOCATION + sasConfig.getCertName())
         .clientCertPassword(encryptor.decryptValue(sasConfig.getKeystorePassword()))
         .trustStore(TierSupportUiConstants.CONFIG_AUTH_LOCATION + sasConfig.getKeystore());
@@ -118,26 +80,26 @@ public class SearchAdapter {
   }
 
   public OperationResult doPost(String url, String jsonPayload, String acceptContentType) {
-    org.onap.aai.restclient.client.OperationResult or = client.post(url, jsonPayload, getTxnHeader(),
+    OperationResult or = client.post(url, jsonPayload, getTxnHeader(),
         MediaType.APPLICATION_JSON_TYPE, MediaType.APPLICATION_JSON_TYPE);
     return new OperationResult(or.getResultCode(), or.getResult());
   }
 
   public OperationResult doGet(String url, String acceptContentType) {
-    org.onap.aai.restclient.client.OperationResult or =
+    OperationResult or =
         client.get(url, getTxnHeader(), MediaType.APPLICATION_JSON_TYPE);
     return new OperationResult(or.getResultCode(), or.getResult());
   }
 
   public OperationResult doPut(String url, String payload, String acceptContentType) {
-    org.onap.aai.restclient.client.OperationResult or = client.put(url, payload, getTxnHeader(),
+    OperationResult or = client.put(url, payload, getTxnHeader(),
         MediaType.APPLICATION_JSON_TYPE, MediaType.APPLICATION_JSON_TYPE);
     return new OperationResult(or.getResultCode(), or.getResult());
   }
 
   public OperationResult doDelete(String url, String acceptContentType) {
 
-    org.onap.aai.restclient.client.OperationResult or =
+    OperationResult or =
         client.delete(url, getTxnHeader(), MediaType.APPLICATION_JSON_TYPE);
     return new OperationResult(or.getResultCode(), or.getResult());
   }

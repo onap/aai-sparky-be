@@ -1,27 +1,27 @@
-/*
-* ============LICENSE_START=======================================================
-* SPARKY (AAI UI service)
-* ================================================================================
-* Copyright © 2017 AT&T Intellectual Property.
-* Copyright © 2017 Amdocs
-* All rights reserved.
-* ================================================================================
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-*
-*      http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-* ============LICENSE_END=========================================================
-*
-* ECOMP and OpenECOMP are trademarks
-* and service marks of AT&T Intellectual Property.
-*/
+/**
+ * ============LICENSE_START===================================================
+ * SPARKY (AAI UI service)
+ * ============================================================================
+ * Copyright © 2017 AT&T Intellectual Property.
+ * Copyright © 2017 Amdocs
+ * All rights reserved.
+ * ============================================================================
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * ============LICENSE_END=====================================================
+ *
+ * ECOMP and OpenECOMP are trademarks
+ * and service marks of AT&T Intellectual Property.
+ */
 
 package org.onap.aai.sparky.security.portal;
 
@@ -186,7 +186,7 @@ public class TestPortalRestAPIServiceImpl {
   public void testGetRoles() throws Exception {
     EcompUser user = new EcompUser();
     user.setLoginId(LOGINID_1);
-    user.setRoles(new HashSet<>(portalApi.getAvailableRoles("")));
+    user.setRoles(new HashSet<>(portalApi.getAvailableRoles()));
 
     portalApi.pushUser(user);
 
@@ -241,7 +241,7 @@ public class TestPortalRestAPIServiceImpl {
     EcompUser user = new EcompUser();
     user.setLoginId(LOGINID_1);
     user.setFirstName("Bob");
-    List<EcompRole> availableRoles = portalApi.getAvailableRoles("");
+    List<EcompRole> availableRoles = portalApi.getAvailableRoles();
     user.setRoles(new LinkedHashSet<EcompRole>(availableRoles));
 
     portalApi.pushUser(user);
@@ -258,7 +258,7 @@ public class TestPortalRestAPIServiceImpl {
     EcompUser user = new EcompUser();
     user.setLoginId(LOGINID_1);
     user.setFirstName("Bob");
-    List<EcompRole> availableRoles = portalApi.getAvailableRoles("");
+    List<EcompRole> availableRoles = portalApi.getAvailableRoles();
     user.setRoles(new LinkedHashSet<EcompRole>(availableRoles));
 
     portalApi.pushUser(user);
@@ -267,5 +267,17 @@ public class TestPortalRestAPIServiceImpl {
     EcompUser userWithNoRoles = portalApi.getUser(LOGINID_1);
 
     assertThat(userWithNoRoles.getRoles(), empty());
+  }
+
+  @Test
+  public void testIsAppAuthenticated() throws Exception {
+    Whitebox.setInternalState(PortalAuthenticationConfig.class, "AUTHENTICATION_CONFIG_FILE",
+        TestData.PORTAL_AUTHENTICATION_PROPERTIES.getFilename());
+
+    HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
+    when(request.getHeader("username")).thenReturn("testuser");
+    when(request.getHeader("password")).thenReturn("testpassword");
+
+    assertThat(portalApi.isAppAuthenticated(request), is(true));
   }
 }

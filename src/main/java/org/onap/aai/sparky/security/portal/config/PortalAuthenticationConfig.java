@@ -28,6 +28,7 @@ import org.onap.aai.sparky.util.ConfigHelper;
 import org.onap.aai.sparky.util.Encryptor;
 import org.onap.aai.sparky.viewandinspect.config.TierSupportUiConstants;
 
+
 /**
  * Provides Portal authentication configuration.
  */

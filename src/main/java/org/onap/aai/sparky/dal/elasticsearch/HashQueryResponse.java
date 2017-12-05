@@ -22,8 +22,7 @@
  */
 package org.onap.aai.sparky.dal.elasticsearch;
 
-import org.json.JSONObject;
-import org.onap.aai.sparky.dal.rest.OperationResult;
+import org.onap.aai.restclient.client.OperationResult;
 
 public class HashQueryResponse {
   private String jsonPayload = null;

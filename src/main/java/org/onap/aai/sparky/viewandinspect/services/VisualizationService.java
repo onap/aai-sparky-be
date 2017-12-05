@@ -30,30 +30,24 @@ import java.util.concurrent.ExecutorService;
 
 import javax.servlet.ServletException;
 
+import org.onap.aai.cl.api.Logger;
+import org.onap.aai.cl.eelf.LoggerFactory;
+import org.onap.aai.restclient.client.OperationResult;
 import org.onap.aai.sparky.config.oxm.OxmModelLoader;
-import org.onap.aai.sparky.dal.aai.ActiveInventoryAdapter;
-import org.onap.aai.sparky.dal.aai.ActiveInventoryDataProvider;
+import org.onap.aai.sparky.dal.ActiveInventoryAdapter;
+import org.onap.aai.sparky.dal.ElasticSearchAdapter;
 import org.onap.aai.sparky.dal.aai.config.ActiveInventoryConfig;
-import org.onap.aai.sparky.dal.aai.config.ActiveInventoryRestConfig;
-import org.onap.aai.sparky.dal.cache.EntityCache;
-import org.onap.aai.sparky.dal.cache.PersistentEntityCache;
-import org.onap.aai.sparky.dal.elasticsearch.ElasticSearchAdapter;
-import org.onap.aai.sparky.dal.elasticsearch.ElasticSearchDataProvider;
-import org.onap.aai.sparky.dal.elasticsearch.config.ElasticSearchConfig;
-import org.onap.aai.sparky.dal.rest.OperationResult;
-import org.onap.aai.sparky.dal.rest.RestClientBuilder;
-import org.onap.aai.sparky.dal.rest.RestfulDataAccessor;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
-import org.onap.aai.sparky.synchronizer.entity.SearchableEntity;
+import org.onap.aai.sparky.sync.config.ElasticSearchEndpointConfig;
+import org.onap.aai.sparky.sync.config.ElasticSearchSchemaConfig;
+import org.onap.aai.sparky.sync.entity.SearchableEntity;
 import org.onap.aai.sparky.util.NodeUtils;
-import org.onap.aai.sparky.viewandinspect.config.VisualizationConfig;
+import org.onap.aai.sparky.viewandinspect.config.VisualizationConfigs;
 import org.onap.aai.sparky.viewandinspect.entity.ActiveInventoryNode;
 import org.onap.aai.sparky.viewandinspect.entity.D3VisualizationOutput;
 import org.onap.aai.sparky.viewandinspect.entity.GraphMeta;
 import org.onap.aai.sparky.viewandinspect.entity.QueryParams;
 import org.onap.aai.sparky.viewandinspect.entity.QueryRequest;
-import org.onap.aai.cl.api.Logger;
-import org.onap.aai.cl.eelf.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -66,63 +60,49 @@ public class VisualizationService {
   private static final Logger LOG =
       LoggerFactory.getInstance().getLogger(VisualizationService.class);
   
-  private OxmModelLoader loader;
   private ObjectMapper mapper = new ObjectMapper();
 
-  private final ActiveInventoryDataProvider aaiProvider;
-  private final ActiveInventoryRestConfig aaiRestConfig;
-  private final ElasticSearchDataProvider esProvider;
-  private final ElasticSearchConfig esConfig;
+  private final ActiveInventoryAdapter aaiAdapter;
+  private final ElasticSearchAdapter esAdapter;
+  private final ExecutorService tabularExecutorService;
   private final ExecutorService aaiExecutorService;
   
   private ConcurrentHashMap<Long, VisualizationContext> contextMap;
   private final SecureRandom secureRandom;
   
   private ActiveInventoryConfig aaiConfig;
-  private VisualizationConfig visualizationConfig;
+  private VisualizationConfigs visualizationConfigs;
+  private ElasticSearchEndpointConfig endpointEConfig;
+	private ElasticSearchSchemaConfig schemaEConfig;
   
-  public VisualizationService(OxmModelLoader loader) throws Exception {
-    this.loader = loader;
+  public VisualizationService(OxmModelLoader loader,VisualizationConfigs visualizationConfigs,
+		  ActiveInventoryAdapter aaiAdapter,ElasticSearchAdapter esAdapter,
+		  ElasticSearchEndpointConfig endpointConfig, ElasticSearchSchemaConfig schemaConfig) throws Exception {
 
-    aaiRestConfig = ActiveInventoryConfig.getConfig().getAaiRestConfig();
+   
+    this.visualizationConfigs = visualizationConfigs;
+    this.endpointEConfig = endpointConfig; 
+    this.schemaEConfig = schemaConfig; 
 
-    EntityCache cache = null;
     secureRandom = new SecureRandom();
-
-    ActiveInventoryAdapter aaiAdapter = new ActiveInventoryAdapter(new RestClientBuilder());
-
-    if (aaiRestConfig.isCacheEnabled()) {
-      cache = new PersistentEntityCache(aaiRestConfig.getStorageFolderOverride(),
-          aaiRestConfig.getNumCacheWorkers());
-
-      aaiAdapter.setCacheEnabled(true);
-      aaiAdapter.setEntityCache(cache);
-    }
-
-    this.aaiProvider = aaiAdapter;
-
-    RestClientBuilder esClientBuilder = new RestClientBuilder();
-    esClientBuilder.setUseHttps(false);
-    RestfulDataAccessor nonCachingRestProvider = new RestfulDataAccessor(esClientBuilder);
-    this.esConfig = ElasticSearchConfig.getConfig();
-    this.esProvider = new ElasticSearchAdapter(nonCachingRestProvider, this.esConfig);
     
+    /*
+     * Fix constructor with properly wired in properties
+     */
+ 
+    this.aaiAdapter = aaiAdapter;
+    this.esAdapter = esAdapter; 
+
     this.mapper = new ObjectMapper();
     mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     
     this.contextMap = new ConcurrentHashMap<Long, VisualizationContext>();
-    this.visualizationConfig = VisualizationConfig.getConfig();
+    this.tabularExecutorService = NodeUtils.createNamedExecutor("TABULAR-WORKER",
+    		this.visualizationConfigs.getNumOfThreadsToFetchNodeIntegrity(), LOG);
     this.aaiConfig = ActiveInventoryConfig.getConfig();
     this.aaiExecutorService = NodeUtils.createNamedExecutor("SLNC-WORKER",
         aaiConfig.getAaiRestConfig().getNumResolverWorkers(), LOG);
-  }
-  
-  public OxmModelLoader getLoader() {
-    return loader;
-  }
-
-  public void setLoader(OxmModelLoader loader) {
-    this.loader = loader;
+    
   }
   
   /**
@@ -219,7 +199,9 @@ public class VisualizationService {
        * Here is where we need to make a dip to elastic-search for the self-link by entity-id (link
        * hash).
        */
-      dataCollectionResult = esProvider.retrieveEntityById(queryRequest.getHashId());
+      dataCollectionResult = esAdapter.retrieveEntityById(endpointEConfig.getEsIpAddress(), 
+    		  endpointEConfig.getEsServerPort(),schemaEConfig.getIndexName(),
+    		  schemaEConfig.getIndexDocType(), queryRequest.getHashId());
       sourceEntity = extractSearchableEntityFromElasticEntity(dataCollectionResult);
 
       if (sourceEntity != null) {
@@ -240,7 +222,7 @@ public class VisualizationService {
 
       try {
 
-        d3OutputJsonOutput = getVisualizationOutputBasedonGenericQuery(sourceEntity, queryParams);
+        d3OutputJsonOutput = getVisualizationOutputBasedonGenericQuery( sourceEntity, queryParams, queryRequest);
 
         if (LOG.isDebugEnabled()) {
           LOG.debug(AaiUiMsgs.DEBUG_GENERIC,
@@ -267,6 +249,7 @@ public class VisualizationService {
 
   }
   
+  
   /**
    * Gets the visualization output basedon generic query.
    *
@@ -274,15 +257,16 @@ public class VisualizationService {
    * @param queryParams the query params
    * @return the visualization output basedon generic query
    * @throws ServletException the servlet exception
+   * @throws  
    */
   private String getVisualizationOutputBasedonGenericQuery(SearchableEntity searchtargetEntity,
-      QueryParams queryParams) throws ServletException {
+      QueryParams queryParams, QueryRequest request) throws ServletException {
 
     long opStartTimeInMs = System.currentTimeMillis();
 
     VisualizationTransformer transformer = null;
     try {
-      transformer = new VisualizationTransformer();
+      transformer = new VisualizationTransformer(visualizationConfigs);
     } catch (Exception exc) {
       throw new ServletException(
           "Failed to create VisualizationTransformer instance because of execption", exc);
@@ -291,7 +275,7 @@ public class VisualizationService {
     VisualizationContext visContext = null;
     long contextId = secureRandom.nextLong();
     try {
-      visContext = new VisualizationContext(contextId, aaiProvider, aaiExecutorService, loader);
+      visContext = new VisualizationContext(contextId, this.aaiAdapter,tabularExecutorService, aaiExecutorService,this.visualizationConfigs);
       contextMap.putIfAbsent(contextId, visContext);
     } catch (Exception e1) {
       LOG.error(AaiUiMsgs.EXCEPTION_CAUGHT,
@@ -347,9 +331,10 @@ public class VisualizationService {
     try {
       output = transformer
           .generateVisualizationOutput((System.currentTimeMillis() - opStartTimeInMs), graphMeta);
-    } catch (Exception exc) {
-      LOG.error(AaiUiMsgs.FAILURE_TO_PROCESS_REQUEST, exc.getLocalizedMessage());
+    } catch (JsonProcessingException exc) {
       throw new ServletException("Caught an exception while generation visualization output", exc);
+    } catch (IOException exc) {
+      LOG.error(AaiUiMsgs.FAILURE_TO_PROCESS_REQUEST, exc.getLocalizedMessage());
     }
 
     output.setInlineMessage(visContext.getInlineMessage());
@@ -376,8 +361,8 @@ public class VisualizationService {
   }
   
   public void shutdown() {
-    aaiProvider.shutdown();
+    tabularExecutorService.shutdown();
     aaiExecutorService.shutdown();
-    esProvider.shutdown();
   }
+  
 }

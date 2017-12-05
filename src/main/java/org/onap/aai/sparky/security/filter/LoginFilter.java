@@ -36,11 +36,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.core.HttpHeaders;
 
+import org.onap.aai.cl.api.Logger;
+import org.onap.aai.cl.eelf.LoggerFactory;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
 import org.onap.aai.sparky.security.EcompSso;
 import org.onap.aai.sparky.security.portal.config.PortalAuthenticationConfig;
-import org.onap.aai.cl.api.Logger;
-import org.onap.aai.cl.eelf.LoggerFactory;
 import org.openecomp.portalsdk.core.onboarding.listener.PortalTimeoutHandler;
 import org.openecomp.portalsdk.core.onboarding.util.PortalApiConstants;
 import org.openecomp.portalsdk.core.onboarding.util.PortalApiProperties;
@@ -125,10 +125,17 @@ public class LoginFilter implements Filter {
       // All other requests require ECOMP Portal authentication
       if (EcompSso.validateEcompSso(request) == null) {
         String redirectURL, logMessage;
-
-        // Redirect to Portal UI
-        redirectURL = PortalApiProperties.getProperty(PortalApiConstants.ECOMP_REDIRECT_URL);
-        logMessage = "Unauthorized login attempt.";
+        if (request.getRequestURI().contains("/editAttributes")) {
+          // If request is for Edit Attributes UI, redirect straight to the application.
+          String appPath = request.getRequestURI().substring(request.getContextPath().length() + 1)
+              + (request.getQueryString() != null ? ("?" + request.getQueryString()) : "");
+          redirectURL = SSOUtil.getECOMPSSORedirectURL(request, response, appPath);
+          logMessage = "Unauthenticated Edit Attributes UI login attempt.";
+        } else {
+          // Redirect to Portal UI
+          redirectURL = PortalApiProperties.getProperty(PortalApiConstants.ECOMP_REDIRECT_URL);
+          logMessage = "Unauthorized login attempt.";
+        }
         
         LOG.debug(AaiUiMsgs.LOGIN_FILTER_DEBUG,
             logMessage + 

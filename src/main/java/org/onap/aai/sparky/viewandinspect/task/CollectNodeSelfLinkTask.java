@@ -33,34 +33,6 @@ import org.onap.aai.sparky.dal.rest.OperationResult;
 public class CollectNodeSelfLinkTask implements Supplier<OperationResult> {
 
   private String selfLink;
-  /**
-   * @return the selfLink
-   */
-  public String getSelfLink() {
-    return selfLink;
-  }
-
-  /**
-   * @param selfLink the selfLink to set
-   */
-  public void setSelfLink(String selfLink) {
-    this.selfLink = selfLink;
-  }
-
-  /**
-   * @return the aaiProvider
-   */
-  public ActiveInventoryDataProvider getAaiProvider() {
-    return aaiProvider;
-  }
-
-  /**
-   * @param aaiProvider the aaiProvider to set
-   */
-  public void setAaiProvider(ActiveInventoryDataProvider aaiProvider) {
-    this.aaiProvider = aaiProvider;
-  }
-
   private ActiveInventoryDataProvider aaiProvider;
 
   /**

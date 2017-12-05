@@ -1,0 +1,88 @@
+{
+	"filters": [
+	{
+		"filterId": "1",
+		"filterName": "Orchestration-Status",
+		"displayName": "Orchestration Status",
+		"dataType": "list",
+		"dataSource": {
+			"indexName": "aggregate_generic-vnf_index",
+			"docType": "default",
+			"fieldName": "orchestration-status"
+		}
+	},
+	{
+		"filterId": "2",
+		"filterName": "Prov-Status",
+		"displayName": "Provisioning Status",
+		"dataType": "list",
+		"dataSource": {
+			"indexName": "aggregate_generic-vnf_index",
+			"docType": "default",
+			"fieldName": "prov-status"
+		}
+	},
+	{
+		"filterId": "3",
+		"filterName": "Severity",
+		"displayName": "Severity",
+		"dataType": "list",
+		"dataSource": {
+			"indexName": "di-violations",
+			"docType": "default",
+			"fieldName": "severity"
+		}
+	},
+	{
+		"filterId": "4",
+		"filterName": "Category",
+		"displayName": "Category",
+		"dataType": "list",
+		"dataSource": {
+			"indexName": "di-violations",
+			"docType": "default",
+			"fieldName": "category"
+		}
+	},
+	{
+		"filterId": "5",
+		"filterName": "Date",
+		"displayName": "Date",
+		"dataType": "date"
+	},
+	{
+		"filterId": "6",
+		"filterName": "EntityType",
+		"displayName": "Object Type",
+		"dataType": "list",
+		"dataSource": {
+			"indexName": "di-violations",
+			"docType": "default",
+			"fieldName": "entityType"
+		}
+	},
+    {
+        "filterId": "7",
+		"filterName": "NF-Type",
+		"displayName": "Network Function Type",
+		"dataType": "list",
+		"dataSource": {
+			"indexName": "aggregate_generic-vnf_index",
+			"docType": "default",
+			"fieldName": "nf-type"
+		}    
+	},
+    {
+        "filterId": "8",
+		"filterName": "NF-Role",
+		"displayName": "Network Function Role",
+		"dataType": "list",
+		"dataSource": {
+			"indexName": "aggregate_generic-vnf_index",
+			"docType": "default",
+			"fieldName": "nf-role"
+		}    
+	}	
+	
+  ]
+}

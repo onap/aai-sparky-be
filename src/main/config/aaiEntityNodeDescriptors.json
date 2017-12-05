@@ -129,6 +129,21 @@
 				"className": "node-button",
 				"r": "10"
 			}
+		},
+		{
+			"type": "button",
+			"name": "icon_triangle_warning",
+			"class": "node-button",
+			"shapeAttributes": {
+				"offset": {
+					"x": "46",
+					"y": "-12"
+				}
+			},
+			"svgAttributes": {
+				"className": "node-button",
+				"r": "10"
+			}
 		}]
 	},
 	"selectedNodeClass": {
@@ -177,6 +192,21 @@
 				"offset": {
 					"x": "33",
 					"y": "-35"
+				}
+			},
+			"svgAttributes": {
+				"className": "node-button",
+				"r": "10"
+			}
+		},
+		{
+			"type": "button",
+			"name": "icon_triangle_warning",
+			"class": "node-button",
+			"shapeAttributes": {
+				"offset": {
+					"x": "46",
+					"y": "-12"
 				}
 			},
 			"svgAttributes": {

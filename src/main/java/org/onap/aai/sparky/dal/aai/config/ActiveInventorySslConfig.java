@@ -56,7 +56,7 @@ public class ActiveInventorySslConfig {
    */
   public ActiveInventorySslConfig(Properties props, Encryptor encryptor) {
 
-    if (props == null) {
+    if (props == null || props.isEmpty()) {
       return;
     }
 
@@ -196,20 +196,6 @@ public class ActiveInventorySslConfig {
     String usernameAndPassword = getBasicAuthUsername() + ":"
         + getBasicAuthPassword();
     return "Basic " + java.util.Base64.getEncoder().encodeToString(usernameAndPassword.getBytes());
-  }
-
-  /**
-   * @return the enableSslDebug
-   */
-  public boolean isEnableSslDebug() {
-    return enableSslDebug;
-  }
-
-  /**
-   * @param enableSslDebug the enableSslDebug to set
-   */
-  public void setEnableSslDebug(boolean enableSslDebug) {
-    this.enableSslDebug = enableSslDebug;
   }
 
   /* (non-Javadoc)

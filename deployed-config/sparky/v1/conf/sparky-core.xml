@@ -1,0 +1,83 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+	       http://www.springframework.org/schema/beans
+	       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="crossEntityReferenceLookup"
+	class="org.onap.aai.sparky.config.oxm.CrossEntityReferenceLookup"
+	factory-method="getInstance" />
+	
+	<bean id="geoEntityLookup" class="org.onap.aai.sparky.config.oxm.GeoEntityLookup"
+		factory-method="getInstance" />
+		
+	<bean id="oxmEntityLookup" class="org.onap.aai.sparky.config.oxm.OxmEntityLookup"
+		factory-method="getInstance" />
+		
+	<bean id="searchableEntityLookup" class="org.onap.aai.sparky.config.oxm.SearchableEntityLookup"
+		factory-method="getInstance" />
+		
+	<bean id="suggestionEntityLookup" class="org.onap.aai.sparky.config.oxm.SuggestionEntityLookup"
+		factory-method="getInstance" />
+
+	<bean id="oxmModelProcessorSet" class="org.springframework.beans.factory.config.SetFactoryBean">
+		<property name="targetSetClass" value="java.util.HashSet" />
+		<property name="sourceSet">
+			<set>
+				<ref bean="crossEntityReferenceLookup" />
+				<ref bean="geoEntityLookup" />
+				<ref bean="oxmEntityLookup" />
+				<ref bean="searchableEntityLookup" />
+				<ref bean="suggestionEntityLookup" />
+			</set>
+		</property>
+	</bean>
+
+	<bean id="oxmModelLoader" class="org.onap.aai.sparky.config.oxm.OxmModelLoader" init-method="loadLatestOxmModel">
+		<!-- the int argument is the latestVersionOverride.  -1 disables the override -->
+		<constructor-arg type="int" value="-1" />
+		<constructor-arg ref="oxmModelProcessorSet" />
+	</bean>
+
+	<bean id="searchProviderRegistry" 
+		class="org.onap.aai.sparky.search.registry.SearchProviderRegistry" />
+
+	<bean id="aggregateSummaryProcessor" 
+		class="org.onap.aai.sparky.aggregatevnf.search.AggregateSummaryProcessor" />
+
+	<bean id="filtersConfig" 
+		class="org.onap.aai.sparky.search.filters.config.FiltersConfig" 
+		factory-method="getInstance" />
+
+	<bean id="filteredSearchHelper" class="org.onap.aai.sparky.search.filters.FilteredSearchHelper" >
+		<constructor-arg ref="filtersConfig" />
+	</bean>
+
+	<bean id="filterProcessor" class="org.onap.aai.sparky.search.filters.FilterProcessor" >
+		<property name="filteredSearchHelper" ref="filteredSearchHelper" />
+	</bean>
+
+	<bean id="unifiedSearchProcessor" class="org.onap.aai.sparky.search.UnifiedSearchProcessor">
+		<property name="searchProviderRegistry" ref="searchProviderRegistry" />
+	</bean>
+
+	<bean id="entityCountHistoryProcessor" class="org.onap.aai.sparky.search.EntityCountHistoryProcessor">
+		<constructor-arg ref="visualizationConfigurations" /> 
+	</bean>
+    
+    <bean id="attributeUpdater"
+        class="org.onap.aai.sparky.editattributes.AttributeUpdater">
+        <constructor-arg ref="oxmModelLoader" />
+        <constructor-arg ref="oxmEntityLookup" />
+        <constructor-arg ref="activeInventoryAdapter" />
+    </bean>
+    
+    <bean id="attributeEditProcessor"
+        class="org.onap.aai.sparky.editattributes.AttributeEditProcessor">
+        <constructor-arg ref="attributeUpdater" />
+    </bean>
+    
+    <bean id="geoVisualizationProcessor"
+        class="org.onap.aai.sparky.inventory.GeoVisualizationProcessor" />
+		
+</beans>

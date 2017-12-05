@@ -22,9 +22,9 @@
  */
 package org.onap.aai.sparky.viewandinspect.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.Arrays;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * The Class Relationship.

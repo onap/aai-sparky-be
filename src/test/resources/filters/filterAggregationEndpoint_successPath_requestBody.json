@@ -1,0 +1,11 @@
+{
+  "filters": [
+    {
+      "filterId": "1",
+      "filterValue": "Created"
+    },
+    {
+      "filterId": "2"
+    }
+  ]
+}

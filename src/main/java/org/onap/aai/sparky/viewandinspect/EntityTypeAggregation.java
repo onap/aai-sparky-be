@@ -22,13 +22,11 @@
  */
 package org.onap.aai.sparky.viewandinspect;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.onap.aai.sparky.util.NodeUtils;
-import org.onap.aai.sparky.viewandinspect.EntityTypeAggregation;
+
+
 
 /**
  * The Class EntityTypeAggregation.
@@ -36,13 +34,6 @@ import org.onap.aai.sparky.viewandinspect.EntityTypeAggregation;
 public class EntityTypeAggregation {
 
   private ConcurrentHashMap<String, AtomicInteger> counters;
-
-  /**
-   * @param counters the counters to set
-   */
-  public void setCounters(ConcurrentHashMap<String, AtomicInteger> counters) {
-    this.counters = counters;
-  }
 
   /**
    * Instantiates a new entity type aggregation.
@@ -64,4 +55,5 @@ public class EntityTypeAggregation {
   public ConcurrentHashMap<String, AtomicInteger> getCounters() {
     return counters;
   }
+
 }

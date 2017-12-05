@@ -26,5 +26,4 @@ package org.onap.aai.sparky.viewandinspect.enumeration;
  * The Enum NodeProcessingState.
  */
 public enum NodeProcessingState {
-  INIT, SELF_LINK_UNRESOLVED, SELF_LINK_RESPONSE_UNPROCESSED, NEIGHBORS_UNPROCESSED, READY, ERROR
-}
+  INIT, SELF_LINK_UNRESOLVED, SELF_LINK_RESPONSE_UNPROCESSED, NEIGHBORS_UNPROCESSED, READY, ERROR}

@@ -26,29 +26,25 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Properties;
 
-import javax.ws.rs.core.UriBuilder;
-
+import org.onap.aai.cl.api.Logger;
+import org.onap.aai.cl.eelf.LoggerFactory;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
-import org.onap.aai.sparky.synchronizer.config.TaskProcessorConfig;
 import org.onap.aai.sparky.util.ConfigHelper;
 import org.onap.aai.sparky.util.Encryptor;
 import org.onap.aai.sparky.viewandinspect.config.TierSupportUiConstants;
-import org.onap.aai.cl.api.Logger;
-import org.onap.aai.cl.eelf.LoggerFactory;
+
 /**
  * The Class ActiveInventoryConfig.
  */
 public class ActiveInventoryConfig {
 
-  
-  
   public static final String CONFIG_FILE =
       TierSupportUiConstants.DYNAMIC_CONFIG_APP_LOCATION + "aai.properties";
   private static ActiveInventoryConfig instance;
+
   private static final Logger LOG = LoggerFactory.getInstance().getLogger(
-	      ActiveInventoryConfig.class);
-  private static final String HTTP_SCHEME = "http";
-  private static final String HTTPS_SCHEME = "https";
+      ActiveInventoryConfig.class);
+
 
   public static ActiveInventoryConfig getConfig() throws Exception {
     if (instance == null) {
@@ -60,8 +56,7 @@ public class ActiveInventoryConfig {
 
   private ActiveInventoryRestConfig aaiRestConfig;
   private ActiveInventorySslConfig aaiSslConfig;
-  private TaskProcessorConfig taskProcessorConfig;
-
+  
   /**
    * Instantiates a new active inventory config.
    *
@@ -70,36 +65,17 @@ public class ActiveInventoryConfig {
   protected ActiveInventoryConfig() throws Exception {
 
     Properties props = ConfigHelper.loadConfigFromExplicitPath(CONFIG_FILE);
-    aaiRestConfig = new ActiveInventoryRestConfig(props);
-    aaiSslConfig = new ActiveInventorySslConfig(props, new Encryptor());
-
-    taskProcessorConfig = new TaskProcessorConfig();
-    taskProcessorConfig
-        .initializeFromProperties(ConfigHelper.getConfigWithPrefix("aai.taskProcessor", props));
-
-
+    initialize(props);
   }
   
-  protected ActiveInventoryConfig(Properties props) throws Exception {
-
+  public ActiveInventoryConfig(Properties props) throws Exception {
+    initialize(props);
+  }
+  
+  private void initialize(Properties props) {
     aaiRestConfig = new ActiveInventoryRestConfig(props);
     aaiSslConfig = new ActiveInventorySslConfig(props, new Encryptor());
-
-    taskProcessorConfig = new TaskProcessorConfig();
-    taskProcessorConfig
-        .initializeFromProperties(ConfigHelper.getConfigWithPrefix("aai.taskProcessor", props));
-
-
   }
-
-  public TaskProcessorConfig getTaskProcessorConfig() {
-    return taskProcessorConfig;
-  }
-
-  public void setTaskProcessorConfig(TaskProcessorConfig taskProcessorConfig) {
-    this.taskProcessorConfig = taskProcessorConfig;
-  }
-
 
   public ActiveInventoryRestConfig getAaiRestConfig() {
     return aaiRestConfig;
@@ -117,41 +93,17 @@ public class ActiveInventoryConfig {
     this.aaiSslConfig = aaiSslConfig;
   }
   
-  public String repairSelfLink(String selflink) {
+ 
 
-    if (selflink == null) {
+  public static String extractResourcePath(String selflink) {
+    try {
+      return new URI(selflink).getRawPath();
+    } catch (URISyntaxException uriSyntaxException) {
+      LOG.error(AaiUiMsgs.ERROR_EXTRACTING_RESOURCE_PATH_FROM_LINK, uriSyntaxException.getMessage());
       return selflink;
     }
-
-    UriBuilder builder = UriBuilder.fromPath(selflink).host(aaiRestConfig.getHost())
-        .port(Integer.parseInt(aaiRestConfig.getPort()));
-
-    switch (aaiRestConfig.getAuthenticationMode()) {
-
-      case SSL_BASIC:
-      case SSL_CERT: {
-        builder.scheme(HTTPS_SCHEME);
-        break;
-      }
-
-      default: {
-        builder.scheme(HTTP_SCHEME);
-      }
-    }
-
-    return builder.build().toString();
-
   }
-  
-  public static String extractResourcePath(String selflink) {
-	    try {
-	      return new URI(selflink).getPath();
-	    } catch (URISyntaxException uriSyntaxException) {
-	      LOG.error(AaiUiMsgs.ERROR_EXTRACTING_RESOURCE_PATH_FROM_LINK, uriSyntaxException.getMessage());
-	      return selflink;
-	    }
-	  }
-  
+
   /* (non-Javadoc)
    * @see java.lang.Object#toString()
    */
@@ -161,9 +113,6 @@ public class ActiveInventoryConfig {
         + aaiSslConfig + "]";
   }
 
-  public URI getBaseUri() {
-    return UriBuilder.fromUri("https://" + aaiRestConfig.getHost() + ":" + aaiRestConfig.getPort()
-        + aaiRestConfig.getResourceBasePath()).build();
-  }
+ 
 
 }

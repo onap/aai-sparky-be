@@ -25,6 +25,10 @@ package org.onap.aai.sparky.dal.elasticsearch;
 import org.onap.aai.sparky.dal.rest.OperationResult;
 import org.onap.aai.sparky.dal.rest.RestDataProvider;
 
+/*
+ * TODO:   DELETE ME
+ */
+
 /**
  * The Interface ElasticSearchDataProvider.
  */
@@ -55,7 +59,7 @@ public interface ElasticSearchDataProvider extends RestDataProvider {
   OperationResult retrieveEntityById(String entityId) throws Exception;
 
   /* (non-Javadoc)
-   * @see org.onap.aai.sparky.dal.rest.RestDataProvider#shutdown()
+   * @see org.openecomp.sparky.dal.rest.RestDataProvider#shutdown()
    */
   @Override
   void shutdown();

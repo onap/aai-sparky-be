@@ -20,6 +20,7 @@
  *
  * ECOMP is a trademark and service mark of AT&T Intellectual Property.
  */
+
 package org.onap.aai.sparky.analytics;
 
 import java.util.HashMap;
@@ -31,34 +32,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class AbstractStatistics implements ComponentStatistics {
 
   private HashMap<String, AtomicInteger> namedCounters;
-  /**
-   * @return the namedCounters
-   */
-  public HashMap<String, AtomicInteger> getNamedCounters() {
-    return namedCounters;
-  }
-
-  /**
-   * @param namedCounters the namedCounters to set
-   */
-  public void setNamedCounters(HashMap<String, AtomicInteger> namedCounters) {
-    this.namedCounters = namedCounters;
-  }
-
-  /**
-   * @return the namedHistograms
-   */
-  public HashMap<String, HistogramSampler> getNamedHistograms() {
-    return namedHistograms;
-  }
-
-  /**
-   * @param namedHistograms the namedHistograms to set
-   */
-  public void setNamedHistograms(HashMap<String, HistogramSampler> namedHistograms) {
-    this.namedHistograms = namedHistograms;
-  }
-
   private HashMap<String, HistogramSampler> namedHistograms;
 
   /**
@@ -70,7 +43,7 @@ public class AbstractStatistics implements ComponentStatistics {
   }
 
   /* (non-Javadoc)
-   * @see org.onap.aai.sparky.analytics.ComponentStatistics#addCounter(java.lang.String)
+   * @see org.openecomp.sparky.analytics.ComponentStatistics#addCounter(java.lang.String)
    */
   /*
    * sync-lock the creation of counters during initialization, but run time should not use lock
@@ -91,7 +64,7 @@ public class AbstractStatistics implements ComponentStatistics {
   }
 
   /* (non-Javadoc)
-   * @see org.onap.aai.sparky.analytics.ComponentStatistics#pegCounter(java.lang.String)
+   * @see org.openecomp.sparky.analytics.ComponentStatistics#pegCounter(java.lang.String)
    */
   @Override
   public void pegCounter(String key) {
@@ -105,7 +78,7 @@ public class AbstractStatistics implements ComponentStatistics {
   }
 
   /* (non-Javadoc)
-   * @see org.onap.aai.sparky.analytics.ComponentStatistics#incrementCounter(java.lang.String, int)
+   * @see org.openecomp.sparky.analytics.ComponentStatistics#incrementCounter(java.lang.String, int)
    */
   @Override
   public void incrementCounter(String key, int value) {
@@ -120,7 +93,7 @@ public class AbstractStatistics implements ComponentStatistics {
 
 
   /* (non-Javadoc)
-   * @see org.onap.aai.sparky.analytics.ComponentStatistics#addHistogram(java.lang.String, java.lang.String, long, int, int)
+   * @see org.openecomp.sparky.analytics.ComponentStatistics#addHistogram(java.lang.String, java.lang.String, long, int, int)
    */
   @Override
   public synchronized void addHistogram(String key, String histName, long maxYValue, int numBins,
@@ -135,7 +108,7 @@ public class AbstractStatistics implements ComponentStatistics {
   }
 
   /* (non-Javadoc)
-   * @see org.onap.aai.sparky.analytics.ComponentStatistics#updateHistogram(java.lang.String, long)
+   * @see org.openecomp.sparky.analytics.ComponentStatistics#updateHistogram(java.lang.String, long)
    */
   @Override
   public void updateHistogram(String key, long value) {
@@ -147,7 +120,7 @@ public class AbstractStatistics implements ComponentStatistics {
   }
 
   /* (non-Javadoc)
-   * @see org.onap.aai.sparky.analytics.ComponentStatistics#reset()
+   * @see org.openecomp.sparky.analytics.ComponentStatistics#reset()
    */
   @Override
   public void reset() {

@@ -22,12 +22,13 @@
  */
 package org.onap.aai.sparky.dal.aai;
 
-import org.onap.aai.sparky.analytics.AbstractStatistics;
-import org.onap.aai.sparky.dal.NetworkTransaction;
-import org.onap.aai.sparky.dal.rest.OperationResult;
-import org.onap.aai.sparky.logging.AaiUiMsgs;
 import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
+import org.onap.aai.restclient.client.OperationResult;
+import org.onap.aai.sparky.analytics.AbstractStatistics;
+import org.onap.aai.sparky.dal.ActiveInventoryAdapter;
+import org.onap.aai.sparky.dal.NetworkTransaction;
+import org.onap.aai.sparky.logging.AaiUiMsgs;
 
 /**
  * The Class ActiveInventoryProcessingExceptionStatistics.

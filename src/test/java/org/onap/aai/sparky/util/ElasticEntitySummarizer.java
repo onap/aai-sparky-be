@@ -1,27 +1,27 @@
-/* 
-* ============LICENSE_START=======================================================
-* SPARKY (AAI UI service)
-* ================================================================================
-* Copyright © 2017 AT&T Intellectual Property.
-* Copyright © 2017 Amdocs
-* All rights reserved.
-* ================================================================================
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-* 
-*      http://www.apache.org/licenses/LICENSE-2.0
-* 
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-* ============LICENSE_END=========================================================
-* 
-* ECOMP and OpenECOMP are trademarks
-* and service marks of AT&T Intellectual Property.
-*/
+/**
+ * ============LICENSE_START===================================================
+ * SPARKY (AAI UI service)
+ * ============================================================================
+ * Copyright © 2017 AT&T Intellectual Property.
+ * Copyright © 2017 Amdocs
+ * All rights reserved.
+ * ============================================================================
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * ============LICENSE_END=====================================================
+ *
+ * ECOMP and OpenECOMP are trademarks
+ * and service marks of AT&T Intellectual Property.
+ */
 
 package org.onap.aai.sparky.util;
 
@@ -32,11 +32,9 @@ import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.onap.aai.sparky.config.oxm.OxmModelLoader;
 import org.onap.aai.sparky.dal.elasticsearch.config.ElasticSearchConfig;
 import org.onap.aai.sparky.dal.exception.ElasticSearchOperationException;
 import org.onap.aai.sparky.dal.rest.RestDataProvider;
-import org.onap.aai.sparky.synchronizer.config.TaskProcessorConfig;
 
 /**
  * The Class ElasticEntitySummarizer.
@@ -44,49 +42,6 @@ import org.onap.aai.sparky.synchronizer.config.TaskProcessorConfig;
 public class ElasticEntitySummarizer {
 
   private RestDataProvider syncAdapter;
-  /**
-   * @return the syncAdapter
-   */
-  public RestDataProvider getSyncAdapter() {
-    return syncAdapter;
-  }
-
-  /**
-   * @param syncAdapter the syncAdapter to set
-   */
-  public void setSyncAdapter(RestDataProvider syncAdapter) {
-    this.syncAdapter = syncAdapter;
-  }
-
-  /**
-   * @return the elasticConfig
-   */
-  public ElasticSearchConfig getElasticConfig() {
-    return elasticConfig;
-  }
-
-  /**
-   * @param elasticConfig the elasticConfig to set
-   */
-  public void setElasticConfig(ElasticSearchConfig elasticConfig) {
-    this.elasticConfig = elasticConfig;
-  }
-
-  /**
-   * @return the entityCounters
-   */
-  public Map<String, AtomicInteger> getEntityCounters() {
-    return entityCounters;
-  }
-
-  /**
-   * @param entityCounters the entityCounters to set
-   */
-  public void setEntityCounters(Map<String, AtomicInteger> entityCounters) {
-    this.entityCounters = entityCounters;
-  }
-
-
   private ElasticSearchConfig elasticConfig;
   private Map<String, AtomicInteger> entityCounters;
 
@@ -96,12 +51,10 @@ public class ElasticEntitySummarizer {
    * @param loader the loader
    * @throws Exception the exception
    */
-  public ElasticEntitySummarizer(OxmModelLoader loader) throws Exception {
+  public ElasticEntitySummarizer() throws Exception {
 
 
     elasticConfig = new ElasticSearchConfig();
-    TaskProcessorConfig tpc = new TaskProcessorConfig();
-    elasticConfig.setProcessorConfig(tpc);
 
     elasticConfig.setIndexName("entitysearchindex-localhost");
     elasticConfig.setIpAddress("127.0.0.1");
@@ -193,4 +146,24 @@ public class ElasticEntitySummarizer {
 
 
   }
+
+
+  /**
+   * The main method.
+   *
+   * @param args the arguments
+   * @throws ElasticSearchOperationException the elastic search operation exception
+   */
+  public static void main(String[] args) throws ElasticSearchOperationException {
+
+
+    // ElasticEntitySummarizer summarizer = new ElasticEntitySummarizer();
+    // summarizer.enumerateEntities();
+
+
+
+  }
+
+
+
 }

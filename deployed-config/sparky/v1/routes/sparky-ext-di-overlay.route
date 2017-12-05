@@ -1,0 +1,12 @@
+<route xmlns="http://camel.apache.org/schema/spring" trace="true">
+	<from uri="servlet:/routerService?matchOnUriPrefix=true" />
+    <choice>
+        <when>
+           <simple>${in.headers.CamelHttpUri} contains 'servicegraph'</simple>
+           <to uri="bean:aaiuiProxyProcessor?method=proxyMessage"/>
+        </when>
+        <otherwise>
+        	<to uri="bean:aaiuiProxyProcessor?method=proxyMessage"/>
+        </otherwise>
+     </choice>
+</route>

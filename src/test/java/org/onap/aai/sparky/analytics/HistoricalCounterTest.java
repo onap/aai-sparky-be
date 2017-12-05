@@ -1,52 +1,70 @@
 package org.onap.aai.sparky.analytics;
 
-import org.junit.Assert;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.Before;
 import org.junit.Test;
+import org.onap.aai.sparky.analytics.HistoricalCounter;
 
 public class HistoricalCounterTest {
-
 	
-	@Test
-	public void testAllMethods() {
-		HistoricalCounter hc = new HistoricalCounter(true);
+	
+	private HistoricalCounter historicalCounter;
+	private HistoricalCounter historicalCount; 
+	@Before
+	  public void init() throws Exception {
+	     historicalCounter = new HistoricalCounter(true);
+	     historicalCount = new HistoricalCounter(false); 
+	  }
+	
+	@Test 
+	public void successfullInitialization() {
+		assertEquals(-1, historicalCounter.getMin(),0);
+		assertEquals(0, historicalCounter.getMax(),0);
+		assertEquals(0, historicalCounter.getNumSamples(),0);
+		assertEquals(0, historicalCounter.getNumSamples(),0);
+		assertEquals(0.0, historicalCounter.getValue(),0);
+		assertEquals(0, historicalCounter.getAvg(),0);
+		assertTrue(historicalCounter.isSingleValue());
 		
-		boolean maintainSingleValue = hc.isSingleValue();
-		Assert.assertTrue(maintainSingleValue);
-		
-		hc.update(1.0);
-		double value = hc.getValue();
-		Assert.assertEquals(1.0, value, 0.1);
-		
-		double min = hc.getMin();
-		Assert.assertEquals(-1, min, 0.1);
-		
-		double max = hc.getMax();
-		Assert.assertEquals(0, max, 0.1);
-		
-		long numOfSamples = hc.getNumSamples();
-		Assert.assertEquals(0, numOfSamples, 0.1);
-		
-		double avg = hc.getAvg();
-		Assert.assertEquals(0, avg, 0.1);
-		
-		String stringValue = hc.toString();
-		Assert.assertNotNull(stringValue);
-		
-		hc.reset();
-		
-		double valueReset = hc.getValue();
-		Assert.assertEquals(0.0, valueReset, 0.1);
-		
-		double minReset = hc.getMin();
-		Assert.assertEquals(-1, minReset, 0.1);
-		
-		double maxReset = hc.getMax();
-		Assert.assertEquals(0, maxReset, 0.1);
-		
-		long numOfSamplesReset = hc.getNumSamples();
-		Assert.assertEquals(0, numOfSamplesReset, 0.1);
-		
-		double avgReset = hc.getAvg();
-		Assert.assertEquals(0, avgReset, 0.1);
 	}
+	
+	@Test 
+	public void updateValuesAndReset() {
+		historicalCounter.update(-1);
+		assertEquals(0, historicalCounter.getValue(),0);
+		historicalCounter.update(10);
+		assertEquals(10, historicalCounter.getValue(),0);
+		historicalCounter.reset();
+		assertEquals(-1, historicalCounter.getMin(),0);
+	    assertEquals(0, historicalCounter.getMax(),0);
+		assertEquals(0, historicalCounter.getNumSamples(),0);
+		assertEquals(0, historicalCounter.getNumSamples(),0);
+		assertEquals(0.0, historicalCounter.getValue(),0);
+		
+	}
+	
+	@Test 
+	public void updateValues() {
+		historicalCount.update(2);
+		assertEquals(2, historicalCount.getMin(),0);
+		historicalCount.setMin(10);
+		historicalCount.update(3);
+		assertEquals(3, historicalCount.getMin(),0);
+		historicalCount.setMax(1);
+		historicalCount.update(4);
+		assertEquals(4, historicalCount.getMax(),0);
+		historicalCount.setTotalOfSamples(10);
+		historicalCount.setNumSamples(2);
+		assertEquals(5, historicalCount.getAvg(),0);
+		historicalCount.setTotalOfSamples(10);
+		assertEquals(10, historicalCount.getTotalOfSamples(),0);
+		historicalCount.setMaintainSingleValue(true);
+		assertTrue(historicalCounter.isSingleValue());
+		
+	}
+		
+		
+
 }

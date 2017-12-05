@@ -1,69 +1,44 @@
-/* 
-* ============LICENSE_START=======================================================
-* SPARKY (inventory UI service)
-* ================================================================================
-* Copyright © 2017 AT&T Intellectual Property.
-* Copyright © 2017 Amdocs
-* All rights reserved.
-* ================================================================================
-* Licensed under the Apache License, Version 2.0 (the "License");
-* you may not use this file except in compliance with the License.
-* You may obtain a copy of the License at
-* 
-*      http://www.apache.org/licenses/LICENSE-2.0
-* 
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-* ============LICENSE_END=========================================================
-* 
-* ECOMP and OpenECOMP are trademarks
-* and service marks of AT&T Intellectual Property.
-*/
+/**
+ * ============LICENSE_START===================================================
+ * SPARKY (AAI UI service)
+ * ============================================================================
+ * Copyright © 2017 AT&T Intellectual Property.
+ * Copyright © 2017 Amdocs
+ * All rights reserved.
+ * ============================================================================
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * ============LICENSE_END=====================================================
+ *
+ * ECOMP and OpenECOMP are trademarks
+ * and service marks of AT&T Intellectual Property.
+ */
 
 package org.onap.aai.sparky.synchronizer;
-
-import org.onap.aai.sparky.dal.aai.ActiveInventoryAdapter;
-import org.onap.aai.sparky.dal.aai.config.ActiveInventoryConfig;
-import org.onap.aai.sparky.dal.cache.InMemoryEntityCache;
-import org.onap.aai.sparky.dal.cache.PersistentEntityCache;
-import org.onap.aai.sparky.dal.elasticsearch.ElasticSearchAdapter;
-import org.onap.aai.sparky.dal.elasticsearch.ElasticSearchDataProvider;
-import org.onap.aai.sparky.dal.elasticsearch.config.ElasticSearchConfig;
-import org.onap.aai.sparky.dal.rest.OperationResult;
-import org.onap.aai.sparky.dal.rest.RestClientBuilder;
-import org.onap.aai.sparky.dal.rest.RestfulDataAccessor;
-import org.onap.aai.sparky.synchronizer.AutosuggestionSynchronizer;
-import org.onap.aai.sparky.synchronizer.CrossEntityReferenceSynchronizer;
-import org.onap.aai.sparky.synchronizer.ElasticSearchIndexCleaner;
-import org.onap.aai.sparky.synchronizer.IndexCleaner;
-import org.onap.aai.sparky.synchronizer.IndexIntegrityValidator;
-import org.onap.aai.sparky.synchronizer.SearchableEntitySynchronizer;
-import org.onap.aai.sparky.synchronizer.SyncController;
-import org.onap.aai.sparky.synchronizer.SyncController.SyncActions;
-import org.onap.aai.sparky.synchronizer.enumeration.SynchronizerState;
-import org.slf4j.LoggerFactory;
-
-import ch.qos.logback.classic.Level;
 
 /**
  * The Class SyncControllerBuilder.
  */
 public class SyncControllerBuilder {
 
-  /**
-   * Do master entity sync.
+  
+  /*
+   * We'll have to revisit this class, as the sync controllers are wired up pretty differently now
    */
-  public void doMasterEntitySync() {
-
-  }
-
+  
   /**
    * Test elastic search update api.
    */
-  public void testElasticSearchUpdateApi() {
+/*  public void testElasticSearchUpdateApi() {
     try {
 
       RestClientBuilder clientBuilder = new RestClientBuilder();
@@ -76,7 +51,7 @@ public class SyncControllerBuilder {
           new ElasticSearchAdapter(nonCachingRestProvider, esConfig);
 
       String payload =
-          "{ \"entityType\": \"complex\", \"pkey\": \"MORRISTOWN0075\", \"location\": { \"lat\": \"40.793414\", \"lon\": \"-74.480432\" }, \"selfLink\": \"https://aai-hostname:8443/aai/v8/cloud-infrastructure/complexes/complex/MORRISTOWN0075?nodes-only\" }\n";
+          "{ \"entityType\": \"complex\", \"pkey\": \"MORRISTOWN0075\", \"location\": { \"lat\": \"40.793414\", \"lon\": \"-74.480432\" }, \"selfLink\": \"https://aai-int1.test.att.com:8443/aai/v8/cloud-infrastructure/complexes/complex/MORRISTOWN0075?nodes-only\" }\n";
 
       String updateRequest = elasticSearchDataProvider.buildBulkImportOperationRequest(
           "topographysearchindex-localhost", "default",
@@ -106,22 +81,21 @@ public class SyncControllerBuilder {
        */
 
 
-
+/*
     } catch (Exception exc) {
       exc.printStackTrace();
       System.out.println("Error:  failed to sync with message = " + exc.getMessage());
     }
   }
-
+  
   /**
    * Do historical entity sync.
-   */
+   *//*
   public void doHistoricalEntitySync() {
     try {
-      SyncController syncController = new SyncController("historicalEntityTestController");
+      SyncController syncController = new SyncControllerImpl("historicalEntityTestController");
 
-      ActiveInventoryAdapter aaiAdapter = new ActiveInventoryAdapter(new RestClientBuilder());
-      aaiAdapter.setCacheEnabled(false);
+      ActiveInventoryAdapter aaiAdapter = new ActiveInventoryAdapter(new OxmModelLoader(), new RestClientBuilder());
 
       RestClientBuilder clientBuilder = new RestClientBuilder();
       clientBuilder.setUseHttps(false);
@@ -139,6 +113,17 @@ public class SyncControllerBuilder {
               esConfig.buildElasticSearchEntityCountHistoryTableConfig());
 
       syncController.registerIndexValidator(entityCounterHistoryValidator);
+
+
+      //////
+
+
+
+      HistoricalEntitySummarizer historicalSummarizer =
+          new HistoricalEntitySummarizer(esConfig.getEntityCountHistoryIndex());
+      historicalSummarizer.setAaiDataProvider(aaiAdapter);
+      historicalSummarizer.setEsDataProvider(esAdapter);
+      syncController.registerEntitySynchronizer(historicalSummarizer);
 
       ////
 
@@ -164,7 +149,7 @@ public class SyncControllerBuilder {
       // syncController.registerIndexCleaner(index1Cleaner);
 
       ///
-
+/*
       for (int x = 0; x < 10; x++) {
 
         syncController.performAction(SyncActions.SYNCHRONIZE);
@@ -184,26 +169,14 @@ public class SyncControllerBuilder {
       System.out.println("Error:  failed to sync with message = " + exc.getMessage());
     }
   }
-
-
-
+  
   /**
    * Do geo entity sync.
-   */
+   *//*
   public void doGeoEntitySync() {
     try {
 
-      ActiveInventoryAdapter aaiAdapter = new ActiveInventoryAdapter(new RestClientBuilder());
-
-      aaiAdapter.setCacheEnabled(true);
-
-      InMemoryEntityCache aaiInMemoryCache = new InMemoryEntityCache();
-      aaiAdapter.setEntityCache(aaiInMemoryCache);
-
-      /*
-       * PersistentEntityCache aaiDiskCache = new PersistentEntityCache();
-       * aaiAdapter.setEntityCache(aaiDiskCache);
-       */
+      ActiveInventoryAdapter aaiAdapter = new ActiveInventoryAdapter(new OxmModelLoader(), new RestClientBuilder());
 
       RestClientBuilder clientBuilder = new RestClientBuilder();
       clientBuilder.setUseHttps(false);
@@ -218,9 +191,16 @@ public class SyncControllerBuilder {
               esConfig.getType(), esConfig.getIpAddress(), esConfig.getHttpPort(),
               esConfig.buildElasticSearchTableConfig());
 
-      SyncController syncController = new SyncController("geoEntitySyncTestController");
+      SyncController syncController = new SyncControllerImpl("geoEntitySyncTestController");
       syncController.registerIndexValidator(entitySearchIndexValidator);
 
+
+      //////
+
+      GeoSynchronizer geoSync = new GeoSynchronizer("topographysearchindex-localhost");
+      geoSync.setAaiDataProvider(aaiAdapter);
+      geoSync.setEsDataProvider(esAdapter);
+      syncController.registerEntitySynchronizer(geoSync);
 
       ////
 
@@ -246,7 +226,7 @@ public class SyncControllerBuilder {
       // syncController.registerIndexCleaner(index1Cleaner);
 
       ///
-
+/*
       syncController.performAction(SyncActions.SYNCHRONIZE);
 
       while (syncController.getState() == SynchronizerState.PERFORMING_SYNCHRONIZATION) {
@@ -263,22 +243,12 @@ public class SyncControllerBuilder {
 
   /**
    * Do searchable entitysync.
-   */
+   *//*
   public void doSearchableEntitysync() {
     try {
       
 
-      ActiveInventoryAdapter aaiAdapter = new ActiveInventoryAdapter(new RestClientBuilder());
-
-      aaiAdapter.setCacheEnabled(true);
-
-      /*
-       * InMemoryEntityCache aaiInMemoryCache = new InMemoryEntityCache();
-       * aaiAdapter.setEntityCache(aaiInMemoryCache);
-       */
-
-      PersistentEntityCache aaiDiskCache = new PersistentEntityCache();
-      aaiAdapter.setEntityCache(aaiDiskCache);
+      ActiveInventoryAdapter aaiAdapter = new ActiveInventoryAdapter(new OxmModelLoader(), new RestClientBuilder());
 
       RestClientBuilder clientBuilder = new RestClientBuilder();
       clientBuilder.setUseHttps(false);
@@ -290,10 +260,10 @@ public class SyncControllerBuilder {
 
       //////
       
-      SyncController syncController = new SyncController("searchtableEntityTestController");
+      SyncController syncController = new SyncControllerImpl("searchtableEntityTestController");
 
-      SearchableEntitySynchronizer ses =
-          new SearchableEntitySynchronizer("entitysearchindex-localhost");
+      ViewInspectEntitySynchronizer ses =
+          new ViewInspectEntitySynchronizer("entitysearchindex-localhost");
       ses.setAaiDataProvider(aaiAdapter);
       ses.setEsDataProvider(esAdapter);
       syncController.registerEntitySynchronizer(ses);
@@ -320,7 +290,7 @@ public class SyncControllerBuilder {
        */
 
       ///
-
+/*
       syncController.performAction(SyncActions.SYNCHRONIZE);
 
       while (syncController.getState() == SynchronizerState.PERFORMING_SYNCHRONIZATION) {
@@ -337,22 +307,11 @@ public class SyncControllerBuilder {
 
   /**
    * Do cross entity reference sync.
-   */
+   *//*
   public void doCrossEntityReferenceSync() {
     try {
-      
 
-      ActiveInventoryAdapter aaiAdapter = new ActiveInventoryAdapter(new RestClientBuilder());
-
-      aaiAdapter.setCacheEnabled(true);
-
-      /*
-       * InMemoryEntityCache aaiInMemoryCache = new InMemoryEntityCache();
-       * aaiAdapter.setEntityCache(aaiInMemoryCache);
-       */
-
-      PersistentEntityCache aaiDiskCache = new PersistentEntityCache();
-      aaiAdapter.setEntityCache(aaiDiskCache);
+      ActiveInventoryAdapter aaiAdapter = new ActiveInventoryAdapter(new OxmModelLoader(), new RestClientBuilder());
 
       RestClientBuilder clientBuilder = new RestClientBuilder();
       clientBuilder.setUseHttps(false);
@@ -362,7 +321,7 @@ public class SyncControllerBuilder {
 
       ElasticSearchAdapter esAdapter = new ElasticSearchAdapter(nonCachingRestProvider,esConfig);
 
-      SyncController syncController = new SyncController("crossEntityRefSyncController");
+      SyncController syncController = new SyncControllerImpl("crossEntityRefSyncController");
 
       CrossEntityReferenceSynchronizer cers =
           new CrossEntityReferenceSynchronizer("entitysearchindex-localhost", ActiveInventoryConfig.getConfig());
@@ -370,8 +329,8 @@ public class SyncControllerBuilder {
       cers.setEsDataProvider(esAdapter);
       syncController.registerEntitySynchronizer(cers);
 
-      SearchableEntitySynchronizer ses =
-          new SearchableEntitySynchronizer("entitysearchindex-localhost");
+      ViewInspectEntitySynchronizer ses =
+          new ViewInspectEntitySynchronizer("entitysearchindex-localhost");
       ses.setAaiDataProvider(aaiAdapter);
       ses.setEsDataProvider(esAdapter);
       syncController.registerEntitySynchronizer(ses);
@@ -410,22 +369,10 @@ public class SyncControllerBuilder {
 
   /**
    * Do suggestion entitysync.
-   */
+   *//*
   public void doSuggestionEntitySync() {
     try {
-      
-
-      ActiveInventoryAdapter aaiAdapter = new ActiveInventoryAdapter(new RestClientBuilder());
-
-      aaiAdapter.setCacheEnabled(true);
-
-      /*
-       * InMemoryEntityCache aaiInMemoryCache = new InMemoryEntityCache();
-       * aaiAdapter.setEntityCache(aaiInMemoryCache);
-       */
-
-      PersistentEntityCache aaiDiskCache = new PersistentEntityCache();
-      aaiAdapter.setEntityCache(aaiDiskCache);
+      ActiveInventoryAdapter aaiAdapter = new ActiveInventoryAdapter(new OxmModelLoader(), new RestClientBuilder());
 
       RestClientBuilder clientBuilder = new RestClientBuilder();
       clientBuilder.setUseHttps(false);
@@ -433,12 +380,12 @@ public class SyncControllerBuilder {
       RestfulDataAccessor nonCachingRestProvider = new RestfulDataAccessor(clientBuilder);
       ElasticSearchConfig esConfig = ElasticSearchConfig.getConfig();
 
-      ElasticSearchAdapter esAdapter = new ElasticSearchAdapter(nonCachingRestProvider,esConfig);
+      ElasticSearchAdapter esAdapter = new ElasticSearchAdapter(nonCachingRestProvider, esConfig);
       
-      SyncController syncController = new SyncController("suggestionEntityTestController");
+      SyncController syncController = new SyncControllerImpl("suggestionEntityTestController");
 
       AutosuggestionSynchronizer ses =
-          new AutosuggestionSynchronizer("suggestionentityindex-localhost");
+          new AutosuggestionSynchronizer("entityautosuggestindex-localhost");
       ses.setAaiDataProvider(aaiAdapter);
       ses.setEsDataProvider(esAdapter);
       syncController.registerEntitySynchronizer(ses);
@@ -459,10 +406,10 @@ public class SyncControllerBuilder {
   
   /*
    * Do no op sync.
-   */
+   *//*
   public void doNoOpSync() {
     try {
-      SyncController syncController = new SyncController("noopSyncTestController");
+      SyncController syncController = new SyncControllerImpl("noopSyncTestController");
 
       /*
        * ActiveInventoryAdapter aaiAdapter = new ActiveInventoryAdapter(new RestClientBuilder());
@@ -508,7 +455,7 @@ public class SyncControllerBuilder {
        * p2.setIndexName("esi-topo-blah");
        */
       ///
-
+/*
       syncController.performAction(SyncActions.SYNCHRONIZE);
 
       while (syncController.getState() == SynchronizerState.PERFORMING_SYNCHRONIZATION) {
@@ -522,4 +469,44 @@ public class SyncControllerBuilder {
     }
   }
 
+
+  /**
+   * The main method.
+   *
+   * @param args the arguments
+   *//*
+  public static void main(String[] args) {
+    //boolean runSearchableEntitySync = false;
+    //boolean runGeoEntitySync = true;
+
+    //System.setProperty("AJSC_HOME", "e:\\dev");
+    // System.getProperties().setProperty("AJSC_HOME",
+    // "c:\\rpo\\tier-support-ui\\target\\swm\\package\\nix\\"
+    // + "dist_files\\opt\\app\\ajsc-tier-support-ui");
+    
+    System.setProperty("CONFIG_HOME", "appconfig-local");
+    System.setProperty("AJSC_HOME", "x:\\1710_extensibility\\");
+
+    SyncControllerBuilder syncBuilder = new SyncControllerBuilder();
+
+    /*
+     * if (runSearchableEntitySync) syncBuilder.doSearchableEntitysync();
+     */
+/*
+    syncBuilder.doSearchableEntitysync();
+    // syncBuilder.doCrossEntityReferenceSync();
+    // syncBuilder.doHistoricalEntitySync();
+    // syncBuilder.doGeoEntitySync();
+    //syncBuilder.doSuggestionEntitySync();
+    //syncBuilder.doMasterEntitySync();
+    
+    // syncBuilder.testElasticSearchUpdateAPI();
+
+    /*
+     * if (runGeoEntitySync) { syncBuilder.doGeoEntitySync(); }
+     */
+
+
+
+  //}
 }
