@@ -40,7 +40,7 @@ public class TierSupportUiConstants {
   public static String DYNAMIC_CONFIG_APP_LOCATION = CONFIG_HOME;
 
   public static String CONFIG_OXM_LOCATION = CONFIG_HOME + "model" + FILESEP;
-
+  public static String CONFIG_FILTERS_BASE_LOCATION = CONFIG_HOME + FILESEP;
   public static String CONFIG_AUTH_LOCATION = CONFIG_HOME + "auth" + FILESEP;
 
   public static String HOST = "host";
@@ -56,7 +56,10 @@ public class TierSupportUiConstants {
   public static final String ES_SUGGEST_API = "_suggest";
   public static final String ES_COUNT_API = "_count";
   public static final String ES_SEARCH_API = "_search";
-  
+
+  public static final String UI_FILTER_VIEW_NAME_PARAMETER = "viewName";
+  public static final String UI_FILTER_ID_LIST_PARAMETER = "filterIdList";
+
   public static final String ENTITY_AUTO_SUGGEST_INDEX_NAME_DEFAULT = 
       "entityautosuggestindex-localhost";
   public static final String ENTITY_AUTO_SUGGEST_SETTINGS_FILE_DEFAULT =
@@ -65,6 +68,10 @@ public class TierSupportUiConstants {
       "/etc/autoSuggestMappings.json";
   public static final String ENTITY_DYNAMIC_MAPPINGS_FILE_DEFAULT =
       "/etc/dynamicMappings.json";
+  public static final String FILTER_LIST_FILE_DEFAULT =
+      CONFIG_FILTERS_BASE_LOCATION + "filters" + FILESEP + "aaiui_filters.json";
+  public static final String FILTER_MAPPING_FILE_DEFAULT =
+      CONFIG_FILTERS_BASE_LOCATION + "filters" + FILESEP + "aaiui_views.json";
 
   // JUnit testing synchronizer.properties file
   public static String TEST_CONFIG_FILE =
@@ -182,6 +189,21 @@ public class TierSupportUiConstants {
     CONFIG_OXM_LOCATION = cONFIG_OXM_LOCATION;
   }
 
+  /**
+   * @return the cONFIG_FILTERS_BASE_LOCATION
+   */
+  public static String getCONFIG_FILTERS_BASE_LOCATION() {
+    return CONFIG_FILTERS_BASE_LOCATION;
+  }
+
+  /**
+   * @param cONFIG_FILTERS_BASE_LOCATION the cONFIG_FILTERS_BASE_LOCATION to set
+   */
+  public static void setCONFIG_FILTERS_BASE_LOCATION(String cONFIG_FILTERS_BASE_LOCATION) {
+    CONFIG_FILTERS_BASE_LOCATION = cONFIG_FILTERS_BASE_LOCATION;
+  }
+  
+  
   /**
    * @return the cONFIG_AUTH_LOCATION
    */
