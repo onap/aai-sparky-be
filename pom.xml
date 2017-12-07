@@ -18,6 +18,9 @@
 		<module.ajsc.namespace.version>v1</module.ajsc.namespace.version>
 		<ajscRuntimeVersion>2.0.0</ajscRuntimeVersion>
 		<absoluteDistFilesRoot>/appl/${project.artifactId}</absoluteDistFilesRoot>
+		<frontEndGroupdId>org.amdocs.aaiee</frontEndGroupdId>
+		<frontEndArtifactId>sparky-fe</frontEndArtifactId>
+		<frontEndVersion>1.1.0-SNAPSHOT</frontEndVersion>
 
 		<!-- For NO Versioning, REMOVE the /${project.version} from the <distFilesRoot> 
 			property, below. PLEASE, NOTE: If your ${project.version} is a "-SNAPSHOT" 
@@ -41,15 +44,15 @@
 		<testRouteOffer>workstation</testRouteOffer>
 		<testEnv>DEV</testEnv>
 		<checkstyle.config.location>google_checks.xml</checkstyle.config.location>
-        <nexusproxy>https://nexus.onap.org</nexusproxy>
-        
-        <!-- Sonar Configuration -->
-        <sonar.language>java</sonar.language>
-       <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
-       <sonar.surefire.reportsPath>${project.build.directory}/surefire-reports</sonar.surefire.reportsPath>
-       <sonar.jacoco.reportPath>${project.build.directory}/coverage-reports/jacoco.exec</sonar.jacoco.reportPath>
-       <sonar.jacoco.reportMissing.force.zero>false</sonar.jacoco.reportMissing.force.zero>
-       <sonar.projectVersion>${project.version}</sonar.projectVersion>
+		<nexusproxy>https://nexus.onap.org</nexusproxy>
+
+		<!-- Sonar Configuration -->
+		<sonar.language>java</sonar.language>
+		<sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>
+		<sonar.surefire.reportsPath>${project.build.directory}/surefire-reports</sonar.surefire.reportsPath>
+		<sonar.jacoco.reportPath>${project.build.directory}/coverage-reports/jacoco.exec</sonar.jacoco.reportPath>
+		<sonar.jacoco.reportMissing.force.zero>false</sonar.jacoco.reportMissing.force.zero>
+		<sonar.projectVersion>${project.version}</sonar.projectVersion>
 	</properties>
 
 	<dependencies>
@@ -106,13 +109,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.onap.aai</groupId>
-			<artifactId>rest-client</artifactId>
-            <version>1.1.0-SNAPSHOT</version>
-		</dependency>
-
-
-		<dependency>
 			<groupId>org.hamcrest</groupId>
 			<artifactId>hamcrest-library</artifactId>
 			<version>1.3</version>
@@ -149,13 +145,24 @@
 			<version>2.7.4</version>
 		</dependency>
 
-		<!-- Common logging framework -->
-		<dependency>
-		  <groupId>org.onap.aai.logging-service</groupId>
-		  <artifactId>common-logging</artifactId>
-		  <version>1.1.0-SNAPSHOT</version>
-		</dependency>
-		
+        <dependency>
+            <groupId>org.onap.aai.logging-service</groupId>
+            <artifactId>common-logging</artifactId>
+            <version>1.2.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.onap.aai.aai-common</groupId>
+            <artifactId>aai-schema</artifactId>
+            <version>1.2.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.onap.aai</groupId>
+            <artifactId>rest-client</artifactId>
+            <version>1.2.0-SNAPSHOT</version>
+        </dependency>
+
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
