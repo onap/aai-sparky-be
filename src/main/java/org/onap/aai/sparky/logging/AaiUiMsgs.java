@@ -412,6 +412,12 @@ public enum AaiUiMsgs implements LogMessageEnum {
   ERROR_AAI_QUERY_WITH_RETRY,
   /** Arguments: Error extracting resource path from self-link.  Error = {0} */
   ERROR_EXTRACTING_RESOURCE_PATH_FROM_LINK,
+  /** Arguments: {0} = Schema file location */
+  ERROR_READING_JSON_SCHEMA,
+  /** Arguments: {0} = UI view name */
+  VIEW_NAME_NOT_SUPPORTED,
+  /** Arguments: {0} = response code, {1} = filter name */
+  ERROR_FETCHING_FILTER_VALUES,
   /** Arguments: {0} = URI */
   RESOURCE_NOT_FOUND;
   /**
