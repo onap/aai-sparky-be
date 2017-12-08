@@ -35,6 +35,7 @@ import org.onap.aai.sparky.util.NodeUtils;
 public class AggregationSuggestionEntity extends IndexableEntity implements IndexDocument {
 
   private List<String> inputs = new ArrayList<String>();
+
   /**
    * @return the inputs
    */
@@ -72,13 +73,13 @@ public class AggregationSuggestionEntity extends IndexableEntity implements Inde
 
   private final String outputString = "VNFs";
   protected ObjectMapper mapper = new ObjectMapper();
-  
+
   public AggregationSuggestionEntity() {
     super();
     inputs.add("VNFs");
     inputs.add("generic-vnfs");
   }
-  
+
   @Override
   public void deriveFields() {
     this.id = NodeUtils.generateUniqueShaDigest(this.outputString);
@@ -86,23 +87,23 @@ public class AggregationSuggestionEntity extends IndexableEntity implements Inde
 
   @Override
   public String getIndexDocumentJson() {
-    
+
     JSONArray inputArray = new JSONArray();
-    for (String input: inputs) {
-      input = input.replace(",","" );
-      input = input.replace("[","" );
-      input = input.replace("]","" );
+    for (String input : inputs) {
+      input = input.replace(",", "");
+      input = input.replace("[", "");
+      input = input.replace("]", "");
       inputArray.put(input);
     }
-    
+
     JSONObject entitySuggest = new JSONObject();
     entitySuggest.put("input", inputArray);
     entitySuggest.put("output", this.outputString);
     entitySuggest.put("weight", 100);
-    
+
     JSONObject payloadNode = new JSONObject();
     entitySuggest.put("payload", payloadNode);
-    
+
     JSONObject rootNode = new JSONObject();
     rootNode.put("entity_suggest", entitySuggest);
 

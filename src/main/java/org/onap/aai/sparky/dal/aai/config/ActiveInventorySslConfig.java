@@ -48,7 +48,7 @@ public class ActiveInventorySslConfig {
 
   private String basicAuthUsername;
   private String basicAuthPassword;
-  
+
   /**
    * Instantiates a new active inventory ssl config.
    *
@@ -86,12 +86,12 @@ public class ActiveInventorySslConfig {
 
     truststoreFilename =
         TierSupportUiConstants.CONFIG_AUTH_LOCATION + sslProps.getProperty("truststore.filename");
-    
+
     basicAuthUsername = sslProps.getProperty("basicAuth.username");
     basicAuthPassword = decryptPassword(sslProps.getProperty("basicAuth.password"));
-    
-    }
-  
+
+  }
+
   private String decryptPassword(String encryptedPassword) {
 
     try {
@@ -109,7 +109,7 @@ public class ActiveInventorySslConfig {
     }
 
   }
-  
+
   public String getBasicAuthUsername() {
     return basicAuthUsername;
   }
@@ -190,11 +190,10 @@ public class ActiveInventorySslConfig {
   public void setValidateServerCertificateChain(boolean validateServerCertificateChain) {
     this.validateServerCertificateChain = validateServerCertificateChain;
   }
-  
+
   public String getBasicAuthenticationCredentials() {
 
-    String usernameAndPassword = getBasicAuthUsername() + ":"
-        + getBasicAuthPassword();
+    String usernameAndPassword = getBasicAuthUsername() + ":" + getBasicAuthPassword();
     return "Basic " + java.util.Base64.getEncoder().encodeToString(usernameAndPassword.getBytes());
   }
 
@@ -212,7 +211,9 @@ public class ActiveInventorySslConfig {
     this.enableSslDebug = enableSslDebug;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.lang.Object#toString()
    */
   @Override

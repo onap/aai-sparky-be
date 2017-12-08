@@ -48,30 +48,30 @@ import ch.qos.logback.classic.Level;
 public class ElasticSearchConfigTest {
 
   private static final String GOOD_MAPPINGS_FILE =
-          "{" + "\"properties\": {" + "\"entityType\": {" + "\"type\": \"string\"" + "},"
-                  + "\"edgeTagQueryEntityFieldName\": {" + "\"type\": \"string\"," + "\"index\": \"no\""
-                  + "}," + "\"edgeTagQueryEntityFieldValue\": {" + "\"type\": \"string\","
-                  + "\"index\": \"no\"" + "}," + "\"searchTagIDs\" : {" + "\"type\" : \"string\"" + "},"
-                  + "\"searchTags\": {" + "\"type\": \"string\"," + "\"analyzer\": \"nGram_analyzer\","
-                  + "\"search_analyzer\": \"whitespace_analyzer\"}" + "}" + "}";
+      "{" + "\"properties\": {" + "\"entityType\": {" + "\"type\": \"string\"" + "},"
+          + "\"edgeTagQueryEntityFieldName\": {" + "\"type\": \"string\"," + "\"index\": \"no\""
+          + "}," + "\"edgeTagQueryEntityFieldValue\": {" + "\"type\": \"string\","
+          + "\"index\": \"no\"" + "}," + "\"searchTagIDs\" : {" + "\"type\" : \"string\"" + "},"
+          + "\"searchTags\": {" + "\"type\": \"string\"," + "\"analyzer\": \"nGram_analyzer\","
+          + "\"search_analyzer\": \"whitespace_analyzer\"}" + "}" + "}";
 
   private static final String GOOD_SETTINGS_FILE = "{\"analysis\": {" + "\"filter\": {"
-          + "\"nGram_filter\": {" + "\"type\": \"nGram\"," + "\"min_gram\": 1," + "\"max_gram\": 50,"
-          + "\"token_chars\": [" + "\"letter\"," + "\"digit\"," + "\"punctuation\"," + "\"symbol\""
-          + "]}}," + "\"analyzer\": {" + "\"nGram_analyzer\": {" + "\"type\": \"custom\","
-          + "\"tokenizer\": \"whitespace\"," + "\"filter\": [" + "\"lowercase\"," + "\"asciifolding\","
-          + "\"nGram_filter\"]}," + "\"whitespace_analyzer\": {" + "\"type\": \"custom\","
-          + "\"tokenizer\": \"whitespace\"," + "\"filter\": [" + "\"lowercase\","
-          + "\"asciifolding\"]}}}}";
+      + "\"nGram_filter\": {" + "\"type\": \"nGram\"," + "\"min_gram\": 1," + "\"max_gram\": 50,"
+      + "\"token_chars\": [" + "\"letter\"," + "\"digit\"," + "\"punctuation\"," + "\"symbol\""
+      + "]}}," + "\"analyzer\": {" + "\"nGram_analyzer\": {" + "\"type\": \"custom\","
+      + "\"tokenizer\": \"whitespace\"," + "\"filter\": [" + "\"lowercase\"," + "\"asciifolding\","
+      + "\"nGram_filter\"]}," + "\"whitespace_analyzer\": {" + "\"type\": \"custom\","
+      + "\"tokenizer\": \"whitespace\"," + "\"filter\": [" + "\"lowercase\","
+      + "\"asciifolding\"]}}}}";
 
   private static final String BAD_SETTINGS_FILE = "{\"analysis\": {" + "\"filter\": {"
-          + "\"nGram_filter\": {" + "\"type\": \"nGram\"," + "\"min_gram\": 1," + "\"max_gram\": 50,"
-          + "\"token_chars\": [" + "\"letter\"," + "\"digit\"," + "\"punctuation\"," + "\"symbol\""
-          + "]}}," + "\"analyzer\": {" + "\"nGram_analyzer\": {" + "\"type\": \"custom\","
-          + "\"tokenizer\": \"whitespace\"," + "\"filter\": [" + "\"lowercase\"," + "\"asciifolding\","
-          + "\"nGram_filter\"]}," + "\"whitespace_analyzer\": {" + "\"type\": \"custom\","
-          + "\"tokenizer\": \"whitespace\"," + "\"filter\": [" + "\"lowercase\","
-          + "\"asciifolding\"]}}";
+      + "\"nGram_filter\": {" + "\"type\": \"nGram\"," + "\"min_gram\": 1," + "\"max_gram\": 50,"
+      + "\"token_chars\": [" + "\"letter\"," + "\"digit\"," + "\"punctuation\"," + "\"symbol\""
+      + "]}}," + "\"analyzer\": {" + "\"nGram_analyzer\": {" + "\"type\": \"custom\","
+      + "\"tokenizer\": \"whitespace\"," + "\"filter\": [" + "\"lowercase\"," + "\"asciifolding\","
+      + "\"nGram_filter\"]}," + "\"whitespace_analyzer\": {" + "\"type\": \"custom\","
+      + "\"tokenizer\": \"whitespace\"," + "\"filter\": [" + "\"lowercase\","
+      + "\"asciifolding\"]}}";
 
   ElasticSearchConfig elasticSearchConfig;
 
@@ -130,12 +130,12 @@ public class ElasticSearchConfigTest {
    *
    * @return the elastic search settings expect valid config
    * @throws IOException Signals that an I/O exception has occurred.
-   * @throws ElasticSearchOperationException the elastic search operation exception
-   * Need to revisit this test case and change the way this class works
+   * @throws ElasticSearchOperationException the elastic search operation exception Need to revisit
+   *         this test case and change the way this class works
    */
   @Ignore
   public void getElasticSearchSettings_expectValidConfig()
-          throws IOException, ElasticSearchOperationException {
+      throws IOException, ElasticSearchOperationException {
     System.setProperty("AJSC_HOME", new File(".").getCanonicalPath().replace('\\', '/'));
 
     ElasticSearchConfig esConfig = new ElasticSearchConfig();
@@ -152,11 +152,11 @@ public class ElasticSearchConfigTest {
    * @throws IOException Signals that an I/O exception has occurred.
    * @throws ElasticSearchOperationException the elastic search operation exception
    *
-   * Need to revisit this test case and change the way this class works
+   *         Need to revisit this test case and change the way this class works
    */
   @Ignore
   public void getElasticSearchSettings_expectFileNotFoundException()
-          throws IOException, ElasticSearchOperationException {
+      throws IOException, ElasticSearchOperationException {
     System.setProperty("AJSC_HOME", new File(".").getCanonicalPath().replace('\\', '/'));
 
     ElasticSearchConfig esConfig = new ElasticSearchConfig();
@@ -174,11 +174,11 @@ public class ElasticSearchConfigTest {
    * @throws IOException Signals that an I/O exception has occurred.
    * @throws ElasticSearchOperationException the elastic search operation exception
    *
-   * Need to revisit this test case and change the way this class works
+   *         Need to revisit this test case and change the way this class works
    */
   @Ignore
   public void getElasticSearchMappings_expectValidConfig()
-          throws IOException, ElasticSearchOperationException {
+      throws IOException, ElasticSearchOperationException {
     System.setProperty("AJSC_HOME", new File(".").getCanonicalPath().replace('\\', '/'));
 
     ElasticSearchConfig esConfig = new ElasticSearchConfig();
@@ -197,7 +197,7 @@ public class ElasticSearchConfigTest {
    */
   @Test(expected = ElasticSearchOperationException.class)
   public void getElasticSearchMappings_expectFileNotFoundException()
-          throws IOException, ElasticSearchOperationException {
+      throws IOException, ElasticSearchOperationException {
     System.setProperty("AJSC_HOME", new File(".").getCanonicalPath().replace('\\', '/'));
 
     ElasticSearchConfig esConfig = new ElasticSearchConfig();
@@ -216,7 +216,7 @@ public class ElasticSearchConfigTest {
    */
   @Test
   public void buildElasticSearchTableConfig_expectValidResult()
-          throws ElasticSearchOperationException, IOException {
+      throws ElasticSearchOperationException, IOException {
     ElasticSearchConfig spyEsConfig = Mockito.spy(new ElasticSearchConfig());
     Mockito.doReturn(GOOD_MAPPINGS_FILE).when(spyEsConfig).getElasticSearchMappings();
     Mockito.doReturn(GOOD_SETTINGS_FILE).when(spyEsConfig).getElasticSearchSettings();
@@ -233,7 +233,7 @@ public class ElasticSearchConfigTest {
    */
   @Test(expected = ElasticSearchOperationException.class)
   public void buildElasticSearchTableConfig_expectException()
-          throws ElasticSearchOperationException, IOException {
+      throws ElasticSearchOperationException, IOException {
     ElasticSearchConfig spyEsConfig = Mockito.spy(new ElasticSearchConfig());
     Mockito.doReturn(GOOD_MAPPINGS_FILE).when(spyEsConfig).getElasticSearchMappings();
     Mockito.doReturn(BAD_SETTINGS_FILE).when(spyEsConfig).getElasticSearchSettings();
@@ -246,7 +246,8 @@ public class ElasticSearchConfigTest {
   public void testGetFullUrl_ThreeParams() throws Exception {
     Mockito.when(elasticSearchConfig.getIpAddress()).thenReturn("http://localhost");
     Mockito.when(elasticSearchConfig.getHttpPort()).thenReturn("5443");
-    String fullUrl = elasticSearchConfig.getElasticFullUrl("http://localhost:5443/aai/model/index", "entity-index", "entity");
+    String fullUrl = elasticSearchConfig.getElasticFullUrl("http://localhost:5443/aai/model/index",
+        "entity-index", "entity");
     Assert.assertNotNull(fullUrl);
   }
 
@@ -260,7 +261,7 @@ public class ElasticSearchConfigTest {
   }
 
   @Test
-  public void testGetBulkUrl()  throws Exception {
+  public void testGetBulkUrl() throws Exception {
     Mockito.when(elasticSearchConfig.getIpAddress()).thenReturn("http://localhost");
     Mockito.when(elasticSearchConfig.getHttpPort()).thenReturn("5443");
     String fullUrl = elasticSearchConfig.getBulkUrl();
@@ -270,7 +271,8 @@ public class ElasticSearchConfigTest {
   @Test
   public void testGetConfigAsString() throws IOException, ElasticSearchOperationException {
     System.setProperty("AJSC_HOME", new File(".").getCanonicalPath().replace('\\', '/'));
-    String retStr = elasticSearchConfig.getConfigAsString("item-1", System.getProperty("AJSC_HOME")+"/src/test/resources/appconfig/roles.config");
+    String retStr = elasticSearchConfig.getConfigAsString("item-1",
+        System.getProperty("AJSC_HOME") + "/src/test/resources/appconfig/roles.config");
     Assert.assertNotNull(retStr);
   }
 

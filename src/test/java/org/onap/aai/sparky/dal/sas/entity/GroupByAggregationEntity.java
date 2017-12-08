@@ -32,7 +32,7 @@ import org.onap.aai.sparky.dal.elasticsearch.entity.BucketEntity;
 public class GroupByAggregationEntity {
   private int totalChartHits;
   List<BucketEntity> buckets;
-  
+
   public GroupByAggregationEntity() {
     this.buckets = new ArrayList<BucketEntity>();
   }

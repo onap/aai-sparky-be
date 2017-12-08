@@ -28,183 +28,183 @@ import org.onap.aai.sparky.dal.NetworkTransaction;
 
 public class RestOperationalStatisticsTest {
 
-    @Test
-    public void testUpdateCounters_Get() {
-        RestOperationalStatistics ros = new RestOperationalStatistics();
-		
-        OperationResult result = new OperationResult();
-        result.setResultCode(101);
-        result.setResult("result-1");
-        result.setNumRequestRetries(1);
-        NetworkTransaction ntwTxn1 = new NetworkTransaction(HttpMethod.GET, "entity-1", result);
-        ros.updateCounters(ntwTxn1);
-		
-        result.setResultCode(201);
-        result.setResult("result-1");
-        result.setNumRequestRetries(1);
-        NetworkTransaction ntwTxn2 = new NetworkTransaction(HttpMethod.GET, "entity-1", result);
-        ros.updateCounters(ntwTxn2);
-		
-        result.setResultCode(301);
-        result.setResult("result-1");
-        result.setNumRequestRetries(1);
-        NetworkTransaction ntwTxn3 = new NetworkTransaction(HttpMethod.GET, "entity-1", result);
-        ros.updateCounters(ntwTxn3);
-		
-        result.setResultCode(401);
-        result.setResult("result-1");
-        result.setNumRequestRetries(1);
-        NetworkTransaction ntwTxn4 = new NetworkTransaction(HttpMethod.GET, "entity-1", result);
-        ros.updateCounters(ntwTxn4);
-		
-        result.setResultCode(501);
-        result.setResult("result-1");
-        result.setNumRequestRetries(1);
-        NetworkTransaction ntwTxn5 = new NetworkTransaction(HttpMethod.GET, "entity-1", result);
-        ros.updateCounters(ntwTxn5);
-		
-        result.setResultCode(601);
-        result.setResult("result-1");
-        result.setNumRequestRetries(1);
-        NetworkTransaction ntwTxn6 = new NetworkTransaction(HttpMethod.GET, "entity-1", result);
-        ros.updateCounters(ntwTxn6);	
-		
-        String statistics = ros.getStatisticsReport();
-        Assert.assertNotNull(statistics);
-    }
-	
-    @Test
-    public void testUpdateCounters_Put() {
-        RestOperationalStatistics ros = new RestOperationalStatistics();
-		
-        OperationResult result = new OperationResult();
-        result.setResultCode(101);
-        result.setResult("result-1");
-        result.setNumRequestRetries(1);
-        NetworkTransaction ntwTxn1 = new NetworkTransaction(HttpMethod.PUT, "entity-1", result);
-        ros.updateCounters(ntwTxn1);
-		
-        result.setResultCode(201);
-        result.setResult("result-1");
-        result.setNumRequestRetries(1);
-        NetworkTransaction ntwTxn2 = new NetworkTransaction(HttpMethod.PUT, "entity-1", result);
-        ros.updateCounters(ntwTxn2);
-		
-        result.setResultCode(301);
-        result.setResult("result-1");
-        result.setNumRequestRetries(1);
-        NetworkTransaction ntwTxn3 = new NetworkTransaction(HttpMethod.PUT, "entity-1", result);
-        ros.updateCounters(ntwTxn3);
-		
-        result.setResultCode(401);
-        result.setResult("result-1");
-        result.setNumRequestRetries(1);
-        NetworkTransaction ntwTxn4 = new NetworkTransaction(HttpMethod.PUT, "entity-1", result);
-        ros.updateCounters(ntwTxn4);
-		
-        result.setResultCode(501);
-        result.setResult("result-1");
-        result.setNumRequestRetries(1);
-        NetworkTransaction ntwTxn5 = new NetworkTransaction(HttpMethod.PUT, "entity-1", result);
-        ros.updateCounters(ntwTxn5);
-		
-        result.setResultCode(601);
-        result.setResult("result-1");
-        result.setNumRequestRetries(1);
-        NetworkTransaction ntwTxn6 = new NetworkTransaction(HttpMethod.PUT, "entity-1", result);
-        ros.updateCounters(ntwTxn6);
-	
-        String statistics = ros.getStatisticsReport();
-        Assert.assertNotNull(statistics);
-    }
-	
-    @Test
-    public void testUpdateCounters_Post() {
-        RestOperationalStatistics ros = new RestOperationalStatistics();
-		
-        OperationResult result = new OperationResult();
-        result.setResultCode(101);
-        result.setResult("result-1");
-        result.setNumRequestRetries(1);
-        NetworkTransaction ntwTxn1 = new NetworkTransaction(HttpMethod.POST, "entity-1", result);
-        ros.updateCounters(ntwTxn1);
-		
-        result.setResultCode(201);
-        result.setResult("result-1");
-        result.setNumRequestRetries(1);
-        NetworkTransaction ntwTxn2 = new NetworkTransaction(HttpMethod.POST, "entity-1", result);
-        ros.updateCounters(ntwTxn2);
-		
-        result.setResultCode(301);
-        result.setResult("result-1");
-        result.setNumRequestRetries(1);
-        NetworkTransaction ntwTxn3 = new NetworkTransaction(HttpMethod.POST, "entity-1", result);
-        ros.updateCounters(ntwTxn3);
-		
-        result.setResultCode(401);
-        result.setResult("result-1");
-        result.setNumRequestRetries(1);
-        NetworkTransaction ntwTxn4 = new NetworkTransaction(HttpMethod.POST, "entity-1", result);
-        ros.updateCounters(ntwTxn4);
-		
-        result.setResultCode(501);
-        result.setResult("result-1");
-        result.setNumRequestRetries(1);
-        NetworkTransaction ntwTxn5 = new NetworkTransaction(HttpMethod.POST, "entity-1", result);
-        ros.updateCounters(ntwTxn5);
-		
-        result.setResultCode(601);
-        result.setResult("result-1");
-        result.setNumRequestRetries(1);
-        NetworkTransaction ntwTxn6 = new NetworkTransaction(HttpMethod.POST, "entity-1", result);
-        ros.updateCounters(ntwTxn6);
-	
-        String statistics = ros.getStatisticsReport();
-        Assert.assertNotNull(statistics);
-    }
-	
-    @Test
-    public void testUpdateCounters_Delete() {
-        RestOperationalStatistics ros = new RestOperationalStatistics();
-		
-        OperationResult result = new OperationResult();
-        result.setResultCode(101);
-        result.setResult("result-1");
-        result.setNumRequestRetries(1);
-        NetworkTransaction ntwTxn1 = new NetworkTransaction(HttpMethod.DELETE, "entity-1", result);
-        ros.updateCounters(ntwTxn1);
-		
-        result.setResultCode(201);
-        result.setResult("result-1");
-        result.setNumRequestRetries(1);
-        NetworkTransaction ntwTxn2 = new NetworkTransaction(HttpMethod.DELETE, "entity-1", result);
-        ros.updateCounters(ntwTxn2);
-		
-        result.setResultCode(301);
-        result.setResult("result-1");
-        result.setNumRequestRetries(1);
-        NetworkTransaction ntwTxn3 = new NetworkTransaction(HttpMethod.DELETE, "entity-1", result);
-        ros.updateCounters(ntwTxn3);
-		
-        result.setResultCode(401);
-        result.setResult("result-1");
-        result.setNumRequestRetries(1);
-        NetworkTransaction ntwTxn4 = new NetworkTransaction(HttpMethod.DELETE, "entity-1", result);
-        ros.updateCounters(ntwTxn4);
-		
-        result.setResultCode(501);
-        result.setResult("result-1");
-        result.setNumRequestRetries(1);
-        NetworkTransaction ntwTxn5 = new NetworkTransaction(HttpMethod.DELETE, "entity-1", result);
-        ros.updateCounters(ntwTxn5);
-		
-        result.setResultCode(601);
-        result.setResult("result-1");
-        result.setNumRequestRetries(1);
-        NetworkTransaction ntwTxn6 = new NetworkTransaction(HttpMethod.DELETE, "entity-1", result);
-        ros.updateCounters(ntwTxn6);
-	
-        String statistics = ros.getStatisticsReport();
-        Assert.assertNotNull(statistics);
-    }
+  @Test
+  public void testUpdateCounters_Get() {
+    RestOperationalStatistics ros = new RestOperationalStatistics();
+
+    OperationResult result = new OperationResult();
+    result.setResultCode(101);
+    result.setResult("result-1");
+    result.setNumRequestRetries(1);
+    NetworkTransaction ntwTxn1 = new NetworkTransaction(HttpMethod.GET, "entity-1", result);
+    ros.updateCounters(ntwTxn1);
+
+    result.setResultCode(201);
+    result.setResult("result-1");
+    result.setNumRequestRetries(1);
+    NetworkTransaction ntwTxn2 = new NetworkTransaction(HttpMethod.GET, "entity-1", result);
+    ros.updateCounters(ntwTxn2);
+
+    result.setResultCode(301);
+    result.setResult("result-1");
+    result.setNumRequestRetries(1);
+    NetworkTransaction ntwTxn3 = new NetworkTransaction(HttpMethod.GET, "entity-1", result);
+    ros.updateCounters(ntwTxn3);
+
+    result.setResultCode(401);
+    result.setResult("result-1");
+    result.setNumRequestRetries(1);
+    NetworkTransaction ntwTxn4 = new NetworkTransaction(HttpMethod.GET, "entity-1", result);
+    ros.updateCounters(ntwTxn4);
+
+    result.setResultCode(501);
+    result.setResult("result-1");
+    result.setNumRequestRetries(1);
+    NetworkTransaction ntwTxn5 = new NetworkTransaction(HttpMethod.GET, "entity-1", result);
+    ros.updateCounters(ntwTxn5);
+
+    result.setResultCode(601);
+    result.setResult("result-1");
+    result.setNumRequestRetries(1);
+    NetworkTransaction ntwTxn6 = new NetworkTransaction(HttpMethod.GET, "entity-1", result);
+    ros.updateCounters(ntwTxn6);
+
+    String statistics = ros.getStatisticsReport();
+    Assert.assertNotNull(statistics);
+  }
+
+  @Test
+  public void testUpdateCounters_Put() {
+    RestOperationalStatistics ros = new RestOperationalStatistics();
+
+    OperationResult result = new OperationResult();
+    result.setResultCode(101);
+    result.setResult("result-1");
+    result.setNumRequestRetries(1);
+    NetworkTransaction ntwTxn1 = new NetworkTransaction(HttpMethod.PUT, "entity-1", result);
+    ros.updateCounters(ntwTxn1);
+
+    result.setResultCode(201);
+    result.setResult("result-1");
+    result.setNumRequestRetries(1);
+    NetworkTransaction ntwTxn2 = new NetworkTransaction(HttpMethod.PUT, "entity-1", result);
+    ros.updateCounters(ntwTxn2);
+
+    result.setResultCode(301);
+    result.setResult("result-1");
+    result.setNumRequestRetries(1);
+    NetworkTransaction ntwTxn3 = new NetworkTransaction(HttpMethod.PUT, "entity-1", result);
+    ros.updateCounters(ntwTxn3);
+
+    result.setResultCode(401);
+    result.setResult("result-1");
+    result.setNumRequestRetries(1);
+    NetworkTransaction ntwTxn4 = new NetworkTransaction(HttpMethod.PUT, "entity-1", result);
+    ros.updateCounters(ntwTxn4);
+
+    result.setResultCode(501);
+    result.setResult("result-1");
+    result.setNumRequestRetries(1);
+    NetworkTransaction ntwTxn5 = new NetworkTransaction(HttpMethod.PUT, "entity-1", result);
+    ros.updateCounters(ntwTxn5);
+
+    result.setResultCode(601);
+    result.setResult("result-1");
+    result.setNumRequestRetries(1);
+    NetworkTransaction ntwTxn6 = new NetworkTransaction(HttpMethod.PUT, "entity-1", result);
+    ros.updateCounters(ntwTxn6);
+
+    String statistics = ros.getStatisticsReport();
+    Assert.assertNotNull(statistics);
+  }
+
+  @Test
+  public void testUpdateCounters_Post() {
+    RestOperationalStatistics ros = new RestOperationalStatistics();
+
+    OperationResult result = new OperationResult();
+    result.setResultCode(101);
+    result.setResult("result-1");
+    result.setNumRequestRetries(1);
+    NetworkTransaction ntwTxn1 = new NetworkTransaction(HttpMethod.POST, "entity-1", result);
+    ros.updateCounters(ntwTxn1);
+
+    result.setResultCode(201);
+    result.setResult("result-1");
+    result.setNumRequestRetries(1);
+    NetworkTransaction ntwTxn2 = new NetworkTransaction(HttpMethod.POST, "entity-1", result);
+    ros.updateCounters(ntwTxn2);
+
+    result.setResultCode(301);
+    result.setResult("result-1");
+    result.setNumRequestRetries(1);
+    NetworkTransaction ntwTxn3 = new NetworkTransaction(HttpMethod.POST, "entity-1", result);
+    ros.updateCounters(ntwTxn3);
+
+    result.setResultCode(401);
+    result.setResult("result-1");
+    result.setNumRequestRetries(1);
+    NetworkTransaction ntwTxn4 = new NetworkTransaction(HttpMethod.POST, "entity-1", result);
+    ros.updateCounters(ntwTxn4);
+
+    result.setResultCode(501);
+    result.setResult("result-1");
+    result.setNumRequestRetries(1);
+    NetworkTransaction ntwTxn5 = new NetworkTransaction(HttpMethod.POST, "entity-1", result);
+    ros.updateCounters(ntwTxn5);
+
+    result.setResultCode(601);
+    result.setResult("result-1");
+    result.setNumRequestRetries(1);
+    NetworkTransaction ntwTxn6 = new NetworkTransaction(HttpMethod.POST, "entity-1", result);
+    ros.updateCounters(ntwTxn6);
+
+    String statistics = ros.getStatisticsReport();
+    Assert.assertNotNull(statistics);
+  }
+
+  @Test
+  public void testUpdateCounters_Delete() {
+    RestOperationalStatistics ros = new RestOperationalStatistics();
+
+    OperationResult result = new OperationResult();
+    result.setResultCode(101);
+    result.setResult("result-1");
+    result.setNumRequestRetries(1);
+    NetworkTransaction ntwTxn1 = new NetworkTransaction(HttpMethod.DELETE, "entity-1", result);
+    ros.updateCounters(ntwTxn1);
+
+    result.setResultCode(201);
+    result.setResult("result-1");
+    result.setNumRequestRetries(1);
+    NetworkTransaction ntwTxn2 = new NetworkTransaction(HttpMethod.DELETE, "entity-1", result);
+    ros.updateCounters(ntwTxn2);
+
+    result.setResultCode(301);
+    result.setResult("result-1");
+    result.setNumRequestRetries(1);
+    NetworkTransaction ntwTxn3 = new NetworkTransaction(HttpMethod.DELETE, "entity-1", result);
+    ros.updateCounters(ntwTxn3);
+
+    result.setResultCode(401);
+    result.setResult("result-1");
+    result.setNumRequestRetries(1);
+    NetworkTransaction ntwTxn4 = new NetworkTransaction(HttpMethod.DELETE, "entity-1", result);
+    ros.updateCounters(ntwTxn4);
+
+    result.setResultCode(501);
+    result.setResult("result-1");
+    result.setNumRequestRetries(1);
+    NetworkTransaction ntwTxn5 = new NetworkTransaction(HttpMethod.DELETE, "entity-1", result);
+    ros.updateCounters(ntwTxn5);
+
+    result.setResultCode(601);
+    result.setResult("result-1");
+    result.setNumRequestRetries(1);
+    NetworkTransaction ntwTxn6 = new NetworkTransaction(HttpMethod.DELETE, "entity-1", result);
+    ros.updateCounters(ntwTxn6);
+
+    String statistics = ros.getStatisticsReport();
+    Assert.assertNotNull(statistics);
+  }
 }

@@ -39,7 +39,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 /**
  * The Class EntityEntryTest.
  */
-@RunWith(MockitoJUnitRunner.class) 
+@RunWith(MockitoJUnitRunner.class)
 public class EntityEntryTest {
 
   /**

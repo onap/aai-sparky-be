@@ -96,7 +96,9 @@ public class KeystoreBuilder {
       this.port = port;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.Object#toString()
      */
     @Override
@@ -258,7 +260,7 @@ public class KeystoreBuilder {
   private X509Certificate[] getCertificateChainForRemoteEndpoint(String hostname, int port)
       throws UnknownHostException, IOException {
 
-    System.out.println("Opening connection to "+hostname+":"+port+"..");
+    System.out.println("Opening connection to " + hostname + ":" + port + "..");
     SSLSocket socket = (SSLSocket) sslSocketFactory.createSocket(hostname, port);
     socket.setSoTimeout(10000);
 
@@ -270,7 +272,8 @@ public class KeystoreBuilder {
       System.exit(0);
     } catch (SSLException exc) {
       System.out.println("\nCaught SSL exception, we are not authorized to access this server yet");
-      throw new SSLException("\nCaught SSL exception, we are not authorized to access this server yet"); 
+      throw new SSLException(
+          "\nCaught SSL exception, we are not authorized to access this server yet");
       // e.printStackTrace(System.out);
     }
 
@@ -432,8 +435,11 @@ public class KeystoreBuilder {
       throw new UnsupportedOperationException();
     }
 
-    /* (non-Javadoc)
-     * @see javax.net.ssl.X509TrustManager#checkClientTrusted(java.security.cert.X509Certificate[], java.lang.String)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see javax.net.ssl.X509TrustManager#checkClientTrusted(java.security.cert.X509Certificate[],
+     * java.lang.String)
      */
     @Override
     public void checkClientTrusted(X509Certificate[] chain, String authType)
@@ -441,8 +447,11 @@ public class KeystoreBuilder {
       throw new UnsupportedOperationException();
     }
 
-    /* (non-Javadoc)
-     * @see javax.net.ssl.X509TrustManager#checkServerTrusted(java.security.cert.X509Certificate[], java.lang.String)
+    /*
+     * (non-Javadoc)
+     * 
+     * @see javax.net.ssl.X509TrustManager#checkServerTrusted(java.security.cert.X509Certificate[],
+     * java.lang.String)
      */
     @Override
     public void checkServerTrusted(X509Certificate[] chain, String authType)
@@ -520,8 +529,7 @@ public class KeystoreBuilder {
      */
 
     if (args.length != 4) {
-      System.out.println(
-          "Usage:   KeyBuilder <[ip:port];*> <keystoreFileName>"
+      System.out.println("Usage:   KeyBuilder <[ip:port];*> <keystoreFileName>"
           + " <keystorePassword> <dumpCertDetails> ");
       System.exit(1);
     }

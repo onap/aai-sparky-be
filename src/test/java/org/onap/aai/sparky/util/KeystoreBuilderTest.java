@@ -49,52 +49,57 @@ import org.mockito.Mockito;
 
 public class KeystoreBuilderTest {
 
-	@Rule
-	public TemporaryFolder folder = new TemporaryFolder();
+  @Rule
+  public TemporaryFolder folder = new TemporaryFolder();
 
-	KeystoreBuilder ksb;
-	org.onap.aai.sparky.util.test.KeystoreBuilder ksb1;
+  KeystoreBuilder ksb;
+  org.onap.aai.sparky.util.test.KeystoreBuilder ksb1;
 
-	@Before
-	public void setUp() throws IOException, NoSuchAlgorithmException {
-		System.setProperty("AJSC_HOME", new File(".").getCanonicalPath().replace('\\', '/'));
+  @Before
+  public void setUp() throws IOException, NoSuchAlgorithmException {
+    System.setProperty("AJSC_HOME", new File(".").getCanonicalPath().replace('\\', '/'));
 
-		folder.newFile("file1.xml");
-		folder.newFile("file2.xml");
+    folder.newFile("file1.xml");
+    folder.newFile("file2.xml");
 
-		String endPointList = "https://localhost:9517;https://localhost:8443";
-		ksb = new KeystoreBuilder(endPointList);
-		ksb1 = new org.onap.aai.sparky.util.test.KeystoreBuilder(endPointList);
-	}
+    String endPointList = "https://localhost:9517;https://localhost:8443";
+    ksb = new KeystoreBuilder(endPointList);
+    ksb1 = new org.onap.aai.sparky.util.test.KeystoreBuilder(endPointList);
+  }
 
-	@Test(expected=IOException.class)
-	public void testUpdateKeyStore() throws KeyManagementException, KeyStoreException, CertificateException, IOException, NoSuchAlgorithmException {
-		ksb.updateKeystore(folder.getRoot().getAbsolutePath(), "password-1");
-		ksb1.updateKeystore(folder.getRoot().getAbsolutePath(), "password-1");
-	}
+  @Test(expected = IOException.class)
+  public void testUpdateKeyStore() throws KeyManagementException, KeyStoreException,
+      CertificateException, IOException, NoSuchAlgorithmException {
+    ksb.updateKeystore(folder.getRoot().getAbsolutePath(), "password-1");
+    ksb1.updateKeystore(folder.getRoot().getAbsolutePath(), "password-1");
+  }
 
-	@Test(expected=InvocationTargetException.class)
-	public void testCertificateChainMethods() throws NoSuchMethodException, SecurityException,
-			IllegalAccessException, IllegalArgumentException, InvocationTargetException, UnknownHostException, IOException {
-		SSLSocketFactory factory = Mockito.mock(SSLSocketFactory.class);
-		SSLSocket socket = Mockito.mock(SSLSocket.class);
-		Mockito.when(factory.createSocket("localhost",9517)).thenReturn(socket);
-		Method method = KeystoreBuilder.class.getDeclaredMethod("getCertificateChainForRemoteEndpoint", String.class, int.class);
-		method.setAccessible(true);
-		X509Certificate[] certChain = (X509Certificate[])method.invoke(ksb, "localhost",9517);
-		Assert.assertNotNull(certChain);
-	}
+  @Test(expected = InvocationTargetException.class)
+  public void testCertificateChainMethods()
+      throws NoSuchMethodException, SecurityException, IllegalAccessException,
+      IllegalArgumentException, InvocationTargetException, UnknownHostException, IOException {
+    SSLSocketFactory factory = Mockito.mock(SSLSocketFactory.class);
+    SSLSocket socket = Mockito.mock(SSLSocket.class);
+    Mockito.when(factory.createSocket("localhost", 9517)).thenReturn(socket);
+    Method method = KeystoreBuilder.class.getDeclaredMethod("getCertificateChainForRemoteEndpoint",
+        String.class, int.class);
+    method.setAccessible(true);
+    X509Certificate[] certChain = (X509Certificate[]) method.invoke(ksb, "localhost", 9517);
+    Assert.assertNotNull(certChain);
+  }
 
-	@Test(expected=InvocationTargetException.class)
-	public void testCertificateChainMethods1() throws NoSuchMethodException, SecurityException,
-			IllegalAccessException, IllegalArgumentException, InvocationTargetException, UnknownHostException, IOException {
-		SSLSocketFactory factory = Mockito.mock(SSLSocketFactory.class);
-		SSLSocket socket = Mockito.mock(SSLSocket.class);
-		Mockito.when(factory.createSocket("localhost",9517)).thenReturn(socket);
-		Method method = org.onap.aai.sparky.util.test.KeystoreBuilder.class.getDeclaredMethod("getCertificateChainForRemoteEndpoint", String.class, int.class);
-		method.setAccessible(true);
-		X509Certificate[] certChain = (X509Certificate[])method.invoke(ksb1, "localhost",9517);
-		Assert.assertNotNull(certChain);
-	}
+  @Test(expected = InvocationTargetException.class)
+  public void testCertificateChainMethods1()
+      throws NoSuchMethodException, SecurityException, IllegalAccessException,
+      IllegalArgumentException, InvocationTargetException, UnknownHostException, IOException {
+    SSLSocketFactory factory = Mockito.mock(SSLSocketFactory.class);
+    SSLSocket socket = Mockito.mock(SSLSocket.class);
+    Mockito.when(factory.createSocket("localhost", 9517)).thenReturn(socket);
+    Method method = org.onap.aai.sparky.util.test.KeystoreBuilder.class
+        .getDeclaredMethod("getCertificateChainForRemoteEndpoint", String.class, int.class);
+    method.setAccessible(true);
+    X509Certificate[] certChain = (X509Certificate[]) method.invoke(ksb1, "localhost", 9517);
+    Assert.assertNotNull(certChain);
+  }
 
 }

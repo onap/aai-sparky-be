@@ -62,7 +62,9 @@ public class PerformActiveInventoryRetrieval implements Supplier<NetworkTransact
     this.contextMap = MDC.getCopyOfContextMap();
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.util.function.Supplier#get()
    */
   @Override
@@ -75,7 +77,8 @@ public class PerformActiveInventoryRetrieval implements Supplier<NetworkTransact
     OperationResult result = null;
     try {
       // todo: use proper config instead of hard-coding parameters
-      final String absoluteSelfLink = ActiveInventoryConfig.getConfig().repairSelfLink(txn.getLink());
+      final String absoluteSelfLink =
+          ActiveInventoryConfig.getConfig().repairSelfLink(txn.getLink());
       result = aaiProvider.queryActiveInventoryWithRetries(absoluteSelfLink, "application/json", 5);
     } catch (Exception exc) {
       logger.error("Failure to resolve self link from AAI.  Error = ", exc);

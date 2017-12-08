@@ -66,7 +66,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 
-/** 
+/**
  * The Class SelfLinkNodeCollector.
  */
 public class VisualizationContext {
@@ -76,8 +76,8 @@ public class VisualizationContext {
   private static final String NODES_ONLY_MODIFIER = "?nodes-only";
   private static final String SERVICE_INSTANCE = "service-instance";
 
-  private static final Logger LOG = LoggerFactory.getInstance().getLogger(
-      VisualizationContext.class);
+  private static final Logger LOG =
+      LoggerFactory.getInstance().getLogger(VisualizationContext.class);
   private final ActiveInventoryDataProvider aaiProvider;
 
   private int maxSelfLinkTraversalDepth;
@@ -117,13 +117,13 @@ public class VisualizationContext {
    */
   public VisualizationContext(long contextId, ActiveInventoryDataProvider aaiDataProvider,
       ExecutorService aaiExecutorService, OxmModelLoader loader) throws Exception {
-    
+
     this.contextId = contextId;
     this.contextIdStr = "[Context-Id=" + contextId + "]";
     this.aaiProvider = aaiDataProvider;
     this.aaiExecutorService = aaiExecutorService;
     this.loader = loader;
-    
+
     this.nodeCache = new ConcurrentHashMap<String, ActiveInventoryNode>();
     this.numLinksDiscovered = new AtomicInteger(0);
     this.totalLinksRetrieved = new AtomicInteger(0);
@@ -142,7 +142,7 @@ public class VisualizationContext {
     mapper.setSerializationInclusion(Include.NON_EMPTY);
     mapper.setPropertyNamingStrategy(new PropertyNamingStrategy.KebabCaseStrategy());
   }
-  
+
   public long getContextId() {
     return contextId;
   }
@@ -216,7 +216,7 @@ public class VisualizationContext {
     return queryParams;
 
   }
-  
+
   /**
    * Decode complex attribute group.
    *
@@ -252,8 +252,8 @@ public class VisualizationContext {
             entity = entityCollection.next();
 
             if (LOG.isDebugEnabled()) {
-              LOG.debug(AaiUiMsgs.DEBUG_GENERIC, "decodeComplexAttributeGroup(),"
-                  + " entity = " + entity.toString());
+              LOG.debug(AaiUiMsgs.DEBUG_GENERIC,
+                  "decodeComplexAttributeGroup()," + " entity = " + entity.toString());
             }
 
             /**
@@ -280,13 +280,13 @@ public class VisualizationContext {
             newNode.setSelfLinkProcessed(true);
             newNode.changeState(NodeProcessingState.SELF_LINK_RESPONSE_UNPROCESSED,
                 NodeProcessingAction.COMPLEX_ATTRIBUTE_GROUP_PARSE_OK);
-            
+
             /*
              * copy parent query params into new child
              */
-            
+
             if (SERVICE_INSTANCE.equals(entityType)) {
-              
+
               /*
                * 1707 AAI has an issue being tracked with AAI-8932 where the generic-query cannot be
                * resolved if all the service-instance path keys are provided. The query only works
@@ -294,14 +294,14 @@ public class VisualizationContext {
                * A fix is being worked on for 1707, and when it becomes available we can revert this
                * small change.
                */
-              
+
               newNode.clearQueryParams();
-              
+
             } else {
 
               /*
-               * For all other entity-types we want to copy the parent query parameters into the new node
-               * query parameters.
+               * For all other entity-types we want to copy the parent query parameters into the new
+               * node query parameters.
                */
 
               for (String queryParam : ain.getQueryParams()) {
@@ -309,15 +309,17 @@ public class VisualizationContext {
               }
 
             }
-            
-            
+
+
             if (!addComplexGroupToNode(newNode, entity)) {
-              LOG.error(AaiUiMsgs.ATTRIBUTE_GROUP_FAILURE, "Failed to add child to parent for child = " +  entity.toString());
+              LOG.error(AaiUiMsgs.ATTRIBUTE_GROUP_FAILURE,
+                  "Failed to add child to parent for child = " + entity.toString());
             }
 
             if (!addNodeQueryParams(newNode)) {
-              LOG.error(AaiUiMsgs.FAILED_TO_DETERMINE_NODE_ID, "Error determining node id and key for node = " + newNode.dumpNodeTree(true)
-                  + " skipping relationship processing");
+              LOG.error(AaiUiMsgs.FAILED_TO_DETERMINE_NODE_ID,
+                  "Error determining node id and key for node = " + newNode.dumpNodeTree(true)
+                      + " skipping relationship processing");
               newNode.changeState(NodeProcessingState.ERROR,
                   NodeProcessingAction.NODE_IDENTITY_ERROR);
               return false;
@@ -327,7 +329,7 @@ public class VisualizationContext {
                   NodeProcessingAction.COMPLEX_ATTRIBUTE_GROUP_PARSE_OK);
 
             }
-            
+
 
             /*
              * Order matters for the query params. We need to set the parent ones before the child
@@ -388,7 +390,8 @@ public class VisualizationContext {
                         genericQueryResult =
                             NodeUtils.convertJsonStrToJsonNode(nodeTxn.getOpResult().getResult());
                       } catch (Exception exc) {
-                        LOG.error(AaiUiMsgs.JSON_CONVERSION_ERROR, JsonNode.class.toString(), exc.getMessage());
+                        LOG.error(AaiUiMsgs.JSON_CONVERSION_ERROR, JsonNode.class.toString(),
+                            exc.getMessage());
                       }
 
                       NodeUtils.extractObjectsByKey(genericQueryResult, "resource-link",
@@ -398,8 +401,9 @@ public class VisualizationContext {
 
                       if (entityLinks.size() != 1) {
 
-                        LOG.error(AaiUiMsgs.SELF_LINK_DETERMINATION_FAILED_UNEXPECTED_LINKS, String.valueOf(entityLinks.size()));
-                          
+                        LOG.error(AaiUiMsgs.SELF_LINK_DETERMINATION_FAILED_UNEXPECTED_LINKS,
+                            String.valueOf(entityLinks.size()));
+
                       } else {
                         selfLink = ((JsonNode) entityLinks.toArray()[0]).asText();
                         selfLink = ActiveInventoryConfig.extractResourcePath(selfLink);
@@ -411,7 +415,7 @@ public class VisualizationContext {
                         if (uri != null) {
                           newChildNode.addProperty(TierSupportUiConstants.URI_ATTR_NAME, uri);
                         }
-                        
+
                         ActiveInventoryNode parent = nodeCache.get(txn.getParentNodeId());
 
                         if (parent != null) {
@@ -424,14 +428,15 @@ public class VisualizationContext {
 
                         newChildNode.changeState(NodeProcessingState.NEIGHBORS_UNPROCESSED,
                             NodeProcessingAction.SELF_LINK_RESPONSE_PARSE_OK);
-                        
+
                         nodeCache.putIfAbsent(newChildNode.getNodeId(), newChildNode);
-                        
+
                       }
 
                     } else {
                       LOG.error(AaiUiMsgs.SELF_LINK_RETRIEVAL_FAILED, txn.getQueryString(),
-                          String.valueOf(nodeTxn.getOpResult().getResultCode()), nodeTxn.getOpResult().getResult());
+                          String.valueOf(nodeTxn.getOpResult().getResultCode()),
+                          nodeTxn.getOpResult().getResult());
                       newChildNode.setSelflinkRetrievalFailure(true);
                       newChildNode.setSelfLinkProcessed(true);
                       newChildNode.setSelfLinkPendingResolve(false);
@@ -455,8 +460,8 @@ public class VisualizationContext {
 
       }
     } catch (Exception exc) {
-      LOG.error(AaiUiMsgs.SELF_LINK_PROCESSING_ERROR, "Exception caught while"
-          + " decoding complex attribute group - " + exc.getMessage());
+      LOG.error(AaiUiMsgs.SELF_LINK_PROCESSING_ERROR,
+          "Exception caught while" + " decoding complex attribute group - " + exc.getMessage());
     }
 
     return false;
@@ -471,16 +476,16 @@ public class VisualizationContext {
   private void processSelfLinkResponse(String nodeId) {
 
     if (nodeId == null) {
-      LOG.error(AaiUiMsgs.SELF_LINK_PROCESSING_ERROR, "Cannot process self link"
-          + " response because nodeId is null");
+      LOG.error(AaiUiMsgs.SELF_LINK_PROCESSING_ERROR,
+          "Cannot process self link" + " response because nodeId is null");
       return;
     }
 
     ActiveInventoryNode ain = nodeCache.get(nodeId);
 
     if (ain == null) {
-      LOG.error(AaiUiMsgs.SELF_LINK_PROCESSING_ERROR, "Cannot process self link response"
-          + " because can't find node for id = " + nodeId);
+      LOG.error(AaiUiMsgs.SELF_LINK_PROCESSING_ERROR,
+          "Cannot process self link response" + " because can't find node for id = " + nodeId);
       return;
     }
 
@@ -497,8 +502,8 @@ public class VisualizationContext {
     }
 
     if (jsonNode == null) {
-      LOG.error(AaiUiMsgs.SELF_LINK_JSON_PARSE_ERROR, "Failed to parse json node str."
-          + " Parse resulted a null value.");
+      LOG.error(AaiUiMsgs.SELF_LINK_JSON_PARSE_ERROR,
+          "Failed to parse json node str." + " Parse resulted a null value.");
       ain.changeState(NodeProcessingState.ERROR,
           NodeProcessingAction.SELF_LINK_RESPONSE_PARSE_ERROR);
       return;
@@ -582,39 +587,38 @@ public class VisualizationContext {
     /*
      * We need a special behavior for intermediate entities from the REST model
      * 
-     * Tenants are not top level entities, and when we want to visualization
-     * their children, we need to construct keys that include the parent entity query
-     * keys, the current entity type keys, and the child keys.   We'll always have the
-     * current entity and children, but never the parent entity in the current (1707) REST
-     * data model.
+     * Tenants are not top level entities, and when we want to visualization their children, we need
+     * to construct keys that include the parent entity query keys, the current entity type keys,
+     * and the child keys. We'll always have the current entity and children, but never the parent
+     * entity in the current (1707) REST data model.
      * 
      * We have two possible solutions:
      * 
-     * 1) Try to use the custom-query approach to learn about the entity keys
-     *    - this could be done, but it could be very expensive for large objects.  When we do the first
-     *      query to get a tenant, it will list all the in and out edges related to this entity,
-     *      there is presently no way to filter this.  But the approach could be made to work and it would be
-     *      somewhat data-model driven, other than the fact that we have to first realize that the entity
-     *      that is being searched for is not top-level entity.  Once we have globally unique ids for resources
-     *      this logic will not be needed and everything will be simpler.   The only reason we are in this logic
-     *      at all is to be able to calculate a url for the child entities so we can hash it to generate 
-     *      a globally unique id that can be safely used for the node.
-     *      
-     * *2* Extract the keys from the pathed self-link.
-     *     This is a bad solution and I don't like it but it will be fast for all resource types, as the 
-     *     information is already encoded in the URI.   When we get to a point where we switch to a better
-     *     globally unique entity identity model, then a lot of the code being used to calculate an entity url
-     *     to in-turn generate a deterministic globally unique id will disappear.      
-     *     
+     * 1) Try to use the custom-query approach to learn about the entity keys - this could be done,
+     * but it could be very expensive for large objects. When we do the first query to get a tenant,
+     * it will list all the in and out edges related to this entity, there is presently no way to
+     * filter this. But the approach could be made to work and it would be somewhat data-model
+     * driven, other than the fact that we have to first realize that the entity that is being
+     * searched for is not top-level entity. Once we have globally unique ids for resources this
+     * logic will not be needed and everything will be simpler. The only reason we are in this logic
+     * at all is to be able to calculate a url for the child entities so we can hash it to generate
+     * a globally unique id that can be safely used for the node.
+     * 
+     * *2* Extract the keys from the pathed self-link. This is a bad solution and I don't like it
+     * but it will be fast for all resource types, as the information is already encoded in the URI.
+     * When we get to a point where we switch to a better globally unique entity identity model,
+     * then a lot of the code being used to calculate an entity url to in-turn generate a
+     * deterministic globally unique id will disappear.
+     * 
      * 
      * right now we have the following:
      * 
      * - cloud-regions/cloud-region/{cloud-region-id}/{cloud-owner-id}/tenants/tenant/{tenant-id}
-     *  
+     * 
      */
 
     /*
-     * For all entity types use the self-link extraction method to be consistent.  Once we have a
+     * For all entity types use the self-link extraction method to be consistent. Once we have a
      * globally unique identity mechanism for entities, this logic can be revisited.
      */
     ain.clearQueryParams();
@@ -633,8 +637,8 @@ public class VisualizationContext {
   private void performSelfLinkResolve(String nodeId) {
 
     if (nodeId == null) {
-      LOG.error(AaiUiMsgs.SELF_LINK_PROCESSING_ERROR, "Resolve of self-link"
-          + " has been skipped because provided nodeId is null");
+      LOG.error(AaiUiMsgs.SELF_LINK_PROCESSING_ERROR,
+          "Resolve of self-link" + " has been skipped because provided nodeId is null");
       return;
     }
 
@@ -653,7 +657,7 @@ public class VisualizationContext {
       // kick off async self-link resolution
 
       if (LOG.isDebugEnabled()) {
-        LOG.debug(AaiUiMsgs.DEBUG_GENERIC, 
+        LOG.debug(AaiUiMsgs.DEBUG_GENERIC,
             "About to process node in SELF_LINK_UNPROCESSED State, link = " + ain.getSelfLink());
       }
 
@@ -674,8 +678,7 @@ public class VisualizationContext {
       txn.setProcessingNode(ain);
       txn.setRequestParameters(depthModifier);
       aaiWorkOnHand.incrementAndGet();
-      supplyAsync(
-          new PerformNodeSelfLinkProcessingTask(txn, depthModifier, aaiProvider, aaiConfig),
+      supplyAsync(new PerformNodeSelfLinkProcessingTask(txn, depthModifier, aaiProvider, aaiConfig),
           aaiExecutorService).whenComplete((nodeTxn, error) -> {
             aaiWorkOnHand.decrementAndGet();
             if (error != null) {
@@ -722,10 +725,10 @@ public class VisualizationContext {
                 nodeTxn.getProcessingNode().setSelfLinkPendingResolve(false);
 
               } else {
-                LOG.error(AaiUiMsgs.SELF_LINK_PROCESSING_ERROR, "Self Link retrieval for link,"
-                    + txn.getSelfLinkWithModifiers() + ", failed with error code,"
-                    + nodeTxn.getOpResult().getResultCode() + ", and message,"
-                    + nodeTxn.getOpResult().getResult());
+                LOG.error(AaiUiMsgs.SELF_LINK_PROCESSING_ERROR,
+                    "Self Link retrieval for link," + txn.getSelfLinkWithModifiers()
+                        + ", failed with error code," + nodeTxn.getOpResult().getResultCode()
+                        + ", and message," + nodeTxn.getOpResult().getResult());
 
                 nodeTxn.getProcessingNode().setSelflinkRetrievalFailure(true);
                 nodeTxn.getProcessingNode().setSelfLinkProcessed(true);
@@ -751,10 +754,10 @@ public class VisualizationContext {
    * @param nodeId the node id
    */
   private void processNeighbors(String nodeId) {
-    
+
     if (nodeId == null) {
-      LOG.error(AaiUiMsgs.SELF_LINK_PROCESS_NEIGHBORS_ERROR, "Failed to process"
-          + " neighbors because nodeId is null.");
+      LOG.error(AaiUiMsgs.SELF_LINK_PROCESS_NEIGHBORS_ERROR,
+          "Failed to process" + " neighbors because nodeId is null.");
       return;
     }
 
@@ -786,7 +789,7 @@ public class VisualizationContext {
     } else {
       ain.changeState(NodeProcessingState.ERROR, NodeProcessingAction.NEIGHBORS_PROCESSED_ERROR);
     }
-  
+
 
     /*
      * If neighbors fail to process, there is already a call to change the state within the
@@ -834,8 +837,7 @@ public class VisualizationContext {
     for (ActiveInventoryNode cacheNode : nodeCache.values()) {
 
       if (LOG.isDebugEnabled()) {
-        LOG.debug(AaiUiMsgs.DEBUG_GENERIC, 
-            "processCurrentNodeState(), nid = "
+        LOG.debug(AaiUiMsgs.DEBUG_GENERIC, "processCurrentNodeState(), nid = "
             + cacheNode.getNodeId() + " , nodeDepth = " + cacheNode.getNodeDepth());
       }
 
@@ -868,19 +870,19 @@ public class VisualizationContext {
            * node is identified. Then the evaluative depth calculations should re-balance the graph
            * around the root node.
            */
-          
+
           if (!rootNodeDiscovered || cacheNode.getNodeDepth() < VisualizationConfig.getConfig()
               .getMaxSelfLinkTraversalDepth()) {
 
             if (LOG.isDebugEnabled()) {
-              LOG.debug(AaiUiMsgs.DEBUG_GENERIC, 
+              LOG.debug(AaiUiMsgs.DEBUG_GENERIC,
                   "SLNC::processCurrentNodeState() -- Node at max depth,"
-                  + " halting processing at current state = -- "
-                      + cacheNode.getState() + " nodeId = " + cacheNode.getNodeId());
+                      + " halting processing at current state = -- " + cacheNode.getState()
+                      + " nodeId = " + cacheNode.getNodeId());
             }
 
-            
-            
+
+
             processNeighbors(cacheNode.getNodeId());
 
           }
@@ -940,9 +942,9 @@ public class VisualizationContext {
               }
 
             } catch (Exception exc) {
-              LOG.error(AaiUiMsgs.SELF_LINK_JSON_PARSE_ERROR, "Failed to parse"
-                  + " relationship-list attribute. Parse resulted in error, "
-                  + exc.getLocalizedMessage());
+              LOG.error(AaiUiMsgs.SELF_LINK_JSON_PARSE_ERROR,
+                  "Failed to parse" + " relationship-list attribute. Parse resulted in error, "
+                      + exc.getLocalizedMessage());
               targetNode.changeState(NodeProcessingState.ERROR,
                   NodeProcessingAction.COMPLEX_ATTRIBUTE_GROUP_PARSE_ERROR);
               return false;
@@ -954,8 +956,7 @@ public class VisualizationContext {
 
         } else if (fieldValue.isArray()) {
           if (LOG.isDebugEnabled()) {
-            LOG.debug(AaiUiMsgs.DEBUG_GENERIC, 
-                "Unexpected array type with a key = " + fieldName);
+            LOG.debug(AaiUiMsgs.DEBUG_GENERIC, "Unexpected array type with a key = " + fieldName);
           }
         } else if (fieldValue.isValueNode()) {
           if (loader.getEntityDescriptor(field.getKey()) == null) {
@@ -970,19 +971,19 @@ public class VisualizationContext {
 
     } else if (attributeGroup.isArray()) {
       if (LOG.isDebugEnabled()) {
-        LOG.debug(AaiUiMsgs.DEBUG_GENERIC, 
+        LOG.debug(AaiUiMsgs.DEBUG_GENERIC,
             "Unexpected array type for attributeGroup = " + attributeGroup);
       }
     } else if (attributeGroup.isValueNode()) {
       if (LOG.isDebugEnabled()) {
-        LOG.debug(AaiUiMsgs.DEBUG_GENERIC, 
+        LOG.debug(AaiUiMsgs.DEBUG_GENERIC,
             "Unexpected value type for attributeGroup = " + attributeGroup);
       }
     }
-    
+
     return true;
   }
-  
+
   public int getNumSuccessfulLinkResolveFromCache() {
     return numSuccessfulLinkResolveFromCache.get();
   }
@@ -1038,9 +1039,8 @@ public class VisualizationContext {
         // this should be a fatal error because unless we can
         // successfully retrieve all the expected keys we'll end up
         // with a garbage node
-        LOG.error(AaiUiMsgs.EXTRACTION_ERROR, "ERROR: Failed to extract"
-            + " keyName, " + entityType + "." + pkeyNames.get(0)
-            + ", from relationship data, " + r.toString());
+        LOG.error(AaiUiMsgs.EXTRACTION_ERROR, "ERROR: Failed to extract" + " keyName, " + entityType
+            + "." + pkeyNames.get(0) + ", from relationship data, " + r.toString());
         return null;
       }
 
@@ -1053,9 +1053,8 @@ public class VisualizationContext {
           // this should be a fatal error because unless we can
           // successfully retrieve all the expected keys we'll end up
           // with a garbage node
-          LOG.error(AaiUiMsgs.EXTRACTION_ERROR, "ERROR:  failed to extract keyName, "
-              + entityType + "." + pkeyNames.get(i)
-              + ", from relationship data, " + r.toString());
+          LOG.error(AaiUiMsgs.EXTRACTION_ERROR, "ERROR:  failed to extract keyName, " + entityType
+              + "." + pkeyNames.get(i) + ", from relationship data, " + r.toString());
           return null;
         }
       }
@@ -1120,8 +1119,8 @@ public class VisualizationContext {
         // this should be a fatal error because unless we can
         // successfully retrieve all the expected keys we'll end up
         // with a garbage node
-        LOG.error(AaiUiMsgs.EXTRACTION_ERROR, "ERROR: Failed to extract keyName, "
-            + pkeyNames.get(0) + ", from entity properties");
+        LOG.error(AaiUiMsgs.EXTRACTION_ERROR,
+            "ERROR: Failed to extract keyName, " + pkeyNames.get(0) + ", from entity properties");
         return false;
       }
 
@@ -1134,19 +1133,21 @@ public class VisualizationContext {
           // this should be a fatal error because unless we can
           // successfully retrieve all the expected keys we'll end up
           // with a garbage node
-          LOG.error(AaiUiMsgs.EXTRACTION_ERROR, "ERROR: Failed to extract keyName, "
-              + pkeyNames.get(i) + ", from entity properties");
+          LOG.error(AaiUiMsgs.EXTRACTION_ERROR,
+              "ERROR: Failed to extract keyName, " + pkeyNames.get(i) + ", from entity properties");
           return false;
         }
       }
 
-      /*final String nodeId = NodeUtils.generateUniqueShaDigest(ain.getEntityType(),
-          NodeUtils.concatArray(pkeyNames, "/"), sb.toString());*/
+      /*
+       * final String nodeId = NodeUtils.generateUniqueShaDigest(ain.getEntityType(),
+       * NodeUtils.concatArray(pkeyNames, "/"), sb.toString());
+       */
 
-      //ain.setNodeId(nodeId);
+      // ain.setNodeId(nodeId);
       ain.setPrimaryKeyName(NodeUtils.concatArray(pkeyNames, "/"));
       ain.setPrimaryKeyValue(sb.toString());
-      
+
       if (ain.getEntityType() != null && ain.getPrimaryKeyName() != null
           && ain.getPrimaryKeyValue() != null) {
         ain.addQueryParam(
@@ -1191,7 +1192,7 @@ public class VisualizationContext {
       for (Relationship r : relationshipArray) {
 
         resourcePath = ActiveInventoryConfig.extractResourcePath(r.getRelatedLink());
-        
+
         String nodeId = NodeUtils.generateUniqueShaDigest(resourcePath);
 
         if (nodeId == null) {
@@ -1274,14 +1275,14 @@ public class VisualizationContext {
     ActiveInventoryNode cachedNode = nodeCache.get(nodeId);
 
     if (cachedNode == null) {
-      LOG.error(AaiUiMsgs.FAILED_TO_PROCESS_INITIAL_STATE, "Node cannot be"
-          + " found for nodeId, " + nodeId);
+      LOG.error(AaiUiMsgs.FAILED_TO_PROCESS_INITIAL_STATE,
+          "Node cannot be" + " found for nodeId, " + nodeId);
       return;
     }
 
     if (cachedNode.getSelfLink() == null) {
 
-      if (cachedNode.getNodeId() == null ) {
+      if (cachedNode.getNodeId() == null) {
 
         /*
          * if the self link is null at the INIT state, which could be valid if this node is a
@@ -1323,7 +1324,8 @@ public class VisualizationContext {
    * @param skeletonNode the skeleton node
    * @param queryParams the query params
    */
-  private void processSearchableEntity(SearchableEntity searchTargetEntity, QueryParams queryParams) {
+  private void processSearchableEntity(SearchableEntity searchTargetEntity,
+      QueryParams queryParams) {
 
     if (searchTargetEntity == null) {
       return;
@@ -1341,11 +1343,11 @@ public class VisualizationContext {
     newNode.setEntityType(searchTargetEntity.getEntityType());
     newNode.setPrimaryKeyName(getEntityTypePrimaryKeyName(searchTargetEntity.getEntityType()));
     newNode.setPrimaryKeyValue(searchTargetEntity.getEntityPrimaryKeyValue());
-    
+
     if (newNode.getEntityType() != null && newNode.getPrimaryKeyName() != null
         && newNode.getPrimaryKeyValue() != null) {
-      newNode.addQueryParam(
-          newNode.getEntityType() + "." + newNode.getPrimaryKeyName() + ":" + newNode.getPrimaryKeyValue());
+      newNode.addQueryParam(newNode.getEntityType() + "." + newNode.getPrimaryKeyName() + ":"
+          + newNode.getPrimaryKeyValue());
     }
     /*
      * This code may need some explanation. In any graph there will be a single root node. The root
@@ -1437,8 +1439,8 @@ public class VisualizationContext {
     try {
 
       if (searchtargetEntity == null) {
-        LOG.error(AaiUiMsgs.SELF_LINK_PROCESSING_ERROR, contextIdStr + " - Failed to"
-            + " processSelfLinks, searchtargetEntity is null");
+        LOG.error(AaiUiMsgs.SELF_LINK_PROCESSING_ERROR,
+            contextIdStr + " - Failed to" + " processSelfLinks, searchtargetEntity is null");
         return;
       }
 
@@ -1457,15 +1459,15 @@ public class VisualizationContext {
       long guardTimeInMs = 0;
       boolean foundRootNode = false;
 
-      
+
       /*
-       * TODO:   Put a count-down-latch in place of the while loop, but if we do that then
-       * we'll need to decouple the visualization processing from the main thread so it can continue to process while
-       * the main thread is waiting on for count-down-latch gate to open.  This may also be easier once we move to the
-       * VisualizationService + VisualizationContext ideas. 
+       * TODO: Put a count-down-latch in place of the while loop, but if we do that then we'll need
+       * to decouple the visualization processing from the main thread so it can continue to process
+       * while the main thread is waiting on for count-down-latch gate to open. This may also be
+       * easier once we move to the VisualizationService + VisualizationContext ideas.
        */
-      
-      
+
+
       while (hasOutstandingWork || !outstandingWorkGuardTimerFired) {
 
         if (!foundRootNode) {
@@ -1597,17 +1599,17 @@ public class VisualizationContext {
 
     if (LOG.isDebugEnabled()) {
       if (numAttempts > 0) {
-        LOG.debug(AaiUiMsgs.DEBUG_GENERIC, 
+        LOG.debug(AaiUiMsgs.DEBUG_GENERIC,
             "Evaluate node depths completed in " + numAttempts + " attempts");
       } else {
-        LOG.debug(AaiUiMsgs.DEBUG_GENERIC, 
+        LOG.debug(AaiUiMsgs.DEBUG_GENERIC,
             "Evaluate node depths completed in 0 attempts because all nodes at correct depth");
       }
     }
 
   }
-  
-  
+
+
   /**
    * Gets the entity type primary key name.
    *
@@ -1615,28 +1617,28 @@ public class VisualizationContext {
    * @return the entity type primary key name
    */
 
-  
+
   private String getEntityTypePrimaryKeyName(String entityType) {
 
     if (entityType == null) {
-      LOG.error(AaiUiMsgs.FAILED_TO_DETERMINE, "node primary key"
-          + " name because entity type is null");
+      LOG.error(AaiUiMsgs.FAILED_TO_DETERMINE,
+          "node primary key" + " name because entity type is null");
       return null;
     }
 
     OxmEntityDescriptor descriptor = loader.getEntityDescriptor(entityType);
 
     if (descriptor == null) {
-      LOG.error(AaiUiMsgs.FAILED_TO_DETERMINE, "oxm entity"
-          + " descriptor for entityType = " + entityType);
+      LOG.error(AaiUiMsgs.FAILED_TO_DETERMINE,
+          "oxm entity" + " descriptor for entityType = " + entityType);
       return null;
     }
 
     List<String> pkeyNames = descriptor.getPrimaryKeyAttributeName();
 
     if (pkeyNames == null || pkeyNames.size() == 0) {
-      LOG.error(AaiUiMsgs.FAILED_TO_DETERMINE, "node primary"
-          + " key because descriptor primary key names is empty");
+      LOG.error(AaiUiMsgs.FAILED_TO_DETERMINE,
+          "node primary" + " key because descriptor primary key names is empty");
       return null;
     }
 

@@ -31,12 +31,13 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class UiFilterOptionsValuesConfig {
   @JsonProperty("decode")
   private String decode;
-  
+
   @JsonProperty("code")
   private String code;
-  
+
   @JsonCreator
-  public UiFilterOptionsValuesConfig(@JsonProperty("decode") final String decode, @JsonProperty("code") final String code) {
+  public UiFilterOptionsValuesConfig(@JsonProperty("decode") final String decode,
+      @JsonProperty("code") final String code) {
     this.decode = decode;
     this.code = code;
   }

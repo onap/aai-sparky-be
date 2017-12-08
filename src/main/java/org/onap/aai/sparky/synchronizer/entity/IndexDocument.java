@@ -28,7 +28,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
  * The Interface IndexDocument.
  */
 public interface IndexDocument {
-  
+
   /**
    * Derive fields.
    */

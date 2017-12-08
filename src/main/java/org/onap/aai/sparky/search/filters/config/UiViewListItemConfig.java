@@ -31,11 +31,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class UiViewListItemConfig {
   @JsonProperty("viewName")
   private String viewName;
-  
+
   private List<UiFilterListItemConfig> filters = new ArrayList<UiFilterListItemConfig>();
-  
+
   @JsonCreator
-  public UiViewListItemConfig(@JsonProperty("viewName") final String viewName, @JsonProperty("filters") final List<UiFilterListItemConfig> filters) {
+  public UiViewListItemConfig(@JsonProperty("viewName") final String viewName,
+      @JsonProperty("filters") final List<UiFilterListItemConfig> filters) {
     this.viewName = viewName;
     this.filters = filters;
   }
@@ -62,5 +63,5 @@ public class UiViewListItemConfig {
   public String toString() {
     return "UiViewEntity [viewName=" + viewName + ", filters=" + filters + "]";
   }
-  
+
 }

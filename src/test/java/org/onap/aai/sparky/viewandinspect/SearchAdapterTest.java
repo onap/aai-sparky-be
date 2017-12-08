@@ -56,7 +56,7 @@ public class SearchAdapterTest {
   private WebResource mockWebResource;
   private Builder mockBuilder;
 
-  
+
 
   /**
    * Inits the.

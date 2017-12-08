@@ -256,12 +256,11 @@ public class ElasticSearchEntityStatistics {
       int deletedValue = (deleted == null) ? 0 : deleted.get();
       int errorValue = (error == null) ? 0 : error.get();
 
-      sb.append("\n            ")
-          .append(String.format(
-              "%-30s TOTAL: %-12d CREATED: %-12d MODIFIED:"
+      sb.append("\n            ").append(String.format(
+          "%-30s TOTAL: %-12d CREATED: %-12d MODIFIED:"
               + " %-12d OTHER_2XX: %-12d DELETED: %-12d ERROR: %-12d",
-              counterEntityKey, totalValue, createdValue, modifiedValue, otherSuccessValue,
-              deletedValue, errorValue));
+          counterEntityKey, totalValue, createdValue, modifiedValue, otherSuccessValue,
+          deletedValue, errorValue));
     }
     return sb.toString();
   }

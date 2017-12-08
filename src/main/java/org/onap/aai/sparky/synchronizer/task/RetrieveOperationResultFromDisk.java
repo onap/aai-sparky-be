@@ -58,7 +58,9 @@ public class RetrieveOperationResultFromDisk implements Supplier<OperationResult
     this.logger = logger;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.util.function.Supplier#get()
    */
   @Override

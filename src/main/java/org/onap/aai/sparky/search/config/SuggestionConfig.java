@@ -34,23 +34,26 @@ import org.onap.aai.sparky.viewandinspect.config.TierSupportUiConstants;
 public class SuggestionConfig {
   public static final String CONFIG_FILE =
       TierSupportUiConstants.DYNAMIC_CONFIG_APP_LOCATION + "suggestive-search.properties";
-  
+
   private static SuggestionConfig config;
-  private static final String INDEX_SEARCH_MAPPER_DEFAULT = "elasticsearch.autosuggestIndexname:SearchServiceWrapper,elasticsearch.indexName:VnfSearchService";
-  
+  private static final String INDEX_SEARCH_MAPPER_DEFAULT =
+      "elasticsearch.autosuggestIndexname:SearchServiceWrapper,elasticsearch.indexName:VnfSearchService";
+
   private Map<String, String> searchIndexToSearchService;
-  
-  private static final String  CALLED_PAIRING_KEY_DEFAULT = "volume-group-id,volume-group-name,physical-location-id,data-center-code,complex-name,tenant-id,tenant-name,vserver-id,vserver-name,vserver-name2,hostname,pserver-name2,pserver-id,global-customer-id,subscriber-name,service-instance-id,service-instance-name,link-name,vpn-id,vpn-name,vpe-id,vnf-id,vnf-name,vnf-name2,vnfc-name,network-id,network-name,network-policy-id,vf-module-id,vf-module-name,vnf-id2,pnf-name,circuit-id";
-  private static final String  CALLED_PAIRING_VALUE_DEFAULT = "called";
-  private static final String  AT_PAIRING_KEY_DEFAULT = "street1,street2,postal-code,ipv4-oam-address,network-policy-fqdn";
-  private static final String  AT_PAIRING_VALUE_DEFAULT = "at";
-  private static final String  DEFAULT_PAIRING_DEFAULT_VALUE = "with";
+
+  private static final String CALLED_PAIRING_KEY_DEFAULT =
+      "volume-group-id,volume-group-name,physical-location-id,data-center-code,complex-name,tenant-id,tenant-name,vserver-id,vserver-name,vserver-name2,hostname,pserver-name2,pserver-id,global-customer-id,subscriber-name,service-instance-id,service-instance-name,link-name,vpn-id,vpn-name,vpe-id,vnf-id,vnf-name,vnf-name2,vnfc-name,network-id,network-name,network-policy-id,vf-module-id,vf-module-name,vnf-id2,pnf-name,circuit-id";
+  private static final String CALLED_PAIRING_VALUE_DEFAULT = "called";
+  private static final String AT_PAIRING_KEY_DEFAULT =
+      "street1,street2,postal-code,ipv4-oam-address,network-policy-fqdn";
+  private static final String AT_PAIRING_VALUE_DEFAULT = "at";
+  private static final String DEFAULT_PAIRING_DEFAULT_VALUE = "with";
   private String conjunctionForAt;
   Map<String, String> pairingList;
   private Collection<String> stopWords;
   private String defaultPairingValue;
-  
-  
+
+
   private SuggestionConfig() {}
 
   /**
@@ -65,12 +68,12 @@ public class SuggestionConfig {
     }
     return config;
   }
-  
+
   public void initializeConfigProperties() {
-    
+
     Properties props = ConfigHelper.loadConfigFromExplicitPath(CONFIG_FILE);
     Properties suggestionProps = ConfigHelper.getConfigWithPrefix("suggestion", props);
-    
+
     String indexSearchMapper = suggestionProps.getProperty("routing", INDEX_SEARCH_MAPPER_DEFAULT);
     String[] indexesToSearchClassesArray = indexSearchMapper.split(",");
     searchIndexToSearchService = new HashMap<String, String>();
@@ -78,25 +81,30 @@ public class SuggestionConfig {
       String[] subPair = pair.split(":");
       searchIndexToSearchService.put(subPair[0], subPair[1]);
     }
-    
-    defaultPairingValue=suggestionProps.getProperty("pairing.default.value", DEFAULT_PAIRING_DEFAULT_VALUE);
-    String calledValue = suggestionProps.getProperty("pairing.called.value", CALLED_PAIRING_VALUE_DEFAULT);
-    String[] calledPairingArray = suggestionProps.getProperty("pairing.called.key", CALLED_PAIRING_KEY_DEFAULT).split(",");
+
+    defaultPairingValue =
+        suggestionProps.getProperty("pairing.default.value", DEFAULT_PAIRING_DEFAULT_VALUE);
+    String calledValue =
+        suggestionProps.getProperty("pairing.called.value", CALLED_PAIRING_VALUE_DEFAULT);
+    String[] calledPairingArray =
+        suggestionProps.getProperty("pairing.called.key", CALLED_PAIRING_KEY_DEFAULT).split(",");
     pairingList = new HashMap<String, String>();
-    for(String calledField: calledPairingArray){
+    for (String calledField : calledPairingArray) {
       pairingList.put(calledField, calledValue);
     }
-    
-    this.conjunctionForAt = suggestionProps.getProperty("pairing.at.value", AT_PAIRING_VALUE_DEFAULT);
-    String[] atPairingArray = suggestionProps.getProperty("pairing.at.key", AT_PAIRING_KEY_DEFAULT).split(",");
-    for(String atField: atPairingArray){
+
+    this.conjunctionForAt =
+        suggestionProps.getProperty("pairing.at.value", AT_PAIRING_VALUE_DEFAULT);
+    String[] atPairingArray =
+        suggestionProps.getProperty("pairing.at.key", AT_PAIRING_KEY_DEFAULT).split(",");
+    for (String atField : atPairingArray) {
       pairingList.put(atField, conjunctionForAt);
     }
-    
+
     stopWords = Arrays.asList(suggestionProps.getProperty("stopwords", "").split(","));
-    
+
   }
-  
+
   public void setSearchIndexToSearchService(Map<String, String> searchIndexToSearchService) {
     this.searchIndexToSearchService = searchIndexToSearchService;
   }
@@ -104,7 +112,7 @@ public class SuggestionConfig {
   public Map<String, String> getSearchIndexToSearchService() {
     return searchIndexToSearchService;
   }
-  
+
   public Collection<String> getStopWords() {
     return stopWords;
   }

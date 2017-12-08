@@ -448,7 +448,7 @@ public class NodeUtilsTest {
     String result = NodeUtils.concatArray(numberList);
     assertEquals("1 2 3", result);
   }
- 
+
   /**
    * Test format timestamp expect valid result.
    */
@@ -470,37 +470,46 @@ public class NodeUtilsTest {
 
     assertEquals(validTimeStamp, result);
   }
-  
+
   /**
    * Test isNumeric expect true
    */
   @Test
-  public void test_isNumeric_expectFalse(){
-	  String invalidNumber="number";
-	  assertFalse(NodeUtils.isNumeric(invalidNumber));
+  public void test_isNumeric_expectFalse() {
+    String invalidNumber = "number";
+    assertFalse(NodeUtils.isNumeric(invalidNumber));
   }
-  
+
   /**
    * Test isNumeric expect true
    */
   @Test
-  public void test_isNumeric_expectTrue(){
-	  String validNumber="123";
-	  assertTrue(NodeUtils.isNumeric(validNumber));
+  public void test_isNumeric_expectTrue() {
+    String validNumber = "123";
+    assertTrue(NodeUtils.isNumeric(validNumber));
   }
+
   /**
    * test calculate edit attributes urls
    */
   @Test
   public void validateCalculateEditAttributeLogic() {
-    
-    assertEquals(NodeUtils.calculateEditAttributeUri("https://localhost:9000/aai/v7/pservers/pserver/12345"),"pservers/pserver/12345");
-    assertEquals(NodeUtils.calculateEditAttributeUri("https://localhost:9000/aai/v1/pservers/pserver/12345"),"pservers/pserver/12345");
-    assertEquals(NodeUtils.calculateEditAttributeUri("https://localhost:9000/aai/v21/pservers/pserver/12345"),"pservers/pserver/12345");
-    assertEquals(NodeUtils.calculateEditAttributeUri("https://localhost:9000/aai/v211/pservers/pserver/12345"),"pservers/pserver/12345");
-    assertEquals(NodeUtils.calculateEditAttributeUri("https://localhost:9000/aai/v5252/pservers/pserver/12345"),"pservers/pserver/12345");
+
+    assertEquals(
+        NodeUtils.calculateEditAttributeUri("https://localhost:9000/aai/v7/pservers/pserver/12345"),
+        "pservers/pserver/12345");
+    assertEquals(
+        NodeUtils.calculateEditAttributeUri("https://localhost:9000/aai/v1/pservers/pserver/12345"),
+        "pservers/pserver/12345");
+    assertEquals(NodeUtils.calculateEditAttributeUri(
+        "https://localhost:9000/aai/v21/pservers/pserver/12345"), "pservers/pserver/12345");
+    assertEquals(NodeUtils.calculateEditAttributeUri(
+        "https://localhost:9000/aai/v211/pservers/pserver/12345"), "pservers/pserver/12345");
+    assertEquals(NodeUtils.calculateEditAttributeUri(
+        "https://localhost:9000/aai/v5252/pservers/pserver/12345"), "pservers/pserver/12345");
     assertNull(NodeUtils.calculateEditAttributeUri(null));
-    assertNull(NodeUtils.calculateEditAttributeUri("https://localhost:9000/aai/noVersionTag/pservers/pserver/12345"));
+    assertNull(NodeUtils.calculateEditAttributeUri(
+        "https://localhost:9000/aai/noVersionTag/pservers/pserver/12345"));
 
   }
 

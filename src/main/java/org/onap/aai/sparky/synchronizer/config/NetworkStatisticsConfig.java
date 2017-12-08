@@ -23,7 +23,7 @@
 package org.onap.aai.sparky.synchronizer.config;
 
 public class NetworkStatisticsConfig {
- 
+
   private int numSamplesPerThreadForRunningAverage;
 
   private String bytesHistogramLabel;
@@ -73,7 +73,7 @@ public class NetworkStatisticsConfig {
   public void setNumSamplesPerThreadForRunningAverage(int numSamplesPerThreadForRunningAverage) {
     this.numSamplesPerThreadForRunningAverage = numSamplesPerThreadForRunningAverage;
   }
- 
+
   public String getBytesHistogramLabel() {
     return bytesHistogramLabel;
   }

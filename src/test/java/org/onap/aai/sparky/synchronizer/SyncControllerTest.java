@@ -29,53 +29,58 @@ import org.onap.aai.sparky.synchronizer.SyncController.SyncActions;
 
 public class SyncControllerTest {
 
-	SyncController controller;
+  SyncController controller;
 
-	@Before
-	public void init() throws Exception {
-		controller = new SyncController("name-1");
-	}
-	@Test
-	public void testPerformAction_PreSync() {
-		controller.performAction(SyncActions.SYNCHRONIZE);
-		controller.shutdown();
-	}
+  @Before
+  public void init() throws Exception {
+    controller = new SyncController("name-1");
+  }
 
-	@Test
-	public void testRegisterIndexCleaner_NullIndexName() {
-		IndexCleaner cleaner = new ElasticSearchIndexCleaner(null, null, "index_type-1", "host-1", "port-1", 1, 1);
-		controller.registerIndexCleaner(cleaner);
-	}
+  @Test
+  public void testPerformAction_PreSync() {
+    controller.performAction(SyncActions.SYNCHRONIZE);
+    controller.shutdown();
+  }
 
-	@Test
-	public void testRegisterIndexCleaner_NotNullIndexName() {
-		IndexCleaner cleaner = new ElasticSearchIndexCleaner(null, "index-1", "index_type-1", "host-1", "port-1", 1, 1);
-		controller.registerIndexCleaner(cleaner);
-	}
+  @Test
+  public void testRegisterIndexCleaner_NullIndexName() {
+    IndexCleaner cleaner =
+        new ElasticSearchIndexCleaner(null, null, "index_type-1", "host-1", "port-1", 1, 1);
+    controller.registerIndexCleaner(cleaner);
+  }
 
-	@Test
-	public void testRegisterIndexValidator_NullIndexValidator() {
-		IndexValidator validator = new IndexIntegrityValidator(null, null, "index_type-1", "host-1", "port-1", "json-1");
-		controller.registerIndexValidator(validator);
-	}
+  @Test
+  public void testRegisterIndexCleaner_NotNullIndexName() {
+    IndexCleaner cleaner =
+        new ElasticSearchIndexCleaner(null, "index-1", "index_type-1", "host-1", "port-1", 1, 1);
+    controller.registerIndexCleaner(cleaner);
+  }
 
-	@Test
-	public void testRegisterIndexValidator_NotNullIndexValidator() {
-		IndexValidator validator = new IndexIntegrityValidator(null, "index-1", "index_type-1", "host-1", "port-1", "json-1");
-		controller.registerIndexValidator(validator);
-	}
+  @Test
+  public void testRegisterIndexValidator_NullIndexValidator() {
+    IndexValidator validator =
+        new IndexIntegrityValidator(null, null, "index_type-1", "host-1", "port-1", "json-1");
+    controller.registerIndexValidator(validator);
+  }
 
-	@Test
-	public void testRegisterEntitySynchronizer_NullEntitySynchronizer() throws Exception {
-		IndexSynchronizer synchroniser = Mockito.mock(SearchableEntitySynchronizer.class);
-		Mockito.when(synchroniser.getIndexName()).thenReturn(null);
-		controller.registerEntitySynchronizer(synchroniser);
-	}
+  @Test
+  public void testRegisterIndexValidator_NotNullIndexValidator() {
+    IndexValidator validator =
+        new IndexIntegrityValidator(null, "index-1", "index_type-1", "host-1", "port-1", "json-1");
+    controller.registerIndexValidator(validator);
+  }
 
-	@Test
-	public void testRegisterEntitySynchronizer_NotNullEntitySynchronizer() throws Exception {
-		IndexSynchronizer synchroniser = Mockito.mock(SearchableEntitySynchronizer.class);
-		Mockito.when(synchroniser.getIndexName()).thenReturn("entity-1");
-		controller.registerEntitySynchronizer(synchroniser);
-	}
+  @Test
+  public void testRegisterEntitySynchronizer_NullEntitySynchronizer() throws Exception {
+    IndexSynchronizer synchroniser = Mockito.mock(SearchableEntitySynchronizer.class);
+    Mockito.when(synchroniser.getIndexName()).thenReturn(null);
+    controller.registerEntitySynchronizer(synchroniser);
+  }
+
+  @Test
+  public void testRegisterEntitySynchronizer_NotNullEntitySynchronizer() throws Exception {
+    IndexSynchronizer synchroniser = Mockito.mock(SearchableEntitySynchronizer.class);
+    Mockito.when(synchroniser.getIndexName()).thenReturn("entity-1");
+    controller.registerEntitySynchronizer(synchroniser);
+  }
 }

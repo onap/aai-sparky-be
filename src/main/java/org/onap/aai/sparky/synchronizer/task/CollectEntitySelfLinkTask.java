@@ -48,7 +48,9 @@ public class CollectEntitySelfLinkTask implements Supplier<NetworkTransaction> {
     this.provider = provider;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.util.function.Supplier#get()
    */
   @Override

@@ -30,9 +30,9 @@ public class GroupByAggregationResponseEntity {
 
   @JsonProperty("groupby_aggregation")
   private GroupByAggregationEntity aggEntity;
-  
+
   public GroupByAggregationResponseEntity() {
-    
+
   }
 
   public GroupByAggregationEntity getAggEntity() {
@@ -42,7 +42,7 @@ public class GroupByAggregationResponseEntity {
   public void setAggEntity(GroupByAggregationEntity aggEntity) {
     this.aggEntity = aggEntity;
   }
-  
-  
-  
+
+
+
 }

@@ -47,8 +47,11 @@ public class InMemoryEntityCache implements EntityCache {
     cachedEntityData = new ConcurrentHashMap<String, OperationResult>();
   }
 
-  /* (non-Javadoc)
-   * @see org.onap.aai.sparky.dal.cache.EntityCache#put(java.lang.String, org.onap.aai.sparky.dal.rest.OperationResult)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.onap.aai.sparky.dal.cache.EntityCache#put(java.lang.String,
+   * org.onap.aai.sparky.dal.rest.OperationResult)
    */
   @Override
   public void put(String key, OperationResult data) {
@@ -64,7 +67,9 @@ public class InMemoryEntityCache implements EntityCache {
 
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.onap.aai.sparky.dal.cache.EntityCache#get(java.lang.String, java.lang.String)
    */
   @Override
@@ -77,7 +82,9 @@ public class InMemoryEntityCache implements EntityCache {
     return null;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.onap.aai.sparky.dal.cache.EntityCache#shutdown()
    */
   @Override
@@ -87,7 +94,9 @@ public class InMemoryEntityCache implements EntityCache {
 
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.onap.aai.sparky.dal.cache.EntityCache#clear()
    */
   @Override

@@ -45,7 +45,7 @@ public enum TransactionStorageType {
     this.outputFolder = outputFolder;
   }
 
-private String outputFolder;
+  private String outputFolder;
 
   /**
    * Instantiates a new transaction storage type.

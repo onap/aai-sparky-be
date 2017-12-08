@@ -67,7 +67,8 @@ public class SearchServiceWrapper {
 
   private static final long serialVersionUID = 1L;
 
-  private static final Logger LOG = LoggerFactory.getInstance().getLogger(SearchServiceWrapper.class);
+  private static final Logger LOG =
+      LoggerFactory.getInstance().getLogger(SearchServiceWrapper.class);
 
   private SearchServiceConfig sasConfig = null;
   private SuggestionConfig suggestionConfig = null;
@@ -85,9 +86,9 @@ public class SearchServiceWrapper {
 
   private static final String VALUE_ANYKEY = "anyKey";
   private static final String VALUE_QUERY = "query";
-  
+
   private static final String KEY_HASH_ID = "hashId";
-  private static final String KEY_GROUP_BY = "groupby";  
+  private static final String KEY_GROUP_BY = "groupby";
   private static final String KEY_SEARCH_RESULT = "searchResult";
   private static final String KEY_HITS = "hits";
   private static final String KEY_PAYLOAD = "payload";
@@ -97,24 +98,24 @@ public class SearchServiceWrapper {
   private static final String KEY_SEARCH_TAGS = "searchTags";
   private static final String KEY_LINK = "link";
   private static final String KEY_ENTITY_TYPE = "entityType";
-  
+
   private static final String VI_SUGGESTION_ROUTE = "viewInspect"; // TODO -> Read route from
                                                                    // suggestive-search.properties
                                                                    // instead of hard coding
-  
+
   private static final String VIUI_SEARCH_TEMPLATE =
       "{ " + "\"results-start\": 0," + "\"results-size\": %d," + "\"queries\": [{" + "\"must\": {"
           + "\"match\": {" + "\"field\": \"entityType searchTags crossEntityReferenceValues\","
           + "\"value\": \"%s\"," + "\"operator\": \"and\", "
-          + "\"analyzer\": \"whitespace_analyzer\"" + "}" + "}" + "}]" + "}";  
-  
+          + "\"analyzer\": \"whitespace_analyzer\"" + "}" + "}" + "}]" + "}";
+
   /**
    * Instantiates a new search service wrapper
    */
   public SearchServiceWrapper() {
     this.mapper = new ObjectMapper();
     vnfSearch = new VnfSearchService();
-    
+
     try {
       if (sasConfig == null) {
         sasConfig = SearchServiceConfig.getConfig();
@@ -134,10 +135,11 @@ public class SearchServiceWrapper {
         if (OxmModelLoader.getInstance().getSearchableEntityDescriptors().isEmpty()) {
           LOG.error(AaiUiMsgs.ENTITY_NOT_FOUND_IN_OXM, "searchable entity");
         }
-      } 
-     } catch (Exception exc) {
+      }
+    } catch (Exception exc) {
       new ServletException(
-          "Caught an exception while getting an instance of servlet configuration from SearchServlet.", exc);
+          "Caught an exception while getting an instance of servlet configuration from SearchServlet.",
+          exc);
     }
   }
 
@@ -230,7 +232,7 @@ public class SearchServiceWrapper {
       HttpServletResponse response) throws Exception {
     JSONObject parameters = getRequestParamsFromHeader(request);
     String hashId = null;
-    if (parameters.has(KEY_HASH_ID)){
+    if (parameters.has(KEY_HASH_ID)) {
       hashId = parameters.get(KEY_HASH_ID).toString();
     } else {
       vnfSearch.setZeroCountResponse(response);
@@ -245,9 +247,9 @@ public class SearchServiceWrapper {
     } else {
       vnfSearch.setZeroCountResponse(response);
       LOG.error(AaiUiMsgs.ERROR_INVALID_HASH, hashId);
-    }    
+    }
   }
-  
+
   protected Map<String, String> getPayloadParams(String parameters) {
     Map<String, String> payloadParams = new HashMap<String, String>();
     try {
@@ -264,7 +266,8 @@ public class SearchServiceWrapper {
     return payloadParams;
   }
 
-  protected HashQueryResponse getResponseForQueryByHash(String hashId, HttpServletResponse response){
+  protected HashQueryResponse getResponseForQueryByHash(String hashId,
+      HttpServletResponse response) {
     return vnfSearch.getJSONPayloadFromHash(hashId);
   }
 
@@ -272,7 +275,7 @@ public class SearchServiceWrapper {
       throws Exception {
     JSONObject parameters = getRequestParamsFromHeader(request);
     String hashId = null;
-    if (parameters.has(KEY_HASH_ID)){
+    if (parameters.has(KEY_HASH_ID)) {
       hashId = parameters.get(KEY_HASH_ID).toString();
     } else {
       vnfSearch.setZeroCountResponse(response);
@@ -283,14 +286,14 @@ public class SearchServiceWrapper {
     Map<String, String> hashQueryResponsePayloadParams = new HashMap<String, String>();
     if (hashQueryResponse.getJsonPayload() != null) {
       hashQueryResponsePayloadParams = getPayloadParams(hashQueryResponse.getJsonPayload());
-      if (parameters.has(KEY_GROUP_BY)){
+      if (parameters.has(KEY_GROUP_BY)) {
         String groupByKey = parameters.getString(KEY_GROUP_BY);
         vnfSearch.getSummaryByEntityType(response, hashQueryResponsePayloadParams, groupByKey);
       }
     } else {
       LOG.error(AaiUiMsgs.ERROR_INVALID_HASH, hashId);
       vnfSearch.setEmptyAggResponse(response);
-    }  
+    }
   }
 
   /**
@@ -516,7 +519,8 @@ public class SearchServiceWrapper {
         }
       }
     } else {
-      String errorMessage = "Search tags length did not match search tag ID length for entity type " + entityType;
+      String errorMessage =
+          "Search tags length did not match search tag ID length for entity type " + entityType;
       LOG.error(AaiUiMsgs.ENTITY_SYNC_SEARCH_TAG_ANNOTATION_FAILED, errorMessage);
     }
 
@@ -556,7 +560,8 @@ public class SearchServiceWrapper {
     }
 
     Collection<String> stopWords = suggestionConfig.getStopWords();
-    ArrayList<String> queryTerms = new ArrayList<String>(Arrays.asList(queryStr.toLowerCase().split(" ")));
+    ArrayList<String> queryTerms =
+        new ArrayList<String>(Arrays.asList(queryStr.toLowerCase().split(" ")));
 
     queryTerms.removeAll(stopWords);
 
@@ -675,12 +680,12 @@ public class SearchServiceWrapper {
 
     String api = null;
     try {
-      
+
       // set default response
       response.setStatus(200);
 
       if (request.getRequestURI().contains(QUERY_SEARCH)) {
-        api = QUERY_SEARCH; 
+        api = QUERY_SEARCH;
         handleQuerySearch(request, response);
         return;
       } else if (request.getRequestURI().contains(SUMMARY_BY_ENTITY_TYPE_COUNT_API)) {
@@ -700,12 +705,12 @@ public class SearchServiceWrapper {
         PrintWriter out = response.getWriter();
         out.println(generateJsonErrorResponse(errorMessage));
         out.close();
-        
-        
+
+
       }
-    } catch (JSONException je){
-      handleSearchServletErrors("Caught an exception while parsing json in processing for " + api, je,
-          response);
+    } catch (JSONException je) {
+      handleSearchServletErrors("Caught an exception while parsing json in processing for " + api,
+          je, response);
     } catch (Exception e1) {
       handleSearchServletErrors("Caught an exception while communicating with elasticsearch", e1,
           response);
@@ -969,7 +974,7 @@ public class SearchServiceWrapper {
   public static String getViuiSearchTemplate() {
     return VIUI_SEARCH_TEMPLATE;
   }
-  
 
-  
+
+
 }

@@ -75,7 +75,8 @@ public interface ActiveInventoryDataProvider extends RestDataProvider {
    * @return
    * @throws Exception
    */
-  String getGenericQueryForSelfLink(String startNodeType, List<String> queryKeyParams) throws Exception;
+  String getGenericQueryForSelfLink(String startNodeType, List<String> queryKeyParams)
+      throws Exception;
 
   /*
    * (non-Javadoc)

@@ -79,8 +79,7 @@ public class RolesConfig {
   }
 
   private void load() throws JsonSyntaxException, IOException, URISyntaxException {
-    Type collectionType = new TypeToken<List<EcompRole>>() {
-    }.getType();
+    Type collectionType = new TypeToken<List<EcompRole>>() {}.getType();
 
     roles = Collections.unmodifiableList(GSON
         .fromJson(new String(Files.readAllBytes(Paths.get(ROLES_CONFIG_FILE))), collectionType));

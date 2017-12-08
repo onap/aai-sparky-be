@@ -56,11 +56,14 @@ import org.onap.aai.cl.mdc.MdcContext;
  */
 public class ElasticSearchSynchronizerFilter implements Filter {
 
-  private static final Logger LOG = LoggerFactory.getInstance().getLogger(ElasticSearchSynchronizerFilter.class);
+  private static final Logger LOG =
+      LoggerFactory.getInstance().getLogger(ElasticSearchSynchronizerFilter.class);
 
   private SyncHelper syncHelper;
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see javax.servlet.Filter#destroy()
    */
   @Override
@@ -71,8 +74,11 @@ public class ElasticSearchSynchronizerFilter implements Filter {
     }
   }
 
-  /* (non-Javadoc)
-   * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse,
+   * javax.servlet.FilterChain)
    */
   @Override
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -86,15 +92,17 @@ public class ElasticSearchSynchronizerFilter implements Filter {
     chain.doFilter(request, response);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
    */
   @Override
   public void init(FilterConfig filterConfig) throws ServletException {
-	String txnID = NodeUtils.getRandomTxnId();
-	MdcContext.initialize(txnID, "ElasticSearchSynchronizerFilter", "", "Init", "");
-	    
-	LOG.debug(AaiUiMsgs.DEBUG_GENERIC, "init()");
+    String txnID = NodeUtils.getRandomTxnId();
+    MdcContext.initialize(txnID, "ElasticSearchSynchronizerFilter", "", "Init", "");
+
+    LOG.debug(AaiUiMsgs.DEBUG_GENERIC, "init()");
 
     try {
       new SyncHelper(OxmModelLoader.getInstance());

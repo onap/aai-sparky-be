@@ -141,7 +141,7 @@ public class SearchableEntitySynchronizer extends AbstractEntitySynchronizer
     final Map<String, String> contextMap = MDC.getCopyOfContextMap();
     Map<String, OxmEntityDescriptor> descriptorMap =
         oxmModelLoader.getSearchableEntityDescriptors();
-    
+
     if (descriptorMap.isEmpty()) {
       LOG.error(AaiUiMsgs.ERROR_LOADING_OXM_SEARCHABLE_ENTITIES);
       LOG.info(AaiUiMsgs.ERROR_LOADING_OXM_SEARCHABLE_ENTITIES);
@@ -150,14 +150,15 @@ public class SearchableEntitySynchronizer extends AbstractEntitySynchronizer
 
     Collection<String> syncTypes = descriptorMap.keySet();
 
-    /*Collection<String> syncTypes = new ArrayList<String>();
-    syncTypes.add("service-instance");*/
+    /*
+     * Collection<String> syncTypes = new ArrayList<String>(); syncTypes.add("service-instance");
+     */
 
     try {
 
       /*
-       * launch a parallel async thread to process the documents for each entity-type (to max the
-       * of the configured executor anyway)
+       * launch a parallel async thread to process the documents for each entity-type (to max the of
+       * the configured executor anyway)
        */
 
       aaiWorkOnHand.set(syncTypes.size());
@@ -222,15 +223,17 @@ public class SearchableEntitySynchronizer extends AbstractEntitySynchronizer
     return OperationState.OK;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.onap.aai.sparky.synchronizer.IndexSynchronizer#doSync()
    */
   @Override
   public OperationState doSync() {
-	this.syncDurationInMs = -1;
+    this.syncDurationInMs = -1;
     String txnID = NodeUtils.getRandomTxnId();
     MdcContext.initialize(txnID, "SearchableEntitySynchronizer", "", "Sync", "");
-    
+
     resetCounters();
     this.allWorkEnumerated = false;
     syncStartedTimeStampInMs = System.currentTimeMillis();
@@ -255,9 +258,8 @@ public class SearchableEntitySynchronizer extends AbstractEntitySynchronizer
       try {
         rootNode = mapper.readTree(jsonResult);
       } catch (IOException exc) {
-        String message =
-            "Could not deserialize JSON (representing operation result) as node tree. " +
-            "Operation result = " + jsonResult + ". " + exc.getLocalizedMessage();
+        String message = "Could not deserialize JSON (representing operation result) as node tree. "
+            + "Operation result = " + jsonResult + ". " + exc.getLocalizedMessage();
         LOG.error(AaiUiMsgs.JSON_PROCESSING_ERROR, message);
       }
 
@@ -289,7 +291,8 @@ public class SearchableEntitySynchronizer extends AbstractEntitySynchronizer
             }
 
             if (descriptor.hasSearchableAttributes()) {
-              selflinks.add(new SelfLinkDescriptor(resourceLink, SynchronizerConfiguration.NODES_ONLY_MODIFIER, resourceType));
+              selflinks.add(new SelfLinkDescriptor(resourceLink,
+                  SynchronizerConfiguration.NODES_ONLY_MODIFIER, resourceType));
             }
 
           }
@@ -729,16 +732,20 @@ public class SearchableEntitySynchronizer extends AbstractEntitySynchronizer
 
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.onap.aai.sparky.synchronizer.IndexSynchronizer#getStatReport(boolean)
    */
   @Override
   public String getStatReport(boolean showFinalReport) {
-	  syncDurationInMs = System.currentTimeMillis() - syncStartedTimeStampInMs;
-	  return this.getStatReport(syncDurationInMs, showFinalReport);
+    syncDurationInMs = System.currentTimeMillis() - syncStartedTimeStampInMs;
+    return this.getStatReport(syncDurationInMs, showFinalReport);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.onap.aai.sparky.synchronizer.IndexSynchronizer#shutdown()
    */
   @Override

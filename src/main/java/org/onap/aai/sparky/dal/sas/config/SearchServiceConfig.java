@@ -52,11 +52,11 @@ public class SearchServiceConfig {
   private String version;
 
   private String type;
-  
+
   private String certName;
-  
+
   private String keystorePassword;
-  
+
   private String keystore;
 
   private static final String IP_ADDRESS_DEFAULT = "localhost";
@@ -98,18 +98,17 @@ public class SearchServiceConfig {
    */
   private void initializeProperties() {
     Properties props = ConfigHelper.loadConfigFromExplicitPath(CONFIG_FILE);
-    
+
     Properties sasProps = ConfigHelper.getConfigWithPrefix("search-service", props);
-    
+
     ipAddress = sasProps.getProperty("ipAddress", IP_ADDRESS_DEFAULT);
     httpPort = sasProps.getProperty("httpPort", "" + HTTP_PORT_DEFAULT);
     version = sasProps.getProperty("version", "" + VERSION_DEFAULT);
     indexName = sasProps.getProperty("indexName", INDEX_NAME_DEFAULT);
     auditIndexName = sasProps.getProperty("auditIndexName", AUDIT_INDEX_NAME_DEFAULT);
-    topographicalSearchIndex = sasProps.getProperty("topographicalIndexName",
-        TOPOGRAPHICAL_INDEX_NAME_DEFAULT);
-    certName =
-        sasProps.getProperty("ssl.cert-name", "aai-client-cert.p12");
+    topographicalSearchIndex =
+        sasProps.getProperty("topographicalIndexName", TOPOGRAPHICAL_INDEX_NAME_DEFAULT);
+    certName = sasProps.getProperty("ssl.cert-name", "aai-client-cert.p12");
     keystorePassword = sasProps.getProperty("ssl.keystore-password",
         "OBF:1i9a1u2a1unz1lr61wn51wn11lss1unz1u301i6o");
     keystore = sasProps.getProperty("ssl.keystore", "tomcat_keystore");
@@ -178,8 +177,8 @@ public class SearchServiceConfig {
   public void setType(String type) {
     this.type = type;
   }
-  
-  
+
+
   public String getCertName() {
     return certName;
   }

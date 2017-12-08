@@ -57,7 +57,7 @@ public class SelfLinkDescriptor {
   public SelfLinkDescriptor(String selfLink) {
     this(selfLink, null, null);
   }
-  
+
   /**
    * Instantiates a new self link descriptor.
    *
@@ -74,7 +74,9 @@ public class SelfLinkDescriptor {
     this.depthModifier = depthModifier;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.lang.Object#toString()
    */
   @Override

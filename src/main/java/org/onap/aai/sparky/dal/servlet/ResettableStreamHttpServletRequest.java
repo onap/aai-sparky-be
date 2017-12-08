@@ -98,7 +98,9 @@ public class ResettableStreamHttpServletRequest extends HttpServletRequestWrappe
       this.buffer = new ByteArrayInputStream(contents);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.io.InputStream#read()
      */
     @Override

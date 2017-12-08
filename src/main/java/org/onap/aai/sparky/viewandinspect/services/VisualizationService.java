@@ -62,10 +62,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class VisualizationService {
-  
+
   private static final Logger LOG =
       LoggerFactory.getInstance().getLogger(VisualizationService.class);
-  
+
   private OxmModelLoader loader;
   private ObjectMapper mapper = new ObjectMapper();
 
@@ -74,13 +74,13 @@ public class VisualizationService {
   private final ElasticSearchDataProvider esProvider;
   private final ElasticSearchConfig esConfig;
   private final ExecutorService aaiExecutorService;
-  
+
   private ConcurrentHashMap<Long, VisualizationContext> contextMap;
   private final SecureRandom secureRandom;
-  
+
   private ActiveInventoryConfig aaiConfig;
   private VisualizationConfig visualizationConfig;
-  
+
   public VisualizationService(OxmModelLoader loader) throws Exception {
     this.loader = loader;
 
@@ -106,17 +106,17 @@ public class VisualizationService {
     RestfulDataAccessor nonCachingRestProvider = new RestfulDataAccessor(esClientBuilder);
     this.esConfig = ElasticSearchConfig.getConfig();
     this.esProvider = new ElasticSearchAdapter(nonCachingRestProvider, this.esConfig);
-    
+
     this.mapper = new ObjectMapper();
     mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    
+
     this.contextMap = new ConcurrentHashMap<Long, VisualizationContext>();
     this.visualizationConfig = VisualizationConfig.getConfig();
     this.aaiConfig = ActiveInventoryConfig.getConfig();
     this.aaiExecutorService = NodeUtils.createNamedExecutor("SLNC-WORKER",
         aaiConfig.getAaiRestConfig().getNumResolverWorkers(), LOG);
   }
-  
+
   public OxmModelLoader getLoader() {
     return loader;
   }
@@ -124,7 +124,7 @@ public class VisualizationService {
   public void setLoader(OxmModelLoader loader) {
     this.loader = loader;
   }
-  
+
   /**
    * Analyze query request body.
    *
@@ -153,7 +153,7 @@ public class VisualizationService {
     return queryBody;
 
   }
-  
+
   /**
    * Log optime.
    *
@@ -164,13 +164,14 @@ public class VisualizationService {
     LOG.info(AaiUiMsgs.OPERATION_TIME, method,
         String.valueOf(System.currentTimeMillis() - opStartTimeInMs));
   }
-  
-  private SearchableEntity extractSearchableEntityFromElasticEntity(OperationResult operationResult) {
+
+  private SearchableEntity extractSearchableEntityFromElasticEntity(
+      OperationResult operationResult) {
     if (operationResult == null || !operationResult.wasSuccessful()) {
       // error, return empty collection
       return null;
     }
- 
+
     SearchableEntity sourceEntity = null;
     if (operationResult.wasSuccessful()) {
 
@@ -182,14 +183,16 @@ public class VisualizationService {
 
           if (sourceField != null) {
             sourceEntity = new SearchableEntity();
-            
-            String entityType = NodeUtils.extractFieldValueFromObject(sourceField, "entityType"); 
-            sourceEntity.setEntityType(entityType);  
-            String entityPrimaryKeyValue = NodeUtils.extractFieldValueFromObject(sourceField, "entityPrimaryKeyValue");
+
+            String entityType = NodeUtils.extractFieldValueFromObject(sourceField, "entityType");
+            sourceEntity.setEntityType(entityType);
+            String entityPrimaryKeyValue =
+                NodeUtils.extractFieldValueFromObject(sourceField, "entityPrimaryKeyValue");
             sourceEntity.setEntityPrimaryKeyValue(entityPrimaryKeyValue);
-            String link = NodeUtils.extractFieldValueFromObject(sourceField, "link"); 
+            String link = NodeUtils.extractFieldValueFromObject(sourceField, "link");
             sourceEntity.setLink(link);
-            String lastmodTimestamp = NodeUtils.extractFieldValueFromObject(sourceField, "lastmodTimestamp");
+            String lastmodTimestamp =
+                NodeUtils.extractFieldValueFromObject(sourceField, "lastmodTimestamp");
             sourceEntity.setEntityTimeStamp(lastmodTimestamp);
           }
         }
@@ -266,7 +269,7 @@ public class VisualizationService {
     return returnValue;
 
   }
-  
+
   /**
    * Gets the visualization output basedon generic query.
    *
@@ -334,13 +337,12 @@ public class VisualizationService {
     transformer.buildLinksFromGraphCollection(cachedNodeMap);
 
     /*
-     * - Apply configuration-driven styling
-     * - Build the final transformation response object
-     * - Use information we have to populate the GraphMeta object
+     * - Apply configuration-driven styling - Build the final transformation response object - Use
+     * information we have to populate the GraphMeta object
      */
 
     transformer.addSearchTargetAttributesToRootNode();
-    
+
     GraphMeta graphMeta = new GraphMeta();
 
     D3VisualizationOutput output = null;
@@ -368,13 +370,13 @@ public class VisualizationService {
 
     logOptime("[build flat node array, add relationship data, search target,"
         + " color scheme, and generate visualization output]", overlayDataStartTimeInMs);
-    
+
     logOptime("doFilter()", opStartTimeInMs);
 
     return jsonResponse;
 
   }
-  
+
   public void shutdown() {
     aaiProvider.shutdown();
     aaiExecutorService.shutdown();

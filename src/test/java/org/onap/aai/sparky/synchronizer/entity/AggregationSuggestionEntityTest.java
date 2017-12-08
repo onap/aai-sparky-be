@@ -63,7 +63,7 @@ public class AggregationSuggestionEntityTest {
     String expectedFilterListPayload = getResourceFileContents(
         "sync/entity/AggregationSuggestionEntity_getIndexDocumentJson_expected.json");
 
-    assertTrue(
-        aggregationSuggestionEntity.getIndexDocumentJson().contains(expectedFilterListPayload.trim()));
+    assertTrue(aggregationSuggestionEntity.getIndexDocumentJson()
+        .contains(expectedFilterListPayload.trim()));
   }
 }

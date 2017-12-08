@@ -40,47 +40,52 @@ import org.onap.aai.sparky.viewandinspect.config.TierSupportUiConstants;
 
 public class AggregationSuggestionSynchronizerTest {
 
-	@Before
-	public void init() throws IOException {
-		System.setProperty("AJSC_HOME", new File(".").getCanonicalPath().replace('\\', '/'));
-	    TierSupportUiConstants.DYNAMIC_CONFIG_APP_LOCATION = System.getProperty("AJSC_HOME")+"/src/test/resources/appconfig/";
-	   // TierSupportUiConstants.CONFIG_OXM_LOCATION = System.getProperty("AJSC_HOME")+"/bundleconfig-local/oxm/";
-	}
-	
-	@Test
-	public void testDoSync() throws Exception {
-        ElasticSearchConfig.setConfig(null);
-        setFinalStatic();
-		AggregationSuggestionSynchronizer ass = new AggregationSuggestionSynchronizer("entity-search-index");
-		Assert.assertNotNull(ass);
-		OperationState state = ass.doSync();
-		Assert.assertEquals(OperationState.OK, state);
+  @Before
+  public void init() throws IOException {
+    System.setProperty("AJSC_HOME", new File(".").getCanonicalPath().replace('\\', '/'));
+    TierSupportUiConstants.DYNAMIC_CONFIG_APP_LOCATION =
+        System.getProperty("AJSC_HOME") + "/src/test/resources/appconfig/";
+    // TierSupportUiConstants.CONFIG_OXM_LOCATION =
+    // System.getProperty("AJSC_HOME")+"/bundleconfig-local/oxm/";
+  }
 
-        OperationResult result = new OperationResult();
-        result.setResultCode(200);
-        result.setResult("result-1");
-        result.setNumRequestRetries(1);
-        NetworkTransaction ntwTxn = new NetworkTransaction(HttpMethod.GET, "entity-1", result);
-        ass.updateElasticSearchCounters(ntwTxn);
+  @Test
+  public void testDoSync() throws Exception {
+    ElasticSearchConfig.setConfig(null);
+    setFinalStatic();
+    AggregationSuggestionSynchronizer ass =
+        new AggregationSuggestionSynchronizer("entity-search-index");
+    Assert.assertNotNull(ass);
+    OperationState state = ass.doSync();
+    Assert.assertEquals(OperationState.OK, state);
 
-		SynchronizerState syncState = ass.getState();
-		Assert.assertEquals(SynchronizerState.IDLE, syncState);
-		
-		String statReport = ass.getStatReport(true);
-		Assert.assertNotNull(statReport);
-		Assert.assertTrue(statReport.contains("Aggregation Suggestion Synchronizer"));
-		
-		ass.shutdown();
-	}
+    OperationResult result = new OperationResult();
+    result.setResultCode(200);
+    result.setResult("result-1");
+    result.setNumRequestRetries(1);
+    NetworkTransaction ntwTxn = new NetworkTransaction(HttpMethod.GET, "entity-1", result);
+    ass.updateElasticSearchCounters(ntwTxn);
 
-	static void setFinalStatic() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-		Field configField = ElasticSearchConfig.class.getDeclaredField("CONFIG_FILE");
-		configField.setAccessible(true);
+    SynchronizerState syncState = ass.getState();
+    Assert.assertEquals(SynchronizerState.IDLE, syncState);
 
-		Field modifiersField = Field.class.getDeclaredField( "modifiers" );
-		modifiersField.setAccessible( true );
-		modifiersField.setInt( configField, configField.getModifiers() & ~Modifier.FINAL );
+    String statReport = ass.getStatReport(true);
+    Assert.assertNotNull(statReport);
+    Assert.assertTrue(statReport.contains("Aggregation Suggestion Synchronizer"));
 
-		configField.set(null, System.getProperty("AJSC_HOME")+"/src/test/resources/appconfig/elasticsearch.properties");
-	}
+    ass.shutdown();
+  }
+
+  static void setFinalStatic() throws NoSuchFieldException, SecurityException,
+      IllegalArgumentException, IllegalAccessException {
+    Field configField = ElasticSearchConfig.class.getDeclaredField("CONFIG_FILE");
+    configField.setAccessible(true);
+
+    Field modifiersField = Field.class.getDeclaredField("modifiers");
+    modifiersField.setAccessible(true);
+    modifiersField.setInt(configField, configField.getModifiers() & ~Modifier.FINAL);
+
+    configField.set(null,
+        System.getProperty("AJSC_HOME") + "/src/test/resources/appconfig/elasticsearch.properties");
+  }
 }

@@ -97,7 +97,7 @@ public class SearchServletTest {
 
   private static final String VNF_ROUTE = "vnf";
   private static final String VIEW_INSPECT_ROUTE = "viewInspect";
-  
+
   private HttpServletRequest commonRequest = null;
   private HttpServletResponse commonResponse = null;
   private PrintWriter printWriter = null;
@@ -111,7 +111,7 @@ public class SearchServletTest {
   private Map<String, OxmEntityDescriptor> descriptors = null;
   private SuggestionConfig suggestionConfig = null;
   private SearchServiceConfig esConfig = null;
-  
+
   /**
    * Inits the.
    *
@@ -128,21 +128,21 @@ public class SearchServletTest {
 
     // permit serialization of objects with no members
     mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-    
+
     rand = new SecureRandom();
 
-    loader = Mockito.mock(OxmModelLoader.class); 
+    loader = Mockito.mock(OxmModelLoader.class);
     descriptors = new HashMap<String, OxmEntityDescriptor>();
 
     esConfig = new SearchServiceConfig();
     suggestionConfig = SuggestionConfig.getConfig();
-    
+
     // Use SearchServiceWrapper and VnfSearchService for suggestionConfig
     Map<String, String> svcs = new HashMap<String, String>();
     svcs.put("autosuggestIndexname", "SearchServiceWrapper");
     svcs.put("indexName", "VnfSearchService");
     suggestionConfig.setSearchIndexToSearchService(svcs);
-    
+
     esConfig.setIndexName("esi-localhost");
     esConfig.setType("default");
 
@@ -150,7 +150,7 @@ public class SearchServletTest {
     vnfSearchService = Mockito.mock(VnfSearchService.class);
 
     initializeEntityDescriptors();
-    
+
     searchWrapper = new SearchServiceWrapper();
     searchWrapper.setSasConfig(esConfig);
     searchWrapper.setSearch(searchAdapter);
@@ -161,9 +161,9 @@ public class SearchServletTest {
 
   @Test
   public void validateAccessors() {
-    assertNotNull("Vnf Search Service should not be null", searchWrapper.getVnfSearch());    
+    assertNotNull("Vnf Search Service should not be null", searchWrapper.getVnfSearch());
   }
-  
+
   @Test
   public void validateInitializer() {
 
@@ -173,7 +173,7 @@ public class SearchServletTest {
       assertNotNull("SearchAdapter should not be null", searchWrapper.getSearch());
       assertNotNull("Suggestion Config should not be null", searchWrapper.getSuggestionConfig());
       assertNotNull("VnfSearchService should not be null", searchWrapper.getVnfSearch());
-      
+
       searchWrapper.setOxmModelLoader(null);
       searchWrapper.setSasConfig(null);
       searchWrapper.setSearch(null);
@@ -191,34 +191,34 @@ public class SearchServletTest {
     }
 
   }
-  
+
   /**
-   * Test doGet() and doPost() for a non-existent end-point.  A test objective would be 
-   * to either return a 404 Not Found.
+   * Test doGet() and doPost() for a non-existent end-point. A test objective would be to either
+   * return a 404 Not Found.
    */
   @Test
   public void validateMdcContextLoggingVariablesWhenExplicitlySet() {
-    
+
     final String transactionId = "1234";
     final String serviceName = "AAI_UI";
     final String partnerName = "SparkyApp";
-    
+
     HttpServletHelper.assignRequestHeader(commonRequest, "X-TransactionId", transactionId);
     HttpServletHelper.assignRequestHeader(commonRequest, "X-FromAppId", partnerName);
-    
+
     HttpServletHelper.assignRequestUri(commonRequest, "search/this/path/does/not/exist/");
-    
+
     try {
-      
+
       /*
        * Testing the doGet() operation will hit the doPost() operation in the servlet as well
        */
 
       OperationResult result = doEvaluationTestMDC(true, commonRequest, commonResponse);
-      
-      assertEquals(transactionId,MDC.get(MdcContext.MDC_REQUEST_ID));
-      assertEquals(serviceName,MDC.get(MdcContext.MDC_SERVICE_NAME));
-      assertEquals(partnerName,MDC.get(MdcContext.MDC_PARTNER_NAME));
+
+      assertEquals(transactionId, MDC.get(MdcContext.MDC_REQUEST_ID));
+      assertEquals(serviceName, MDC.get(MdcContext.MDC_SERVICE_NAME));
+      assertEquals(partnerName, MDC.get(MdcContext.MDC_PARTNER_NAME));
 
     } catch (Exception exc) {
       exc.printStackTrace();
@@ -226,23 +226,24 @@ public class SearchServletTest {
     }
 
   }
-  
+
   /**
-   * Test doGet() and doPost() for a non-existent end-point.  A test objective would be 
-   * to either return a 404 Not Found.
+   * Test doGet() and doPost() for a non-existent end-point. A test objective would be to either
+   * return a 404 Not Found.
    */
   @Test
   public void validateMdcContextLoggingVariablesWhenNotExplicitlySet() {
-    
-    /*final String transactionId = "1234";
-    final String serviceName = "AAI-UI";
-    final String partnerName = "SparkyApp";
-    
-    HttpServletHelper.assignRequestHeader(commonRequest, "X-TransactionId", transactionId);
-    HttpServletHelper.assignRequestHeader(commonRequest, "X-FromAppId", serviceName);*/
-    
+
+    /*
+     * final String transactionId = "1234"; final String serviceName = "AAI-UI"; final String
+     * partnerName = "SparkyApp";
+     * 
+     * HttpServletHelper.assignRequestHeader(commonRequest, "X-TransactionId", transactionId);
+     * HttpServletHelper.assignRequestHeader(commonRequest, "X-FromAppId", serviceName);
+     */
+
     HttpServletHelper.assignRequestUri(commonRequest, "search/this/path/does/not/exist/");
-    
+
     try {
 
       /*
@@ -250,7 +251,7 @@ public class SearchServletTest {
        */
 
       OperationResult result = doEvaluationTestMDC(true, commonRequest, commonResponse);
-      
+
       assertNotNull(MDC.get(MdcContext.MDC_REQUEST_ID));
       assertNotNull(MDC.get(MdcContext.MDC_SERVICE_NAME));
       assertNotNull(MDC.get(MdcContext.MDC_PARTNER_NAME));
@@ -261,17 +262,17 @@ public class SearchServletTest {
     }
 
   }
-  
-  
-  
+
+
+
   /**
-   * Test doGet() and doPost() for a non-existent end-point.  
+   * Test doGet() and doPost() for a non-existent end-point.
    */
   @Test
   public void validateViewAndInspectSearchError_invalidRequestUri() {
-    
+
     HttpServletHelper.assignRequestUri(commonRequest, "search/this/path/does/not/exist/");
-    
+
     try {
 
       /*
@@ -288,10 +289,10 @@ public class SearchServletTest {
     }
 
   }
-  
-  
+
+
   /**
-   * Test doGet() and doPost() for Unified Query Search success path  
+   * Test doGet() and doPost() for Unified Query Search success path
    */
   @Test
   public void validateQuerySearch_successPath() {
@@ -302,12 +303,13 @@ public class SearchServletTest {
       searchEntity.setMaxResults("10");
       searchEntity.setQueryStr("the quick brown fox");
 
-      HttpServletHelper.assignRequestUri(commonRequest, "search/querysearch"); 
+      HttpServletHelper.assignRequestUri(commonRequest, "search/querysearch");
       HttpServletHelper.setRequestPayload(commonRequest, MediaType.JSON_UTF_8.toString(),
           NodeUtils.convertObjectToJson(searchEntity, false));
 
-      
-      // set search-abstraction-response that we expect to get back from real system, but stubbed through a mock
+
+      // set search-abstraction-response that we expect to get back from real system, but stubbed
+      // through a mock
       // to fulfill collaborator behavior
 
       OperationResult mockedEntitySearchResponse = new OperationResult();
@@ -315,22 +317,23 @@ public class SearchServletTest {
       mockedEntitySearchResponse.setResult(NodeUtils.convertObjectToJson(
           SearchAbstractionEntityBuilder.getSuccessfulEntitySearchResponse(), false));
 
-      // TODO:  make parameters expect certain values to lock in invocation attempt against a specific input sequence
+      // TODO: make parameters expect certain values to lock in invocation attempt against a
+      // specific input sequence
       Mockito.when(searchAdapter.doPost(anyString(), anyString(), anyString()))
           .thenReturn(mockedEntitySearchResponse);
-      
+
       List<SuggestionEntity> autoSuggestions = new ArrayList<SuggestionEntity>();
 
-      autoSuggestions.add(new SuggestionEntity("vnf","1234", "VNFs"));
-      autoSuggestions.add(new SuggestionEntity("vnf","1111", "Created VNFs"));
-      autoSuggestions.add(new SuggestionEntity("vnf","1122", "ACTIVE VNFs"));
-      autoSuggestions.add(new SuggestionEntity("vnf","2233", "ACTIVE and Error VNFs"));
-      autoSuggestions.add(new SuggestionEntity("vnf","3344", "ACTIVE and NOT ORCHESTRATED VNFs"));
-      autoSuggestions.add(new SuggestionEntity("vnf","4455", "ACTIVE and Running VNFs"));
-      autoSuggestions.add(new SuggestionEntity("vnf","5566", "Activated VNFs"));
-      autoSuggestions.add(new SuggestionEntity("vnf","6677", "CAPPED VNFs"));
-      autoSuggestions.add(new SuggestionEntity("vnf","7788", "CAPPED and Created VNFs"));
-      
+      autoSuggestions.add(new SuggestionEntity("vnf", "1234", "VNFs"));
+      autoSuggestions.add(new SuggestionEntity("vnf", "1111", "Created VNFs"));
+      autoSuggestions.add(new SuggestionEntity("vnf", "1122", "ACTIVE VNFs"));
+      autoSuggestions.add(new SuggestionEntity("vnf", "2233", "ACTIVE and Error VNFs"));
+      autoSuggestions.add(new SuggestionEntity("vnf", "3344", "ACTIVE and NOT ORCHESTRATED VNFs"));
+      autoSuggestions.add(new SuggestionEntity("vnf", "4455", "ACTIVE and Running VNFs"));
+      autoSuggestions.add(new SuggestionEntity("vnf", "5566", "Activated VNFs"));
+      autoSuggestions.add(new SuggestionEntity("vnf", "6677", "CAPPED VNFs"));
+      autoSuggestions.add(new SuggestionEntity("vnf", "7788", "CAPPED and Created VNFs"));
+
       Mockito.when(vnfSearchService.getSuggestionsResults(Mockito.anyObject(), Mockito.anyInt()))
           .thenReturn(autoSuggestions);
 
@@ -339,39 +342,39 @@ public class SearchServletTest {
        */
 
       OperationResult result = doEvaluation(true, commonRequest, commonResponse);
-      
-      
+
+
       assertEquals(200, result.getResultCode());
-      
+
       SearchResponse searchResponse = mapper.readValue(result.getResult(), SearchResponse.class);
-      
+
       assertEquals(10, searchResponse.getTotalFound());
-      
+
       int numVnf = 0;
       int numViewInspect = 0;
-      
-      for ( SuggestionEntity suggestion : searchResponse.getSuggestions()) {
-      
-        if ( VNF_ROUTE.equals(suggestion.getRoute())) {
+
+      for (SuggestionEntity suggestion : searchResponse.getSuggestions()) {
+
+        if (VNF_ROUTE.equals(suggestion.getRoute())) {
           numVnf++;
-        } else if ( VIEW_INSPECT_ROUTE.equals(suggestion.getRoute())) {
+        } else if (VIEW_INSPECT_ROUTE.equals(suggestion.getRoute())) {
           numViewInspect++;
         }
       }
-      
+
       assertEquals(5, numVnf);
       assertEquals(5, numViewInspect);
-      
-      //assertTrue(result.getResult().contains("Ignored request-uri"));
+
+      // assertTrue(result.getResult().contains("Ignored request-uri"));
 
     } catch (Exception exc) {
       fail("Unexpected exception = " + exc.getLocalizedMessage());
     }
 
   }
-  
+
   /**
-   * Test doGet() and doPost() for Unified Query Search success path  
+   * Test doGet() and doPost() for Unified Query Search success path
    */
   @Test
   public void validateSummaryByEntityTypeCount_successPath() {
@@ -379,15 +382,17 @@ public class SearchServletTest {
     try {
 
       HttpServletHelper.assignRequestUri(commonRequest, "search/summarybyentitytype/count");
-      
-      Map<String,String> payloadFields = new HashMap<String,String>();
-      payloadFields.put("hashId", "662d1b57c31df70d7ef57ec53c0ace81578ec77b6bc5de055a57c7547ec122dd");
+
+      Map<String, String> payloadFields = new HashMap<String, String>();
+      payloadFields.put("hashId",
+          "662d1b57c31df70d7ef57ec53c0ace81578ec77b6bc5de055a57c7547ec122dd");
       payloadFields.put("groupby", "orchestration-status");
-      
-      
-      HttpServletHelper.setRequestPayload(commonRequest, MediaType.JSON_UTF_8.toString(), NodeUtils.convertObjectToJson(payloadFields, false));
-           
-      
+
+
+      HttpServletHelper.setRequestPayload(commonRequest, MediaType.JSON_UTF_8.toString(),
+          NodeUtils.convertObjectToJson(payloadFields, false));
+
+
       /*
        * In this test we don't want to mock the vnf search service, only it's collaborator
        * interactions with a REST endpoint.
@@ -397,55 +402,57 @@ public class SearchServletTest {
       searchWrapper.setVnfSearch(vnfSearchService);
 
       /*
-       * The first network response to mock is the one to elastic search to get the suggestion entity by hash id
+       * The first network response to mock is the one to elastic search to get the suggestion
+       * entity by hash id
        * 
-       *    http://localhost:9200/entityautosuggestindex-localhost/_search
-       *         {"query":{"term":{"_id":"2172a3c25ae56e4995038ffbc1f055692bfc76c0b8ceda1205bc745a9f7a805d"}}}
+       * http://localhost:9200/entityautosuggestindex-localhost/_search
+       * {"query":{"term":{"_id":"2172a3c25ae56e4995038ffbc1f055692bfc76c0b8ceda1205bc745a9f7a805d"}
+       * }}
        */
-      
+
       AutoSuggestElasticSearchResponse elasticResponse = new AutoSuggestElasticSearchResponse();
-      
+
       elasticResponse.setTook(1);
-      
+
       elasticResponse.setTimedOut(false);
       elasticResponse.addShard("total", "5");
       elasticResponse.addShard("successful", "5");
       elasticResponse.addShard("failed", "0");
-      
+
       AutoSuggestElasticHitEntity elasticHit = new AutoSuggestElasticHitEntity();
       elasticHit.setIndex("entityautosuggestindex-localhost");
       elasticHit.setType("default");
       elasticHit.setId("2172a3c25ae56e4995038ffbc1f055692bfc76c0b8ceda1205bc745a9f7a805d");
       elasticHit.setScore("1");
-      
+
       AutoSuggestDocumentEntityFields suggestDocFields = new AutoSuggestDocumentEntityFields();
       suggestDocFields.addInput("VNFs");
       suggestDocFields.addInput("generic-vnfs");
       suggestDocFields.setOutput("VNFs");
       suggestDocFields.setPayload(new PayloadEntity());
       suggestDocFields.setWeight(100);
-      
+
       AutoSuggestDocumentEntity autoSuggestDoc = new AutoSuggestDocumentEntity();
       autoSuggestDoc.setFields(suggestDocFields);
-      
+
       elasticHit.setSource(autoSuggestDoc);
-      
+
       AutoSuggestElasticHitsEntity hits = new AutoSuggestElasticHitsEntity();
       hits.addHit(elasticHit);
-      
+
       elasticResponse.setHits(hits);
-      
-      
+
+
       OperationResult mockedSearchResponse = new OperationResult();
       mockedSearchResponse.setResultCode(200);
-      
+
       mockedSearchResponse.setResult(NodeUtils.convertObjectToJson(elasticResponse, false));
 
-      
+
       /*
        * The second response is the count API dip to elastic search
        */
-      
+
       ElasticSearchCountResponse countResponse = new ElasticSearchCountResponse();
       countResponse.setCount(3170);
       countResponse.addShard("total", "5");
@@ -454,39 +461,41 @@ public class SearchServletTest {
 
       OperationResult searchResponseForCount = new OperationResult();
       searchResponseForCount.setResultCode(200);
-      
+
       searchResponseForCount.setResult(NodeUtils.convertObjectToJson(countResponse, false));
 
-      // TODO:  make parameters expect certain values to lock in invocation attempt against a specific input sequence
+      // TODO: make parameters expect certain values to lock in invocation attempt against a
+      // specific input sequence
       Mockito.when(searchAdapter.doPost(anyString(), anyString(), anyString()))
           .thenReturn(mockedSearchResponse).thenReturn(searchResponseForCount);
-      
-      
+
+
       /*
        * Testing the doGet() operation will hit the doPost() operation in the servlet as well
        */
 
       OperationResult result = doEvaluation(true, commonRequest, commonResponse);
-      
-      
+
+
       assertEquals(200, result.getResultCode());
-      
+
       //
-      //{"shards":{"total":"5","failed":"0","successful":"5"},"count":3170}
-      
-     EntityCountResponse entityCountResponse = mapper.readValue(result.getResult(), EntityCountResponse.class);
-      
-     assertEquals(3170, entityCountResponse.getCount());
+      // {"shards":{"total":"5","failed":"0","successful":"5"},"count":3170}
+
+      EntityCountResponse entityCountResponse =
+          mapper.readValue(result.getResult(), EntityCountResponse.class);
+
+      assertEquals(3170, entityCountResponse.getCount());
 
     } catch (Exception exc) {
       fail("Unexpected exception = " + exc.getLocalizedMessage());
     }
 
   }
-  
-  
+
+
   /**
-   * Test doGet() and doPost() for Unified Query Search success path  
+   * Test doGet() and doPost() for Unified Query Search success path
    */
   @Test
   public void validateSummaryByEntityType_successPath() {
@@ -494,13 +503,15 @@ public class SearchServletTest {
     try {
 
       HttpServletHelper.assignRequestUri(commonRequest, "search/summarybyentitytype");
-      
-      Map<String,String> payloadFields = new HashMap<String,String>();
-      payloadFields.put("hashId", "662d1b57c31df70d7ef57ec53c0ace81578ec77b6bc5de055a57c7547ec122dd");
+
+      Map<String, String> payloadFields = new HashMap<String, String>();
+      payloadFields.put("hashId",
+          "662d1b57c31df70d7ef57ec53c0ace81578ec77b6bc5de055a57c7547ec122dd");
       payloadFields.put("groupby", "orchestration-status");
-      
-      HttpServletHelper.setRequestPayload(commonRequest, MediaType.JSON_UTF_8.toString(), NodeUtils.convertObjectToJson(payloadFields, false));
-      
+
+      HttpServletHelper.setRequestPayload(commonRequest, MediaType.JSON_UTF_8.toString(),
+          NodeUtils.convertObjectToJson(payloadFields, false));
+
       /*
        * In this test we don't want to mock the vnf search service, only it's collaborator
        * interactions with a REST endpoint.
@@ -510,128 +521,132 @@ public class SearchServletTest {
       searchWrapper.setVnfSearch(vnfSearchService);
 
       /*
-       * The first network response to mock is the one to elastic search to get the suggestion entity by hash id
+       * The first network response to mock is the one to elastic search to get the suggestion
+       * entity by hash id
        * 
-       *    http://localhost:9200/entityautosuggestindex-localhost/_search
-       *         {"query":{"term":{"_id":"2172a3c25ae56e4995038ffbc1f055692bfc76c0b8ceda1205bc745a9f7a805d"}}}
+       * http://localhost:9200/entityautosuggestindex-localhost/_search
+       * {"query":{"term":{"_id":"2172a3c25ae56e4995038ffbc1f055692bfc76c0b8ceda1205bc745a9f7a805d"}
+       * }}
        */
-      
+
       AutoSuggestElasticSearchResponse elasticResponse = new AutoSuggestElasticSearchResponse();
-      
+
       elasticResponse.setTook(1);
-      
+
       elasticResponse.setTimedOut(false);
       elasticResponse.addShard("total", "5");
       elasticResponse.addShard("successful", "5");
       elasticResponse.addShard("failed", "0");
-      
+
       AutoSuggestElasticHitEntity elasticHit = new AutoSuggestElasticHitEntity();
       elasticHit.setIndex("entityautosuggestindex-localhost");
       elasticHit.setType("default");
       elasticHit.setId("2172a3c25ae56e4995038ffbc1f055692bfc76c0b8ceda1205bc745a9f7a805d");
       elasticHit.setScore("1");
-      
+
       AutoSuggestDocumentEntityFields suggestDocFields = new AutoSuggestDocumentEntityFields();
       suggestDocFields.addInput("VNFs");
       suggestDocFields.addInput("generic-vnfs");
       suggestDocFields.setOutput("VNFs");
       suggestDocFields.setPayload(new PayloadEntity());
       suggestDocFields.setWeight(100);
-      
+
       AutoSuggestDocumentEntity autoSuggestDoc = new AutoSuggestDocumentEntity();
       autoSuggestDoc.setFields(suggestDocFields);
-      
+
       elasticHit.setSource(autoSuggestDoc);
-      
+
       AutoSuggestElasticHitsEntity hits = new AutoSuggestElasticHitsEntity();
       hits.addHit(elasticHit);
-      
+
       elasticResponse.setHits(hits);
-      
-      
+
+
       OperationResult mockedSearchResponse = new OperationResult();
       mockedSearchResponse.setResultCode(200);
-      
+
       mockedSearchResponse.setResult(NodeUtils.convertObjectToJson(elasticResponse, false));
 
-      
+
       /*
        * The second response is the aggregation API dip to elastic search
        */
-      
+
       ElasticSearchAggegrationResponse aggResponse = new ElasticSearchAggegrationResponse();
-      
+
       aggResponse.setTook(20);
       aggResponse.setTimedOut(false);
-      
-      aggResponse.addShard("total","5");
-      aggResponse.addShard("successful","5");
-      aggResponse.addShard("failed","0");
-      
+
+      aggResponse.addShard("total", "5");
+      aggResponse.addShard("successful", "5");
+      aggResponse.addShard("failed", "0");
+
       ElasticHitsEntity hitsEntity = new ElasticHitsEntity();
-      
+
       hitsEntity.setTotal(3170);
       hitsEntity.setMaxScore(0);
 
       aggResponse.setHits(hitsEntity);
-      
+
       ElasticSearchAggregation defaultAggregation = new ElasticSearchAggregation();
-      
+
       defaultAggregation.setDocCountErrorUpperBound(0);
       defaultAggregation.setSumOtherDocCount(0);
-      defaultAggregation.addBucket(new BucketEntity("created",1876));
-      defaultAggregation.addBucket(new BucketEntity("Created",649));
-      defaultAggregation.addBucket(new BucketEntity("Activated",158));
-      defaultAggregation.addBucket(new BucketEntity("active",59));
-      defaultAggregation.addBucket(new BucketEntity("NOT ORCHESTRATED",42));
-      defaultAggregation.addBucket(new BucketEntity("Pending-Create",10));
-      defaultAggregation.addBucket(new BucketEntity("Running",9));
-      defaultAggregation.addBucket(new BucketEntity("Configured",7));
-      defaultAggregation.addBucket(new BucketEntity("pending-create",7));
-      defaultAggregation.addBucket(new BucketEntity("Error",3));
-      defaultAggregation.addBucket(new BucketEntity("planned",3));
-      defaultAggregation.addBucket(new BucketEntity("PLANNED",2));
-      defaultAggregation.addBucket(new BucketEntity("ERROR",1));
-      defaultAggregation.addBucket(new BucketEntity("RUNNING",1));
-      defaultAggregation.addBucket(new BucketEntity("example-orchestration-status-val-6176",1));
-      
+      defaultAggregation.addBucket(new BucketEntity("created", 1876));
+      defaultAggregation.addBucket(new BucketEntity("Created", 649));
+      defaultAggregation.addBucket(new BucketEntity("Activated", 158));
+      defaultAggregation.addBucket(new BucketEntity("active", 59));
+      defaultAggregation.addBucket(new BucketEntity("NOT ORCHESTRATED", 42));
+      defaultAggregation.addBucket(new BucketEntity("Pending-Create", 10));
+      defaultAggregation.addBucket(new BucketEntity("Running", 9));
+      defaultAggregation.addBucket(new BucketEntity("Configured", 7));
+      defaultAggregation.addBucket(new BucketEntity("pending-create", 7));
+      defaultAggregation.addBucket(new BucketEntity("Error", 3));
+      defaultAggregation.addBucket(new BucketEntity("planned", 3));
+      defaultAggregation.addBucket(new BucketEntity("PLANNED", 2));
+      defaultAggregation.addBucket(new BucketEntity("ERROR", 1));
+      defaultAggregation.addBucket(new BucketEntity("RUNNING", 1));
+      defaultAggregation.addBucket(new BucketEntity("example-orchestration-status-val-6176", 1));
+
       aggResponse.addAggregation("default", defaultAggregation);
-      
+
       OperationResult searchResponseForAggregation = new OperationResult();
       searchResponseForAggregation.setResultCode(200);
-      
+
       searchResponseForAggregation.setResult(NodeUtils.convertObjectToJson(aggResponse, false));
 
-      // TODO:  make parameters expect certain values to lock in invocation attempt against a specific input sequence
+      // TODO: make parameters expect certain values to lock in invocation attempt against a
+      // specific input sequence
       Mockito.when(searchAdapter.doPost(anyString(), anyString(), anyString()))
           .thenReturn(mockedSearchResponse).thenReturn(searchResponseForAggregation);
-      
-      
+
+
       /*
        * Testing the doGet() operation will hit the doPost() operation in the servlet as well
        */
 
       OperationResult result = doEvaluation(true, commonRequest, commonResponse);
-      
-      
+
+
       assertEquals(200, result.getResultCode());
-      
+
       //
-      //{"shards":{"total":"5","failed":"0","successful":"5"},"count":3170}
-      
-     GroupByAggregationResponseEntity groupByResponse = mapper.readValue(result.getResult(), GroupByAggregationResponseEntity.class);
-      
-     assertEquals(2828, groupByResponse.getAggEntity().getTotalChartHits());
-     assertEquals(15, groupByResponse.getAggEntity().getBuckets().size());
+      // {"shards":{"total":"5","failed":"0","successful":"5"},"count":3170}
+
+      GroupByAggregationResponseEntity groupByResponse =
+          mapper.readValue(result.getResult(), GroupByAggregationResponseEntity.class);
+
+      assertEquals(2828, groupByResponse.getAggEntity().getTotalChartHits());
+      assertEquals(15, groupByResponse.getAggEntity().getBuckets().size());
 
     } catch (Exception exc) {
       fail("Unexpected exception = " + exc.getLocalizedMessage());
     }
 
   }
-  
-  
-  
+
+
+
   /**
    * Builds the resource entity descriptor.
    *
@@ -664,7 +679,7 @@ public class SearchServletTest {
     descriptors.put("customer",
         buildResourceEntityDescriptor("customer", "service-instance-id", "f1,f2,f3"));
   }
- 
+
   /**
    * Builds the view and inspect search request.
    *
@@ -703,7 +718,8 @@ public class SearchServletTest {
    * @param res the res
    * @return the string
    */
-  private OperationResult doEvaluationTestMDC(boolean doGet, HttpServletRequest req, HttpServletResponse res) {
+  private OperationResult doEvaluationTestMDC(boolean doGet, HttpServletRequest req,
+      HttpServletResponse res) {
 
     /*
      * Test method invocation
@@ -717,7 +733,7 @@ public class SearchServletTest {
       e.printStackTrace();
     }
     ArgumentCaptor<Integer> responseCodeCaptor = ArgumentCaptor.forClass(Integer.class);
-    
+
     try {
       if (doGet) {
         searchServlet.doGet(req, res);
@@ -732,16 +748,16 @@ public class SearchServletTest {
 
     responseStringWriter.flush();
     Mockito.verify(commonResponse, Mockito.atLeast(1)).setStatus(responseCodeCaptor.capture());
-    
+
     OperationResult result = new OperationResult();
-    
+
     result.setResultCode(responseCodeCaptor.getValue());
     result.setResult(responseStringWriter.toString());
 
     return result;
 
   }
-  
+
   /**
    * Do evaluation.
    *
@@ -750,13 +766,14 @@ public class SearchServletTest {
    * @param res the res
    * @return the string
    */
-  private OperationResult doEvaluation(boolean doGet, HttpServletRequest req, HttpServletResponse res) {
+  private OperationResult doEvaluation(boolean doGet, HttpServletRequest req,
+      HttpServletResponse res) {
 
     /*
      * Test method invocation
      */
     ArgumentCaptor<Integer> responseCodeCaptor = ArgumentCaptor.forClass(Integer.class);
-    
+
     try {
       if (doGet) {
         searchWrapper.doGet(req, res);
@@ -771,9 +788,9 @@ public class SearchServletTest {
 
     responseStringWriter.flush();
     Mockito.verify(commonResponse, Mockito.atLeast(1)).setStatus(responseCodeCaptor.capture());
-    
+
     OperationResult result = new OperationResult();
-    
+
     result.setResultCode(responseCodeCaptor.getValue());
     result.setResult(responseStringWriter.toString());
 
@@ -781,6 +798,6 @@ public class SearchServletTest {
 
   }
 
- 
+
 
 }

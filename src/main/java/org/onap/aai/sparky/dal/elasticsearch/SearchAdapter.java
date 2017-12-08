@@ -50,7 +50,7 @@ import org.onap.aai.cl.mdc.MdcContext;
 public class SearchAdapter {
 
   private static final Logger LOG = LoggerFactory.getInstance().getLogger(SearchAdapter.class);
-  
+
   private RestClient client;
 
   /**
@@ -93,7 +93,8 @@ public class SearchAdapter {
 
   /**
    * Instantiates a new search adapter.
-   * @throws Exception 
+   * 
+   * @throws Exception
    */
   public SearchAdapter() throws Exception {
     sasConfig = SearchServiceConfig.getConfig();
@@ -118,8 +119,8 @@ public class SearchAdapter {
   }
 
   public OperationResult doPost(String url, String jsonPayload, String acceptContentType) {
-    org.onap.aai.restclient.client.OperationResult or = client.post(url, jsonPayload, getTxnHeader(),
-        MediaType.APPLICATION_JSON_TYPE, MediaType.APPLICATION_JSON_TYPE);
+    org.onap.aai.restclient.client.OperationResult or = client.post(url, jsonPayload,
+        getTxnHeader(), MediaType.APPLICATION_JSON_TYPE, MediaType.APPLICATION_JSON_TYPE);
     return new OperationResult(or.getResultCode(), or.getResult());
   }
 

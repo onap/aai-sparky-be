@@ -28,7 +28,7 @@ import org.apache.camel.Exchange;
  * The Class HelloWorld.
  */
 public class HelloWorld {
-  
+
   /**
    * Instantiates a new hello world.
    */

@@ -41,22 +41,22 @@ import org.onap.aai.sparky.viewandinspect.config.TierSupportUiConstants;
 
 
 /**
- * Performs all Elasticsearch related queries for filters related to
- * the Sparky-FE.
+ * Performs all Elasticsearch related queries for filters related to the Sparky-FE.
  */
 public class FilterElasticSearchAdapter {
-  
+
   private static ElasticSearchConfig esConfig = null;
   private static SearchAdapter search = null;
   private static final String ES_SEARCH_API = TierSupportUiConstants.ES_SEARCH_API;
   private static final String APP_JSON = "application/json";
-  private static final Logger LOG = LoggerFactory.getInstance().getLogger(FilterElasticSearchAdapter.class);
+  private static final Logger LOG =
+      LoggerFactory.getInstance().getLogger(FilterElasticSearchAdapter.class);
   private static final String AGGS = "aggregations";
   private static final String CONTAINER = "default";
   private static final String BUCKETS = "buckets";
   private static final String FILTER_VALUE_KEY = "key";
-  
-  
+
+
   public FilterElasticSearchAdapter() {
     try {
       if (esConfig == null) {
@@ -69,7 +69,7 @@ public class FilterElasticSearchAdapter {
       LOG.error(AaiUiMsgs.CONFIGURATION_ERROR, "Search");
     }
   }
-  
+
   /**
    * Get Full URL for search using elastic search configuration.
    *
@@ -81,54 +81,60 @@ public class FilterElasticSearchAdapter {
     final String port = esConfig.getHttpPort();
     return String.format("http://%s:%s/%s/%s", host, port, indexName, api);
   }
-  
+
   /**
-   * For a given UiFilterEntity, will attempt to contact an Elasticsearch instance
-   * and fetch all possible values for filter's field name.
+   * For a given UiFilterEntity, will attempt to contact an Elasticsearch instance and fetch all
+   * possible values for filter's field name.
    * 
    * @param filter - Filter object against which the search will take place.
    * @param sourceData - If present, contains the index name and field value to search against.
    * @return - A List of strings if results were found, else empty list.
    */
-  public List<String> fetchValuesForFilter(UiFilterEntity filter, UiFilterDataSourceConfig dataSourceConfig) {
+  public List<String> fetchValuesForFilter(UiFilterEntity filter,
+      UiFilterDataSourceConfig dataSourceConfig) {
     ArrayList<String> filterValues = new ArrayList<String>();
-    
-    if(dataSourceConfig != null) {
+
+    if (dataSourceConfig != null) {
       JsonObject filterValueQuery = null;
-      if(dataSourceConfig.getPathToField() != null) {
-        filterValueQuery = FilterQueryBuilder.createNestedFilterValueQueryObject(dataSourceConfig.getFieldName(), dataSourceConfig.getPathToField());
+      if (dataSourceConfig.getPathToField() != null) {
+        filterValueQuery = FilterQueryBuilder.createNestedFilterValueQueryObject(
+            dataSourceConfig.getFieldName(), dataSourceConfig.getPathToField());
       } else {
-        filterValueQuery = FilterQueryBuilder.createFilterValueQueryObject(dataSourceConfig.getFieldName());
+        filterValueQuery =
+            FilterQueryBuilder.createFilterValueQueryObject(dataSourceConfig.getFieldName());
       }
-      
-      org.onap.aai.sparky.dal.rest.OperationResult opResult = search.doPost(getFullUrl(dataSourceConfig.getIndexName(), ES_SEARCH_API), filterValueQuery.toString(), APP_JSON);
-      
+
+      org.onap.aai.sparky.dal.rest.OperationResult opResult =
+          search.doPost(getFullUrl(dataSourceConfig.getIndexName(), ES_SEARCH_API),
+              filterValueQuery.toString(), APP_JSON);
+
       String result = opResult.getResult();
-      if(opResult.wasSuccessful() && result != null) {
+      if (opResult.wasSuccessful() && result != null) {
         JSONObject responseJson = new JSONObject(result);
         JSONObject aggJson = responseJson.getJSONObject(AGGS);
-        
+
         JSONObject containerJson = null;
-        if(dataSourceConfig.getPathToField() != null) {
+        if (dataSourceConfig.getPathToField() != null) {
           JSONObject nestedContainer = aggJson.getJSONObject(dataSourceConfig.getPathToField());
           containerJson = nestedContainer.getJSONObject(dataSourceConfig.getFieldName());
         } else {
           containerJson = aggJson.getJSONObject(CONTAINER);
         }
-        
+
         JSONArray buckets = containerJson.getJSONArray(BUCKETS);
-        
+
         int bucketLength = buckets.length();
-        for(int i = 0; i < bucketLength; i++) {
+        for (int i = 0; i < bucketLength; i++) {
           JSONObject filterBucket = buckets.getJSONObject(i);
-          
+
           String filterValue = filterBucket.getString(FILTER_VALUE_KEY);
-          if(filterValue != null && !filterValue.isEmpty()) {
+          if (filterValue != null && !filterValue.isEmpty()) {
             filterValues.add(filterValue);
           }
         }
       } else {
-        LOG.error(AaiUiMsgs.ERROR_FETCHING_FILTER_VALUES, String.valueOf(opResult.getResultCode()), filter.getFilterName());
+        LOG.error(AaiUiMsgs.ERROR_FETCHING_FILTER_VALUES, String.valueOf(opResult.getResultCode()),
+            filter.getFilterName());
       }
     }
     filterValues.sort(String::compareToIgnoreCase);

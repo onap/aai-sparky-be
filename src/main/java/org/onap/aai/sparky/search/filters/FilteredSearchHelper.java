@@ -40,12 +40,13 @@ import org.onap.aai.sparky.search.filters.entity.UiFilterValueEntity;
 import org.onap.aai.sparky.search.filters.entity.UiFiltersEntity;
 
 public class FilteredSearchHelper {
-  private static final Logger LOG = LoggerFactory.getInstance().getLogger(FilteredSearchHelper.class);
+  private static final Logger LOG =
+      LoggerFactory.getInstance().getLogger(FilteredSearchHelper.class);
 
   private FiltersConfig filtersConfig;
   private Map<String, UiFilterConfig> filtersMap = null;
   private FilterElasticSearchAdapter filterSearchAdapter = null;
-  
+
   public FilteredSearchHelper(FiltersConfig filterConfig) {
     this.filtersConfig = filterConfig;
 
@@ -53,14 +54,14 @@ public class FilteredSearchHelper {
       filtersMap = new HashMap<>();
 
       final FiltersDetailsConfig uiFiltersConfig = filterConfig.getFiltersConfig();
-      
+
       if (uiFiltersConfig != null) {
         for (UiFilterConfig filter : uiFiltersConfig.getFilters()) {
           filtersMap.put(filter.getFilterId(), filter);
         }
       }
     }
-    
+
     filterSearchAdapter = new FilterElasticSearchAdapter();
   }
 
@@ -76,25 +77,25 @@ public class FilteredSearchHelper {
     List<UiViewListItemConfig> views = filtersConfig.getViewsConfig().getViews();
     List<UiFilterListItemConfig> filters = null;
     UiFiltersEntity viewFiltersList = new UiFiltersEntity();
-   
-    if(viewName != null) {
-      for (UiViewListItemConfig view: views) {
+
+    if (viewName != null) {
+      for (UiViewListItemConfig view : views) {
         if (viewName.equalsIgnoreCase(view.getViewName())) {
           filters = view.getFilters();
           break;
         }
       }
-  
+
       if (filters == null) {
         LOG.error(AaiUiMsgs.VIEW_NAME_NOT_SUPPORTED, viewName);
       } else {
         for (UiFilterListItemConfig filter : filters) {
           FiltersDetailsConfig filtersDetailsConfig = filtersConfig.getFiltersConfig();
-          
-          for (UiFilterConfig filterConfig: filtersDetailsConfig.getFilters()) {
+
+          for (UiFilterConfig filterConfig : filtersDetailsConfig.getFilters()) {
             if (filterConfig.getFilterId().equals(filter.getFilterId())) {
               UiFilterEntity filterEntity = new UiFilterEntity(filterConfig);
-              if(filter.getDefaultValue() != null) {
+              if (filter.getDefaultValue() != null) {
                 filterEntity.setDefaultValue(filter.getDefaultValue());
               }
               viewFiltersList.addFilter(filterEntity);
@@ -105,7 +106,7 @@ public class FilteredSearchHelper {
     }
     return viewFiltersList;
   }
-  
+
   public UiFiltersEntity doFilterEnumeration(List<String> requestedFilterIds) {
     UiFiltersEntity viewFiltersList = new UiFiltersEntity();
 
@@ -117,22 +118,23 @@ public class FilteredSearchHelper {
         UiFilterConfig sourceData = filtersMap.get(requestedFilterId);
         UiFilterEntity filterEntity = new UiFilterEntity(sourceData);
         this.getFilterEnumeration(filterEntity, sourceData);
-        viewFiltersList.addFilter(filterEntity);        
+        viewFiltersList.addFilter(filterEntity);
       }
     }
 
     return viewFiltersList;
   }
-  
+
   public void getFilterEnumeration(UiFilterEntity filter, UiFilterConfig sourceData) {
-   List<String> filterValues = filterSearchAdapter.fetchValuesForFilter(filter, sourceData.getDataSource());
-   
-   for(String value : filterValues) {
-     UiFilterValueEntity valueEntity = new UiFilterValueEntity();
-     valueEntity.setDisplayName(value);
-     valueEntity.setFilterValue(value);
-     filter.addFilterValue(valueEntity);
-   }
+    List<String> filterValues =
+        filterSearchAdapter.fetchValuesForFilter(filter, sourceData.getDataSource());
+
+    for (String value : filterValues) {
+      UiFilterValueEntity valueEntity = new UiFilterValueEntity();
+      valueEntity.setDisplayName(value);
+      valueEntity.setFilterValue(value);
+      filter.addFilterValue(valueEntity);
+    }
   }
 
   public Map<String, UiFilterConfig> getFiltersMap() {
@@ -142,15 +144,15 @@ public class FilteredSearchHelper {
   public void setFiltersMap(Map<String, UiFilterConfig> filtersMap) {
     this.filtersMap = filtersMap;
   }
-  
+
   public UiFilterDataSourceConfig getFilterDataSource(String filterId) {
     UiFilterConfig filterConfig = filtersMap.get(filterId);
     UiFilterDataSourceConfig returnValue = null;
-    
-    if(filterConfig != null) {
+
+    if (filterConfig != null) {
       returnValue = filterConfig.getDataSource();
     }
-    
+
     return returnValue;
   }
 }

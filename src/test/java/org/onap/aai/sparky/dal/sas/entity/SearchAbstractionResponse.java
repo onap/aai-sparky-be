@@ -25,13 +25,13 @@
 package org.onap.aai.sparky.dal.sas.entity;
 
 public class SearchAbstractionResponse {
-  
+
   private SearchResult searchResult;
 
   public SearchResult getSearchResult() {
     return searchResult;
   }
- 
+
   public void setSearchResult(SearchResult searchResult) {
     this.searchResult = searchResult;
   }

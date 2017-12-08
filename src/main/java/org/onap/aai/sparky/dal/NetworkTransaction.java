@@ -117,7 +117,9 @@ public class NetworkTransaction {
     this.descriptor = descriptor;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.lang.Object#toString()
    */
   @Override

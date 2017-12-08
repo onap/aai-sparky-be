@@ -225,11 +225,11 @@ public class AutosuggestionSynchronizer extends AbstractEntitySynchronizer
    */
   @Override
   public OperationState doSync() {
-	this.syncDurationInMs = -1;
-	syncStartedTimeStampInMs = System.currentTimeMillis();
+    this.syncDurationInMs = -1;
+    syncStartedTimeStampInMs = System.currentTimeMillis();
     String txnID = NodeUtils.getRandomTxnId();
     MdcContext.initialize(txnID, "AutosuggestionSynchronizer", "", "Sync", "");
-    
+
     return collectAllTheWork();
   }
 
@@ -343,11 +343,15 @@ public class AutosuggestionSynchronizer extends AbstractEntitySynchronizer
     }
 
   }
+
   /*
-   * Return a set of valid suggestion attributes for the provided entityName 
-   * that are present in the JSON
-   * @param node    JSON node in which the attributes should be found
-   * @param entityName  Name of the entity
+   * Return a set of valid suggestion attributes for the provided entityName that are present in the
+   * JSON
+   * 
+   * @param node JSON node in which the attributes should be found
+   * 
+   * @param entityName Name of the entity
+   * 
    * @return List of all valid suggestion attributes(key's)
    */
   public List<String> getSuggestionFromReponse(JsonNode node, String entityName) {
@@ -673,8 +677,8 @@ public class AutosuggestionSynchronizer extends AbstractEntitySynchronizer
    */
   @Override
   public String getStatReport(boolean showFinalReport) {
-	  syncDurationInMs = System.currentTimeMillis() - syncStartedTimeStampInMs;
-	  return getStatReport(syncDurationInMs, showFinalReport);
+    syncDurationInMs = System.currentTimeMillis() - syncStartedTimeStampInMs;
+    return getStatReport(syncDurationInMs, showFinalReport);
   }
 
   /*

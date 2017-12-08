@@ -28,19 +28,19 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class BucketEntity {
   private String key;
-  
+
   @JsonProperty("doc_count")
   private int docCount;
 
   public BucketEntity() {
-    
+
   }
-  
+
   public BucketEntity(String name, int value) {
     this.key = name;
     this.docCount = value;
   }
-  
+
   public String getKey() {
     return key;
   }
@@ -56,6 +56,6 @@ public class BucketEntity {
   public void setDocCount(int docCount) {
     this.docCount = docCount;
   }
-  
-  
-}   
+
+
+}

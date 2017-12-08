@@ -47,7 +47,7 @@ public class FilteredSearchHelperTest {
     config.setViewsConfig(config.readUiViewsConfig());
     System.out.println("SETTING UIFILTERSCONFIG");
     config.setFiltersConfig(config.readUiFiltersConfig());
-    
+
     filteredSearchHelper = new FilteredSearchHelper(config);
   }
 

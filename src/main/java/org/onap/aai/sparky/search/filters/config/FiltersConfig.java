@@ -35,15 +35,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class FiltersConfig {
 
   private static final Logger LOG = LoggerFactory.getInstance().getLogger(FiltersConfig.class);
-  
+
   private static FiltersConfig instance;
 
   private String filtersFileName;
-  
+
   private String filterMappingsFileName;
-  
+
   private FiltersForViewsConfig viewsConfig;
-  
+
   private FiltersDetailsConfig filtersConfig;
 
   private NetworkStatisticsConfig processorConfig;
@@ -112,43 +112,47 @@ public class FiltersConfig {
   public FiltersDetailsConfig getFiltersConfig() {
     return filtersConfig;
   }
-  
+
   public UiFilterConfig getFilterById(String filterId) {
-    for ( UiFilterConfig filter : filtersConfig.getFilters()) {
-      if ( filter.getFilterId().equals(filterId)) {
+    for (UiFilterConfig filter : filtersConfig.getFilters()) {
+      if (filter.getFilterId().equals(filterId)) {
         return filter;
       }
     }
-    
+
     return null;
   }
-  
+
   public void setFiltersConfig(FiltersDetailsConfig filtersConfig) {
     this.filtersConfig = filtersConfig;
   }
 
-  public FiltersDetailsConfig readUiFiltersConfig(){
+  public FiltersDetailsConfig readUiFiltersConfig() {
     ObjectMapper mapper = new ObjectMapper();
     FiltersDetailsConfig filtersConfig = null;
-    try{
-      filtersConfig = mapper.readValue(new File(this.getFiltersFileName()), FiltersDetailsConfig.class);
+    try {
+      filtersConfig =
+          mapper.readValue(new File(this.getFiltersFileName()), FiltersDetailsConfig.class);
       System.out.println(String.valueOf(filtersConfig));
-    } catch (Exception e){
-      LOG.error(AaiUiMsgs.ERROR_READING_JSON_SCHEMA, TierSupportUiConstants.getConfigPath(this.getFiltersFileName()));
+    } catch (Exception e) {
+      LOG.error(AaiUiMsgs.ERROR_READING_JSON_SCHEMA,
+          TierSupportUiConstants.getConfigPath(this.getFiltersFileName()));
     }
 
     return filtersConfig;
   }
 
-  public FiltersForViewsConfig readUiViewsConfig(){
+  public FiltersForViewsConfig readUiViewsConfig() {
     ObjectMapper mapper = new ObjectMapper();
     FiltersForViewsConfig viewsConfig = null;
-    
+
     try {
-      viewsConfig = mapper.readValue(new File(this.getFilterMappingsFileName()), FiltersForViewsConfig.class);
+      viewsConfig =
+          mapper.readValue(new File(this.getFilterMappingsFileName()), FiltersForViewsConfig.class);
       System.out.println(String.valueOf(viewsConfig));
-    } catch (Exception e){
-      LOG.error(AaiUiMsgs.ERROR_READING_JSON_SCHEMA, TierSupportUiConstants.getConfigPath(this.getFilterMappingsFileName()));
+    } catch (Exception e) {
+      LOG.error(AaiUiMsgs.ERROR_READING_JSON_SCHEMA,
+          TierSupportUiConstants.getConfigPath(this.getFilterMappingsFileName()));
     }
 
     return viewsConfig;

@@ -133,7 +133,7 @@ public class OperationResult {
   public void setResult(String result) {
     this.result = result;
   }
-  
+
   /**
    * Sets the result.
    *
@@ -180,7 +180,9 @@ public class OperationResult {
     this.numRequestRetries = numRequestRetries;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.lang.Object#toString()
    */
   @Override

@@ -42,6 +42,7 @@ public class SuggestionSearchEntity extends IndexableEntity implements IndexDocu
   private String entityType;
   private List<String> suggestionConnectorWords = new ArrayList<String>();
   private List<String> suggestionAttributeTypes = new ArrayList<String>();
+
   /**
    * @return the suggestionAttributeTypes
    */
@@ -129,8 +130,8 @@ public class SuggestionSearchEntity extends IndexableEntity implements IndexDocu
   public void setPayload(Map<String, String> payload) {
     this.payload = payload;
   }
-  
-  
+
+
   public JSONObject getPayloadJsonNode() {
     return payloadJsonNode;
   }
@@ -284,22 +285,22 @@ public class SuggestionSearchEntity extends IndexableEntity implements IndexDocu
 
   @Override
   public void deriveFields() {
-    
+
     int payloadEntryCounter = 1;
     for (Map.Entry<String, String> payload : getPayload().entrySet()) {
       // Add the payload(status) only if a valid value is present
-      if (payload.getValue() != null &&payload.getValue().length() > 0) {
+      if (payload.getValue() != null && payload.getValue().length() > 0) {
         this.getPayloadJsonNode().put(payload.getKey(), payload.getValue());
         this.outputString.append(payload.getValue());
         if (payloadEntryCounter < getPayload().entrySet().size()) {
           this.outputString.append(" and ");
-        } else{
+        } else {
           this.outputString.append(" ");
         }
       }
       payloadEntryCounter++;
     }
-    
+
     this.outputString.append(this.getAliasToUse());
     this.id = NodeUtils.generateUniqueShaDigest(outputString.toString());
   }

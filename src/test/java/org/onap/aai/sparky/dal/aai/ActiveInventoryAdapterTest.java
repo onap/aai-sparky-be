@@ -35,68 +35,70 @@ import org.onap.aai.sparky.dal.rest.RestClientBuilder;
 import org.onap.aai.sparky.viewandinspect.config.TierSupportUiConstants;
 
 public class ActiveInventoryAdapterTest {
-    
-    OxmModelLoader oxmModelLoader;
-    ActiveInventoryAdapter adapter;
-	
-    @Before
-    public void init() throws IOException, ElasticSearchOperationException {
-        String version = "v11";
-        System.setProperty("AJSC_HOME", new File(".").getCanonicalPath().replace('\\', '/'));
-        TierSupportUiConstants.DYNAMIC_CONFIG_APP_LOCATION = System.getProperty("AJSC_HOME")+"/src/test/resources/appconfig/";
-        oxmModelLoader = Mockito.spy(new OxmModelLoader());
-        Mockito.when(oxmModelLoader.loadOxmFileName(version)).thenReturn(
+
+  OxmModelLoader oxmModelLoader;
+  ActiveInventoryAdapter adapter;
+
+  @Before
+  public void init() throws IOException, ElasticSearchOperationException {
+    String version = "v11";
+    System.setProperty("AJSC_HOME", new File(".").getCanonicalPath().replace('\\', '/'));
+    TierSupportUiConstants.DYNAMIC_CONFIG_APP_LOCATION =
+        System.getProperty("AJSC_HOME") + "/src/test/resources/appconfig/";
+    oxmModelLoader = Mockito.spy(new OxmModelLoader());
+    Mockito.when(oxmModelLoader.loadOxmFileName(version)).thenReturn(
         System.getProperty("AJSC_HOME") + "/bundleconfig-local/oxm/aai_oxm_" + version + ".xml");
-	    	    
-        adapter = new ActiveInventoryAdapter(new RestClientBuilder());
-    }
-	
-    @Test
-    public void testQueryActiveInventoryWithRetries() {
 
-        adapter.queryActiveInventoryWithRetries("https://localhost:9517/model/aai/webapp/index.html", "response-type-1", 1);
-    }
-	
-    @Test(expected=NullPointerException.class)
-    public void testGetSelfLinkForEntity_NullEntityType() throws Exception {
+    adapter = new ActiveInventoryAdapter(new RestClientBuilder());
+  }
 
-        adapter.getSelfLinkForEntity(null, "key", "value");
-    }
-	
-    @Test(expected=NullPointerException.class)
-    public void testGetSelfLinkForEntity_NullKeyName() throws Exception {
+  @Test
+  public void testQueryActiveInventoryWithRetries() {
 
-        adapter.getSelfLinkForEntity("entity", null, "value");
-    }
-	
-    @Test(expected=NullPointerException.class)
-    public void testGetSelfLinkForEntity_NullKeyValue() throws Exception {
+    adapter.queryActiveInventoryWithRetries("https://localhost:9517/model/aai/webapp/index.html",
+        "response-type-1", 1);
+  }
 
-        adapter.getSelfLinkForEntity("entity", "key", null);
-    }
-	
-    @Test
-    public void testGetSelfLinkForEntity_ServiceInstance() throws Exception {
+  @Test(expected = NullPointerException.class)
+  public void testGetSelfLinkForEntity_NullEntityType() throws Exception {
 
-        adapter.getSelfLinkForEntity("service-instance", "key", "value");
-    }
-	
-    @Test
-    public void testGetSelfLinkForEntity_NotServiceInstance() throws Exception {
-        
-    	adapter.getSelfLinkForEntity("service", "key", "value");
-    }
-	
-    @Test(expected=NullPointerException.class)
-    public void testGetSelfLinkByEntityType_NullEntity() throws Exception {
+    adapter.getSelfLinkForEntity(null, "key", "value");
+  }
 
-        adapter.getSelfLinksByEntityType(null);
-    }
-	
-    @Test(expected=NoSuchElementException.class)
-    public void testGetSelfLinkByEntityType_NullEntityDescriptor() throws Exception {
+  @Test(expected = NullPointerException.class)
+  public void testGetSelfLinkForEntity_NullKeyName() throws Exception {
 
-        adapter.getSelfLinksByEntityType("entity-1");
-    }
+    adapter.getSelfLinkForEntity("entity", null, "value");
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void testGetSelfLinkForEntity_NullKeyValue() throws Exception {
+
+    adapter.getSelfLinkForEntity("entity", "key", null);
+  }
+
+  @Test
+  public void testGetSelfLinkForEntity_ServiceInstance() throws Exception {
+
+    adapter.getSelfLinkForEntity("service-instance", "key", "value");
+  }
+
+  @Test
+  public void testGetSelfLinkForEntity_NotServiceInstance() throws Exception {
+
+    adapter.getSelfLinkForEntity("service", "key", "value");
+  }
+
+  @Test(expected = NullPointerException.class)
+  public void testGetSelfLinkByEntityType_NullEntity() throws Exception {
+
+    adapter.getSelfLinksByEntityType(null);
+  }
+
+  @Test(expected = NoSuchElementException.class)
+  public void testGetSelfLinkByEntityType_NullEntityDescriptor() throws Exception {
+
+    adapter.getSelfLinksByEntityType("entity-1");
+  }
 
 }

@@ -291,7 +291,7 @@ public class ActiveInventoryEntityStatistics {
       sb.append("\n            ")
           .append(String.format(
               "%-30s TOTAL: %-12d FOUND: %-12d NO_PAYLOAD:"
-              + " %-12d NOT_FOUND: %-12d NUM_RETRIES: %-12d ERROR: %-12d",
+                  + " %-12d NOT_FOUND: %-12d NUM_RETRIES: %-12d ERROR: %-12d",
               counterEntityKey, totalValue, foundValue, noPayloadValue, notFoundValue,
               numRetriesValue, errorValue));
     }

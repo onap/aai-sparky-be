@@ -51,10 +51,12 @@ public interface ElasticSearchDataProvider extends RestDataProvider {
    * @return the operation result
    */
   OperationResult doBulkOperation(String url, String payload);
-  
+
   OperationResult retrieveEntityById(String entityId) throws Exception;
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.onap.aai.sparky.dal.rest.RestDataProvider#shutdown()
    */
   @Override

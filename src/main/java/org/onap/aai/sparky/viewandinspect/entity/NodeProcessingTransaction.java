@@ -46,15 +46,15 @@ public class NodeProcessingTransaction {
   public void setRequestParameters(String requestParameters) {
     this.requestParameters = requestParameters;
   }
-  
-  public String getSelfLink() {
-	    if (processingNode == null) {
-	      return null;
-	    }
 
-	    return processingNode.getSelfLink(); 
-	  }
-  
+  public String getSelfLink() {
+    if (processingNode == null) {
+      return null;
+    }
+
+    return processingNode.getSelfLink();
+  }
+
   public String getSelfLinkWithModifiers() {
     if (processingNode == null) {
       return null;
@@ -93,7 +93,9 @@ public class NodeProcessingTransaction {
 
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.lang.Object#toString()
    */
   @Override

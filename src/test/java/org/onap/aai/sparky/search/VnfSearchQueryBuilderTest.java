@@ -34,42 +34,44 @@ import org.onap.aai.sparky.search.VnfSearchQueryBuilder;
 
 public class VnfSearchQueryBuilderTest {
 
-	@Test
-	public void testCreateSuggestionsQuery() {
-		String maxResults = "maxResults-1";
-		String queryStr = "queryStr-1";
-		JsonObject object = VnfSearchQueryBuilder.createSuggestionsQuery(maxResults, queryStr);
-		Assert.assertNotNull(object);
-	}
-	
-	@Test
-	public void testSortCriteria() {
-		JsonArray array = VnfSearchQueryBuilder.getSortCriteria("field-1", "sortOrder-1");
-		Assert.assertNotNull(array);
-	}
-	
-	@Test
-	public void testCreateEntityCountsQuery_SingleAttribute() {
-		Map<String, String> attributes = new HashMap<>();
-		attributes.put("key-1", "value-1");
-		JsonObject object = VnfSearchQueryBuilder.createEntityCountsQuery(attributes);
-		Assert.assertNotNull(object);
-	}
-	
-	@Test
-	public void testCreateSummaryByEntityTypeQuery_Single() {
-		Map<String, String> attributes = new HashMap<>();
-		attributes.put("key-1", "value-1");
-		JsonObject object = VnfSearchQueryBuilder.createSummaryByEntityTypeQuery(attributes, "groupkey-1");
-		Assert.assertNotNull(object);
-	}
-	
-	@Test
-	public void testCreateSummaryByEntityTypeQuery_Multiple() {
-		Map<String, String> attributes = new HashMap<>();
-		attributes.put("key-1", "value-1");
-		attributes.put("key-2", "value-2");
-		JsonObject object = VnfSearchQueryBuilder.createSummaryByEntityTypeQuery(attributes, "groupkey-1");
-		Assert.assertNotNull(object);
-	}
+  @Test
+  public void testCreateSuggestionsQuery() {
+    String maxResults = "maxResults-1";
+    String queryStr = "queryStr-1";
+    JsonObject object = VnfSearchQueryBuilder.createSuggestionsQuery(maxResults, queryStr);
+    Assert.assertNotNull(object);
+  }
+
+  @Test
+  public void testSortCriteria() {
+    JsonArray array = VnfSearchQueryBuilder.getSortCriteria("field-1", "sortOrder-1");
+    Assert.assertNotNull(array);
+  }
+
+  @Test
+  public void testCreateEntityCountsQuery_SingleAttribute() {
+    Map<String, String> attributes = new HashMap<>();
+    attributes.put("key-1", "value-1");
+    JsonObject object = VnfSearchQueryBuilder.createEntityCountsQuery(attributes);
+    Assert.assertNotNull(object);
+  }
+
+  @Test
+  public void testCreateSummaryByEntityTypeQuery_Single() {
+    Map<String, String> attributes = new HashMap<>();
+    attributes.put("key-1", "value-1");
+    JsonObject object =
+        VnfSearchQueryBuilder.createSummaryByEntityTypeQuery(attributes, "groupkey-1");
+    Assert.assertNotNull(object);
+  }
+
+  @Test
+  public void testCreateSummaryByEntityTypeQuery_Multiple() {
+    Map<String, String> attributes = new HashMap<>();
+    attributes.put("key-1", "value-1");
+    attributes.put("key-2", "value-2");
+    JsonObject object =
+        VnfSearchQueryBuilder.createSummaryByEntityTypeQuery(attributes, "groupkey-1");
+    Assert.assertNotNull(object);
+  }
 }

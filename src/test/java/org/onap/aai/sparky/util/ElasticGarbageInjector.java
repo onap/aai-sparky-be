@@ -47,8 +47,8 @@ public class ElasticGarbageInjector {
   private enum ActiveInventoryEntities {
 
     COMPLEX("complex"), CUSTOMER("customer"), GENERIC_VNF("generic-vnf"), NEWVCE("newvce"), PSERVER(
-        "pserver"), SERVICE_INSTANCE("service-instance"), VCE("vce"), VPE("vpe"), VSERVER(
-            "vserver");
+        "pserver"), SERVICE_INSTANCE(
+            "service-instance"), VCE("vce"), VPE("vpe"), VSERVER("vserver");
 
     private final String entityName;
 

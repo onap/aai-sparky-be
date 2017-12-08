@@ -101,8 +101,8 @@ public class PortalRestAPIServiceImpl implements IPortalRestAPIService {
     LOG.debug("Push user [loginId:" + user.getLoginId() + "]");
 
     if (userManager.getUser(user.getLoginId()).isPresent()) {
-      String message = getMessage(ERROR_MESSAGE, "push", user.getLoginId())
-          + ", user is already stored";
+      String message =
+          getMessage(ERROR_MESSAGE, "push", user.getLoginId()) + ", user is already stored";
       LOG.error(message);
       throw new PortalAPIException(message);
     }

@@ -134,8 +134,12 @@ public class RestfulDataAccessor implements RestDataProvider {
     return null;
   }
 
-  /* (non-Javadoc)
-   * @see org.onap.aai.sparky.dal.rest.RestDataProvider#doRestfulOperation(org.onap.aai.sparky.dal.rest.HttpMethod, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.onap.aai.sparky.dal.rest.RestDataProvider#doRestfulOperation(org.onap.aai.sparky.dal.rest.
+   * HttpMethod, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
    */
   @Override
   public OperationResult doRestfulOperation(HttpMethod method, String url, String payload,
@@ -255,7 +259,9 @@ public class RestfulDataAccessor implements RestDataProvider {
     this.resourceNotFoundErrorsSurpressed = resourceNotFoundErrorsSurpressed;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.onap.aai.sparky.dal.rest.RestDataProvider#doGet(java.lang.String, java.lang.String)
    */
   @Override
@@ -263,7 +269,9 @@ public class RestfulDataAccessor implements RestDataProvider {
     return doRestfulOperation(HttpMethod.GET, url, null, null, acceptContentType);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.onap.aai.sparky.dal.rest.RestDataProvider#doDelete(java.lang.String, java.lang.String)
    */
   @Override
@@ -271,8 +279,11 @@ public class RestfulDataAccessor implements RestDataProvider {
     return doRestfulOperation(HttpMethod.DELETE, url, null, null, acceptContentType);
   }
 
-  /* (non-Javadoc)
-   * @see org.onap.aai.sparky.dal.rest.RestDataProvider#doPost(java.lang.String, java.lang.String, java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.onap.aai.sparky.dal.rest.RestDataProvider#doPost(java.lang.String, java.lang.String,
+   * java.lang.String)
    */
   @Override
   public OperationResult doPost(String url, String jsonPayload, String acceptContentType) {
@@ -280,8 +291,11 @@ public class RestfulDataAccessor implements RestDataProvider {
         acceptContentType);
   }
 
-  /* (non-Javadoc)
-   * @see org.onap.aai.sparky.dal.rest.RestDataProvider#doPut(java.lang.String, java.lang.String, java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.onap.aai.sparky.dal.rest.RestDataProvider#doPut(java.lang.String, java.lang.String,
+   * java.lang.String)
    */
   @Override
   public OperationResult doPut(String url, String jsonPayload, String acceptContentType) {
@@ -289,8 +303,11 @@ public class RestfulDataAccessor implements RestDataProvider {
         acceptContentType);
   }
 
-  /* (non-Javadoc)
-   * @see org.onap.aai.sparky.dal.rest.RestDataProvider#doPatch(java.lang.String, java.lang.String, java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.onap.aai.sparky.dal.rest.RestDataProvider#doPatch(java.lang.String, java.lang.String,
+   * java.lang.String)
    */
   @Override
   public OperationResult doPatch(String url, String jsonPayload, String acceptContentType) {
@@ -298,7 +315,9 @@ public class RestfulDataAccessor implements RestDataProvider {
         acceptContentType);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.onap.aai.sparky.dal.rest.RestDataProvider#doHead(java.lang.String, java.lang.String)
    */
   @Override
@@ -328,7 +347,9 @@ public class RestfulDataAccessor implements RestDataProvider {
     return builder;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.onap.aai.sparky.dal.rest.RestDataProvider#shutdown()
    */
   @Override
@@ -340,7 +361,9 @@ public class RestfulDataAccessor implements RestDataProvider {
 
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.onap.aai.sparky.dal.rest.RestDataProvider#clearCache()
    */
   @Override

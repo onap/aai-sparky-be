@@ -36,7 +36,7 @@ import javax.ws.rs.Produces;
  */
 @Path("/jaxrs-services")
 public class JaxrsEchoService {
-  
+
   /**
    * Ping.
    *

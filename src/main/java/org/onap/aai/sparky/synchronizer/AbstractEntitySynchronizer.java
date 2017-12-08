@@ -60,12 +60,12 @@ public abstract class AbstractEntitySynchronizer {
   protected ObjectMapper mapper;
   protected OxmModelLoader oxmModelLoader;
   protected long syncDurationInMs;
+
   /**
    * The Enum StatFlag.
    */
   protected enum StatFlag {
-    AAI_REST_STATS, AAI_ENTITY_STATS, AAI_PROCESSING_EXCEPTION_STATS,
-    AAI_TASK_PROCESSING_STATS, ES_REST_STATS, ES_ENTITY_STATS, ES_TASK_PROCESSING_STATS
+    AAI_REST_STATS, AAI_ENTITY_STATS, AAI_PROCESSING_EXCEPTION_STATS, AAI_TASK_PROCESSING_STATS, ES_REST_STATS, ES_ENTITY_STATS, ES_TASK_PROCESSING_STATS
   }
 
   protected EnumSet<StatFlag> enabledStatFlags;
@@ -95,8 +95,9 @@ public abstract class AbstractEntitySynchronizer {
   protected String synchronizerName;
 
   protected abstract boolean isSyncDone();
+
   protected boolean shouldSkipSync;
-  
+
   public String getActiveInventoryStatisticsReport() {
 
     StringBuilder sb = new StringBuilder(128);
@@ -255,7 +256,7 @@ public abstract class AbstractEntitySynchronizer {
    */
   protected AbstractEntitySynchronizer(Logger logger, String syncName, int numSyncWorkers,
       int numActiveInventoryWorkers, int numElasticsearchWorkers, String indexName)
-          throws Exception {
+      throws Exception {
     this.logger = logger;
     this.synchronizerExecutor =
         NodeUtils.createNamedExecutor(syncName + "-INTERNAL", numSyncWorkers, logger);
@@ -287,11 +288,11 @@ public abstract class AbstractEntitySynchronizer {
     enabledStatFlags = EnumSet.allOf(StatFlag.class);
 
     this.synchronizerName = "Abstact Entity Synchronizer";
-    
+
     String txnID = NodeUtils.getRandomTxnId();
-	MdcContext.initialize(txnID, "AbstractEntitySynchronizer", "", "Sync", "");
-	
-	this.shouldSkipSync = false;
+    MdcContext.initialize(txnID, "AbstractEntitySynchronizer", "", "Sync", "");
+
+    this.shouldSkipSync = false;
     this.syncStartedTimeStampInMs = System.currentTimeMillis();
     this.syncDurationInMs = -1;
   }
@@ -343,7 +344,7 @@ public abstract class AbstractEntitySynchronizer {
       aaiDataProvider.shutdown();
       esDataProvider.shutdown();
     } catch (Exception exc) {
-      logger.error(AaiUiMsgs.ERROR_SHUTDOWN_EXECUTORS, exc );
+      logger.error(AaiUiMsgs.ERROR_SHUTDOWN_EXECUTORS, exc);
     }
   }
 

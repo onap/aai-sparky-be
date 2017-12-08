@@ -41,7 +41,7 @@ public class EcompSso {
   public static final String EP_SERVICE = "EPService";
   public static final String CSP_COOKIE_NAME = "csp_cookie_name";
   public static final String CSP_GATE_KEEPER_PROD_KEY = "csp_gate_keeper_prod_key";
-  public static final String ONAP_ENABLED = "ONAP_ENABLED"; 
+  public static final String ONAP_ENABLED = "ONAP_ENABLED";
   private static final Logger LOG = LoggerFactory.getInstance().getLogger(EcompSso.class);
 
   /**
@@ -87,10 +87,12 @@ public class EcompSso {
     boolean isOnapEnabled = PortalAuthenticationConfig.getInstance().getIsOnapEnabled();
     if (isOnapEnabled) {
       if (isEPServiceCookiePresent(request)) {
-        /* This is a "temporary" fix until proper separation
-         * between closed source and open source code is reached */
+        /*
+         * This is a "temporary" fix until proper separation between closed source and open source
+         * code is reached
+         */
         return ONAP_ENABLED;
-      } 
+      }
       return null;
     } else {
       return getLoginIdFromCookie(request);
@@ -101,8 +103,8 @@ public class EcompSso {
    * Searches the specified request for the CSP cookie, decodes it and gets the User ID.
    *
    * @param request
-   * @return User ID if the cookie is present in the request and can be decoded successfully (expired
-   *         cookies do not decode); else null.
+   * @return User ID if the cookie is present in the request and can be decoded successfully
+   *         (expired cookies do not decode); else null.
    */
   private static String getLoginIdFromCookie(HttpServletRequest request) {
     String userid = null;
@@ -146,10 +148,9 @@ public class EcompSso {
 
     String cspCookieDecrypted = "";
     try {
-      cspCookieDecrypted = CipherUtil.decrypt(cspCookieEncrypted,"");
+      cspCookieDecrypted = CipherUtil.decrypt(cspCookieEncrypted, "");
     } catch (Exception e) {
-      LOG.info(AaiUiMsgs.LOGIN_FILTER_INFO,
-          "decrypting cookie failed " + e.getLocalizedMessage());
+      LOG.info(AaiUiMsgs.LOGIN_FILTER_INFO, "decrypting cookie failed " + e.getLocalizedMessage());
     }
 
     String[] cspData = cspCookieDecrypted.split("\\|");

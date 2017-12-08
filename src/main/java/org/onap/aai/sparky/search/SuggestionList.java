@@ -31,7 +31,7 @@ public class SuggestionList {
   private Long totalFound;
   private Long numReturned;
   private List<Suggestion> suggestions = new LinkedList<>();
-  
+
   public void addSuggestion(Suggestion suggestion) {
     suggestions.add(suggestion);
   }

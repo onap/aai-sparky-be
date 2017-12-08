@@ -64,8 +64,8 @@ public class HttpServletHelper {
 
     try {
       Mockito.when(request.getContentType()).thenReturn(mimeType);
-      
-      
+
+
       final ByteArrayInputStream bais =
           new ByteArrayInputStream(payloadContent.getBytes(StandardCharsets.UTF_8));
 
@@ -94,8 +94,9 @@ public class HttpServletHelper {
       };
 
       Mockito.when(request.getInputStream()).thenReturn(servletInputStream);
-      Mockito.when(request.getReader()).thenReturn(new BufferedReader(new StringReader(payloadContent)));
-      
+      Mockito.when(request.getReader())
+          .thenReturn(new BufferedReader(new StringReader(payloadContent)));
+
     } catch (IOException ioe) {
       fail(ExceptionHelper.extractStackTraceElements(5, ioe));
     }
@@ -150,11 +151,12 @@ public class HttpServletHelper {
       for (String key : paramNameValueMap.keySet()) {
         Mockito.when(req.getParameter(key)).thenReturn(paramNameValueMap.get(key));
       }
-      
+
     }
   }
-  
-  public static void assignRequestHeader(HttpServletRequest req, String headerName, String headerValue) {
+
+  public static void assignRequestHeader(HttpServletRequest req, String headerName,
+      String headerValue) {
     Mockito.when(req.getHeader(headerName)).thenReturn(headerValue);
   }
 

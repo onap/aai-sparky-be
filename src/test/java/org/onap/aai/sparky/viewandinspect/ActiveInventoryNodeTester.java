@@ -87,8 +87,7 @@ public class ActiveInventoryNodeTester {
     return nodeA;
   }
 
-  private String selfLinkFormat =
-      "https://aai-hostname:9292/aai/v7/network/generic-vnfs/%s/%s";
+  private String selfLinkFormat = "https://aai-hostname:9292/aai/v7/network/generic-vnfs/%s/%s";
 
 
   /**

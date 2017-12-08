@@ -51,7 +51,9 @@ public class ElasticSearchAdapter implements ElasticSearchDataProvider {
     this.esConfig = esConfig;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.onap.aai.sparky.dal.rest.RestDataProvider#doGet(java.lang.String, java.lang.String)
    */
   @Override
@@ -59,7 +61,9 @@ public class ElasticSearchAdapter implements ElasticSearchDataProvider {
     return restDataProvider.doGet(url, acceptContentType);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.onap.aai.sparky.dal.rest.RestDataProvider#doDelete(java.lang.String, java.lang.String)
    */
   @Override
@@ -67,31 +71,42 @@ public class ElasticSearchAdapter implements ElasticSearchDataProvider {
     return restDataProvider.doDelete(url, acceptContentType);
   }
 
-  /* (non-Javadoc)
-   * @see org.onap.aai.sparky.dal.rest.RestDataProvider#doPost(java.lang.String, java.lang.String, java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.onap.aai.sparky.dal.rest.RestDataProvider#doPost(java.lang.String, java.lang.String,
+   * java.lang.String)
    */
   @Override
   public OperationResult doPost(String url, String jsonPayload, String acceptContentType) {
     return restDataProvider.doPost(url, jsonPayload, acceptContentType);
   }
 
-  /* (non-Javadoc)
-   * @see org.onap.aai.sparky.dal.rest.RestDataProvider#doPut(java.lang.String, java.lang.String, java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.onap.aai.sparky.dal.rest.RestDataProvider#doPut(java.lang.String, java.lang.String,
+   * java.lang.String)
    */
   @Override
   public OperationResult doPut(String url, String jsonPayload, String acceptContentType) {
     return restDataProvider.doPut(url, jsonPayload, acceptContentType);
   }
 
-  /* (non-Javadoc)
-   * @see org.onap.aai.sparky.dal.rest.RestDataProvider#doPatch(java.lang.String, java.lang.String, java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.onap.aai.sparky.dal.rest.RestDataProvider#doPatch(java.lang.String, java.lang.String,
+   * java.lang.String)
    */
   @Override
   public OperationResult doPatch(String url, String jsonPayload, String acceptContentType) {
     return restDataProvider.doPatch(url, jsonPayload, acceptContentType);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.onap.aai.sparky.dal.rest.RestDataProvider#doHead(java.lang.String, java.lang.String)
    */
   @Override
@@ -99,7 +114,9 @@ public class ElasticSearchAdapter implements ElasticSearchDataProvider {
     return restDataProvider.doHead(url, acceptContentType);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.onap.aai.sparky.dal.rest.RestDataProvider#clearCache()
    */
   @Override
@@ -107,8 +124,11 @@ public class ElasticSearchAdapter implements ElasticSearchDataProvider {
     restDataProvider.clearCache();
   }
 
-  /* (non-Javadoc)
-   * @see org.onap.aai.sparky.dal.elasticsearch.ElasticSearchDataProvider#doBulkOperation(java.lang.String, java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.onap.aai.sparky.dal.elasticsearch.ElasticSearchDataProvider#doBulkOperation(java.lang.
+   * String, java.lang.String)
    */
   @Override
   public OperationResult doBulkOperation(String url, String payload) {
@@ -118,7 +138,9 @@ public class ElasticSearchAdapter implements ElasticSearchDataProvider {
         RestfulDataAccessor.APPLICATION_JSON);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.onap.aai.sparky.dal.elasticsearch.ElasticSearchDataProvider#shutdown()
    */
   @Override
@@ -126,8 +148,12 @@ public class ElasticSearchAdapter implements ElasticSearchDataProvider {
     restDataProvider.shutdown();
   }
 
-  /* (non-Javadoc)
-   * @see org.onap.aai.sparky.dal.rest.RestDataProvider#doRestfulOperation(org.onap.aai.sparky.dal.rest.HttpMethod, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.onap.aai.sparky.dal.rest.RestDataProvider#doRestfulOperation(org.onap.aai.sparky.dal.rest.
+   * HttpMethod, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
    */
   @Override
   public OperationResult doRestfulOperation(HttpMethod method, String url, String payload,
@@ -136,8 +162,12 @@ public class ElasticSearchAdapter implements ElasticSearchDataProvider {
         acceptContentType);
   }
 
-  /* (non-Javadoc)
-   * @see org.onap.aai.sparky.dal.elasticsearch.ElasticSearchDataProvider#buildBulkImportOperationRequest(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.onap.aai.sparky.dal.elasticsearch.ElasticSearchDataProvider#buildBulkImportOperationRequest
+   * (java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
    */
   @Override
   public String buildBulkImportOperationRequest(String index, String type, String id,
@@ -155,8 +185,8 @@ public class ElasticSearchAdapter implements ElasticSearchDataProvider {
   @Override
   public OperationResult retrieveEntityById(String entityId) throws Exception {
 
-    String url = esConfig.getElasticFullUrl("/" +entityId);
-    return doGet( url, "application/json");
+    String url = esConfig.getElasticFullUrl("/" + entityId);
+    return doGet(url, "application/json");
   }
 
   /**

@@ -82,7 +82,7 @@ public class ActiveInventoryRestConfig {
   private String resourceBasePath;
 
   private List<String> shallowEntities;
-  
+
   private RestAuthenticationMode authenticationMode;
 
   public List<String> getShallowEntities() {
@@ -131,17 +131,19 @@ public class ActiveInventoryRestConfig {
      * cached instance is < maxTimeToLiveInMs.
      */
     maxTimeToLiveInMs = Long.parseLong(cacheProps.getProperty("maxTimeToLiveInMs", "-1"));
-    authenticationMode = RestAuthenticationMode.getRestAuthenticationMode(restProps.getProperty("authenticationMode", RestAuthenticationMode.SSL_CERT.getAuthenticationModeLabel()));
+    authenticationMode =
+        RestAuthenticationMode.getRestAuthenticationMode(restProps.getProperty("authenticationMode",
+            RestAuthenticationMode.SSL_CERT.getAuthenticationModeLabel()));
 
     /*
-     * In any kind of error scenario, set the authentication mode to SSL_CERT as our default.
-     * This is an arbitrary default, but was chosen based on the way this code worked before
-     * introduction of the SSL Basic Auth settings.
+     * In any kind of error scenario, set the authentication mode to SSL_CERT as our default. This
+     * is an arbitrary default, but was chosen based on the way this code worked before introduction
+     * of the SSL Basic Auth settings.
      */
-    if ( authenticationMode == RestAuthenticationMode.UNKNOWN_MODE) {
+    if (authenticationMode == RestAuthenticationMode.UNKNOWN_MODE) {
       authenticationMode = RestAuthenticationMode.SSL_CERT;
     }
-    
+
   }
 
   public RestAuthenticationMode getAuthenticationMode() {
@@ -253,11 +255,13 @@ public class ActiveInventoryRestConfig {
     this.port = port;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.lang.Object#toString()
    */
- 
- 
+
+
   public void setResourceBasePath(String resourceBasePath) {
     this.resourceBasePath = resourceBasePath;
   }

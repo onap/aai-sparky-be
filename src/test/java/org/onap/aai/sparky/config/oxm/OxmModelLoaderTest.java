@@ -32,19 +32,19 @@ import org.mockito.Mockito;
 
 public class OxmModelLoaderTest {
 
-    OxmModelLoader loader;
-		
-    @Test
-    public void testLoadModel_ShouldSucceed() throws IOException {
-        String version = "v11";
-        System.setProperty("AJSC_HOME", new File(".").getCanonicalPath().replace('\\', '/'));
+  OxmModelLoader loader;
 
-        loader = Mockito.spy(new OxmModelLoader());
-        Mockito.when(loader.loadOxmFileName(version)).thenReturn(
-            System.getProperty("AJSC_HOME") + "/bundleconfig-local/oxm/aai_oxm_" + version + ".xml");
+  @Test
+  public void testLoadModel_ShouldSucceed() throws IOException {
+    String version = "v11";
+    System.setProperty("AJSC_HOME", new File(".").getCanonicalPath().replace('\\', '/'));
 
-        loader.loadModel(version);
+    loader = Mockito.spy(new OxmModelLoader());
+    Mockito.when(loader.loadOxmFileName(version)).thenReturn(
+        System.getProperty("AJSC_HOME") + "/bundleconfig-local/oxm/aai_oxm_" + version + ".xml");
 
-        assertNotEquals(null, loader.getOxmModel());
-    }
+    loader.loadModel(version);
+
+    assertNotEquals(null, loader.getOxmModel());
+  }
 }

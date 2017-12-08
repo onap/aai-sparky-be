@@ -62,12 +62,14 @@ public class PersistOperationResultToDisk implements Supplier<Void> {
     this.contextMap = MDC.getCopyOfContextMap();
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.util.function.Supplier#get()
    */
   @Override
   public Void get() {
-	MDC.setContextMap(contextMap);
+    MDC.setContextMap(contextMap);
     File file = new File(fullPath);
     if (!file.exists()) {
       try {

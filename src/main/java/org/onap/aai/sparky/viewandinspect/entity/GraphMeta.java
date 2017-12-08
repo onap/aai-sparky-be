@@ -127,7 +127,9 @@ public class GraphMeta {
     entitySummary.pegCounter(counterName);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.lang.Object#toString()
    */
   @Override

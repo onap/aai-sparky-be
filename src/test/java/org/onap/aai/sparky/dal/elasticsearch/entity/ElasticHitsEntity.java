@@ -30,17 +30,17 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ElasticHitsEntity {
-  
+
   private int total;
   @JsonProperty("max_score")
   private int maxScore;
-  
+
   private List<ElasticHit> hits;
-  
+
   public ElasticHitsEntity() {
     this.hits = new ArrayList<ElasticHit>();
   }
-  
+
   public void addHit(ElasticHit hit) {
     this.hits.add(hit);
   }
@@ -68,7 +68,7 @@ public class ElasticHitsEntity {
   public void setHits(List<ElasticHit> hits) {
     this.hits = hits;
   }
-  
-  
+
+
 
 }

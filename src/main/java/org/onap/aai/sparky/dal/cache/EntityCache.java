@@ -30,7 +30,7 @@ import org.onap.aai.sparky.dal.rest.OperationResult;
  * @author davea.
  */
 public interface EntityCache {
-  
+
   /**
    * Gets the.
    *

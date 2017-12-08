@@ -36,6 +36,7 @@ import org.onap.aai.sparky.util.NodeUtils;
  */
 public class SearchableEntity extends IndexableEntity implements IndexDocument {
   protected List<String> searchTagCollection = new ArrayList<String>();
+
   /**
    * @return the mapper
    */
@@ -102,7 +103,7 @@ public class SearchableEntity extends IndexableEntity implements IndexDocument {
    */
   protected String searchTags; // generated based on searchTagCollection values
   protected String searchTagIDs;
-  
+
   /**
    * Generates the sha based id.
    */
@@ -110,7 +111,9 @@ public class SearchableEntity extends IndexableEntity implements IndexDocument {
     this.id = NodeUtils.generateUniqueShaDigest(link);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.onap.aai.sparky.synchronizer.entity.IndexDocument#deriveFields()
    */
   @Override
@@ -172,7 +175,9 @@ public class SearchableEntity extends IndexableEntity implements IndexDocument {
     return null;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.lang.Object#toString()
    */
   @Override

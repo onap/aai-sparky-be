@@ -24,7 +24,7 @@ package org.onap.aai.sparky.synchronizer.config;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.text.ParseException; 
+import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -47,7 +47,8 @@ import org.onap.aai.cl.eelf.LoggerFactory;
  */
 public class SynchronizerConfiguration {
 
-  private static final Logger LOG = LoggerFactory.getInstance().getLogger(SynchronizerConfiguration.class);
+  private static final Logger LOG =
+      LoggerFactory.getInstance().getLogger(SynchronizerConfiguration.class);
 
   public static final String CONFIG_FILE =
       TierSupportUiConstants.DYNAMIC_CONFIG_APP_LOCATION + "synchronizer.properties";
@@ -71,20 +72,24 @@ public class SynchronizerConfiguration {
   /**
    * Instantiates a new synchronizer configuration.
    */
-	public SynchronizerConfiguration() throws NumberFormatException,PatternSyntaxException,ParseException {
-		Properties props = ConfigHelper.loadConfigFromExplicitPath(CONFIG_FILE);
-		initialize(props);
-	}
+  public SynchronizerConfiguration()
+      throws NumberFormatException, PatternSyntaxException, ParseException {
+    Properties props = ConfigHelper.loadConfigFromExplicitPath(CONFIG_FILE);
+    initialize(props);
+  }
 
-	public SynchronizerConfiguration(Properties props) throws NumberFormatException, PatternSyntaxException, ParseException {
-		initialize(props);
-	}
+  public SynchronizerConfiguration(Properties props)
+      throws NumberFormatException, PatternSyntaxException, ParseException {
+    initialize(props);
+  }
+
   /**
    * Initialize.
    *
    * @throws Exception the exception
    */
-  protected void initialize(Properties props) throws NumberFormatException, PatternSyntaxException, ParseException {
+  protected void initialize(Properties props)
+      throws NumberFormatException, PatternSyntaxException, ParseException {
 
     // parse config for startup sync
     try {
@@ -124,7 +129,8 @@ public class SynchronizerConfiguration {
       Pattern pattern = Pattern.compile(SynchronizerConstants.TIMESTAMP24HOURS_PATTERN);
       Matcher matcher = pattern.matcher(syncTaskStartTime);
       if (!matcher.matches()) {
-        throw new PatternSyntaxException("Pattern Mismatch","The erroneous pattern is not available",-1);
+        throw new PatternSyntaxException("Pattern Mismatch",
+            "The erroneous pattern is not available", -1);
       }
 
       List<String> timestampVal = Arrays.asList(syncTaskStartTime.split(" "));
@@ -179,7 +185,7 @@ public class SynchronizerConfiguration {
 
     autosuggestSynchronizationEnabled = Boolean
         .parseBoolean(props.getProperty("synchronizer.autosuggestSynchronizationEnabled", "true"));
-    
+
     if (LOG.isDebugEnabled()) {
       LOG.debug(AaiUiMsgs.DEBUG_GENERIC, this.toString());
     }
@@ -243,7 +249,7 @@ public class SynchronizerConfiguration {
 
   private boolean nodesOnlyModifierEnabled;
 
-  private boolean  autosuggestSynchronizationEnabled;
+  private boolean autosuggestSynchronizationEnabled;
 
   private boolean configOkForStartupSync = true;
 
@@ -389,72 +395,70 @@ public class SynchronizerConfiguration {
   public void setAutosuggestSynchronizationEnabled(boolean autosuggestSynchronizationEnabled) {
     this.autosuggestSynchronizationEnabled = autosuggestSynchronizationEnabled;
   }
-  
-	public Calendar getTargetSyncTime() {
 
-		TimeZone tz = TimeZone.getTimeZone(getSyncTaskStartTimeTimeZone());
-		Calendar targetSyncTime = Calendar.getInstance(tz);
+  public Calendar getTargetSyncTime() {
 
-		targetSyncTime.set(Calendar.HOUR_OF_DAY, getSyncTaskStartTimeHr());
-		targetSyncTime.set(Calendar.MINUTE, getSyncTaskStartTimeMin());
-		targetSyncTime.set(Calendar.SECOND, getSyncTaskStartTimeSec());
+    TimeZone tz = TimeZone.getTimeZone(getSyncTaskStartTimeTimeZone());
+    Calendar targetSyncTime = Calendar.getInstance(tz);
 
-		return targetSyncTime;
+    targetSyncTime.set(Calendar.HOUR_OF_DAY, getSyncTaskStartTimeHr());
+    targetSyncTime.set(Calendar.MINUTE, getSyncTaskStartTimeMin());
+    targetSyncTime.set(Calendar.SECOND, getSyncTaskStartTimeSec());
 
-	}
+    return targetSyncTime;
 
-	public long getDefaultInitialSyncDelayInMs(Calendar timeNow) {
+  }
 
-		int taskFrequencyInDays = getSyncTaskFrequencyInDay();
+  public long getDefaultInitialSyncDelayInMs(Calendar timeNow) {
 
-		long nextSyncTimeInMs = getNextSyncTime(getTargetSyncTime(), timeNow.getTimeInMillis(),
-				taskFrequencyInDays * 86400);
+    int taskFrequencyInDays = getSyncTaskFrequencyInDay();
 
-		/*
-		 * If the the current time is after the scheduled start time, then delay
-		 * by the initial task delay configuration value
-		 */
-		long delayUntilNextSyncInMs = Math.max(getSyncTaskInitialDelayInMs(),
-				nextSyncTimeInMs - timeNow.getTimeInMillis());
+    long nextSyncTimeInMs = getNextSyncTime(getTargetSyncTime(), timeNow.getTimeInMillis(),
+        taskFrequencyInDays * 86400);
 
-		return delayUntilNextSyncInMs;
+    /*
+     * If the the current time is after the scheduled start time, then delay by the initial task
+     * delay configuration value
+     */
+    long delayUntilNextSyncInMs =
+        Math.max(getSyncTaskInitialDelayInMs(), nextSyncTimeInMs - timeNow.getTimeInMillis());
 
-	}
+    return delayUntilNextSyncInMs;
 
-	public long getNextSyncTime(Calendar syncTime, int taskFrequencyInSeconds) {
+  }
 
-		TimeZone tz = TimeZone.getTimeZone(getSyncTaskStartTimeTimeZone());
-		Calendar timeNow = Calendar.getInstance(tz);
+  public long getNextSyncTime(Calendar syncTime, int taskFrequencyInSeconds) {
 
-		return getNextSyncTime(syncTime, timeNow.getTimeInMillis(), taskFrequencyInSeconds);
-	}
+    TimeZone tz = TimeZone.getTimeZone(getSyncTaskStartTimeTimeZone());
+    Calendar timeNow = Calendar.getInstance(tz);
 
-	/**
-	 * Gets the first sync time.
-	 *
-	 * @param calendar
-	 *            the calendar
-	 * @param timeNow
-	 *            the time now in ms
-	 * @param taskFrequencyInMs
-	 *            task period in ms
-	 * @return the first sync time
-	 */
-	public long getNextSyncTime(Calendar syncTime, long timeNowInMs, int taskFrequencyInSeconds) {
-		if (taskFrequencyInSeconds == 0) {
-			return 0;
-		} else if (timeNowInMs > syncTime.getTimeInMillis()) {
+    return getNextSyncTime(syncTime, timeNow.getTimeInMillis(), taskFrequencyInSeconds);
+  }
 
-			/*
-			 * If current time is after the scheduled sync start time, then
-			 * we'll skip ahead to the next sync time period
-			 */
+  /**
+   * Gets the first sync time.
+   *
+   * @param calendar the calendar
+   * @param timeNow the time now in ms
+   * @param taskFrequencyInMs task period in ms
+   * @return the first sync time
+   */
+  public long getNextSyncTime(Calendar syncTime, long timeNowInMs, int taskFrequencyInSeconds) {
+    if (taskFrequencyInSeconds == 0) {
+      return 0;
+    } else if (timeNowInMs > syncTime.getTimeInMillis()) {
 
-			syncTime.add(Calendar.SECOND, taskFrequencyInSeconds);
-		}
+      /*
+       * If current time is after the scheduled sync start time, then we'll skip ahead to the next
+       * sync time period
+       */
 
-		return syncTime.getTimeInMillis();
-	}
+      syncTime.add(Calendar.SECOND, taskFrequencyInSeconds);
+    }
+
+    return syncTime.getTimeInMillis();
+  }
+
   /**
    * @return the instance
    */
@@ -511,7 +515,9 @@ public class SynchronizerConfiguration {
     return NODES_ONLY_MODIFIER;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.lang.Object#toString()
    */
   @Override
@@ -531,7 +537,7 @@ public class SynchronizerConfiguration {
         + ", displayVerboseQueueManagerStats=" + displayVerboseQueueManagerStats
         + ", resourceNotFoundErrorsSupressed=" + resourceNotFoundErrorsSupressed
         + ", nodesOnlyModifierEnabled=" + nodesOnlyModifierEnabled + ", configOKForStartupSync="
-        + configOkForStartupSync + ", configOKForPeriodicSync=" + configOkForPeriodicSync  
+        + configOkForStartupSync + ", configOKForPeriodicSync=" + configOkForPeriodicSync
         + ", autosuggestSynchronizationEnabled=" + autosuggestSynchronizationEnabled + "]";
   }
 

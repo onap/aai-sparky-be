@@ -46,7 +46,7 @@ import com.sun.jersey.api.client.WebResource.Builder;
 /**
  * The Class RestfulDataAccessorTest.
  */
-@RunWith(MockitoJUnitRunner.class) 
+@RunWith(MockitoJUnitRunner.class)
 public class RestfulDataAccessorTest {
 
   private RestClientBuilder clientBuilderMock;
@@ -54,7 +54,7 @@ public class RestfulDataAccessorTest {
   private ClientResponse mockClientResponse;
   private WebResource mockWebResource;
   private Builder mockBuilder;
-  
+
 
   /**
    * Inits the.
@@ -63,7 +63,7 @@ public class RestfulDataAccessorTest {
    */
   @Before
   public void init() throws Exception {
-  
+
     /*
      * common collaborator mocking setup
      */

@@ -59,8 +59,9 @@ public class VisualizationServlet extends HttpServlet {
   private static final long serialVersionUID = 4678831934652478571L;
   private static final Logger LOG =
       LoggerFactory.getInstance().getLogger(VisualizationServlet.class);
-  private static final String VISUALIZATION_API_ENDPOINT = "prepareVisualization"; 
+  private static final String VISUALIZATION_API_ENDPOINT = "prepareVisualization";
   private final VisualizationService visualizationService;
+
   /**
    * Instantiates a new visualization servlet.
    *
@@ -190,10 +191,10 @@ public class VisualizationServlet extends HttpServlet {
       out.print("\n");
     }
   }
-  
+
   @Override
   public void destroy() {
-      super.destroy();
-      visualizationService.shutdown();
+    super.destroy();
+    visualizationService.shutdown();
   }
 }

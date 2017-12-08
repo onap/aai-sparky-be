@@ -45,74 +45,82 @@ import org.onap.aai.sparky.viewandinspect.config.TierSupportUiConstants;
 @RunWith(MockitoJUnitRunner.class)
 public class SyncHelperTest {
 
-    private SyncHelper syncHelper;
+  private SyncHelper syncHelper;
 
-    @BeforeClass
-    public static void initBeforeClass() throws IOException, NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-        String configHomePath =
-                (new File(".").getCanonicalPath() + "/src/test/resources/appconfig/").replace('\\', '/');
-        TierSupportUiConstants.AJSC_HOME = configHomePath;
-        TierSupportUiConstants.CONFIG_HOME = configHomePath;
-        TierSupportUiConstants.DYNAMIC_CONFIG_APP_LOCATION = configHomePath;
-        ElasticSearchConfig.setConfig(null);
-        SynchronizerConfiguration.setInstance(null);
-        setFinalStatic();
-        System.setProperty("AJSC_HOME", new File(".").getCanonicalPath().replace('\\', '/'));
-        TierSupportUiConstants.DYNAMIC_CONFIG_APP_LOCATION = System.getProperty("AJSC_HOME")+"/src/test/resources/appconfig/";
-    }
+  @BeforeClass
+  public static void initBeforeClass() throws IOException, NoSuchFieldException, SecurityException,
+      IllegalArgumentException, IllegalAccessException {
+    String configHomePath =
+        (new File(".").getCanonicalPath() + "/src/test/resources/appconfig/").replace('\\', '/');
+    TierSupportUiConstants.AJSC_HOME = configHomePath;
+    TierSupportUiConstants.CONFIG_HOME = configHomePath;
+    TierSupportUiConstants.DYNAMIC_CONFIG_APP_LOCATION = configHomePath;
+    ElasticSearchConfig.setConfig(null);
+    SynchronizerConfiguration.setInstance(null);
+    setFinalStatic();
+    System.setProperty("AJSC_HOME", new File(".").getCanonicalPath().replace('\\', '/'));
+    TierSupportUiConstants.DYNAMIC_CONFIG_APP_LOCATION =
+        System.getProperty("AJSC_HOME") + "/src/test/resources/appconfig/";
+  }
 
 
-    @Test
-    public void testGetOxmModelLoader() throws Exception {
-        syncHelper = new SyncHelper(new OxmModelLoader());
-        OxmModelLoader oxmLoader = new OxmModelLoader();
-        syncHelper.setOxmModelLoader(oxmLoader);
-        assertEquals(oxmLoader, syncHelper.getOxmModelLoader());
-    }
+  @Test
+  public void testGetOxmModelLoader() throws Exception {
+    syncHelper = new SyncHelper(new OxmModelLoader());
+    OxmModelLoader oxmLoader = new OxmModelLoader();
+    syncHelper.setOxmModelLoader(oxmLoader);
+    assertEquals(oxmLoader, syncHelper.getOxmModelLoader());
+  }
 
-    @Test
-    public void testGetFirstSyncTime(){
-        SyncHelper syncHelper = new SyncHelper(new OxmModelLoader());
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
-        TimeZone tz = TimeZone.getTimeZone("05:00:00 GMT+00:00");
-        Calendar calendar = Calendar.getInstance(tz);
-        sdf.setTimeZone(tz);
+  @Test
+  public void testGetFirstSyncTime() {
+    SyncHelper syncHelper = new SyncHelper(new OxmModelLoader());
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
+    TimeZone tz = TimeZone.getTimeZone("05:00:00 GMT+00:00");
+    Calendar calendar = Calendar.getInstance(tz);
+    sdf.setTimeZone(tz);
 
-        calendar.set(Calendar.HOUR_OF_DAY, 1);
-        calendar.set(Calendar.MINUTE, 1);
-        calendar.set(Calendar.SECOND, 1);
+    calendar.set(Calendar.HOUR_OF_DAY, 1);
+    calendar.set(Calendar.MINUTE, 1);
+    calendar.set(Calendar.SECOND, 1);
 
-        long timeCurrent = calendar.getTimeInMillis();
-        int taskFrequencyInDay = 2;
+    long timeCurrent = calendar.getTimeInMillis();
+    int taskFrequencyInDay = 2;
 
-        assertEquals(calendar.getTimeInMillis(), syncHelper.getFirstSyncTime(calendar, timeCurrent, taskFrequencyInDay));
-        taskFrequencyInDay = 0;
-        assertEquals(SynchronizerConstants.DELAY_NO_PERIODIC_SYNC_IN_MS, syncHelper.getFirstSyncTime(calendar, timeCurrent, taskFrequencyInDay));
-        timeCurrent = timeCurrent + 100;
-        taskFrequencyInDay = 2;
-        Calendar expCalendar = calendar;
-        expCalendar.add(Calendar.DAY_OF_MONTH, taskFrequencyInDay);
-        //assertEquals(expCalendar.getTimeInMillis(), syncHelper.getFirstSyncTime(calendar, calendar.getTimeInMillis() + 100, taskFrequencyInDay));
+    assertEquals(calendar.getTimeInMillis(),
+        syncHelper.getFirstSyncTime(calendar, timeCurrent, taskFrequencyInDay));
+    taskFrequencyInDay = 0;
+    assertEquals(SynchronizerConstants.DELAY_NO_PERIODIC_SYNC_IN_MS,
+        syncHelper.getFirstSyncTime(calendar, timeCurrent, taskFrequencyInDay));
+    timeCurrent = timeCurrent + 100;
+    taskFrequencyInDay = 2;
+    Calendar expCalendar = calendar;
+    expCalendar.add(Calendar.DAY_OF_MONTH, taskFrequencyInDay);
+    // assertEquals(expCalendar.getTimeInMillis(), syncHelper.getFirstSyncTime(calendar,
+    // calendar.getTimeInMillis() + 100, taskFrequencyInDay));
 
-    }
+  }
 
-    static void setFinalStatic() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-        Field configField = ElasticSearchConfig.class.getDeclaredField("CONFIG_FILE");
-        configField.setAccessible(true);
+  static void setFinalStatic() throws NoSuchFieldException, SecurityException,
+      IllegalArgumentException, IllegalAccessException {
+    Field configField = ElasticSearchConfig.class.getDeclaredField("CONFIG_FILE");
+    configField.setAccessible(true);
 
-        Field modifiersField = Field.class.getDeclaredField( "modifiers" );
-        modifiersField.setAccessible( true );
-        modifiersField.setInt( configField, configField.getModifiers() & ~Modifier.FINAL );
+    Field modifiersField = Field.class.getDeclaredField("modifiers");
+    modifiersField.setAccessible(true);
+    modifiersField.setInt(configField, configField.getModifiers() & ~Modifier.FINAL);
 
-        configField.set(null, System.getProperty("AJSC_HOME")+"/src/test/resources/appconfig/elasticsearch.properties");
+    configField.set(null,
+        System.getProperty("AJSC_HOME") + "/src/test/resources/appconfig/elasticsearch.properties");
 
-        Field syncField = SynchronizerConfiguration.class.getDeclaredField("CONFIG_FILE");
-        syncField.setAccessible(true);
+    Field syncField = SynchronizerConfiguration.class.getDeclaredField("CONFIG_FILE");
+    syncField.setAccessible(true);
 
-        Field syncModifiersField = Field.class.getDeclaredField( "modifiers" );
-        syncModifiersField.setAccessible( true );
-        syncModifiersField.setInt( syncField, syncField.getModifiers() & ~Modifier.FINAL );
+    Field syncModifiersField = Field.class.getDeclaredField("modifiers");
+    syncModifiersField.setAccessible(true);
+    syncModifiersField.setInt(syncField, syncField.getModifiers() & ~Modifier.FINAL);
 
-        syncField.set(null, System.getProperty("AJSC_HOME")+"/src/test/resources/appconfig/synchronizer.properties");
-    }
+    syncField.set(null,
+        System.getProperty("AJSC_HOME") + "/src/test/resources/appconfig/synchronizer.properties");
+  }
 }

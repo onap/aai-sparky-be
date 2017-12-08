@@ -103,7 +103,7 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
 
   private static final Logger LOG =
       LoggerFactory.getInstance().getLogger(CrossEntityReferenceSynchronizer.class);
-  
+
   private static final String SERVICE_INSTANCE = "service-instance";
   private Deque<SelfLinkDescriptor> selflinks;
   private Deque<RetryCrossEntitySyncContainer> retryQueue;
@@ -118,7 +118,8 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
    * @param indexName the index name
    * @throws Exception the exception
    */
-  public CrossEntityReferenceSynchronizer(String indexName, ActiveInventoryConfig aaiConfig) throws Exception {
+  public CrossEntityReferenceSynchronizer(String indexName, ActiveInventoryConfig aaiConfig)
+      throws Exception {
     super(LOG, "CERS", 2, 5, 5, indexName);
     this.selflinks = new ConcurrentLinkedDeque<SelfLinkDescriptor>();
     this.retryQueue = new ConcurrentLinkedDeque<RetryCrossEntitySyncContainer>();
@@ -134,15 +135,17 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
     this.syncDurationInMs = -1;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.onap.aai.sparky.synchronizer.IndexSynchronizer#doSync()
    */
   @Override
   public OperationState doSync() {
-	this.syncDurationInMs = -1;
-	String txnID = NodeUtils.getRandomTxnId();
+    this.syncDurationInMs = -1;
+    String txnID = NodeUtils.getRandomTxnId();
     MdcContext.initialize(txnID, "CrossEntitySynchronizer", "", "Sync", "");
-	
+
     resetCounters();
     syncStartedTimeStampInMs = System.currentTimeMillis();
     launchSyncFlow();
@@ -158,16 +161,20 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
     return SynchronizerState.IDLE;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.onap.aai.sparky.synchronizer.IndexSynchronizer#getStatReport(boolean)
    */
   @Override
   public String getStatReport(boolean showFinalReport) {
-	  syncDurationInMs = System.currentTimeMillis() - syncStartedTimeStampInMs;
-	  return getStatReport(syncDurationInMs, showFinalReport);
+    syncDurationInMs = System.currentTimeMillis() - syncStartedTimeStampInMs;
+    return getStatReport(syncDurationInMs, showFinalReport);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.onap.aai.sparky.synchronizer.IndexSynchronizer#shutdown()
    */
   @Override
@@ -192,7 +199,7 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
    * @return the operation state
    */
   private OperationState launchSyncFlow() {
-	final Map<String,String> contextMap = MDC.getCopyOfContextMap();
+    final Map<String, String> contextMap = MDC.getCopyOfContextMap();
     Map<String, OxmEntityDescriptor> descriptorMap =
         oxmModelLoader.getCrossReferenceEntityDescriptors();
 
@@ -219,7 +226,7 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
 
           @Override
           public Void get() {
-        	MDC.setContextMap(contextMap);
+            MDC.setContextMap(contextMap);
             OperationResult typeLinksResult = null;
             try {
               typeLinksResult = aaiDataProvider.getSelfLinksByEntityType(key);
@@ -339,7 +346,7 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
         rootNode = mapper.readTree(jsonResult);
       } catch (IOException exc) {
         String message = "Could not deserialize JSON (representing operation result) as node tree. "
-                + "Operation result = " + jsonResult + ". " + exc.getLocalizedMessage();
+            + "Operation result = " + jsonResult + ". " + exc.getLocalizedMessage();
         LOG.error(AaiUiMsgs.JSON_PROCESSING_ERROR, message);
         return;
       }
@@ -370,8 +377,8 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
               continue;
             }
             if (descriptor.hasCrossEntityReferences()) {
-              selflinks.add(new SelfLinkDescriptor(
-                  resourceLink,SynchronizerConfiguration.DEPTH_ALL_MODIFIER, resourceType));
+              selflinks.add(new SelfLinkDescriptor(resourceLink,
+                  SynchronizerConfiguration.DEPTH_ALL_MODIFIER, resourceType));
             }
           }
         }
@@ -379,46 +386,45 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
     }
   }
 
-  
-  
+
+
   /**
-   * By providing the entity type and a json node for the entity, determine the
-   * primary key name(s) + primary key value(s) sufficient to build an entity query string
-   * of the following format:
+   * By providing the entity type and a json node for the entity, determine the primary key name(s)
+   * + primary key value(s) sufficient to build an entity query string of the following format:
    * 
-   *      <entityType>.<primaryKeyNames>:<primaryKeyValues>
+   * <entityType>.<primaryKeyNames>:<primaryKeyValues>
    * 
    * @return - a composite string in the above format or null
    */
   private String determineEntityQueryString(String entityType, JsonNode entityJsonNode) {
-    
-    OxmEntityDescriptor entityDescriptor =
-        oxmModelLoader.getEntityDescriptor(entityType);
-    
+
+    OxmEntityDescriptor entityDescriptor = oxmModelLoader.getEntityDescriptor(entityType);
+
     String queryString = null;
-    
-    if ( entityDescriptor != null ) {
+
+    if (entityDescriptor != null) {
 
       final List<String> primaryKeyNames = entityDescriptor.getPrimaryKeyAttributeName();
       final List<String> keyValues = new ArrayList<String>();
       NodeUtils.extractFieldValuesFromObject(entityJsonNode, primaryKeyNames, keyValues);
 
-      queryString = entityType + "." + NodeUtils.concatArray(primaryKeyNames,"/") + ":" + NodeUtils.concatArray(keyValues);
+      queryString = entityType + "." + NodeUtils.concatArray(primaryKeyNames, "/") + ":"
+          + NodeUtils.concatArray(keyValues);
 
-    } 
-    
+    }
+
     return queryString;
 
-    
+
   }
-  
+
   /**
    * Fetch document for upsert.
    *
    * @param txn the txn
    */
   private void fetchDocumentForUpsert(NetworkTransaction txn) {
-    
+
     if (!txn.getOperationResult().wasSuccessful()) {
       LOG.error(AaiUiMsgs.SELF_LINK_GET, txn.getOperationResult().getResult());
       return;
@@ -427,9 +433,9 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
     if (txn.getDescriptor().hasCrossEntityReferences()) {
 
       final String jsonResult = txn.getOperationResult().getResult();
-      
+
       if (jsonResult != null && jsonResult.length() > 0) {
-        
+
         /**
          * Here's what we are going to do:
          * 
@@ -444,23 +450,24 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
 
         OxmEntityDescriptor parentEntityDescriptor =
             oxmModelLoader.getEntityDescriptor(txn.getEntityType());
-        
-        if ( parentEntityDescriptor != null ) {
-          
+
+        if (parentEntityDescriptor != null) {
+
           CrossEntityReference cerDefinition = parentEntityDescriptor.getCrossEntityReference();
 
           if (cerDefinition != null) {
             JsonNode convertedNode = null;
             try {
-              convertedNode = NodeUtils.convertJsonStrToJsonNode(txn.getOperationResult().getResult());
-              
-              final String parentEntityQueryString = determineEntityQueryString(txn.getEntityType(), convertedNode);
-              
+              convertedNode =
+                  NodeUtils.convertJsonStrToJsonNode(txn.getOperationResult().getResult());
+
+              final String parentEntityQueryString =
+                  determineEntityQueryString(txn.getEntityType(), convertedNode);
+
               List<String> extractedParentEntityAttributeValues = new ArrayList<String>();
 
               NodeUtils.extractFieldValuesFromObject(convertedNode,
-                  cerDefinition.getReferenceAttributes(),
-                  extractedParentEntityAttributeValues);
+                  cerDefinition.getReferenceAttributes(), extractedParentEntityAttributeValues);
 
               List<JsonNode> nestedTargetEntityInstances = new ArrayList<JsonNode>();
               NodeUtils.extractObjectsByKey(convertedNode, cerDefinition.getTargetEntityType(),
@@ -468,51 +475,57 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
 
               for (JsonNode targetEntityInstance : nestedTargetEntityInstances) {
 
-                OxmEntityDescriptor cerDescriptor =
-                    oxmModelLoader.getSearchableEntityDescriptor(cerDefinition.getTargetEntityType());
+                OxmEntityDescriptor cerDescriptor = oxmModelLoader
+                    .getSearchableEntityDescriptor(cerDefinition.getTargetEntityType());
 
                 if (cerDescriptor != null) {
-                  
+
                   String childEntityType = cerDefinition.getTargetEntityType();
-                  
+
                   List<String> childPrimaryKeyNames = cerDescriptor.getPrimaryKeyAttributeName();
-                  
+
                   List<String> childKeyValues = new ArrayList<String>();
-                  NodeUtils.extractFieldValuesFromObject(targetEntityInstance, childPrimaryKeyNames, childKeyValues);
-                  
-                  String childEntityQueryKeyString = childEntityType + "." + NodeUtils.concatArray(childPrimaryKeyNames,"/") + ":" + NodeUtils.concatArray(childKeyValues);
-                  
+                  NodeUtils.extractFieldValuesFromObject(targetEntityInstance, childPrimaryKeyNames,
+                      childKeyValues);
+
+                  String childEntityQueryKeyString =
+                      childEntityType + "." + NodeUtils.concatArray(childPrimaryKeyNames, "/") + ":"
+                          + NodeUtils.concatArray(childKeyValues);
+
                   /**
                    * Build generic-query to query child instance self-link from AAI
                    */
                   List<String> orderedQueryKeyParams = new ArrayList<String>();
                   if (SERVICE_INSTANCE.equals(childEntityType)) {
-                      orderedQueryKeyParams.clear();
-                      orderedQueryKeyParams.add(childEntityQueryKeyString);
-                    } else {
-                      orderedQueryKeyParams.add(parentEntityQueryString);
-                      orderedQueryKeyParams.add(childEntityQueryKeyString);
-                    }
+                    orderedQueryKeyParams.clear();
+                    orderedQueryKeyParams.add(childEntityQueryKeyString);
+                  } else {
+                    orderedQueryKeyParams.add(parentEntityQueryString);
+                    orderedQueryKeyParams.add(childEntityQueryKeyString);
+                  }
                   String genericQueryStr = null;
                   try {
-                    genericQueryStr = aaiDataProvider.getGenericQueryForSelfLink(childEntityType, orderedQueryKeyParams);
-                    
+                    genericQueryStr = aaiDataProvider.getGenericQueryForSelfLink(childEntityType,
+                        orderedQueryKeyParams);
+
                     if (genericQueryStr != null) {
                       aaiWorkOnHand.incrementAndGet();
-                      OperationResult aaiQueryResult = aaiDataProvider.queryActiveInventoryWithRetries(
-                          genericQueryStr, "application/json",
-                          aaiConfig.getAaiRestConfig().getNumRequestRetries());
+                      OperationResult aaiQueryResult = aaiDataProvider
+                          .queryActiveInventoryWithRetries(genericQueryStr, "application/json",
+                              aaiConfig.getAaiRestConfig().getNumRequestRetries());
                       aaiWorkOnHand.decrementAndGet();
-                      if (aaiQueryResult!= null && aaiQueryResult.wasSuccessful()) {
-                        
+                      if (aaiQueryResult != null && aaiQueryResult.wasSuccessful()) {
+
                         Collection<JsonNode> entityLinks = new ArrayList<JsonNode>();
                         JsonNode genericQueryResult = null;
                         try {
-                          genericQueryResult = NodeUtils.convertJsonStrToJsonNode(aaiQueryResult.getResult());
-                          
-                          if ( genericQueryResult != null ) {
-                            
-                            NodeUtils.extractObjectsByKey(genericQueryResult, "resource-link", entityLinks);
+                          genericQueryResult =
+                              NodeUtils.convertJsonStrToJsonNode(aaiQueryResult.getResult());
+
+                          if (genericQueryResult != null) {
+
+                            NodeUtils.extractObjectsByKey(genericQueryResult, "resource-link",
+                                entityLinks);
 
                             String selfLink = null;
 
@@ -521,10 +534,11 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
                                * an ambiguity exists where we can't reliably determine the self
                                * link, this should be a permanent error
                                */
-                              LOG.error(AaiUiMsgs.ENTITY_SYNC_FAILED_SELFLINK_AMBIGUITY, String.valueOf(entityLinks.size()));
+                              LOG.error(AaiUiMsgs.ENTITY_SYNC_FAILED_SELFLINK_AMBIGUITY,
+                                  String.valueOf(entityLinks.size()));
                             } else {
                               selfLink = ((JsonNode) entityLinks.toArray()[0]).asText();
-                              
+
                               if (!cerDescriptor.getSearchableAttributes().isEmpty()) {
 
                                 IndexableCrossEntityReference icer =
@@ -534,7 +548,7 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
                                   icer.addCrossEntityReferenceValue(
                                       parentCrossEntityReferenceAttributeValue);
                                 }
-                                
+
                                 icer.setLink(ActiveInventoryConfig.extractResourcePath(selfLink));
 
                                 icer.deriveFields();
@@ -543,7 +557,8 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
                                 try {
                                   link = getElasticFullUrl("/" + icer.getId(), getIndexName());
                                 } catch (Exception exc) {
-                                  LOG.error(AaiUiMsgs.ES_FAILED_TO_CONSTRUCT_QUERY, exc.getLocalizedMessage());
+                                  LOG.error(AaiUiMsgs.ES_FAILED_TO_CONSTRUCT_QUERY,
+                                      exc.getLocalizedMessage());
                                 }
 
                                 if (link != null) {
@@ -561,7 +576,8 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
                                         esWorkOnHand.decrementAndGet();
 
                                         if (error != null) {
-                                          LOG.error(AaiUiMsgs.ES_RETRIEVAL_FAILED, error.getLocalizedMessage());
+                                          LOG.error(AaiUiMsgs.ES_RETRIEVAL_FAILED,
+                                              error.getLocalizedMessage());
                                         } else {
                                           updateElasticSearchCounters(result);
                                           performDocumentUpsert(result, icer);
@@ -575,31 +591,35 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
                           }
 
                         } catch (Exception exc) {
-                          LOG.error(AaiUiMsgs.JSON_CONVERSION_ERROR, JsonNode.class.toString(), exc.getLocalizedMessage());
+                          LOG.error(AaiUiMsgs.JSON_CONVERSION_ERROR, JsonNode.class.toString(),
+                              exc.getLocalizedMessage());
                         }
-                        
+
                       } else {
                         String message = "Entity sync failed because AAI query failed with error ";
                         LOG.error(AaiUiMsgs.ENTITY_SYNC_FAILED_QUERY_ERROR, message);
                       }
-                      
+
                     } else {
-                      String message = "Entity Sync failed because generic query str could not be determined.";
+                      String message =
+                          "Entity Sync failed because generic query str could not be determined.";
                       LOG.error(AaiUiMsgs.ENTITY_SYNC_FAILED_QUERY_ERROR, message);
                     }
                   } catch (Exception exc) {
-                    String message = "Failed to sync entity because generation of generic query failed with error = " + exc.getMessage();
+                    String message =
+                        "Failed to sync entity because generation of generic query failed with error = "
+                            + exc.getMessage();
                     LOG.error(AaiUiMsgs.ENTITY_SYNC_FAILED_QUERY_ERROR, message);
                   }
-                  
+
                 }
               }
-              
+
             } catch (IOException ioe) {
               LOG.error(AaiUiMsgs.JSON_PROCESSING_ERROR, ioe.getMessage());
             }
           }
-          
+
         } else {
           LOG.error(AaiUiMsgs.ENTITY_SYNC_FAILED_DESCRIPTOR_NOT_FOUND, txn.getEntityType());
         }

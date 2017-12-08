@@ -54,7 +54,7 @@ public class PerformElasticSearchPut implements Supplier<NetworkTransaction> {
     this.restDataProvider = restDataProvider;
     this.contextMap = MDC.getCopyOfContextMap();
   }
-  
+
   public PerformElasticSearchPut(String jsonPayload, NetworkTransaction txn,
       RestDataProvider restDataProvider, Map<String, String> contextMap) {
     this.jsonPayload = jsonPayload;
@@ -63,7 +63,9 @@ public class PerformElasticSearchPut implements Supplier<NetworkTransaction> {
     this.contextMap = contextMap;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.util.function.Supplier#get()
    */
   @Override
@@ -71,7 +73,7 @@ public class PerformElasticSearchPut implements Supplier<NetworkTransaction> {
     txn.setTaskAgeInMs();
     long startTimeInMs = System.currentTimeMillis();
     MDC.setContextMap(contextMap);
-    
+
     OperationResult or = restDataProvider.doPut(txn.getLink(), jsonPayload, "application/json");
 
     or.setResponseTimeInMs(System.currentTimeMillis() - startTimeInMs);

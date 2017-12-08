@@ -38,7 +38,7 @@ public class AutoSuggestDocumentEntity {
   public void setFields(AutoSuggestDocumentEntityFields fields) {
     this.fields = fields;
   }
-  
-  
-    
+
+
+
 }

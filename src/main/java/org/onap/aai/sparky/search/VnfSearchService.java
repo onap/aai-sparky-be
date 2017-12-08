@@ -114,7 +114,8 @@ public class VnfSearchService {
           if (suggestions.length() > 0) {
             suggestionsArray = suggestions.getJSONObject(0).getJSONArray("options");
             for (int i = 0; i < suggestionsArray.length(); i++) {
-              suggestionsArray.getJSONObject(i).remove("score"); // FE doesn't like this noise: 'score'
+              suggestionsArray.getJSONObject(i).remove("score"); // FE doesn't like this noise:
+                                                                 // 'score'
             }
 
             total = suggestionsArray.length();
@@ -139,7 +140,7 @@ public class VnfSearchService {
           JSONArray bucketsArray = (responseJson.getJSONObject("aggregations")
               .getJSONObject("default").getJSONArray("buckets"));
           int count = 0;
-          for (int i=0; i< bucketsArray.length(); i++) {
+          for (int i = 0; i < bucketsArray.length(); i++) {
             count += bucketsArray.getJSONObject(i).getInt("doc_count");
           }
           JSONObject content = new JSONObject();
@@ -209,22 +210,26 @@ public class VnfSearchService {
    * @return the suggestions results
    * @throws IOException Signals that an I/O exception has occurred.
    */
-  public List<SuggestionEntity> getSuggestionsResults(QuerySearchEntity querySearchEntity, int resultCountLimit) throws IOException {
+  public List<SuggestionEntity> getSuggestionsResults(QuerySearchEntity querySearchEntity,
+      int resultCountLimit) throws IOException {
     List<SuggestionEntity> returnList = new ArrayList<SuggestionEntity>();
-    
+
     /* Create suggestions query */
-    JsonObject vnfSearch = VnfSearchQueryBuilder.createSuggestionsQuery(String.valueOf(resultCountLimit), querySearchEntity.getQueryStr());
-    
+    JsonObject vnfSearch = VnfSearchQueryBuilder
+        .createSuggestionsQuery(String.valueOf(resultCountLimit), querySearchEntity.getQueryStr());
+
     /* Parse suggestions response */
-    OperationResult opResult = search.doPost(getFullUrl(esConfig.getAutosuggestIndexname(), ES_SUGGEST_API), vnfSearch.toString(), APP_JSON);
+    OperationResult opResult =
+        search.doPost(getFullUrl(esConfig.getAutosuggestIndexname(), ES_SUGGEST_API),
+            vnfSearch.toString(), APP_JSON);
 
     String result = opResult.getResult();
-    
+
     if (!opResult.wasSuccessful()) {
       LOG.error(AaiUiMsgs.ERROR_PARSING_JSON_PAYLOAD_VERBOSE, result);
       return returnList;
     }
-    
+
     JSONObject responseJson = new JSONObject(result);
     String suggestionsKey = "vnfs";
     JSONArray suggestionsArray = new JSONArray();
@@ -236,71 +241,75 @@ public class VnfSearchService {
         if (querySuggestion != null) {
           SuggestionEntity responseSuggestion = new SuggestionEntity();
           responseSuggestion.setText(querySuggestion.getString("text"));
-          responseSuggestion.setRoute("vnfSearch"); // TODO -> Read route from suggestive-search.properties instead of hard coding
-          responseSuggestion.setHashId(NodeUtils.generateUniqueShaDigest(querySuggestion.getString("text")));
+          responseSuggestion.setRoute("vnfSearch"); // TODO -> Read route from
+                                                    // suggestive-search.properties instead of hard
+                                                    // coding
+          responseSuggestion
+              .setHashId(NodeUtils.generateUniqueShaDigest(querySuggestion.getString("text")));
           returnList.add(responseSuggestion);
-        } 
+        }
       }
     }
     return returnList;
   }
-  
-  
+
+
   /**
-   * This method sets server response if lookup in ES has 0 count
-   * TODO: Change the response code to appropriate when FE-BE contract is finalized
- * @param response
- */
+   * This method sets server response if lookup in ES has 0 count TODO: Change the response code to
+   * appropriate when FE-BE contract is finalized
+   * 
+   * @param response
+   */
   public void setZeroCountResponse(HttpServletResponse response) throws IOException {
-	  JSONObject payload = new JSONObject();
-	  payload.put("count", 0);
-	  setServletResponse(false, 200, response, payload.toString() );
+    JSONObject payload = new JSONObject();
+    payload.put("count", 0);
+    setServletResponse(false, 200, response, payload.toString());
   }
-  
+
   /**
-   * This method sets server response if lookup in ES for an aggregation has 0 results
-   * TODO: Change the response code to appropriate when FE-BE contract is finalized
- * @param response
- */
+   * This method sets server response if lookup in ES for an aggregation has 0 results TODO: Change
+   * the response code to appropriate when FE-BE contract is finalized
+   * 
+   * @param response
+   */
   public void setEmptyAggResponse(HttpServletResponse response) throws IOException {
-    JSONObject aggPayload = new JSONObject(); 
+    JSONObject aggPayload = new JSONObject();
     aggPayload.put("totalChartHits", 0);
     aggPayload.put("buckets", new JSONArray());
     JSONObject payload = new JSONObject();
     payload.append("groupby_aggregation", aggPayload);
-    setServletResponse(false, 200, response, payload.toString() );
+    setServletResponse(false, 200, response, payload.toString());
   }
-  
+
   public HashQueryResponse getJSONPayloadFromHash(String hashId) {
-    
+
     HashQueryResponse hashQueryResponse = new HashQueryResponse();
     JsonObjectBuilder hashSearch = Json.createObjectBuilder();
     VnfSearchQueryBuilder.buildSingleTermCountQuery(hashSearch, "_id", hashId);
     String hashSearchQuery = hashSearch.build().toString();
     OperationResult opResult = search.doPost(
-        getFullUrl(esConfig.getAutosuggestIndexname(), ES_SEARCH_API),
-        hashSearchQuery, APP_JSON);
+        getFullUrl(esConfig.getAutosuggestIndexname(), ES_SEARCH_API), hashSearchQuery, APP_JSON);
     hashQueryResponse.setOpResult(opResult);
-    
-    if(opResult != null && opResult.wasSuccessful()){
+
+    if (opResult != null && opResult.wasSuccessful()) {
       String result = opResult.getResult();
       if (result != null) {
         JSONObject responseJson = new JSONObject(result);
-        JSONArray hits =  responseJson.getJSONObject("hits").getJSONArray("hits");
-        if(hits != null && hits.length() > 0){
-          hashQueryResponse.setJsonPayload (hits.getJSONObject(0).getJSONObject("_source")
-              .getJSONObject("entity_suggest").toString());  
+        JSONArray hits = responseJson.getJSONObject("hits").getJSONArray("hits");
+        if (hits != null && hits.length() > 0) {
+          hashQueryResponse.setJsonPayload(hits.getJSONObject(0).getJSONObject("_source")
+              .getJSONObject("entity_suggest").toString());
         }
       }
     }
     return hashQueryResponse;
   }
-  
+
   public void getEntityCountResults(HttpServletResponse response, Map<String, String> attributes)
       throws IOException {
     // Create entity counts query
     JsonObject vnfSearch = VnfSearchQueryBuilder.createEntityCountsQuery(attributes);
-    
+
     // Parse response for entity counts query
     OperationResult opResult = search.doPost(
         getFullUrl(TierSupportUiConstants.getAggregationIndexName(ENTITY_TYPE), ES_COUNT_API),
@@ -313,7 +322,7 @@ public class VnfSearchService {
     // Create query for summary by entity type
     JsonObject vnfSearch =
         VnfSearchQueryBuilder.createSummaryByEntityTypeQuery(attributes, groupByKey);
-    
+
     // Parse response for summary by entity type query
     OperationResult opResult = search.doPost(
         getFullUrl(TierSupportUiConstants.getAggregationIndexName(ENTITY_TYPE), ES_SEARCH_API),

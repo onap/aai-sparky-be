@@ -77,7 +77,7 @@ public class ElasticSearchConfig {
   private String autoSuggestSettingsFileName;
 
   private String autoSuggestMappingsFileName;
-  
+
   private String dynamicMappingsFileName;
 
   private static final String IP_ADDRESS_DEFAULT = "localhost";
@@ -106,7 +106,7 @@ public class ElasticSearchConfig {
 
   private static final String ENTITY_AUTO_SUGGEST_MAPPINGS_FILE_DEFAULT =
       TierSupportUiConstants.ENTITY_AUTO_SUGGEST_SETTINGS_FILE_DEFAULT;
-  
+
   private static final String ENTITY_DYNAMIC_MAPPINGS_FILE_DEFAULT =
       TierSupportUiConstants.ENTITY_DYNAMIC_MAPPINGS_FILE_DEFAULT;
 
@@ -332,16 +332,17 @@ public class ElasticSearchConfig {
         TierSupportUiConstants.getConfigPath(this.getSettingsFileName()));
   }
 
-  public String getDynamicMappings() throws ElasticSearchOperationException{
+  public String getDynamicMappings() throws ElasticSearchOperationException {
     return getConfigAsString("mapping",
         TierSupportUiConstants.getConfigPath(this.getDynamicMappingsFileName()));
   }
+
   public String getElasticSearchMappings() throws ElasticSearchOperationException {
     return getConfigAsString("mapping",
         TierSupportUiConstants.getConfigPath(this.getMappingsFileName()));
   }
 
-  public String getElasticSearchEntityCountHistoryMappings() 
+  public String getElasticSearchEntityCountHistoryMappings()
       throws ElasticSearchOperationException {
     return getConfigAsString("mapping",
         TierSupportUiConstants.getConfigPath(this.getEntityCountHistoryMappingsFileName()));
@@ -477,7 +478,7 @@ public class ElasticSearchConfig {
     }
 
   }
-  
+
   public String buildAutosuggestionTableConfig() throws ElasticSearchOperationException {
 
     JsonNode esSettingsNode;
@@ -504,7 +505,7 @@ public class ElasticSearchConfig {
     }
 
   }
-  
+
   /**
    * @return the instance
    */
@@ -636,12 +637,11 @@ public class ElasticSearchConfig {
         + ", clusterName=" + clusterName + ", mappingsFileName=" + mappingsFileName
         + ", settingsFileName=" + settingsFileName + ", syncAdapterMaxConcurrentWorkers="
         + syncAdapterMaxConcurrentWorkers + ", auditIndexName=" + auditIndexName
-        + ", entityCountHistoryIndex=" 
-        + entityCountHistoryIndex + ", autosuggestIndexname=" + autosuggestIndexname
-        + ", entityCountHistoryMappingsFileName=" + entityCountHistoryMappingsFileName
-        + ", autoSuggestSettingsFileName=" + autoSuggestSettingsFileName
-        + ", autoSuggestMappingsFileName=" + autoSuggestMappingsFileName
-        + ", dynamicMappingsFileName=" + dynamicMappingsFileName + ", processorConfig="
-        + processorConfig + "]";
+        + ", entityCountHistoryIndex=" + entityCountHistoryIndex + ", autosuggestIndexname="
+        + autosuggestIndexname + ", entityCountHistoryMappingsFileName="
+        + entityCountHistoryMappingsFileName + ", autoSuggestSettingsFileName="
+        + autoSuggestSettingsFileName + ", autoSuggestMappingsFileName="
+        + autoSuggestMappingsFileName + ", dynamicMappingsFileName=" + dynamicMappingsFileName
+        + ", processorConfig=" + processorConfig + "]";
   }
 }

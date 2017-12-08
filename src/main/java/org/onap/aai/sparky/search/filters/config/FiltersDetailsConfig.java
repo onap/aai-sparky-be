@@ -32,13 +32,13 @@ public class FiltersDetailsConfig {
   @JsonProperty("filters")
   private List<UiFilterConfig> filters = new ArrayList<UiFilterConfig>();
 
-  public FiltersDetailsConfig(){}
+  public FiltersDetailsConfig() {}
 
   @JsonCreator
   public FiltersDetailsConfig(@JsonProperty("filters") final List<UiFilterConfig> filters) {
-      this.filters = filters;
+    this.filters = filters;
   }
-  
+
   public List<UiFilterConfig> getFilters() {
     return filters;
   }
@@ -50,6 +50,6 @@ public class FiltersDetailsConfig {
   @Override
   public String toString() {
     return "UiFiltersConfig [filters=" + filters + "]";
-  } 
+  }
 
 }

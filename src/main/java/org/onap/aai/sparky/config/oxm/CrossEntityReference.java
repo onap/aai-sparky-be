@@ -66,7 +66,9 @@ public class CrossEntityReference {
     referenceAttributes.add(additionalAttribute);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.lang.Object#toString()
    */
   @Override

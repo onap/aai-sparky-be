@@ -31,7 +31,7 @@ import org.onap.aai.sparky.suggestivesearch.SuggestionEntity;
  * The Class SearchResponse.
  */
 public class SearchResponse {
-  
+
   private long processingTimeInMs;
   private int totalFound;
 
@@ -53,11 +53,11 @@ public class SearchResponse {
   public void setProcessingTimeInMs(long processingTimeInMs) {
     this.processingTimeInMs = processingTimeInMs;
   }
-  
+
   public int getTotalFound() {
     return totalFound;
   }
-  
+
   public void setTotalFound(int totalFound) {
     this.totalFound = totalFound;
   }
@@ -69,18 +69,18 @@ public class SearchResponse {
   public void setSuggestions(List<SuggestionEntity> suggestions) {
     this.suggestions = suggestions;
   }
+
   /**
    * Adds the entity entry.
    *
    * @param suggestionEntry that will be converted to JSON
    */
-  public void addSuggestion(SuggestionEntity suggestionEntity){
+  public void addSuggestion(SuggestionEntity suggestionEntity) {
     suggestions.add(suggestionEntity);
   }
-  
+
   /**
-   * Increments the total number of hits for this SearchResponse by
-   *  the value passed in.
+   * Increments the total number of hits for this SearchResponse by the value passed in.
    * 
    * @param additionalCount - Count to increment the total found
    */

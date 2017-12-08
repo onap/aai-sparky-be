@@ -72,7 +72,7 @@ public class OxmModelLoader {
 
   private Map<String, HashMap<String, String>> geoEntityOxmModel =
       new LinkedHashMap<String, HashMap<String, String>>();
-  
+
   private Map<String, HashMap<String, String>> suggestionSearchEntityOxmModel =
       new LinkedHashMap<String, HashMap<String, String>>();
 
@@ -87,7 +87,7 @@ public class OxmModelLoader {
 
   private Map<String, OxmEntityDescriptor> geoEntityDescriptors =
       new HashMap<String, OxmEntityDescriptor>();
-  
+
   private Map<String, OxmEntityDescriptor> suggestionSearchEntityDescriptors =
       new HashMap<String, OxmEntityDescriptor>();
 
@@ -133,23 +133,22 @@ public class OxmModelLoader {
   public void loadModel(String version) {
     String fileName = loadOxmFileName(version);
 
-    try(FileInputStream inputStream = new FileInputStream(new File(fileName))) {
-        Map<String, Object> properties = new HashMap<String, Object>();
-        properties.put(JAXBContextProperties.OXM_METADATA_SOURCE, inputStream);
+    try (FileInputStream inputStream = new FileInputStream(new File(fileName))) {
+      Map<String, Object> properties = new HashMap<String, Object>();
+      properties.put(JAXBContextProperties.OXM_METADATA_SOURCE, inputStream);
 
-        final DynamicJAXBContext oxmContext = DynamicJAXBContextFactory
-                                               .createContextFromOXM(Thread.currentThread()
-                                               .getContextClassLoader(), properties);
-        parseOxmContext(oxmContext);
-        // populateSearchableOxmModel();
-        LOG.info(AaiUiMsgs.OXM_LOAD_SUCCESS);
+      final DynamicJAXBContext oxmContext = DynamicJAXBContextFactory
+          .createContextFromOXM(Thread.currentThread().getContextClassLoader(), properties);
+      parseOxmContext(oxmContext);
+      // populateSearchableOxmModel();
+      LOG.info(AaiUiMsgs.OXM_LOAD_SUCCESS);
 
     } catch (FileNotFoundException fnf) {
-        LOG.info(AaiUiMsgs.OXM_READ_ERROR_NONVERBOSE);
-        LOG.error(AaiUiMsgs.OXM_READ_ERROR_VERBOSE, fileName);
+      LOG.info(AaiUiMsgs.OXM_READ_ERROR_NONVERBOSE);
+      LOG.error(AaiUiMsgs.OXM_READ_ERROR_VERBOSE, fileName);
     } catch (Exception exc) {
-        LOG.info(AaiUiMsgs.OXM_PARSE_ERROR_NONVERBOSE);
-        LOG.error(AaiUiMsgs.OXM_PARSE_ERROR_VERBOSE, fileName, exc.getMessage());
+      LOG.info(AaiUiMsgs.OXM_PARSE_ERROR_NONVERBOSE);
+      LOG.error(AaiUiMsgs.OXM_PARSE_ERROR_VERBOSE, fileName, exc.getMessage());
     }
   }
 
@@ -163,7 +162,7 @@ public class OxmModelLoader {
     List<Descriptor> descriptorsList = oxmContext.getXMLContext().getDescriptors();
 
     for (@SuppressWarnings("rawtypes")
-        Descriptor desc : descriptorsList) {
+    Descriptor desc : descriptorsList) {
 
       DynamicType entity = oxmContext.getDynamicType(desc.getAlias());
 
@@ -185,7 +184,7 @@ public class OxmModelLoader {
       Map<String, String> properties = entity.getDescriptor().getProperties();
       if (properties != null) {
         for (Map.Entry<String, String> entry : properties.entrySet()) {
-          
+
           if (entry.getKey().equalsIgnoreCase("searchable")) {
             oxmProperties.put("searchableAttributes", entry.getValue());
           } else if (entry.getKey().equalsIgnoreCase("crossEntityReference")) {
@@ -201,29 +200,29 @@ public class OxmModelLoader {
           } else if (entry.getKey().equalsIgnoreCase("containsSuggestibleProps")) {
 
             oxmProperties.put("containsSuggestibleProps", "true");
-            
+
             Vector<DatabaseMapping> descriptorMaps = entity.getDescriptor().getMappings();
             List<String> listOfSuggestableAttributes = new ArrayList<String>();
-            
+
             for (DatabaseMapping descMap : descriptorMaps) {
               if (descMap.isAbstractDirectMapping()) {
-                
+
                 if (descMap.getProperties().get("suggestibleOnSearch") != null) {
-                  String suggestableOnSearchString = String.valueOf(
-                      descMap.getProperties().get("suggestibleOnSearch"));
-                  
+                  String suggestableOnSearchString =
+                      String.valueOf(descMap.getProperties().get("suggestibleOnSearch"));
+
                   boolean isSuggestibleOnSearch = Boolean.valueOf(suggestableOnSearchString);
 
                   if (isSuggestibleOnSearch) {
                     /* Grab attribute types for suggestion */
-                    String attributeName = descMap.getField().getName()
-                        .replaceAll("/text\\(\\)", "");
+                    String attributeName =
+                        descMap.getField().getName().replaceAll("/text\\(\\)", "");
                     listOfSuggestableAttributes.add(attributeName);
-                    
+
                     if (descMap.getProperties().get("suggestionVerbs") != null) {
-                      String suggestionVerbsString = String.valueOf(
-                          descMap.getProperties().get("suggestionVerbs"));
-                      
+                      String suggestionVerbsString =
+                          String.valueOf(descMap.getProperties().get("suggestionVerbs"));
+
                       oxmProperties.put("suggestionVerbs", suggestionVerbsString);
                     }
                   }
@@ -231,8 +230,8 @@ public class OxmModelLoader {
               }
             }
             if (!listOfSuggestableAttributes.isEmpty()) {
-              oxmProperties.put("suggestibleAttributes", String.join(",", 
-                  listOfSuggestableAttributes));
+              oxmProperties.put("suggestibleAttributes",
+                  String.join(",", listOfSuggestableAttributes));
             }
           } else if (entry.getKey().equalsIgnoreCase("suggestionAliases")) {
             oxmProperties.put("suggestionAliases", entry.getValue());
@@ -254,7 +253,7 @@ public class OxmModelLoader {
       if (oxmProperties.containsKey("geoLat") && oxmProperties.containsKey("geoLong")) {
         geoEntityOxmModel.put(entityName, oxmProperties);
       }
-      
+
       if (oxmProperties.containsKey("containsSuggestibleProps")) {
         suggestionSearchEntityOxmModel.put(entityName, oxmProperties);
       }
@@ -294,12 +293,12 @@ public class OxmModelLoader {
           entity.setGeoLatName(attribute.get("geoLat"));
           entity.setGeoLongName(attribute.get("geoLong"));
         }
-        
+
         if (attribute.containsKey("suggestionVerbs")) {
           String entityName = attribute.get("entityName");
           SuggestionSearchEntity suggestionSearchEntity = new SuggestionSearchEntity(this);
           suggestionSearchEntity.setEntityType(entityName);
-          
+
           entity.setSuggestionSearchEntity(suggestionSearchEntity);
         }
 
@@ -354,39 +353,39 @@ public class OxmModelLoader {
       }
       crossReferenceEntityDescriptors.put(attribute.get("entityName"), entity);
     }
-    
-    for (Entry<String, HashMap<String, String>> suggestionEntityModel :
-        suggestionSearchEntityOxmModel.entrySet()) {
+
+    for (Entry<String, HashMap<String, String>> suggestionEntityModel : suggestionSearchEntityOxmModel
+        .entrySet()) {
       HashMap<String, String> attribute = suggestionEntityModel.getValue();
-      
+
       String entityName = attribute.get("entityName");
       SuggestionSearchEntity suggestionSearchEntity = new SuggestionSearchEntity(this);
       suggestionSearchEntity.setEntityType(entityName);
-      
+
       if (attribute.get("suggestionVerbs") != null) {
-        suggestionSearchEntity.setSuggestionConnectorWords(Arrays.asList(
-            attribute.get("suggestionVerbs").split(",")));
+        suggestionSearchEntity.setSuggestionConnectorWords(
+            Arrays.asList(attribute.get("suggestionVerbs").split(",")));
       }
-      
+
       if (attribute.get("suggestionAliases") != null) {
-        suggestionSearchEntity.setSuggestionAliases(Arrays.asList(
-            attribute.get("suggestionAliases").split(",")));
+        suggestionSearchEntity
+            .setSuggestionAliases(Arrays.asList(attribute.get("suggestionAliases").split(",")));
       }
-      
+
       if (attribute.get("suggestibleAttributes") != null) {
-        suggestionSearchEntity.setSuggestionPropertyTypes(Arrays.asList(
-            attribute.get("suggestibleAttributes").split(",")));
+        suggestionSearchEntity.setSuggestionPropertyTypes(
+            Arrays.asList(attribute.get("suggestibleAttributes").split(",")));
       }
-      
+
       OxmEntityDescriptor entity = new OxmEntityDescriptor();
       entity.setSuggestionSearchEntity(suggestionSearchEntity);
       entity.setEntityName(entityName);
-      
+
       if (attribute.get("primaryKeyAttributeNames") != null) {
         entity.setPrimaryKeyAttributeName(
             Arrays.asList(attribute.get("primaryKeyAttributeNames").replace(" ", "").split(",")));
       }
-      
+
       suggestionSearchEntityDescriptors.put(entityName, entity);
     }
   }
@@ -445,7 +444,7 @@ public class OxmModelLoader {
   public String loadOxmFileName(String version) {
     return new String(TierSupportUiConstants.CONFIG_OXM_LOCATION + "aai_oxm_" + version + ".xml");
   }
-  
+
   /*
    * Get the original representation of the OXM Model
    */
@@ -499,7 +498,7 @@ public class OxmModelLoader {
   public Map<String, OxmEntityDescriptor> getGeoEntityDescriptors() {
     return geoEntityDescriptors;
   }
-  
+
   public Map<String, OxmEntityDescriptor> getSuggestionSearchEntityDescriptors() {
     return suggestionSearchEntityDescriptors;
   }

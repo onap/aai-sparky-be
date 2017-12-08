@@ -42,7 +42,7 @@ public class OxmEntityDescriptor {
   private String geoLatName;
 
   private String geoLongName;
-  
+
   private SuggestionSearchEntity suggestionSearchEntity;
 
   public String getEntityName() {
@@ -141,15 +141,15 @@ public class OxmEntityDescriptor {
     return false;
 
   }
-  
+
   public SuggestionSearchEntity getSuggestionSearchEntity() {
     return this.suggestionSearchEntity;
   }
-  
+
   public void setSuggestionSearchEntity(SuggestionSearchEntity suggestionSearchEntity) {
     this.suggestionSearchEntity = suggestionSearchEntity;
   }
-  
+
   /**
    * Checks for non-null, populated SuggestionSearchEntity.
    *
@@ -164,7 +164,7 @@ public class OxmEntityDescriptor {
     }
     return false;
   }
-  
+
   @Override
   public String toString() {
     return "OxmEntityDescriptor [entityName=" + entityName + ", primaryKeyAttributeName="

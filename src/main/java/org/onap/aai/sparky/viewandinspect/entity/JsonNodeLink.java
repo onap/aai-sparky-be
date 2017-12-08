@@ -62,7 +62,9 @@ public class JsonNodeLink {
     this.target = target;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.lang.Object#toString()
    */
   @Override

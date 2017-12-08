@@ -32,13 +32,13 @@ public class FiltersForViewsConfig {
 
   private List<UiViewListItemConfig> views = new ArrayList<UiViewListItemConfig>();
 
-  public FiltersForViewsConfig(){}
+  public FiltersForViewsConfig() {}
 
   @JsonCreator
   public FiltersForViewsConfig(@JsonProperty("views") final List<UiViewListItemConfig> views) {
-      this.views = views;
+    this.views = views;
   }
-  
+
   @JsonProperty("views")
   public List<UiViewListItemConfig> getViews() {
     return views;
@@ -46,7 +46,7 @@ public class FiltersForViewsConfig {
 
   public void setViews(List<UiViewListItemConfig> views) {
     this.views = views;
-  } 
+  }
 
   @Override
   public String toString() {

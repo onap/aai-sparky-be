@@ -96,12 +96,11 @@ public class SearchServlet extends HttpServlet {
   private SearchServiceWrapper searchWrapper = null;
 
   private static final String KEY_PAYLOAD = "payload";
-  
+
   /**
    * Instantiates a new search servlet.
    */
-  public SearchServlet() {
-  }
+  public SearchServlet() {}
 
   /*
    * (non-Javadoc)
@@ -115,11 +114,11 @@ public class SearchServlet extends HttpServlet {
     doPost(request, response);
   }
 
-   public void destroy() {
+  public void destroy() {
     // TODO Auto-generated method stub
     super.destroy();
   }
-  
+
   public void init() throws ServletException {
     super.init();
     searchWrapper = new SearchServiceWrapper();
@@ -150,7 +149,7 @@ public class SearchServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response)
       throws ServletException, IOException {
     String txnID = request.getHeader("X-TransactionId");
-    if (txnID == null) { 
+    if (txnID == null) {
       txnID = NodeUtils.getRandomTxnId();
     }
 
@@ -220,7 +219,6 @@ public class SearchServlet extends HttpServlet {
     }
   }
 
-  
 
-  
+
 }

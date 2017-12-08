@@ -61,7 +61,9 @@ public class PerformElasticSearchUpdate implements Supplier<NetworkTransaction> 
     operationTracker.setOperationType(transactionTracker.getOperationType());
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.util.function.Supplier#get()
    */
   @Override

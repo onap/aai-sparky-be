@@ -67,7 +67,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
  */
 public class NodeUtils {
   private static SecureRandom sRandom = new SecureRandom();
-  
+
   /**
    * @return the sRandom
    */
@@ -96,10 +96,10 @@ public class NodeUtils {
     return TIME_BREAK_DOWN_FORMAT;
   }
 
-  public static synchronized String getRandomTxnId(){
-      byte bytes[] = new byte[6];
-      sRandom.nextBytes(bytes);
-      return Integer.toUnsignedString(ByteBuffer.wrap(bytes).getInt());
+  public static synchronized String getRandomTxnId() {
+    byte bytes[] = new byte[6];
+    sRandom.nextBytes(bytes);
+    return Integer.toUnsignedString(ByteBuffer.wrap(bytes).getInt());
   }
 
   /**
@@ -144,7 +144,8 @@ public class NodeUtils {
    * @param logger the logger
    * @return the executor service
    */
-  public static ExecutorService createNamedExecutor(String name, int numWorkers, final Logger logger) {
+  public static ExecutorService createNamedExecutor(String name, int numWorkers,
+      final Logger logger) {
     UncaughtExceptionHandler uncaughtExceptionHandler = new Thread.UncaughtExceptionHandler() {
 
       @Override
@@ -479,7 +480,7 @@ public class NodeUtils {
 
     ObjectMapper mapper = new ObjectMapper();
     mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-    
+
     if (pretty) {
       ow = mapper.writer().withDefaultPrettyPrinter();
 
@@ -535,10 +536,10 @@ public class NodeUtils {
   public static void extractObjectsByKey(JsonNode node, String searchKey,
       Collection<JsonNode> foundObjects) {
 
-    if ( node == null ) {
+    if (node == null) {
       return;
     }
-    
+
     if (node.isObject()) {
       Iterator<Map.Entry<String, JsonNode>> nodeIterator = node.fields();
 
@@ -677,7 +678,7 @@ public class NodeUtils {
       return timestamp;
     }
   }
-  
+
   /**
    * Gets the HttpRequest payload.
    *

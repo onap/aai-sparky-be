@@ -33,6 +33,7 @@ import org.onap.aai.sparky.dal.rest.OperationResult;
 public class CollectNodeSelfLinkTask implements Supplier<OperationResult> {
 
   private String selfLink;
+
   /**
    * @return the selfLink
    */
@@ -74,7 +75,9 @@ public class CollectNodeSelfLinkTask implements Supplier<OperationResult> {
     this.aaiProvider = aaiProvider;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.util.function.Supplier#get()
    */
   @Override

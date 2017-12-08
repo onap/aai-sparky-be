@@ -100,8 +100,8 @@ public class ServletUtils {
    */
   public static void handleSearchServletErrors(Logger logger, String errorMsg, Exception exc,
       HttpServletResponse response) throws IOException {
-    String errorLogMsg = (exc == null ? errorMsg : errorMsg + ". Error:" 
-        + exc.getLocalizedMessage());
+    String errorLogMsg =
+        (exc == null ? errorMsg : errorMsg + ". Error:" + exc.getLocalizedMessage());
     logger.error(AaiUiMsgs.ERROR_GENERIC, errorLogMsg);
     response.setContentType("application/json");
     PrintWriter out = response.getWriter();

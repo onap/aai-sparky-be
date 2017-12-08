@@ -40,7 +40,8 @@ public class PortalAuthenticationConfig {
   public static final String PROP_USERNAME = "username";
   public static final String PROP_PASSWORD = "password"; // NOSONAR
   public static final String PROP_IS_ONAP_ENABLED = "onap_enabled"; // NOSONAR
-  private static final String AUTHENTICATION_CONFIG_FILE = TierSupportUiConstants.PORTAL_AUTHENTICATION_FILE_LOCATION;
+  private static final String AUTHENTICATION_CONFIG_FILE =
+      TierSupportUiConstants.PORTAL_AUTHENTICATION_FILE_LOCATION;
 
   private PortalAuthenticationConfig() {
     // Prevent instantiation
@@ -72,7 +73,7 @@ public class PortalAuthenticationConfig {
     Encryptor encryptor = new Encryptor();
     return encryptor.decryptValue(password);
   }
-  
+
   public boolean getIsOnapEnabled() {
     return isOnapEnabled;
   }

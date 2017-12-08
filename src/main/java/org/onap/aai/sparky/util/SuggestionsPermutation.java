@@ -26,16 +26,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SuggestionsPermutation {
-  
+
   /*
-   * Will return all the unique combinations of the suggestions provided.
-   * The order of the permutation is not taken into account when computing
-   * the uniqueness.
-   * eg: A list of A,B,C,D will return
-   * [[A], [A, B, C, D], [A, C, D], [A, D], [B], [B, C, D], [B, D], [C], [C, D], [D]]
+   * Will return all the unique combinations of the suggestions provided. The order of the
+   * permutation is not taken into account when computing the uniqueness. eg: A list of A,B,C,D will
+   * return [[A], [A, B, C, D], [A, C, D], [A, D], [B], [B, C, D], [B, D], [C], [C, D], [D]]
    * 
    * @param list The list to create the unique permutations
-   * @return    A Arraylist which contains a array list of all possible combinations
+   * 
+   * @return A Arraylist which contains a array list of all possible combinations
    */
   @SuppressWarnings("serial")
   public ArrayList<ArrayList<String>> getSuggestionsPermutation(List<String> list) {
@@ -54,7 +53,7 @@ public class SuggestionsPermutation {
       dupStatusList = truncateListUntill(statusList, mainLoopIndexCounter);
 
       while (dupStatusList.size() > 0) {
-        ArrayList<String> suggListInIterate= new ArrayList<>();
+        ArrayList<String> suggListInIterate = new ArrayList<>();
         suggListInIterate.add(status);
         for (String dupStatus : dupStatusList) {
           suggListInIterate.add(dupStatus);

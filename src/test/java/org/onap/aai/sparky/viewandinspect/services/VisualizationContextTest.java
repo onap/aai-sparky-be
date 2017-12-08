@@ -56,84 +56,86 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 
 public class VisualizationContextTest {
 
-    VisualizationContext context;
-    ActiveInventoryDataProvider dataProvider;
-    long contextId;
-    OxmModelLoader oxmModelLoader;
-    ExecutorService service;
+  VisualizationContext context;
+  ActiveInventoryDataProvider dataProvider;
+  long contextId;
+  OxmModelLoader oxmModelLoader;
+  ExecutorService service;
 
-    @Before
-    public void init() throws Exception {
-        MockitoAnnotations.initMocks(this);
-        System.setProperty("AJSC_HOME", new File(".").getCanonicalPath().replace('\\', '/'));
-        TierSupportUiConstants.DYNAMIC_CONFIG_APP_LOCATION = System.getProperty("AJSC_HOME")+"/src/test/resources/appconfig/";
-        TierSupportUiConstants.CONFIG_OXM_LOCATION = System.getProperty("AJSC_HOME")+"/bundleconfig-local/oxm/";
-        oxmModelLoader = Mockito.spy(OxmModelLoader.getInstance());
-        ActiveInventoryDataProvider dataProvider = new ActiveInventoryAdapter(new RestClientBuilder());
-        SecureRandom random = new SecureRandom();
-        long contextId = random.nextLong();
-        ExecutorService service = NodeUtils.createNamedExecutor("SLNC-WORKER",
-                2, LoggerFactory.getInstance().getLogger(VisualizationContextTest.class));
-        context = new VisualizationContext(contextId, dataProvider, service, oxmModelLoader);
-    }
+  @Before
+  public void init() throws Exception {
+    MockitoAnnotations.initMocks(this);
+    System.setProperty("AJSC_HOME", new File(".").getCanonicalPath().replace('\\', '/'));
+    TierSupportUiConstants.DYNAMIC_CONFIG_APP_LOCATION =
+        System.getProperty("AJSC_HOME") + "/src/test/resources/appconfig/";
+    TierSupportUiConstants.CONFIG_OXM_LOCATION =
+        System.getProperty("AJSC_HOME") + "/bundleconfig-local/oxm/";
+    oxmModelLoader = Mockito.spy(OxmModelLoader.getInstance());
+    ActiveInventoryDataProvider dataProvider = new ActiveInventoryAdapter(new RestClientBuilder());
+    SecureRandom random = new SecureRandom();
+    long contextId = random.nextLong();
+    ExecutorService service = NodeUtils.createNamedExecutor("SLNC-WORKER", 2,
+        LoggerFactory.getInstance().getLogger(VisualizationContextTest.class));
+    context = new VisualizationContext(contextId, dataProvider, service, oxmModelLoader);
+  }
 
-    @Test
-    public void testExtractQueryParamsFromSelfLink_NullLink() {
-        List<String> queryParams = context.extractQueryParamsFromSelfLink(null);
-        Assert.assertEquals(queryParams.size(), 0);
-    }
+  @Test
+  public void testExtractQueryParamsFromSelfLink_NullLink() {
+    List<String> queryParams = context.extractQueryParamsFromSelfLink(null);
+    Assert.assertEquals(queryParams.size(), 0);
+  }
 
-    @Test
-    public void testExtractQueryParamsFromSelfLink_NotNullLink() {
-        context.extractQueryParamsFromSelfLink("https://localhost:9517/model/aai/webapp/index.html");
-    }
+  @Test
+  public void testExtractQueryParamsFromSelfLink_NotNullLink() {
+    context.extractQueryParamsFromSelfLink("https://localhost:9517/model/aai/webapp/index.html");
+  }
 
-    @Test
-    public void testDecodeComplexAttributeGroup_NullAttributeGroup() {
-        ActiveInventoryNode ain = new ActiveInventoryNode();
-        ObjectNode node = JsonNodeFactory.instance.objectNode();
-        boolean retValue = context.decodeComplexAttributeGroup(ain, node);
-        Assert.assertFalse(retValue);
-    }
+  @Test
+  public void testDecodeComplexAttributeGroup_NullAttributeGroup() {
+    ActiveInventoryNode ain = new ActiveInventoryNode();
+    ObjectNode node = JsonNodeFactory.instance.objectNode();
+    boolean retValue = context.decodeComplexAttributeGroup(ain, node);
+    Assert.assertFalse(retValue);
+  }
 
-    @Test
-    public void testDecodeComplexAttributeGroup_NotNullAttributeGroup() {
-        ActiveInventoryNode ain = new ActiveInventoryNode();
-        ObjectNode node1 = JsonNodeFactory.instance.objectNode();
-        ObjectNode node2 = JsonNodeFactory.instance.objectNode();
-        node1.set("model", node2);
-        ObjectNode modelNode = JsonNodeFactory.instance.objectNode();
-        node2.set("model-1", modelNode);
-        modelNode.set("firstValue", JsonNodeFactory.instance.objectNode());
-        modelNode.set("secondValue", JsonNodeFactory.instance.objectNode());
-        modelNode.set("thirdValue", JsonNodeFactory.instance.objectNode());
-        boolean retValue = context.decodeComplexAttributeGroup(ain, node1);
-        Assert.assertFalse(retValue);
-    }
+  @Test
+  public void testDecodeComplexAttributeGroup_NotNullAttributeGroup() {
+    ActiveInventoryNode ain = new ActiveInventoryNode();
+    ObjectNode node1 = JsonNodeFactory.instance.objectNode();
+    ObjectNode node2 = JsonNodeFactory.instance.objectNode();
+    node1.set("model", node2);
+    ObjectNode modelNode = JsonNodeFactory.instance.objectNode();
+    node2.set("model-1", modelNode);
+    modelNode.set("firstValue", JsonNodeFactory.instance.objectNode());
+    modelNode.set("secondValue", JsonNodeFactory.instance.objectNode());
+    modelNode.set("thirdValue", JsonNodeFactory.instance.objectNode());
+    boolean retValue = context.decodeComplexAttributeGroup(ain, node1);
+    Assert.assertFalse(retValue);
+  }
 
-    @Test
-    public void testProcessSelfLinks() {
-        SearchableEntity entity = new SearchableEntity();
-        entity.setId("id-1");
-        entity.setEntityType("cloud-region");
-        entity.setEntityPrimaryKeyValue("cloud-region-1");
-        entity.setLink("https://localhost:9517/model/aai/webapp/index.html");
-        QueryParams params = new QueryParams();
-        params.setSearchTargetNodeId("id-1");
-        Map<String, ActiveInventoryNode> nodeMap =  context.getNodeCache();
-        ActiveInventoryNode node = new ActiveInventoryNode();
-        node.setEntityType("cloud-region");
-        node.setNodeId("id-1");
-        node.setPrimaryKeyName("cloud-region-1");
-        node.setPrimaryKeyValue("cloud-region-1");
-        node.addQueryParam(
+  @Test
+  public void testProcessSelfLinks() {
+    SearchableEntity entity = new SearchableEntity();
+    entity.setId("id-1");
+    entity.setEntityType("cloud-region");
+    entity.setEntityPrimaryKeyValue("cloud-region-1");
+    entity.setLink("https://localhost:9517/model/aai/webapp/index.html");
+    QueryParams params = new QueryParams();
+    params.setSearchTargetNodeId("id-1");
+    Map<String, ActiveInventoryNode> nodeMap = context.getNodeCache();
+    ActiveInventoryNode node = new ActiveInventoryNode();
+    node.setEntityType("cloud-region");
+    node.setNodeId("id-1");
+    node.setPrimaryKeyName("cloud-region-1");
+    node.setPrimaryKeyValue("cloud-region-1");
+    node.addQueryParam(
         node.getEntityType() + "." + node.getPrimaryKeyName() + ":" + node.getPrimaryKeyValue());
-        node.setNodeDepth(0);
-        node.setRootNode(true);
-        node.setSelfLink(entity.getLink());
-        nodeMap.put("id-1", node);
-        node.setResolvedSelfLink(true);
-        context.processSelfLinks(entity, params);
+    node.setNodeDepth(0);
+    node.setRootNode(true);
+    node.setSelfLink(entity.getLink());
+    nodeMap.put("id-1", node);
+    node.setResolvedSelfLink(true);
+    context.processSelfLinks(entity, params);
 
-    }
+  }
 }

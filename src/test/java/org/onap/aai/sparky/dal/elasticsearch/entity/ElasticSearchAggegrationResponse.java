@@ -45,7 +45,7 @@ public class ElasticSearchAggegrationResponse {
 
   public ElasticSearchAggegrationResponse() {
     this.shards = new HashMap<String, String>();
-    this.aggregations = new HashMap<String,ElasticSearchAggregation>();
+    this.aggregations = new HashMap<String, ElasticSearchAggregation>();
   }
 
 
@@ -89,7 +89,7 @@ public class ElasticSearchAggegrationResponse {
   }
 
   public void addShard(String key, String value) {
-    this.shards.put(key,value);
+    this.shards.put(key, value);
   }
 
 

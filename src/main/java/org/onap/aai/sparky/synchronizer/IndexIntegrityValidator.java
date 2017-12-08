@@ -39,6 +39,7 @@ public class IndexIntegrityValidator implements IndexValidator {
       LoggerFactory.getInstance().getLogger(IndexIntegrityValidator.class);
 
   private String host;
+
   /**
    * @return the host
    */
@@ -139,7 +140,9 @@ public class IndexIntegrityValidator implements IndexValidator {
     this.indexType = indexType;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.onap.aai.sparky.synchronizer.IndexValidator#exists()
    */
   @Override
@@ -158,7 +161,9 @@ public class IndexIntegrityValidator implements IndexValidator {
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.onap.aai.sparky.synchronizer.IndexValidator#integrityValid()
    */
   @Override
@@ -170,7 +175,9 @@ public class IndexIntegrityValidator implements IndexValidator {
     return true;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.onap.aai.sparky.synchronizer.IndexValidator#createOrRepair()
    */
   @Override
@@ -195,7 +202,9 @@ public class IndexIntegrityValidator implements IndexValidator {
 
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.onap.aai.sparky.synchronizer.IndexValidator#destroyIndex()
    */
   @Override

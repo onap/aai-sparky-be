@@ -107,7 +107,7 @@ public class AggregationSynchronizer extends AbstractEntitySynchronizer
       return ae;
     }
   }
-  
+
   private static final Logger LOG =
       LoggerFactory.getInstance().getLogger(AggregationSynchronizer.class);
   private static final String INSERTION_DATE_TIME_FORMAT = "yyyyMMdd'T'HHmmssZ";
@@ -130,9 +130,9 @@ public class AggregationSynchronizer extends AbstractEntitySynchronizer
    */
   public AggregationSynchronizer(String entityType, String indexName) throws Exception {
     super(LOG, "AGGES-" + indexName.toUpperCase(), 2, 5, 5, indexName); // multiple Autosuggestion
-                                                                       // Entity Synchronizer will
-                                                                       // run for different indices
-    
+                                                                        // Entity Synchronizer will
+                                                                        // run for different indices
+
     this.entityType = entityType;
     this.allWorkEnumerated = false;
     this.entityCounters = new ConcurrentHashMap<String, AtomicInteger>();
@@ -143,14 +143,12 @@ public class AggregationSynchronizer extends AbstractEntitySynchronizer
     this.selflinks = new ConcurrentLinkedDeque<SelfLinkDescriptor>();
     this.retryQueue = new ConcurrentLinkedDeque<RetryAggregationEntitySyncContainer>();
     this.retryLimitTracker = new ConcurrentHashMap<String, Integer>();
-    
+
     this.esPutExecutor = NodeUtils.createNamedExecutor("AGGES-ES-PUT", 1, LOG);
     Map<String, OxmEntityDescriptor> descriptor = new HashMap<String, OxmEntityDescriptor>();
     descriptor.put(entityType, oxmModelLoader.getEntityDescriptors().get(entityType));
-    this.aaiEntityStats.initializeCountersFromOxmEntityDescriptors(
-        descriptor);
-    this.esEntityStats.initializeCountersFromOxmEntityDescriptors(
-        descriptor);
+    this.aaiEntityStats.initializeCountersFromOxmEntityDescriptors(descriptor);
+    this.esEntityStats.initializeCountersFromOxmEntityDescriptors(descriptor);
     this.contextMap = MDC.getCopyOfContextMap();
   }
 
@@ -221,8 +219,8 @@ public class AggregationSynchronizer extends AbstractEntitySynchronizer
 
     return OperationState.OK;
   }
-  
-  
+
+
   /**
    * Perform retry sync.
    */
@@ -274,7 +272,7 @@ public class AggregationSynchronizer extends AbstractEntitySynchronizer
       }
     }
   }
-  
+
   /**
    * Perform document upsert.
    *
@@ -418,7 +416,7 @@ public class AggregationSynchronizer extends AbstractEntitySynchronizer
       LOG.error(AaiUiMsgs.ERROR_GENERIC, message);
     }
   }
-  
+
   /**
    * Should allow retry.
    *
@@ -445,7 +443,7 @@ public class AggregationSynchronizer extends AbstractEntitySynchronizer
 
     return isRetryAllowed;
   }
-  
+
   /**
    * Process store document result.
    *
@@ -480,7 +478,7 @@ public class AggregationSynchronizer extends AbstractEntitySynchronizer
       }
     }
   }
-  
+
   /**
    * Sync entity types.
    */
@@ -533,7 +531,7 @@ public class AggregationSynchronizer extends AbstractEntitySynchronizer
     }
 
   }
-  
+
   /**
    * Fetch document for upsert.
    *
@@ -548,53 +546,53 @@ public class AggregationSynchronizer extends AbstractEntitySynchronizer
     }
 
     try {
-        final String jsonResult = txn.getOperationResult().getResult();
-        if (jsonResult != null && jsonResult.length() > 0) {
+      final String jsonResult = txn.getOperationResult().getResult();
+      if (jsonResult != null && jsonResult.length() > 0) {
 
-          AggregationEntity ae = new AggregationEntity(oxmModelLoader);
-          ae.setLink(ActiveInventoryConfig.extractResourcePath(txn.getLink()));
-          populateAggregationEntityDocument(ae, jsonResult, txn.getDescriptor());
-          ae.deriveFields();
+        AggregationEntity ae = new AggregationEntity(oxmModelLoader);
+        ae.setLink(ActiveInventoryConfig.extractResourcePath(txn.getLink()));
+        populateAggregationEntityDocument(ae, jsonResult, txn.getDescriptor());
+        ae.deriveFields();
 
-          String link = null;
-          try {
-            link = getElasticFullUrl("/" + ae.getId(), getIndexName());
-          } catch (Exception exc) {
-            LOG.error(AaiUiMsgs.ES_FAILED_TO_CONSTRUCT_QUERY, exc.getLocalizedMessage());
-          }
-
-          if (link != null) {
-            NetworkTransaction n2 = new NetworkTransaction();
-            n2.setLink(link);
-            n2.setEntityType(txn.getEntityType());
-            n2.setDescriptor(txn.getDescriptor());
-            n2.setOperationType(HttpMethod.GET);
-
-            esWorkOnHand.incrementAndGet();
-
-            supplyAsync(new PerformElasticSearchRetrieval(n2, esDataProvider), esExecutor)
-                .whenComplete((result, error) -> {
-
-                  esWorkOnHand.decrementAndGet();
-
-                  if (error != null) {
-                    LOG.error(AaiUiMsgs.ES_RETRIEVAL_FAILED, error.getLocalizedMessage());
-                  } else {
-                    updateElasticSearchCounters(result);
-                    performDocumentUpsert(result, ae);
-                  }
-                });
-          }
+        String link = null;
+        try {
+          link = getElasticFullUrl("/" + ae.getId(), getIndexName());
+        } catch (Exception exc) {
+          LOG.error(AaiUiMsgs.ES_FAILED_TO_CONSTRUCT_QUERY, exc.getLocalizedMessage());
         }
 
-     } catch (JsonProcessingException exc) {
+        if (link != null) {
+          NetworkTransaction n2 = new NetworkTransaction();
+          n2.setLink(link);
+          n2.setEntityType(txn.getEntityType());
+          n2.setDescriptor(txn.getDescriptor());
+          n2.setOperationType(HttpMethod.GET);
+
+          esWorkOnHand.incrementAndGet();
+
+          supplyAsync(new PerformElasticSearchRetrieval(n2, esDataProvider), esExecutor)
+              .whenComplete((result, error) -> {
+
+                esWorkOnHand.decrementAndGet();
+
+                if (error != null) {
+                  LOG.error(AaiUiMsgs.ES_RETRIEVAL_FAILED, error.getLocalizedMessage());
+                } else {
+                  updateElasticSearchCounters(result);
+                  performDocumentUpsert(result, ae);
+                }
+              });
+        }
+      }
+
+    } catch (JsonProcessingException exc) {
       // TODO -> LOG, waht should be logged here?
     } catch (IOException exc) {
       // TODO -> LOG, waht should be logged here?
     }
   }
-  
-  
+
+
   /**
    * Populate aggregation entity document.
    *
@@ -611,7 +609,7 @@ public class AggregationSynchronizer extends AbstractEntitySynchronizer
     Map<String, Object> map = mapper.convertValue(entityNode, Map.class);
     doc.copyAttributeKeyValuePair(map);
   }
-  
+
   /**
    * Process entity type self links.
    *
@@ -628,9 +626,8 @@ public class AggregationSynchronizer extends AbstractEntitySynchronizer
       try {
         rootNode = mapper.readTree(jsonResult);
       } catch (IOException exc) {
-        String message =
-            "Could not deserialize JSON (representing operation result) as node tree. " +
-            "Operation result = " + jsonResult + ". " + exc.getLocalizedMessage();
+        String message = "Could not deserialize JSON (representing operation result) as node tree. "
+            + "Operation result = " + jsonResult + ". " + exc.getLocalizedMessage();
         LOG.error(AaiUiMsgs.JSON_PROCESSING_ERROR, message);
         return;
       }
@@ -662,8 +659,9 @@ public class AggregationSynchronizer extends AbstractEntitySynchronizer
               continue;
             }
 
-            selflinks.add(new SelfLinkDescriptor(resourceLink, SynchronizerConfiguration.NODES_ONLY_MODIFIER, resourceType));
-            
+            selflinks.add(new SelfLinkDescriptor(resourceLink,
+                SynchronizerConfiguration.NODES_ONLY_MODIFIER, resourceType));
+
 
           }
         }
@@ -679,11 +677,11 @@ public class AggregationSynchronizer extends AbstractEntitySynchronizer
    */
   @Override
   public OperationState doSync() {
-	this.syncDurationInMs = -1;
-	syncStartedTimeStampInMs = System.currentTimeMillis();
+    this.syncDurationInMs = -1;
+    syncStartedTimeStampInMs = System.currentTimeMillis();
     String txnID = NodeUtils.getRandomTxnId();
     MdcContext.initialize(txnID, "AggregationSynchronizer", "", "Sync", "");
-    
+
     return collectAllTheWork();
   }
 
@@ -705,8 +703,8 @@ public class AggregationSynchronizer extends AbstractEntitySynchronizer
    */
   @Override
   public String getStatReport(boolean showFinalReport) {
-	syncDurationInMs = System.currentTimeMillis() - syncStartedTimeStampInMs;
-	return getStatReport(syncDurationInMs, showFinalReport);
+    syncDurationInMs = System.currentTimeMillis() - syncStartedTimeStampInMs;
+    return getStatReport(syncDurationInMs, showFinalReport);
   }
 
   public String getEntityType() {

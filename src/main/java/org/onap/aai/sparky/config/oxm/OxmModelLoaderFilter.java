@@ -39,8 +39,11 @@ import org.onap.aai.cl.mdc.MdcContext;
  * The Class OxmModelLoaderFilter.
  */
 public class OxmModelLoaderFilter implements Filter {
-  /* (non-Javadoc)
-   * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse,
+   * javax.servlet.FilterChain)
    */
   @Override
   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
@@ -54,16 +57,17 @@ public class OxmModelLoaderFilter implements Filter {
     chain.doFilter(request, response);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
    */
   @Override
   public void init(FilterConfig filterConfig) throws ServletException {
-	String txnID = NodeUtils.getRandomTxnId();
-	MdcContext.initialize(txnID, "OxmModelLoaderFilter", "",
-	       "Init", "");
+    String txnID = NodeUtils.getRandomTxnId();
+    MdcContext.initialize(txnID, "OxmModelLoaderFilter", "", "Init", "");
 
-	try {
+    try {
       OxmModelLoader.getInstance();
     } catch (Exception exc) {
       throw new ServletException("Caught an exception while initializing OXM model loader filter",
@@ -72,7 +76,9 @@ public class OxmModelLoaderFilter implements Filter {
 
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see javax.servlet.Filter#destroy()
    */
   @Override

@@ -69,8 +69,7 @@ public class UserManager {
    * @return a list of users.
    */
   public List<EcompUser> getUsers() {
-    Type collectionType = new TypeToken<List<EcompUser>>() {
-    }.getType();
+    Type collectionType = new TypeToken<List<EcompUser>>() {}.getType();
 
     Optional<String> users = read(usersFile);
     if (users.isPresent()) {

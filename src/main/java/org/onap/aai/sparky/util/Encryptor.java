@@ -37,9 +37,8 @@ public class Encryptor {
   /**
    * Instantiates a new encryptor.
    */
-  public Encryptor() {  
-  }
-  
+  public Encryptor() {}
+
   /**
    * Decrypt value.
    *
@@ -48,9 +47,9 @@ public class Encryptor {
    */
   public String decryptValue(String value) {
     String decyptedValue = "";
-    
-      decyptedValue = Password.deobfuscate(value);
-  
+
+    decyptedValue = Password.deobfuscate(value);
+
     return decyptedValue;
   }
 

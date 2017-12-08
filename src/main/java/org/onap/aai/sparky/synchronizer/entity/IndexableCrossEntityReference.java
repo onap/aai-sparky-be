@@ -38,9 +38,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class IndexableCrossEntityReference extends IndexableEntity implements IndexDocument {
 
   protected String crossReferenceEntityValues;
+
   /**
- * @return the crossReferenceEntityValues
- */
+   * @return the crossReferenceEntityValues
+   */
   public String getCrossReferenceEntityValues() {
     return crossReferenceEntityValues;
   }
@@ -66,21 +67,21 @@ public class IndexableCrossEntityReference extends IndexableEntity implements In
     this.crossEntityReferenceCollection = crossEntityReferenceCollection;
   }
 
-/**
- * @return the mapper
- */
-public ObjectMapper getMapper() {
-	return mapper;
-}
+  /**
+   * @return the mapper
+   */
+  public ObjectMapper getMapper() {
+    return mapper;
+  }
 
-/**
- * @param mapper the mapper to set
- */
-public void setMapper(ObjectMapper mapper) {
-	this.mapper = mapper;
-}
+  /**
+   * @param mapper the mapper to set
+   */
+  public void setMapper(ObjectMapper mapper) {
+    this.mapper = mapper;
+  }
 
-protected ArrayList<String> crossEntityReferenceCollection = new ArrayList<String>();
+  protected ArrayList<String> crossEntityReferenceCollection = new ArrayList<String>();
   protected ObjectMapper mapper = new ObjectMapper();
 
   /**
@@ -110,7 +111,9 @@ protected ArrayList<String> crossEntityReferenceCollection = new ArrayList<Strin
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.onap.aai.sparky.synchronizer.entity.IndexDocument#deriveFields()
    */
   @Override
@@ -136,7 +139,9 @@ protected ArrayList<String> crossEntityReferenceCollection = new ArrayList<Strin
     return null;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.lang.Object#toString()
    */
   @Override

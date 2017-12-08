@@ -35,13 +35,13 @@ public class MergableEntity {
   private Map<String, String> other = new HashMap<String, String>();
 
   /**
- * @param other the other to set
- */
-public void setOther(Map<String, String> other) {
-	this.other = other;
-}
+   * @param other the other to set
+   */
+  public void setOther(Map<String, String> other) {
+    this.other = other;
+  }
 
-/**
+  /**
    * Any.
    *
    * @return the map
@@ -52,10 +52,10 @@ public void setOther(Map<String, String> other) {
   }
 
   public Map<String, String> getOther() {
-	return other;
-}
+    return other;
+  }
 
-/**
+  /**
    * Sets the.
    *
    * @param name the name

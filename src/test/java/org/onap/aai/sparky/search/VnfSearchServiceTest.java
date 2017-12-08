@@ -41,49 +41,54 @@ import org.onap.aai.sparky.viewandinspect.entity.QuerySearchEntity;
 
 public class VnfSearchServiceTest {
 
-	VnfSearchService searchService;
-	
-	@Before
-	public void init() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException, IOException {
-		System.setProperty("AJSC_HOME", new File(".").getCanonicalPath().replace('\\', '/'));
-	    TierSupportUiConstants.DYNAMIC_CONFIG_APP_LOCATION = System.getProperty("AJSC_HOME")+"/src/test/resources/appconfig/";
-		ElasticSearchConfig.setConfig(null);
-        setFinalStatic();       
-		searchService = new VnfSearchService();
-	}
-	@Test
-	public void testSetZeroCountResponse() throws IOException {
-		HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
-		Mockito.doNothing().when(response).setStatus(1);
-		Mockito.doNothing().when(response).setContentType(Mockito.anyString());
-		PrintWriter writer = Mockito.mock(PrintWriter.class);
-		Mockito.doNothing().when(writer).println(Mockito.anyString());
-		Mockito.doNothing().when(writer).close();
-		Mockito.when(response.getWriter()).thenReturn(writer);
-		searchService.setZeroCountResponse(response);
-	}
-	
-	@Test
-	public void testSetEmptyAggResponse() throws IOException {
-		HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
-		Mockito.doNothing().when(response).setStatus(1);
-		Mockito.doNothing().when(response).setContentType(Mockito.anyString());
-		PrintWriter writer = Mockito.mock(PrintWriter.class);
-		Mockito.doNothing().when(writer).println(Mockito.anyString());
-		Mockito.doNothing().when(writer).close();
-		Mockito.when(response.getWriter()).thenReturn(writer);
-		searchService.setEmptyAggResponse(response);
-	}
-	
-		
-	static void setFinalStatic() throws NoSuchFieldException, SecurityException, IllegalArgumentException, IllegalAccessException {
-		Field configField = ElasticSearchConfig.class.getDeclaredField("CONFIG_FILE");
-		configField.setAccessible(true);
+  VnfSearchService searchService;
 
-		Field modifiersField = Field.class.getDeclaredField( "modifiers" );
-		modifiersField.setAccessible( true );
-		modifiersField.setInt( configField, configField.getModifiers() & ~Modifier.FINAL );
+  @Before
+  public void init() throws NoSuchFieldException, SecurityException, IllegalArgumentException,
+      IllegalAccessException, IOException {
+    System.setProperty("AJSC_HOME", new File(".").getCanonicalPath().replace('\\', '/'));
+    TierSupportUiConstants.DYNAMIC_CONFIG_APP_LOCATION =
+        System.getProperty("AJSC_HOME") + "/src/test/resources/appconfig/";
+    ElasticSearchConfig.setConfig(null);
+    setFinalStatic();
+    searchService = new VnfSearchService();
+  }
 
-		configField.set(null, System.getProperty("AJSC_HOME")+"/src/test/resources/appconfig/elasticsearch.properties");
-	}
+  @Test
+  public void testSetZeroCountResponse() throws IOException {
+    HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
+    Mockito.doNothing().when(response).setStatus(1);
+    Mockito.doNothing().when(response).setContentType(Mockito.anyString());
+    PrintWriter writer = Mockito.mock(PrintWriter.class);
+    Mockito.doNothing().when(writer).println(Mockito.anyString());
+    Mockito.doNothing().when(writer).close();
+    Mockito.when(response.getWriter()).thenReturn(writer);
+    searchService.setZeroCountResponse(response);
+  }
+
+  @Test
+  public void testSetEmptyAggResponse() throws IOException {
+    HttpServletResponse response = Mockito.mock(HttpServletResponse.class);
+    Mockito.doNothing().when(response).setStatus(1);
+    Mockito.doNothing().when(response).setContentType(Mockito.anyString());
+    PrintWriter writer = Mockito.mock(PrintWriter.class);
+    Mockito.doNothing().when(writer).println(Mockito.anyString());
+    Mockito.doNothing().when(writer).close();
+    Mockito.when(response.getWriter()).thenReturn(writer);
+    searchService.setEmptyAggResponse(response);
+  }
+
+
+  static void setFinalStatic() throws NoSuchFieldException, SecurityException,
+      IllegalArgumentException, IllegalAccessException {
+    Field configField = ElasticSearchConfig.class.getDeclaredField("CONFIG_FILE");
+    configField.setAccessible(true);
+
+    Field modifiersField = Field.class.getDeclaredField("modifiers");
+    modifiersField.setAccessible(true);
+    modifiersField.setInt(configField, configField.getModifiers() & ~Modifier.FINAL);
+
+    configField.set(null,
+        System.getProperty("AJSC_HOME") + "/src/test/resources/appconfig/elasticsearch.properties");
+  }
 }

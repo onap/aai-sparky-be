@@ -49,7 +49,9 @@ public class GetCrossEntityReferenceEntityTask implements Supplier<NetworkTransa
     this.provider = provider;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.util.function.Supplier#get()
    */
   @Override

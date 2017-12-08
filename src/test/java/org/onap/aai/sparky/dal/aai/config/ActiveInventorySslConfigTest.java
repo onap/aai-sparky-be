@@ -65,8 +65,11 @@ public class ActiveInventorySslConfigTest {
     props.put("aai.ssl.validateServiceCertificateChain", "false");
     props.put("aai.ssl.keystore.type", "pkcs12");
     props.put("aai.ssl.keystore.filename", "/opt/app/applocal/etc/cert.crt");
-    /*props.put("aai.ssl.keystore.pass", encryptor.decryptValue(value)EncryptedConfiguration.encryptToTriple("AES",
-        Long.toString(123456789 % 10000), "aa1admin", "password"));*/
+    /*
+     * props.put("aai.ssl.keystore.pass",
+     * encryptor.decryptValue(value)EncryptedConfiguration.encryptToTriple("AES",
+     * Long.toString(123456789 % 10000), "aa1admin", "password"));
+     */
     props.put("aai.ssl.truststore.type", "jks");
     props.put("aai.ssl.truststore.filename", "/opt/app/applocal/etc/cert.crt");
     props.put("aai.ssl.basicAuth.username", "username");
@@ -196,15 +199,15 @@ public class ActiveInventorySslConfigTest {
     assertFalse(config.isValidateServerHostName());
     assertFalse(config.isValidateServerCertificateChain());
 
-    assertEquals(config.getKeystoreType(),"invalid");
+    assertEquals(config.getKeystoreType(), "invalid");
     assertTrue(config.getKeystoreFilename().contains("null"));
-    assertEquals(config.getKeystorePassword(),"");
+    assertEquals(config.getKeystorePassword(), "");
 
-    assertEquals(config.getTruststoreType(),"invalid");
+    assertEquals(config.getTruststoreType(), "invalid");
     assertTrue(config.getTruststoreFilename().contains("null"));
 
-    assertEquals(config.getBasicAuthUsername(),"invalid");
-    assertEquals(config.getBasicAuthPassword(),"invalid");
+    assertEquals(config.getBasicAuthUsername(), "invalid");
+    assertEquals(config.getBasicAuthPassword(), "invalid");
     assertEquals(config.getBasicAuthenticationCredentials(),
         generateAuthorizationHeaderValue("invalid", "invalid"));
 
@@ -240,30 +243,30 @@ public class ActiveInventorySslConfigTest {
     config.setEncryptor(encryptorMock);
     config.setValidateServerCertificateChain(true);
     config.setValidateServerHostName(true);
-    
+
     assertEquals(System.getProperty("javax.net.debug"), "ssl");
     assertTrue(config.isValidateServerHostName());
     assertTrue(config.isValidateServerCertificateChain());
 
-    assertEquals(config.getKeystoreType(),"test");
+    assertEquals(config.getKeystoreType(), "test");
     assertTrue(config.getKeystoreFilename().contains("test"));
-    assertEquals(config.getKeystorePassword(),"test");
+    assertEquals(config.getKeystorePassword(), "test");
 
-    assertEquals(config.getTruststoreType(),"test");
+    assertEquals(config.getTruststoreType(), "test");
     assertTrue(config.getTruststoreFilename().contains("test"));
 
-    assertEquals(config.getBasicAuthUsername(),"test");
-    assertEquals(config.getBasicAuthPassword(),"test");
+    assertEquals(config.getBasicAuthUsername(), "test");
+    assertEquals(config.getBasicAuthPassword(), "test");
     assertEquals(config.getBasicAuthenticationCredentials(),
         generateAuthorizationHeaderValue("test", "test"));
-    
+
     assertNotNull(config.getEncryptor());
-    
+
     assertTrue(config.toString().contains("ActiveInventorySslConfig"));
-    
-    
+
+
   }
-  
-  
-  
+
+
+
 }

@@ -56,7 +56,9 @@ public class RelationshipList {
     this.relationship = relationship;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.lang.Object#toString()
    */
   @Override

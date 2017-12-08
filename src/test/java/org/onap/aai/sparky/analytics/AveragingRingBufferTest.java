@@ -38,7 +38,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 /**
  * The Class AveragingRingBufferTest.
  */
-@RunWith(MockitoJUnitRunner.class) 
+@RunWith(MockitoJUnitRunner.class)
 public class AveragingRingBufferTest {
 
   protected SecureRandom random = new SecureRandom();

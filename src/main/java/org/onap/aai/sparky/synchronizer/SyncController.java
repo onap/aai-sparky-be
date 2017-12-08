@@ -47,16 +47,14 @@ public class SyncController {
    * The Enum InternalState.
    */
   private enum InternalState {
-    IDLE, PRE_SYNC, SYNC_OPERATION, SELECTIVE_DELETE, ABORTING_SYNC, REPAIRING_INDEX, POST_SYNC,
-    TEST_INDEX_INTEGRITY, GENERATE_FINAL_REPORT
+    IDLE, PRE_SYNC, SYNC_OPERATION, SELECTIVE_DELETE, ABORTING_SYNC, REPAIRING_INDEX, POST_SYNC, TEST_INDEX_INTEGRITY, GENERATE_FINAL_REPORT
   }
 
   /**
    * The Enum SyncActions.
    */
   public enum SyncActions {
-    SYNCHRONIZE, REPAIR_INDEX, INDEX_INTEGRITY_VALIDATION_COMPLETE, PRE_SYNC_COMPLETE,
-    SYNC_COMPLETE, SYNC_ABORTED, SYNC_FAILURE, POST_SYNC_COMPLETE, PURGE_COMPLETE, REPORT_COMPLETE
+    SYNCHRONIZE, REPAIR_INDEX, INDEX_INTEGRITY_VALIDATION_COMPLETE, PRE_SYNC_COMPLETE, SYNC_COMPLETE, SYNC_ABORTED, SYNC_FAILURE, POST_SYNC_COMPLETE, PURGE_COMPLETE, REPORT_COMPLETE
   }
 
   private Collection<IndexSynchronizer> registeredSynchronizers;
@@ -90,7 +88,7 @@ public class SyncController {
 
     this.currentInternalState = InternalState.IDLE;
   }
-  
+
   /**
    * Change internal state.
    *
@@ -98,8 +96,8 @@ public class SyncController {
    * @param causedByAction the caused by action
    */
   private void changeInternalState(InternalState newState, SyncActions causedByAction) {
-    LOG.info(AaiUiMsgs.SYNC_INTERNAL_STATE_CHANGED, controllerName,
-        currentInternalState.toString(), newState.toString(), causedByAction.toString());
+    LOG.info(AaiUiMsgs.SYNC_INTERNAL_STATE_CHANGED, controllerName, currentInternalState.toString(),
+        newState.toString(), causedByAction.toString());
 
     this.currentInternalState = newState;
 
@@ -426,24 +424,24 @@ public class SyncController {
       int totalFinished = 0;
 
       for (IndexSynchronizer synchronizer : registeredSynchronizers) {
-    	  if (dumpPeriodicStatReport) {
-              if (synchronizer.getState() != SynchronizerState.IDLE) {
-                String statReport = synchronizer.getStatReport(false);
-	          if (statReport != null) {
-		            LOG.info(AaiUiMsgs.INFO_GENERIC, statReport);
-		          }
-              }
-	        if (synchronizer.getState() == SynchronizerState.IDLE) {
-	          totalFinished++;
-	        }
-    	  }
-      }
-      if ( System.currentTimeMillis() > nextReportTimeStampInMs) {
-          dumpPeriodicStatReport = true;
-          nextReportTimeStampInMs = System.currentTimeMillis() + 30000L; 
-        } else {
-          dumpPeriodicStatReport = false;
+        if (dumpPeriodicStatReport) {
+          if (synchronizer.getState() != SynchronizerState.IDLE) {
+            String statReport = synchronizer.getStatReport(false);
+            if (statReport != null) {
+              LOG.info(AaiUiMsgs.INFO_GENERIC, statReport);
+            }
+          }
+          if (synchronizer.getState() == SynchronizerState.IDLE) {
+            totalFinished++;
+          }
         }
+      }
+      if (System.currentTimeMillis() > nextReportTimeStampInMs) {
+        dumpPeriodicStatReport = true;
+        nextReportTimeStampInMs = System.currentTimeMillis() + 30000L;
+      } else {
+        dumpPeriodicStatReport = false;
+      }
       allDone = (totalFinished == registeredSynchronizers.size());
 
       try {

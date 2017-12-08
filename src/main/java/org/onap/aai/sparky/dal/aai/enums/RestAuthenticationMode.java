@@ -30,10 +30,8 @@ package org.onap.aai.sparky.dal.aai.enums;
  */
 
 public enum RestAuthenticationMode {
-  HTTP_NOAUTH("HTTP_NO_AUTH"), 
-  SSL_BASIC("SSL_BASIC"), 
-  SSL_CERT("SSL_CERT"), 
-  UNKNOWN_MODE("UNKNOWN_MODE");
+  HTTP_NOAUTH("HTTP_NO_AUTH"), SSL_BASIC("SSL_BASIC"), SSL_CERT("SSL_CERT"), UNKNOWN_MODE(
+      "UNKNOWN_MODE");
 
   private String authenticationModeLabel;
 
@@ -44,23 +42,23 @@ public enum RestAuthenticationMode {
   public String getAuthenticationModeLabel() {
     return authenticationModeLabel;
   }
-  
+
   public static RestAuthenticationMode getRestAuthenticationMode(String authenticationMode) {
 
     RestAuthenticationMode mappedMode = RestAuthenticationMode.UNKNOWN_MODE;
-    
+
     if (authenticationMode == null) {
       return mappedMode;
     }
 
     try {
       mappedMode = RestAuthenticationMode.valueOf(authenticationMode);
-    } catch ( Exception exc) {
+    } catch (Exception exc) {
       mappedMode = RestAuthenticationMode.UNKNOWN_MODE;
     }
 
     return mappedMode;
 
   }
- 
+
 }

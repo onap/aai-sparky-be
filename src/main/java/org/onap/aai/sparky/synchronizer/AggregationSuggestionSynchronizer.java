@@ -102,7 +102,7 @@ public class AggregationSuggestionSynchronizer extends AbstractEntitySynchronize
   private void syncEntity() {
     String txnId = NodeUtils.getRandomTxnId();
     MdcContext.initialize(txnId, "AggregationSuggestionSynchronizer", "", "Sync", "");
-    
+
     AggregationSuggestionEntity syncEntity = new AggregationSuggestionEntity();
     syncEntity.deriveFields();
 
@@ -112,7 +112,7 @@ public class AggregationSuggestionSynchronizer extends AbstractEntitySynchronize
     } catch (Exception exc) {
       LOG.error(AaiUiMsgs.ES_LINK_UPSERT, exc.getLocalizedMessage());
     }
-    
+
     try {
       String jsonPayload = null;
       jsonPayload = syncEntity.getIndexDocumentJson();
@@ -124,8 +124,9 @@ public class AggregationSuggestionSynchronizer extends AbstractEntitySynchronize
 
         esWorkOnHand.incrementAndGet();
         final Map<String, String> contextMap = MDC.getCopyOfContextMap();
-        supplyAsync(new PerformElasticSearchPut(jsonPayload, elasticPutTxn,
-            esDataProvider, contextMap), esPutExecutor).whenComplete((result, error) -> {
+        supplyAsync(
+            new PerformElasticSearchPut(jsonPayload, elasticPutTxn, esDataProvider, contextMap),
+            esPutExecutor).whenComplete((result, error) -> {
 
               esWorkOnHand.decrementAndGet();
 
@@ -171,8 +172,8 @@ public class AggregationSuggestionSynchronizer extends AbstractEntitySynchronize
 
   @Override
   public String getStatReport(boolean shouldDisplayFinalReport) {
-	syncDurationInMs = System.currentTimeMillis() - syncStartedTimeStampInMs;
-	return getStatReport(syncDurationInMs, shouldDisplayFinalReport);
+    syncDurationInMs = System.currentTimeMillis() - syncStartedTimeStampInMs;
+    return getStatReport(syncDurationInMs, shouldDisplayFinalReport);
   }
 
   @Override

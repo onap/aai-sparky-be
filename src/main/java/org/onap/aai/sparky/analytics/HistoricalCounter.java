@@ -186,7 +186,9 @@ public class HistoricalCounter {
     value = 0.0;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.lang.Object#toString()
    */
   @Override

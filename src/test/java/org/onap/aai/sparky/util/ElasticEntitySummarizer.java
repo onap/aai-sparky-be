@@ -44,6 +44,7 @@ import org.onap.aai.sparky.synchronizer.config.TaskProcessorConfig;
 public class ElasticEntitySummarizer {
 
   private RestDataProvider syncAdapter;
+
   /**
    * @return the syncAdapter
    */
@@ -185,10 +186,8 @@ public class ElasticEntitySummarizer {
       System.out.println(String.format("\n%-30s %-12d", "Total", totalEntities));
 
     } catch (Exception exc) {
-      System.out.println(
-          "An error occurred while attempting to collect pre-sync elastic"
-          + " search document ids with an error cause = "
-              + exc.getLocalizedMessage());
+      System.out.println("An error occurred while attempting to collect pre-sync elastic"
+          + " search document ids with an error cause = " + exc.getLocalizedMessage());
     }
 
 

@@ -30,7 +30,7 @@ public class HitEntity {
   private DocumentEntity document;
 
   public String getScore() {
-    return score; 
+    return score;
   }
 
   public void setScore(String score) {

@@ -30,14 +30,14 @@ import java.util.Map;
 public class DocumentEntity {
   private String etag;
   private String url;
-  private Map<String,String> content;
+  private Map<String, String> content;
 
   public DocumentEntity() {
-    content = new HashMap<String,String>();
+    content = new HashMap<String, String>();
   }
-  
-  
-  public String getEtag() { 
+
+
+  public String getEtag() {
     return etag;
   }
 
@@ -60,7 +60,7 @@ public class DocumentEntity {
   public void setContent(Map<String, String> content) {
     this.content = content;
   }
-  
+
   public void addContent(String key, String value) {
     content.put(key, value);
   }

@@ -63,9 +63,9 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
 
-@PowerMockIgnore({ "javax.crypto.*" })
+@PowerMockIgnore({"javax.crypto.*"})
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ PortalAuthenticationConfig.class, RolesConfig.class })
+@PrepareForTest({PortalAuthenticationConfig.class, RolesConfig.class})
 public class TestPortalRestAPIServiceImpl {
 
   private static File testUsersFile;
@@ -75,13 +75,19 @@ public class TestPortalRestAPIServiceImpl {
 
   enum TestData {
     // @formatter:off
-    TEST_USERS                       ("src/test/resources/portal/test-users.config"),
-    PORTAL_AUTHENTICATION_PROPERTIES ("src/test/resources/portal/portal-authentication.properties"),
-    ROLES_CONFIG_FILE                ("src/test/resources/portal/roles.config");
+    TEST_USERS("src/test/resources/portal/test-users.config"), PORTAL_AUTHENTICATION_PROPERTIES(
+        "src/test/resources/portal/portal-authentication.properties"), ROLES_CONFIG_FILE(
+            "src/test/resources/portal/roles.config");
 
     private String filename;
-    TestData(String filename) {this.filename = filename;}
-    public String getFilename() {return this.filename;}
+
+    TestData(String filename) {
+      this.filename = filename;
+    }
+
+    public String getFilename() {
+      return this.filename;
+    }
     // @formatter:on
   }
 

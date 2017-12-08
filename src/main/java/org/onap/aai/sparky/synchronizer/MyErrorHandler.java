@@ -77,7 +77,9 @@ public class MyErrorHandler implements ErrorHandler {
   // The following methods are standard SAX ErrorHandler methods.
   // See SAX documentation for more info.
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.xml.sax.ErrorHandler#warning(org.xml.sax.SAXParseException)
    */
   @Override
@@ -85,7 +87,9 @@ public class MyErrorHandler implements ErrorHandler {
     out.println("Warning: " + getParseExceptionInfo(spe));
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.xml.sax.ErrorHandler#error(org.xml.sax.SAXParseException)
    */
   @Override
@@ -94,7 +98,9 @@ public class MyErrorHandler implements ErrorHandler {
     throw new SAXException(message);
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.xml.sax.ErrorHandler#fatalError(org.xml.sax.SAXParseException)
    */
   @Override

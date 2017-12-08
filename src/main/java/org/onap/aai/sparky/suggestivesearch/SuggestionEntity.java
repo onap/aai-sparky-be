@@ -27,30 +27,34 @@ public class SuggestionEntity {
   private String hashId;
   private String text;
 
-  public SuggestionEntity() {
-  }
-  
+  public SuggestionEntity() {}
+
   public SuggestionEntity(String route, String hashId, String text) {
     this.route = route;
     this.hashId = hashId;
     this.text = text;
   }
-  
+
   public String getRoute() {
     return route;
   }
+
   public void setRoute(String route) {
     this.route = route;
   }
+
   public String getHashId() {
     return hashId;
   }
+
   public void setHashId(String hashId) {
     this.hashId = hashId;
   }
+
   public String getText() {
     return text;
   }
+
   public void setText(String text) {
     this.text = text;
   }

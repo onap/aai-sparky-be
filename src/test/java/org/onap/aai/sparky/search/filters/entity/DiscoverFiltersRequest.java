@@ -36,5 +36,5 @@ public class DiscoverFiltersRequest {
   public void setViewName(String viewName) {
     this.viewName = viewName;
   }
-  
+
 }

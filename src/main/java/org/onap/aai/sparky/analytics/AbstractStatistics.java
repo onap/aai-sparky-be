@@ -31,6 +31,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class AbstractStatistics implements ComponentStatistics {
 
   private HashMap<String, AtomicInteger> namedCounters;
+
   /**
    * @return the namedCounters
    */
@@ -69,7 +70,9 @@ public class AbstractStatistics implements ComponentStatistics {
     namedHistograms = new HashMap<String, HistogramSampler>();
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.onap.aai.sparky.analytics.ComponentStatistics#addCounter(java.lang.String)
    */
   /*
@@ -90,7 +93,9 @@ public class AbstractStatistics implements ComponentStatistics {
 
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.onap.aai.sparky.analytics.ComponentStatistics#pegCounter(java.lang.String)
    */
   @Override
@@ -104,7 +109,9 @@ public class AbstractStatistics implements ComponentStatistics {
 
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.onap.aai.sparky.analytics.ComponentStatistics#incrementCounter(java.lang.String, int)
    */
   @Override
@@ -119,8 +126,11 @@ public class AbstractStatistics implements ComponentStatistics {
   }
 
 
-  /* (non-Javadoc)
-   * @see org.onap.aai.sparky.analytics.ComponentStatistics#addHistogram(java.lang.String, java.lang.String, long, int, int)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see org.onap.aai.sparky.analytics.ComponentStatistics#addHistogram(java.lang.String,
+   * java.lang.String, long, int, int)
    */
   @Override
   public synchronized void addHistogram(String key, String histName, long maxYValue, int numBins,
@@ -134,7 +144,9 @@ public class AbstractStatistics implements ComponentStatistics {
 
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.onap.aai.sparky.analytics.ComponentStatistics#updateHistogram(java.lang.String, long)
    */
   @Override
@@ -146,7 +158,9 @@ public class AbstractStatistics implements ComponentStatistics {
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.onap.aai.sparky.analytics.ComponentStatistics#reset()
    */
   @Override

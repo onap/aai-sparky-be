@@ -36,7 +36,7 @@ public class QueryParams {
   public QueryParams() {
 
   }
-  
+
   public String getSearchTargetPrimaryKeyValues() {
     return searchTargetPrimaryKeyValues;
   }

@@ -35,7 +35,8 @@ public class TierSupportUiConstants {
 
   public static String CONFIG_HOME = System.getProperty("CONFIG_HOME") + FILESEP;
   public static String AJSC_HOME = System.getProperty("AJSC_HOME") + FILESEP;
-  public static String CONFIG_ROOT_LOCATION = AJSC_HOME + "bundleconfig" + FILESEP + "etc" + FILESEP;
+  public static String CONFIG_ROOT_LOCATION =
+      AJSC_HOME + "bundleconfig" + FILESEP + "etc" + FILESEP;
   public static String STATIC_CONFIG_APP_LOCATION = CONFIG_ROOT_LOCATION + "appprops" + FILESEP;
   public static String DYNAMIC_CONFIG_APP_LOCATION = CONFIG_HOME;
 
@@ -51,7 +52,8 @@ public class TierSupportUiConstants {
 
   public static String USERS_FILE_LOCATION = DYNAMIC_CONFIG_APP_LOCATION + "users.config";
   public static String ROLES_FILE_LOCATION = DYNAMIC_CONFIG_APP_LOCATION + "roles.config";
-  public static String PORTAL_AUTHENTICATION_FILE_LOCATION = DYNAMIC_CONFIG_APP_LOCATION + "portal" + FILESEP + "portal-authentication.properties";
+  public static String PORTAL_AUTHENTICATION_FILE_LOCATION =
+      DYNAMIC_CONFIG_APP_LOCATION + "portal" + FILESEP + "portal-authentication.properties";
 
   public static final String ES_SUGGEST_API = "_suggest";
   public static final String ES_COUNT_API = "_count";
@@ -60,14 +62,13 @@ public class TierSupportUiConstants {
   public static final String UI_FILTER_VIEW_NAME_PARAMETER = "viewName";
   public static final String UI_FILTER_ID_LIST_PARAMETER = "filterIdList";
 
-  public static final String ENTITY_AUTO_SUGGEST_INDEX_NAME_DEFAULT = 
+  public static final String ENTITY_AUTO_SUGGEST_INDEX_NAME_DEFAULT =
       "entityautosuggestindex-localhost";
   public static final String ENTITY_AUTO_SUGGEST_SETTINGS_FILE_DEFAULT =
       "/etc/autoSuggestSettings.json";
   public static final String ENTITY_AUTO_SUGGEST_MAPPINGS_FILE_DEFAULT =
       "/etc/autoSuggestMappings.json";
-  public static final String ENTITY_DYNAMIC_MAPPINGS_FILE_DEFAULT =
-      "/etc/dynamicMappings.json";
+  public static final String ENTITY_DYNAMIC_MAPPINGS_FILE_DEFAULT = "/etc/dynamicMappings.json";
   public static final String FILTER_LIST_FILE_DEFAULT =
       CONFIG_FILTERS_BASE_LOCATION + "filters" + FILESEP + "aaiui_filters.json";
   public static final String FILTER_MAPPING_FILE_DEFAULT =
@@ -76,18 +77,18 @@ public class TierSupportUiConstants {
   // JUnit testing synchronizer.properties file
   public static String TEST_CONFIG_FILE =
       System.getProperty("user.dir") + FILESEP + "bundleconfig-local" + FILESEP + "etc" + FILESEP
-      + "appprops" + FILESEP + "synchronizer.properties";
+          + "appprops" + FILESEP + "synchronizer.properties";
 
   // Injected Attributes
   public static String URI_ATTR_NAME = "uri";
 
   public static final String URI_VERSION_REGEX_PATTERN = "aai/v[\\d]+/";
-  
-  public static final String getConfigPath(String configFile){
+
+  public static final String getConfigPath(String configFile) {
     return AJSC_HOME + FILESEP + configFile;
   }
-  
-  public static final String getAggregationIndexName(String entityType){
+
+  public static final String getAggregationIndexName(String entityType) {
     return "aggregate_" + entityType + "_index";
   }
 
@@ -202,8 +203,8 @@ public class TierSupportUiConstants {
   public static void setCONFIG_FILTERS_BASE_LOCATION(String cONFIG_FILTERS_BASE_LOCATION) {
     CONFIG_FILTERS_BASE_LOCATION = cONFIG_FILTERS_BASE_LOCATION;
   }
-  
-  
+
+
   /**
    * @return the cONFIG_AUTH_LOCATION
    */

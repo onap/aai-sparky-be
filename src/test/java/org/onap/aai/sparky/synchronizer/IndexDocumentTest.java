@@ -42,7 +42,7 @@ import ch.qos.logback.classic.Level;
 /**
  * The Class IndexDocumentTest.
  */
-@RunWith(MockitoJUnitRunner.class) 
+@RunWith(MockitoJUnitRunner.class)
 public class IndexDocumentTest {
 
   private LogValidator logValidator;

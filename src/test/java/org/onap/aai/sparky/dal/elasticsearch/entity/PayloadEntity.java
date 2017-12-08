@@ -26,7 +26,6 @@ package org.onap.aai.sparky.dal.elasticsearch.entity;
 
 public class PayloadEntity {
 
-  public PayloadEntity() {
-  }
-  
+  public PayloadEntity() {}
+
 }

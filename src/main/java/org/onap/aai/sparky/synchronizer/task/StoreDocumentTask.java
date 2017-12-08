@@ -114,7 +114,9 @@ public class StoreDocumentTask implements Supplier<NetworkTransaction> {
     this.contextMap = MDC.getCopyOfContextMap();
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.util.function.Supplier#get()
    */
   @Override

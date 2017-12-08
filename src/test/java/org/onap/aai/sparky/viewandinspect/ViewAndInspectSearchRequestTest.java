@@ -38,7 +38,7 @@ import org.onap.aai.sparky.viewandinspect.entity.QuerySearchEntity;
 /**
  * The Class ViewAndInspectSearchRequestTest.
  */
-@RunWith(MockitoJUnitRunner.class) 
+@RunWith(MockitoJUnitRunner.class)
 public class ViewAndInspectSearchRequestTest {
 
   /**

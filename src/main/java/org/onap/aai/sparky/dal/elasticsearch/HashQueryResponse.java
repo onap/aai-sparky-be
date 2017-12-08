@@ -28,28 +28,32 @@ import org.onap.aai.sparky.dal.rest.OperationResult;
 public class HashQueryResponse {
   private String jsonPayload = null;
   private OperationResult opResult = null;
-  
+
   public HashQueryResponse() {
     this(null, null);
   }
-  
+
   public HashQueryResponse(String jsonPayload, OperationResult opResult) {
     this.jsonPayload = jsonPayload;
     this.opResult = opResult;
   }
-  
+
   public String getJsonPayload() {
     return jsonPayload;
   }
+
   public void setJsonPayload(String jsonPayload) {
     this.jsonPayload = jsonPayload;
   }
+
   public OperationResult getOpResult() {
     return opResult;
   }
+
   public void setOpResult(OperationResult opResult) {
     this.opResult = opResult;
   }
+
   @Override
   public String toString() {
     return "HashQueryResponse [jsonPayload=" + jsonPayload + ", opResult=" + opResult + "]";

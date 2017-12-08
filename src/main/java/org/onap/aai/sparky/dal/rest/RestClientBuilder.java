@@ -38,9 +38,8 @@ import org.onap.aai.sparky.security.SecurityContextFactoryImpl;
  * This is a generic REST Client builder with flexible security validation. Sometimes it's nice to
  * be able to disable server chain cert validation and hostname validation to work-around lab
  * issues, but at the same time be able to provide complete validation with client cert + hostname +
- * server cert chain validation.
- * I used the ModelLoader REST client as a base and merged in the TSUI client I wrote which also
- * validates the server hostname and server certificate chain.
+ * server cert chain validation. I used the ModelLoader REST client as a base and merged in the TSUI
+ * client I wrote which also validates the server hostname and server certificate chain.
  *
  * @author DAVEA
  *

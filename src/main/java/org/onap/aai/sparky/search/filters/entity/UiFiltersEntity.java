@@ -28,15 +28,15 @@ import java.util.List;
 /**
  * Represents a list of filters that a given UI view should display.
  * <p>
- * When a UI view wants to know which filters it should display, an object of this class is created to keep
- * track of all the filters that are discovered for that view and is then serialized to JSON and returned to
- * the view in the response body. 
+ * When a UI view wants to know which filters it should display, an object of this class is created
+ * to keep track of all the filters that are discovered for that view and is then serialized to JSON
+ * and returned to the view in the response body.
  */
 public class UiFiltersEntity {
   private List<UiFilterEntity> filters = new ArrayList<>();
 
-  
-  
+
+
   public void addFilter(UiFilterEntity viewFilter) {
     filters.add(viewFilter);
   }

@@ -94,7 +94,9 @@ public class ElasticSearchIndexCleaner implements IndexCleaner {
     this.numItemsToGetBulkRequest = numItemsToGetBulkRequest;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.onap.aai.sparky.synchronizer.IndexCleaner#populatePreOperationCollection()
    */
   @Override
@@ -110,7 +112,9 @@ public class ElasticSearchIndexCleaner implements IndexCleaner {
 
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.onap.aai.sparky.synchronizer.IndexCleaner#populatePostOperationCollection()
    */
   @Override
@@ -124,7 +128,9 @@ public class ElasticSearchIndexCleaner implements IndexCleaner {
     }
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.onap.aai.sparky.synchronizer.IndexCleaner#performCleanup()
    */
   @Override

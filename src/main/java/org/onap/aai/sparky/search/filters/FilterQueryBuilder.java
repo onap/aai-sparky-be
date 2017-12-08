@@ -42,11 +42,12 @@ import org.onap.aai.sparky.search.filters.entity.SearchFilter;
  * Used to generate queries against Elasticsearch for filter related queries.
  */
 public class FilterQueryBuilder {
-  
+
   private static final int EXISTING_FILTERS_LIMIT = 0;
   private static final int SHOULD_BRANCH_LIMIT = 2;
 
-  public static JsonObject createFilteredBoolQueryObject(List<SearchFilter> searchFilters, int minShouldMatch, List<String> fields) {
+  public static JsonObject createFilteredBoolQueryObject(List<SearchFilter> searchFilters,
+      int minShouldMatch, List<String> fields) {
 
     if (searchFilters == null || searchFilters.size() == 0) {
       return null;
@@ -70,16 +71,16 @@ public class FilterQueryBuilder {
       if (filter == null || filter.getFilterName() == null) {
         // log error and continue
       } else {
-        
+
         String fieldName = filter.getDataSource().getFieldName();
-        if(!fields.contains(fieldName)) {
+        if (!fields.contains(fieldName)) {
           fields.add(fieldName);
         }
-        
+
         if (searchFilterValueSize >= SHOULD_BRANCH_LIMIT) {
           // Add should branches
           for (String filterValue : searchFilter.getValues()) {
-            boolQueryBuilder.addShouldFilter(new MatchFilterCriteriaEntity(fieldName, filterValue)); 
+            boolQueryBuilder.addShouldFilter(new MatchFilterCriteriaEntity(fieldName, filterValue));
           }
 
         } else if (searchFilterValueSize > EXISTING_FILTERS_LIMIT) {
@@ -92,7 +93,7 @@ public class FilterQueryBuilder {
     }
 
     boolQueryBuilder.setMinShouldMatch(minShouldMatch);
-    
+
     return boolQueryBuilder.getJsonObject();
   }
 
@@ -126,22 +127,31 @@ public class FilterQueryBuilder {
     return aggQueryBuilder.getJsonObject();
   }
 
-  public static JsonObject createCombinedBoolAndAggQuery(List<SearchFilter> searchFilters, int minShouldMatch) {
+  public static JsonObject createCombinedBoolAndAggQuery(List<SearchFilter> searchFilters,
+      int minShouldMatch) {
     JsonObjectBuilder wrappedQueryBuilder = Json.createObjectBuilder();
-    if(searchFilters != null) {
+    if (searchFilters != null) {
       List<String> fields = new ArrayList<String>();
       JsonObject boolQuery = createFilteredBoolQueryObject(searchFilters, minShouldMatch, fields);
       JsonObject aggQuery = createAggregationQueryArray(searchFilters);
 
       if (boolQuery != null) {
         wrappedQueryBuilder.add("size", 0);
-        
-        JsonArrayBuilder filedsArrayBuilder = Json.createBuilderFactory(null).createArrayBuilder(); // TODO -> Should we use a class instance factory?
-        for(String field : fields) {
+
+        JsonArrayBuilder filedsArrayBuilder = Json.createBuilderFactory(null).createArrayBuilder(); // TODO
+                                                                                                    // ->
+                                                                                                    // Should
+                                                                                                    // we
+                                                                                                    // use
+                                                                                                    // a
+                                                                                                    // class
+                                                                                                    // instance
+                                                                                                    // factory?
+        for (String field : fields) {
           filedsArrayBuilder.add(field);
         }
         wrappedQueryBuilder.add("fields", filedsArrayBuilder.build());
-        
+
         wrappedQueryBuilder.add("query", boolQuery);
       }
 

@@ -30,19 +30,19 @@ import java.util.Map;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class AutoSuggestElasticSearchResponse {
-  
+
   private int took;
-  
+
   @JsonProperty("timed_out")
   private boolean timedOut;
-  
+
   @JsonProperty("_shards")
-  private Map<String,String> shards;
-  
+  private Map<String, String> shards;
+
   private AutoSuggestElasticHitsEntity hits;
 
-  public AutoSuggestElasticSearchResponse(){
-    this.shards = new HashMap<String,String>();
+  public AutoSuggestElasticSearchResponse() {
+    this.shards = new HashMap<String, String>();
   }
 
   public int getTook() {
@@ -68,7 +68,7 @@ public class AutoSuggestElasticSearchResponse {
   public void setShards(Map<String, String> shards) {
     this.shards = shards;
   }
-  
+
   public void addShard(String name, String value) {
     shards.put(name, value);
   }
@@ -80,6 +80,6 @@ public class AutoSuggestElasticSearchResponse {
   public void setHits(AutoSuggestElasticHitsEntity hits) {
     this.hits = hits;
   }
-  
-  
+
+
 }

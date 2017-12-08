@@ -59,8 +59,8 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 
 public class VisualizationTransformer {
 
-  private static final Logger LOG = LoggerFactory.getInstance().getLogger(
-      VisualizationTransformer.class);
+  private static final Logger LOG =
+      LoggerFactory.getInstance().getLogger(VisualizationTransformer.class);
 
   List<JsonNode> flatNodeArray = new ArrayList<JsonNode>();
   Set<String> enrichableUriPrefixes = null;
@@ -74,7 +74,7 @@ public class VisualizationTransformer {
   List<JsonNodeLink> linkArrayOutput = new ArrayList<JsonNodeLink>();
 
 
-  
+
   private VisualizationConfig visualizationConfig;
 
 
@@ -85,7 +85,7 @@ public class VisualizationTransformer {
    */
   public VisualizationTransformer() throws Exception {
     visualizationConfig = VisualizationConfig.getConfig();
-  
+
   }
 
 
@@ -139,7 +139,7 @@ public class VisualizationTransformer {
     output.setGraphMeta(graphMeta);
 
     for (JsonNode n : flatNodeArray) {
-      if ( n.getItemType()!= null) {
+      if (n.getItemType() != null) {
         output.pegCounter(n.getItemType());
       }
     }
@@ -154,8 +154,7 @@ public class VisualizationTransformer {
         String.valueOf(numLinks));
 
     if (numLinks < (numNodes - 1)) {
-      LOG.warn(AaiUiMsgs.DANGLING_NODE_WARNING, String.valueOf(numLinks),
-          String.valueOf(numNodes));
+      LOG.warn(AaiUiMsgs.DANGLING_NODE_WARNING, String.valueOf(numLinks), String.valueOf(numNodes));
     }
 
     ObjectMapper mapper = new ObjectMapper();
@@ -245,9 +244,8 @@ public class VisualizationTransformer {
 
       } else {
         if (LOG.isDebugEnabled()) {
-          LOG.debug(AaiUiMsgs.DEBUG_GENERIC, "buildLinks(),"
-              + " Filtering node = " + ain.getNodeId() + " @ depth = "
-              + ain.getNodeDepth());
+          LOG.debug(AaiUiMsgs.DEBUG_GENERIC, "buildLinks()," + " Filtering node = "
+              + ain.getNodeId() + " @ depth = " + ain.getNodeDepth());
         }
 
       }
@@ -290,9 +288,8 @@ public class VisualizationTransformer {
         flatNodeArray.add(jsonNode);
       } else {
         if (LOG.isDebugEnabled()) {
-          LOG.debug(AaiUiMsgs.DEBUG_GENERIC, 
-              "Filtering node from visualization: " + n.getNodeId() + " @ depth = "
-              + n.getNodeDepth());
+          LOG.debug(AaiUiMsgs.DEBUG_GENERIC, "Filtering node from visualization: " + n.getNodeId()
+              + " @ depth = " + n.getNodeDepth());
         }
       }
     }

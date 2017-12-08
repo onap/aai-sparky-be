@@ -35,18 +35,19 @@ import org.onap.aai.sparky.util.Encryptor;
 import org.onap.aai.sparky.viewandinspect.config.TierSupportUiConstants;
 import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
+
 /**
  * The Class ActiveInventoryConfig.
  */
 public class ActiveInventoryConfig {
 
-  
-  
+
+
   public static final String CONFIG_FILE =
       TierSupportUiConstants.DYNAMIC_CONFIG_APP_LOCATION + "aai.properties";
   private static ActiveInventoryConfig instance;
-  private static final Logger LOG = LoggerFactory.getInstance().getLogger(
-	      ActiveInventoryConfig.class);
+  private static final Logger LOG =
+      LoggerFactory.getInstance().getLogger(ActiveInventoryConfig.class);
   private static final String HTTP_SCHEME = "http";
   private static final String HTTPS_SCHEME = "https";
 
@@ -79,7 +80,7 @@ public class ActiveInventoryConfig {
 
 
   }
-  
+
   protected ActiveInventoryConfig(Properties props) throws Exception {
 
     aaiRestConfig = new ActiveInventoryRestConfig(props);
@@ -116,7 +117,7 @@ public class ActiveInventoryConfig {
   public void setAaiSslConfig(ActiveInventorySslConfig aaiSslConfig) {
     this.aaiSslConfig = aaiSslConfig;
   }
-  
+
   public String repairSelfLink(String selflink) {
 
     if (selflink == null) {
@@ -142,17 +143,20 @@ public class ActiveInventoryConfig {
     return builder.build().toString();
 
   }
-  
+
   public static String extractResourcePath(String selflink) {
-	    try {
-	      return new URI(selflink).getPath();
-	    } catch (URISyntaxException uriSyntaxException) {
-	      LOG.error(AaiUiMsgs.ERROR_EXTRACTING_RESOURCE_PATH_FROM_LINK, uriSyntaxException.getMessage());
-	      return selflink;
-	    }
-	  }
-  
-  /* (non-Javadoc)
+    try {
+      return new URI(selflink).getPath();
+    } catch (URISyntaxException uriSyntaxException) {
+      LOG.error(AaiUiMsgs.ERROR_EXTRACTING_RESOURCE_PATH_FROM_LINK,
+          uriSyntaxException.getMessage());
+      return selflink;
+    }
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.lang.Object#toString()
    */
   @Override

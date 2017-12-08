@@ -31,13 +31,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class UiFilterListItemConfig {
   @JsonProperty("filterId")
   private String filterId;
-  
+
   @JsonProperty("defaultValue")
   private UiFilterOptionsValuesConfig defaultValue;
-  
+
 
   @JsonCreator
-  public UiFilterListItemConfig(@JsonProperty("filterId") final String filterId,  @JsonProperty("defaultValue") final UiFilterOptionsValuesConfig defaultValue) {
+  public UiFilterListItemConfig(@JsonProperty("filterId") final String filterId,
+      @JsonProperty("defaultValue") final UiFilterOptionsValuesConfig defaultValue) {
     this.filterId = filterId;
     this.defaultValue = defaultValue;
   }
@@ -65,5 +66,5 @@ public class UiFilterListItemConfig {
     return "FilterListItemEntity [filterId=" + filterId + ", defaultValue=" + defaultValue + "]";
   }
 
-  
+
 }

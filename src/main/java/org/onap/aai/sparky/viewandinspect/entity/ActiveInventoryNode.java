@@ -53,8 +53,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  */
 public class ActiveInventoryNode {
 
-  private static final Logger LOG = LoggerFactory.getInstance().getLogger(
-      ActiveInventoryNode.class);
+  private static final Logger LOG =
+      LoggerFactory.getInstance().getLogger(ActiveInventoryNode.class);
   private static final String URIRegexPattern = "aai/v[\\d]/";
 
   public static final int DEFAULT_INIT_NODE_DEPTH = 1000;
@@ -79,13 +79,12 @@ public class ActiveInventoryNode {
   private boolean processedNeighbors;
 
   private boolean selfLinkPendingResolve;
-  
+
   /*
-   * I think we shouldn't be using this crutch flags.  If these things are meant
-   * to represent the current state of the node, then they should be legitimate 
-   * state transitions.
+   * I think we shouldn't be using this crutch flags. If these things are meant to represent the
+   * current state of the node, then they should be legitimate state transitions.
    */
-  
+
   private boolean selfLinkDeterminationPending;
 
   private AtomicBoolean selfLinkProcessed;
@@ -151,19 +150,19 @@ public class ActiveInventoryNode {
 
 
   }
-  
+
   public void clearQueryParams() {
     queryParams.clear();
   }
-  
+
   public void addQueryParam(String queryParam) {
-    if ( queryParam!= null) {
-      if( !queryParams.contains(queryParam)) {
+    if (queryParam != null) {
+      if (!queryParams.contains(queryParam)) {
         queryParams.add(queryParam);
       }
     }
   }
-  
+
   public void addQueryParams(Collection<String> params) {
 
     if (params != null && !params.isEmpty()) {
@@ -174,7 +173,7 @@ public class ActiveInventoryNode {
     }
   }
 
-  
+
   public List<String> getQueryParams() {
     return queryParams;
   }
@@ -373,8 +372,8 @@ public class ActiveInventoryNode {
     boolean nodeDepthWasChanged = false;
 
     if (newDepth < nodeDepth) {
-      LOG.info(AaiUiMsgs.ACTIVE_INV_NODE_CHANGE_DEPTH, nodeId,
-          String.valueOf(this.nodeDepth), String.valueOf(newDepth));
+      LOG.info(AaiUiMsgs.ACTIVE_INV_NODE_CHANGE_DEPTH, nodeId, String.valueOf(this.nodeDepth),
+          String.valueOf(newDepth));
       this.nodeDepth = newDepth;
       nodeDepthWasChanged = true;
     }
@@ -403,13 +402,15 @@ public class ActiveInventoryNode {
    */
   public void changeState(NodeProcessingState newState, NodeProcessingAction action) {
     /*
-     * NodeId may be null depending on the current node life-cycle state 
+     * NodeId may be null depending on the current node life-cycle state
      */
-    
+
     if (getNodeId() != null) {
-      LOG.info(AaiUiMsgs.ACTIVE_INV_NODE_CHANGE_STATE, state.toString(), newState.toString(), action.toString());
+      LOG.info(AaiUiMsgs.ACTIVE_INV_NODE_CHANGE_STATE, state.toString(), newState.toString(),
+          action.toString());
     } else {
-      LOG.info(AaiUiMsgs.ACTIVE_INV_NODE_CHANGE_STATE_NO_NODE_ID, state.toString(), newState.toString(), action.toString());
+      LOG.info(AaiUiMsgs.ACTIVE_INV_NODE_CHANGE_STATE_NO_NODE_ID, state.toString(),
+          newState.toString(), action.toString());
     }
     this.state = newState;
   }
@@ -716,7 +717,7 @@ public class ActiveInventoryNode {
   public String dumpNodeTree(boolean showProperties) {
     return dumpNodeTree(0, showProperties);
   }
-  
+
   /**
    * Dump node tree.
    *

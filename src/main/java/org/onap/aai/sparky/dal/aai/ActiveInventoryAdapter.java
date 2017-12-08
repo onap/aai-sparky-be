@@ -61,15 +61,15 @@ public class ActiveInventoryAdapter extends RestfulDataAccessor
 
   private static final Logger LOG =
       LoggerFactory.getInstance().getLogger(ActiveInventoryAdapter.class);
-  
+
   private static final String HEADER_TRANS_ID = "X-TransactionId";
   private static final String HEADER_FROM_APP_ID = "X-FromAppId";
   private static final String HEADER_AUTHORIZATION = "Authorization";
 
   private static final String TRANSACTION_ID_PREFIX = "txnId-";
   private static final String UI_APP_NAME = "AAI-UI";
-  
-  
+
+
   private ActiveInventoryConfig config;
 
   /**
@@ -98,7 +98,7 @@ public class ActiveInventoryAdapter extends RestfulDataAccessor
 
     sslContextFactory.setServerCertificationChainValidationEnabled(
         config.getAaiSslConfig().isValidateServerCertificateChain());
-    
+
     if (config.getAaiRestConfig().getAuthenticationMode() == RestAuthenticationMode.SSL_CERT) {
       sslContextFactory.setClientCertFileName(config.getAaiSslConfig().getKeystoreFilename());
       sslContextFactory.setClientCertPassword(config.getAaiSslConfig().getKeystorePassword());
@@ -110,8 +110,12 @@ public class ActiveInventoryAdapter extends RestfulDataAccessor
 
   }
 
-  /* (non-Javadoc)
-   * @see org.onap.aai.sparky.dal.rest.RestfulDataAccessor#setClientDefaults(com.sun.jersey.api.client.Client, java.lang.String, java.lang.String, java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.onap.aai.sparky.dal.rest.RestfulDataAccessor#setClientDefaults(com.sun.jersey.api.client.
+   * Client, java.lang.String, java.lang.String, java.lang.String)
    */
   @Override
   protected Builder setClientDefaults(Client client, String url, String payloadContentType,
@@ -146,29 +150,34 @@ public class ActiveInventoryAdapter extends RestfulDataAccessor
     final String basePath = aaiRestConfig.getResourceBasePath();
     return String.format("https://%s:%s%s%s", host, port, basePath, resourceUrl);
   }
-  
-  public String getGenericQueryForSelfLink(String startNodeType, List<String> queryParams) throws Exception {
-    
+
+  public String getGenericQueryForSelfLink(String startNodeType, List<String> queryParams)
+      throws Exception {
+
     URIBuilder urlBuilder = new URIBuilder(getFullUrl("/search/generic-query"));
-    
-    for( String queryParam : queryParams) {
+
+    for (String queryParam : queryParams) {
       urlBuilder.addParameter("key", queryParam);
     }
-    
+
     urlBuilder.addParameter("start-node-type", startNodeType);
     urlBuilder.addParameter("include", startNodeType);
-    
+
     final String constructedLink = urlBuilder.toString();
-    
+
     // TODO: debug log for constructed link
 
     return constructedLink;
 
-}
+  }
 
 
-  /* (non-Javadoc)
-   * @see org.onap.aai.sparky.dal.aai.ActiveInventoryDataProvider#getSelfLinksByEntityType(java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.onap.aai.sparky.dal.aai.ActiveInventoryDataProvider#getSelfLinksByEntityType(java.lang.
+   * String)
    */
   @Override
   public OperationResult getSelfLinksByEntityType(String entityType) throws Exception {
@@ -177,7 +186,7 @@ public class ActiveInventoryAdapter extends RestfulDataAccessor
      * For this one, I want to dynamically construct the nodes-query for self-link discovery as a
      * utility method that will use the OXM model entity data to drive the query as well.
      */
-    
+
     if (entityType == null) {
       throw new NullPointerException(
           "Failed to getSelfLinksByEntityType() because entityType is null");
@@ -204,8 +213,12 @@ public class ActiveInventoryAdapter extends RestfulDataAccessor
 
   }
 
-  /* (non-Javadoc)
-   * @see org.onap.aai.sparky.dal.aai.ActiveInventoryDataProvider#getSelfLinkForEntity(java.lang.String, java.lang.String, java.lang.String)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.onap.aai.sparky.dal.aai.ActiveInventoryDataProvider#getSelfLinkForEntity(java.lang.String,
+   * java.lang.String, java.lang.String)
    */
   @Override
   public OperationResult getSelfLinkForEntity(String entityType, String primaryKeyName,
@@ -295,8 +308,12 @@ public class ActiveInventoryAdapter extends RestfulDataAccessor
     return doGet(url, acceptContentType);
   }
 
-  /* (non-Javadoc)
-   * @see org.onap.aai.sparky.dal.aai.ActiveInventoryDataProvider#queryActiveInventoryWithRetries(java.lang.String, java.lang.String, int)
+  /*
+   * (non-Javadoc)
+   * 
+   * @see
+   * org.onap.aai.sparky.dal.aai.ActiveInventoryDataProvider#queryActiveInventoryWithRetries(java.
+   * lang.String, java.lang.String, int)
    */
   @Override
   public OperationResult queryActiveInventoryWithRetries(String url, String responseType,
@@ -371,7 +388,9 @@ public class ActiveInventoryAdapter extends RestfulDataAccessor
 
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see org.onap.aai.sparky.dal.rest.RestfulDataAccessor#shutdown()
    */
   @Override

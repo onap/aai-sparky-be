@@ -71,7 +71,7 @@ public abstract class IndexableEntity {
     return TIMESTAMP_FORMAT;
   }
 
-protected String link;
+  protected String link;
   protected OxmModelLoader loader;
 
   private static final String TIMESTAMP_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";

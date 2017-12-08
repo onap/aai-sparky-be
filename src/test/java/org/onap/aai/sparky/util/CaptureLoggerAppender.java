@@ -90,13 +90,17 @@ public class CaptureLoggerAppender implements Appender {
 
 
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see ch.qos.logback.core.spi.LifeCycle#start()
    */
   @Override
   public void start() {}
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see ch.qos.logback.core.spi.LifeCycle#stop()
    */
   @Override
@@ -123,7 +127,9 @@ public class CaptureLoggerAppender implements Appender {
     return null;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see ch.qos.logback.core.spi.ContextAware#addStatus(ch.qos.logback.core.status.Status)
    */
   @Override
@@ -132,7 +138,9 @@ public class CaptureLoggerAppender implements Appender {
     System.out.println("addStatus");
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see ch.qos.logback.core.spi.ContextAware#addInfo(java.lang.String)
    */
   @Override
@@ -141,7 +149,9 @@ public class CaptureLoggerAppender implements Appender {
 
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see ch.qos.logback.core.spi.ContextAware#addInfo(java.lang.String, java.lang.Throwable)
    */
   @Override
@@ -150,7 +160,9 @@ public class CaptureLoggerAppender implements Appender {
 
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see ch.qos.logback.core.spi.ContextAware#addWarn(java.lang.String)
    */
   @Override
@@ -159,7 +171,9 @@ public class CaptureLoggerAppender implements Appender {
 
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see ch.qos.logback.core.spi.ContextAware#addWarn(java.lang.String, java.lang.Throwable)
    */
   @Override
@@ -168,7 +182,9 @@ public class CaptureLoggerAppender implements Appender {
 
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see ch.qos.logback.core.spi.ContextAware#addError(java.lang.String)
    */
   @Override
@@ -177,7 +193,9 @@ public class CaptureLoggerAppender implements Appender {
 
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see ch.qos.logback.core.spi.ContextAware#addError(java.lang.String, java.lang.Throwable)
    */
   @Override
@@ -186,7 +204,9 @@ public class CaptureLoggerAppender implements Appender {
 
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see ch.qos.logback.core.spi.FilterAttachable#addFilter(ch.qos.logback.core.filter.Filter)
    */
   @Override
@@ -195,7 +215,9 @@ public class CaptureLoggerAppender implements Appender {
 
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see ch.qos.logback.core.spi.FilterAttachable#clearAllFilters()
    */
   @Override
@@ -210,7 +232,9 @@ public class CaptureLoggerAppender implements Appender {
     return null;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see ch.qos.logback.core.spi.FilterAttachable#getFilterChainDecision(java.lang.Object)
    */
   @Override
@@ -226,7 +250,9 @@ public class CaptureLoggerAppender implements Appender {
     return "MOCK";
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see ch.qos.logback.core.Appender#doAppend(java.lang.Object)
    */
   @Override

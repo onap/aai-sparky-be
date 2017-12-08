@@ -93,14 +93,14 @@ public class SyncHelper {
     private boolean isInitialSync;
 
     public boolean isInitialSync() {
-		return isInitialSync;
-	}
+      return isInitialSync;
+    }
 
-	public void setInitialSync(boolean isInitialSync) {
-		this.isInitialSync = isInitialSync;
-	}
+    public void setInitialSync(boolean isInitialSync) {
+      this.isInitialSync = isInitialSync;
+    }
 
-	/**
+    /**
      * Instantiates a new sync task.
      *
      * @param initialSync the initial sync
@@ -336,16 +336,15 @@ public class SyncHelper {
   private List<String> getAutosuggestableEntitiesFromOXM() {
     Map<String, OxmEntityDescriptor> map = oxmModelLoader.getSuggestionSearchEntityDescriptors();
     List<String> suggestableEntities = new ArrayList<String>();
-    
-    for (String entity: map.keySet()){
+
+    for (String entity : map.keySet()) {
       suggestableEntities.add(entity);
     }
     return suggestableEntities;
   }
 
   /**
-   * Initialize the AutosuggestionSynchronizer and 
-   * AggregationSuggestionSynchronizer
+   * Initialize the AutosuggestionSynchronizer and AggregationSuggestionSynchronizer
    * 
    * @param esConfig
    * @param aaiAdapter
@@ -371,7 +370,7 @@ public class SyncHelper {
       suggestionSynchronizer.setAaiDataProvider(aaiAdapter);
       suggestionSynchronizer.setEsDataProvider(esAdapter);
       syncController.registerEntitySynchronizer(suggestionSynchronizer);
-      
+
       AggregationSuggestionSynchronizer aggregationSuggestionSynchronizer =
           new AggregationSuggestionSynchronizer(esConfig.getAutosuggestIndexname());
       aggregationSuggestionSynchronizer.setEsDataProvider(esAdapter);
@@ -388,7 +387,7 @@ public class SyncHelper {
       LOG.error(AaiUiMsgs.ERROR_GENERIC, message);
     }
   }
-  
+
   /**
    * Initialize the AggregationSynchronizer
    * 

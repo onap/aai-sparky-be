@@ -36,7 +36,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 /**
  * The Class HistogramSamplerTest.
  */
-@RunWith(MockitoJUnitRunner.class) 
+@RunWith(MockitoJUnitRunner.class)
 public class HistogramSamplerTest {
 
   protected SecureRandom random = new SecureRandom();

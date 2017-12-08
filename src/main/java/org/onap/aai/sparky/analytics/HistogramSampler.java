@@ -259,9 +259,8 @@ public final class HistogramSampler {
       if (counter == (numBins - 1)) {
         // outlier bin
         double leftBound = (stepSize * counter);
-        sb.append(indentPadding).append("\t")
-            .append(" x >= " + String.format(floatFormatStr, leftBound) + " : " 
-                + histogramBins[counter])
+        sb.append(indentPadding).append("\t").append(
+            " x >= " + String.format(floatFormatStr, leftBound) + " : " + histogramBins[counter])
             .append("\n");
 
       } else {

@@ -130,7 +130,7 @@ public class SyncControllerBuilder {
 
       ElasticSearchConfig esConfig = ElasticSearchConfig.getConfig();
 
-      ElasticSearchAdapter esAdapter = new ElasticSearchAdapter(nonCachingRestProvider,esConfig);
+      ElasticSearchAdapter esAdapter = new ElasticSearchAdapter(nonCachingRestProvider, esConfig);
 
 
       IndexIntegrityValidator entityCounterHistoryValidator =
@@ -211,7 +211,7 @@ public class SyncControllerBuilder {
       RestfulDataAccessor nonCachingRestProvider = new RestfulDataAccessor(clientBuilder);
       ElasticSearchConfig esConfig = ElasticSearchConfig.getConfig();
 
-      ElasticSearchAdapter esAdapter = new ElasticSearchAdapter(nonCachingRestProvider,esConfig);
+      ElasticSearchAdapter esAdapter = new ElasticSearchAdapter(nonCachingRestProvider, esConfig);
 
       IndexIntegrityValidator entitySearchIndexValidator =
           new IndexIntegrityValidator(nonCachingRestProvider, esConfig.getIndexName(),
@@ -266,7 +266,7 @@ public class SyncControllerBuilder {
    */
   public void doSearchableEntitysync() {
     try {
-      
+
 
       ActiveInventoryAdapter aaiAdapter = new ActiveInventoryAdapter(new RestClientBuilder());
 
@@ -286,10 +286,10 @@ public class SyncControllerBuilder {
       RestfulDataAccessor nonCachingRestProvider = new RestfulDataAccessor(clientBuilder);
       ElasticSearchConfig esConfig = ElasticSearchConfig.getConfig();
 
-      ElasticSearchAdapter esAdapter = new ElasticSearchAdapter(nonCachingRestProvider,esConfig);
+      ElasticSearchAdapter esAdapter = new ElasticSearchAdapter(nonCachingRestProvider, esConfig);
 
       //////
-      
+
       SyncController syncController = new SyncController("searchtableEntityTestController");
 
       SearchableEntitySynchronizer ses =
@@ -340,7 +340,7 @@ public class SyncControllerBuilder {
    */
   public void doCrossEntityReferenceSync() {
     try {
-      
+
 
       ActiveInventoryAdapter aaiAdapter = new ActiveInventoryAdapter(new RestClientBuilder());
 
@@ -360,12 +360,12 @@ public class SyncControllerBuilder {
       RestfulDataAccessor nonCachingRestProvider = new RestfulDataAccessor(clientBuilder);
       ElasticSearchConfig esConfig = ElasticSearchConfig.getConfig();
 
-      ElasticSearchAdapter esAdapter = new ElasticSearchAdapter(nonCachingRestProvider,esConfig);
+      ElasticSearchAdapter esAdapter = new ElasticSearchAdapter(nonCachingRestProvider, esConfig);
 
       SyncController syncController = new SyncController("crossEntityRefSyncController");
 
-      CrossEntityReferenceSynchronizer cers =
-          new CrossEntityReferenceSynchronizer("entitysearchindex-localhost", ActiveInventoryConfig.getConfig());
+      CrossEntityReferenceSynchronizer cers = new CrossEntityReferenceSynchronizer(
+          "entitysearchindex-localhost", ActiveInventoryConfig.getConfig());
       cers.setAaiDataProvider(aaiAdapter);
       cers.setEsDataProvider(esAdapter);
       syncController.registerEntitySynchronizer(cers);
@@ -413,7 +413,7 @@ public class SyncControllerBuilder {
    */
   public void doSuggestionEntitySync() {
     try {
-      
+
 
       ActiveInventoryAdapter aaiAdapter = new ActiveInventoryAdapter(new RestClientBuilder());
 
@@ -433,8 +433,8 @@ public class SyncControllerBuilder {
       RestfulDataAccessor nonCachingRestProvider = new RestfulDataAccessor(clientBuilder);
       ElasticSearchConfig esConfig = ElasticSearchConfig.getConfig();
 
-      ElasticSearchAdapter esAdapter = new ElasticSearchAdapter(nonCachingRestProvider,esConfig);
-      
+      ElasticSearchAdapter esAdapter = new ElasticSearchAdapter(nonCachingRestProvider, esConfig);
+
       SyncController syncController = new SyncController("suggestionEntityTestController");
 
       AutosuggestionSynchronizer ses =
@@ -456,7 +456,7 @@ public class SyncControllerBuilder {
       System.out.println("Error:  failed to sync with message = " + exc.getMessage());
     }
   }
-  
+
   /*
    * Do no op sync.
    */
