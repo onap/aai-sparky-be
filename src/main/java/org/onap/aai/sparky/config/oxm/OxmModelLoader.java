@@ -22,134 +22,144 @@
  */
 package org.onap.aai.sparky.config.oxm;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Vector;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.eclipse.persistence.dynamic.DynamicType;
-import org.eclipse.persistence.internal.oxm.mappings.Descriptor;
 import org.eclipse.persistence.jaxb.JAXBContextProperties;
 import org.eclipse.persistence.jaxb.dynamic.DynamicJAXBContext;
 import org.eclipse.persistence.jaxb.dynamic.DynamicJAXBContextFactory;
-import org.eclipse.persistence.mappings.DatabaseMapping;
-import org.onap.aai.sparky.logging.AaiUiMsgs;
-import org.onap.aai.sparky.synchronizer.entity.SuggestionSearchEntity;
-import org.onap.aai.sparky.viewandinspect.config.TierSupportUiConstants;
 import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
+import org.onap.aai.sparky.logging.AaiUiMsgs;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternResolver;
 
-/**
- * The Class OxmModelLoader.
- */
 public class OxmModelLoader {
-
-  private static OxmModelLoader instance;
 
   private static final Logger LOG = LoggerFactory.getInstance().getLogger(OxmModelLoader.class);
 
-  private Map<String, HashMap<String, String>> oxmModel =
-      new LinkedHashMap<String, HashMap<String, String>>();
+  /*
+   * The intent of this parameter is to be able to programmatically over-ride the latest AAI schema
+   * version discovered from the aai-schema jar file. This property is optional, but if set on the
+   * bean or by another class in the system, then it will override the spec version that is loaded.
+   * 
+   * If the latestVersionOverride is greater than 0 then it will set the latest version to the
+   * specified version, and that stream will be returned if available.
+   */
 
-  private Map<String, DynamicType> entityTypeLookup = new LinkedHashMap<String, DynamicType>();
+  protected int oxmApiVersionOverride;
+  protected Set<OxmModelProcessor> processors;
+  private int latestVersionNum = 0;
 
-  private Map<String, HashMap<String, String>> searchableOxmModel =
-      new LinkedHashMap<String, HashMap<String, String>>();
+  private final static Pattern p = Pattern.compile("aai_oxm_(v)(.*).xml");
 
-  private Map<String, HashMap<String, String>> crossReferenceEntityOxmModel =
-      new LinkedHashMap<String, HashMap<String, String>>();
+  public OxmModelLoader() {
+    this(-1, new HashSet<OxmModelProcessor>());
+  }
 
-  private Map<String, HashMap<String, String>> geoEntityOxmModel =
-      new LinkedHashMap<String, HashMap<String, String>>();
+  public OxmModelLoader(int apiVersionOverride, Set<OxmModelProcessor> oxmModelProcessors) {
+    this.oxmApiVersionOverride = apiVersionOverride;
+    this.processors = oxmModelProcessors;
+  }
 
-  private Map<String, HashMap<String, String>> suggestionSearchEntityOxmModel =
-      new LinkedHashMap<String, HashMap<String, String>>();
-
-  private Map<String, OxmEntityDescriptor> entityDescriptors =
-      new HashMap<String, OxmEntityDescriptor>();
-
-  private Map<String, OxmEntityDescriptor> searchableEntityDescriptors =
-      new HashMap<String, OxmEntityDescriptor>();
-
-  private Map<String, OxmEntityDescriptor> crossReferenceEntityDescriptors =
-      new HashMap<String, OxmEntityDescriptor>();
-
-  private Map<String, OxmEntityDescriptor> geoEntityDescriptors =
-      new HashMap<String, OxmEntityDescriptor>();
-
-  private Map<String, OxmEntityDescriptor> suggestionSearchEntityDescriptors =
-      new HashMap<String, OxmEntityDescriptor>();
-
-  public static OxmModelLoader getInstance() {
-    if (instance == null) {
-      instance = new OxmModelLoader();
-      LOG.info(AaiUiMsgs.INITIALIZE_OXM_MODEL_LOADER);
-      instance.loadModels();
+  protected synchronized Map<Integer, InputStream> getStreamHandlesForOxmFromResource() {
+    Map<Integer, InputStream> listOfOxmFiles = new HashMap<Integer, InputStream>();
+    ClassLoader oxmClassLoader = OxmModelLoader.class.getClassLoader();
+    ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver(oxmClassLoader);
+    Resource[] resources = null;
+    try {
+      resources = resolver.getResources("classpath*:/oxm/aai_oxm*.xml");
+    } catch (IOException ex) {
+      LOG.error(AaiUiMsgs.OXM_LOADING_ERROR, ex.getMessage());
     }
 
-    return instance;
+    if (resources == null) {
+      LOG.error(AaiUiMsgs.OXM_LOADING_ERROR, "No OXM schema files found on classpath");
+    }
 
+    for (Resource resource : resources) {
+      Matcher m = p.matcher(resource.getFilename());
+
+      if (m.matches()) {
+        try {
+          listOfOxmFiles.put(new Integer(m.group(2)), resource.getInputStream());
+        } catch (Exception e) {
+          LOG.error(AaiUiMsgs.OXM_LOADING_ERROR, resource.getFilename(), e.getMessage());
+        }
+      }
+    }
+    return listOfOxmFiles;
   }
 
   /**
-   * Instantiates a new oxm model loader.
+   * Load an oxm model.
+   * 
+   * @param inputStream file handle for oxm
    */
-  public OxmModelLoader() {
+  protected void loadModel(InputStream inputStream) {
+    Map<String, Object> properties = new HashMap<String, Object>();
+    properties.put(JAXBContextProperties.OXM_METADATA_SOURCE, inputStream);
+    try {
+      final DynamicJAXBContext oxmContext = DynamicJAXBContextFactory
+          .createContextFromOXM(Thread.currentThread().getContextClassLoader(), properties);
 
+      parseOxmContext(oxmContext);
+      // populateSearchableOxmModel();
+      LOG.info(AaiUiMsgs.OXM_LOAD_SUCCESS, String.valueOf(latestVersionNum));
+    } catch (Exception exc) {
+      LOG.info(AaiUiMsgs.OXM_PARSE_ERROR_NONVERBOSE);
+      LOG.error(AaiUiMsgs.OXM_PARSE_ERROR_VERBOSE, "OXM v" + latestVersionNum, exc.getMessage());
+    }
   }
 
   /**
-   * Load models.
+   * Load the latest oxm model.
    */
-  private void loadModels() {
-    // find latest version of OXM file in folder
-    String version = findLatestOxmVersion();
-    if (version == null) {
-      LOG.error(AaiUiMsgs.OXM_FILE_NOT_FOUND, TierSupportUiConstants.CONFIG_OXM_LOCATION);
+  public synchronized void loadLatestOxmModel() {
+
+    LOG.info(AaiUiMsgs.INITIALIZE_OXM_MODEL_LOADER);
+
+    // find handles for available oxm models
+    final Map<Integer, InputStream> listOfOxmStreams = getStreamHandlesForOxmFromResource();
+    if (listOfOxmStreams.isEmpty()) {
+      LOG.error(AaiUiMsgs.OXM_FILE_NOT_FOUND);
       return;
     }
 
-    // load the latest version based on file name
-    loadModel(version);
+    InputStream stream = null;
+
+    if (oxmApiVersionOverride > 0) {
+      latestVersionNum = oxmApiVersionOverride;
+      LOG.warn(AaiUiMsgs.WARN_GENERIC, "Overriding AAI Schema with version = " + latestVersionNum);
+      stream = listOfOxmStreams.get(latestVersionNum);
+    } else {
+
+      for (Integer key : listOfOxmStreams.keySet()) {
+        if (key.intValue() > latestVersionNum) {
+          latestVersionNum = key.intValue();
+          stream = listOfOxmStreams.get(key);
+        }
+      }
+    }
+
+    // load the latest oxm file
+    loadModel(stream);
 
   }
 
-  /**
-   * Load model.
-   *
-   * @param version the version
-   */
-  public void loadModel(String version) {
-    String fileName = loadOxmFileName(version);
+  public int getLatestVersionNum() {
+    return latestVersionNum;
+  }
 
-    try (FileInputStream inputStream = new FileInputStream(new File(fileName))) {
-      Map<String, Object> properties = new HashMap<String, Object>();
-      properties.put(JAXBContextProperties.OXM_METADATA_SOURCE, inputStream);
-
-      final DynamicJAXBContext oxmContext = DynamicJAXBContextFactory
-          .createContextFromOXM(Thread.currentThread().getContextClassLoader(), properties);
-      parseOxmContext(oxmContext);
-      // populateSearchableOxmModel();
-      LOG.info(AaiUiMsgs.OXM_LOAD_SUCCESS);
-
-    } catch (FileNotFoundException fnf) {
-      LOG.info(AaiUiMsgs.OXM_READ_ERROR_NONVERBOSE);
-      LOG.error(AaiUiMsgs.OXM_READ_ERROR_VERBOSE, fileName);
-    } catch (Exception exc) {
-      LOG.info(AaiUiMsgs.OXM_PARSE_ERROR_NONVERBOSE);
-      LOG.error(AaiUiMsgs.OXM_PARSE_ERROR_VERBOSE, fileName, exc.getMessage());
-    }
+  public void setLatestVersionNum(int latestVersionNum) {
+    this.latestVersionNum = latestVersionNum;
   }
 
   /**
@@ -158,349 +168,17 @@ public class OxmModelLoader {
    * @param oxmContext the oxm context
    */
   private void parseOxmContext(DynamicJAXBContext oxmContext) {
-    @SuppressWarnings("rawtypes")
-    List<Descriptor> descriptorsList = oxmContext.getXMLContext().getDescriptors();
 
-    for (@SuppressWarnings("rawtypes")
-    Descriptor desc : descriptorsList) {
+    if (processors != null && processors.size() > 0) {
 
-      DynamicType entity = oxmContext.getDynamicType(desc.getAlias());
+      for (OxmModelProcessor processor : processors) {
 
-      LinkedHashMap<String, String> oxmProperties = new LinkedHashMap<String, String>();
+        processor.processOxmModel(oxmContext);
 
-      // Not all fields have key attributes
-      if (desc.getPrimaryKeyFields() != null) {
-        oxmProperties.put("primaryKeyAttributeNames", desc.getPrimaryKeyFields().toString()
-            .replaceAll("/text\\(\\)", "").replaceAll("\\[", "").replaceAll("\\]", ""));
-      }
-
-      String entityName = desc.getDefaultRootElement();
-
-      entityTypeLookup.put(entityName, entity);
-
-      // add entityName
-      oxmProperties.put("entityName", entityName);
-
-      Map<String, String> properties = entity.getDescriptor().getProperties();
-      if (properties != null) {
-        for (Map.Entry<String, String> entry : properties.entrySet()) {
-
-          if (entry.getKey().equalsIgnoreCase("searchable")) {
-            oxmProperties.put("searchableAttributes", entry.getValue());
-          } else if (entry.getKey().equalsIgnoreCase("crossEntityReference")) {
-            oxmProperties.put("crossEntityReference", entry.getValue());
-          } else if (entry.getKey().equalsIgnoreCase("geoLat")) {
-            if (entry.getValue().length() > 0) {
-              oxmProperties.put("geoLat", entry.getValue());
-            }
-          } else if (entry.getKey().equalsIgnoreCase("geoLong")) {
-            if (entry.getValue().length() > 0) {
-              oxmProperties.put("geoLong", entry.getValue());
-            }
-          } else if (entry.getKey().equalsIgnoreCase("containsSuggestibleProps")) {
-
-            oxmProperties.put("containsSuggestibleProps", "true");
-
-            Vector<DatabaseMapping> descriptorMaps = entity.getDescriptor().getMappings();
-            List<String> listOfSuggestableAttributes = new ArrayList<String>();
-
-            for (DatabaseMapping descMap : descriptorMaps) {
-              if (descMap.isAbstractDirectMapping()) {
-
-                if (descMap.getProperties().get("suggestibleOnSearch") != null) {
-                  String suggestableOnSearchString =
-                      String.valueOf(descMap.getProperties().get("suggestibleOnSearch"));
-
-                  boolean isSuggestibleOnSearch = Boolean.valueOf(suggestableOnSearchString);
-
-                  if (isSuggestibleOnSearch) {
-                    /* Grab attribute types for suggestion */
-                    String attributeName =
-                        descMap.getField().getName().replaceAll("/text\\(\\)", "");
-                    listOfSuggestableAttributes.add(attributeName);
-
-                    if (descMap.getProperties().get("suggestionVerbs") != null) {
-                      String suggestionVerbsString =
-                          String.valueOf(descMap.getProperties().get("suggestionVerbs"));
-
-                      oxmProperties.put("suggestionVerbs", suggestionVerbsString);
-                    }
-                  }
-                }
-              }
-            }
-            if (!listOfSuggestableAttributes.isEmpty()) {
-              oxmProperties.put("suggestibleAttributes",
-                  String.join(",", listOfSuggestableAttributes));
-            }
-          } else if (entry.getKey().equalsIgnoreCase("suggestionAliases")) {
-            oxmProperties.put("suggestionAliases", entry.getValue());
-          }
-        }
-      }
-
-      oxmModel.put(entityName, oxmProperties);
-
-      // Add all searchable entity types for reserve lookup
-      if (oxmProperties.containsKey("searchableAttributes")) {
-        searchableOxmModel.put(entityName, oxmProperties);
-      }
-
-      if (oxmProperties.containsKey("crossEntityReference")) {
-        crossReferenceEntityOxmModel.put(entityName, oxmProperties);
-      }
-
-      if (oxmProperties.containsKey("geoLat") && oxmProperties.containsKey("geoLong")) {
-        geoEntityOxmModel.put(entityName, oxmProperties);
-      }
-
-      if (oxmProperties.containsKey("containsSuggestibleProps")) {
-        suggestionSearchEntityOxmModel.put(entityName, oxmProperties);
-      }
-    }
-
-    for (Entry<String, HashMap<String, String>> entityModel : oxmModel.entrySet()) {
-      HashMap<String, String> attribute = entityModel.getValue();
-      OxmEntityDescriptor entity = new OxmEntityDescriptor();
-      entity.setEntityName(attribute.get("entityName"));
-      if (attribute.containsKey("primaryKeyAttributeNames")) {
-
-        entity.setPrimaryKeyAttributeName(
-            Arrays.asList(attribute.get("primaryKeyAttributeNames").replace(" ", "").split(",")));
-        if (attribute.containsKey("searchableAttributes")) {
-          entity.setSearchableAttributes(
-              Arrays.asList(attribute.get("searchableAttributes").split(",")));
-        } else if (attribute.containsKey("crossEntityReference")) {
-          List<String> crossEntityRefTokens =
-              Arrays.asList(attribute.get("crossEntityReference").split(","));
-
-          if (crossEntityRefTokens.size() >= 2) {
-            CrossEntityReference entityRef = new CrossEntityReference();
-            entityRef.setTargetEntityType(crossEntityRefTokens.get(0));
-
-            for (int i = 1; i < crossEntityRefTokens.size(); i++) {
-              entityRef.addReferenceAttribute(crossEntityRefTokens.get(i));
-            }
-
-            entity.setCrossEntityReference(entityRef);
-          } else {
-            LOG.error(AaiUiMsgs.OXM_PROP_DEF_ERR_CROSS_ENTITY_REF, attribute.get("entityName"),
-                attribute.get("crossEntityReference"));
-          }
-        }
-
-        if (attribute.containsKey("geoLat") || attribute.containsKey("geoLong")) {
-          entity.setGeoLatName(attribute.get("geoLat"));
-          entity.setGeoLongName(attribute.get("geoLong"));
-        }
-
-        if (attribute.containsKey("suggestionVerbs")) {
-          String entityName = attribute.get("entityName");
-          SuggestionSearchEntity suggestionSearchEntity = new SuggestionSearchEntity(this);
-          suggestionSearchEntity.setEntityType(entityName);
-
-          entity.setSuggestionSearchEntity(suggestionSearchEntity);
-        }
-
-        entityDescriptors.put(attribute.get("entityName"), entity);
-      }
-    }
-
-
-    for (Entry<String, HashMap<String, String>> searchableModel : searchableOxmModel.entrySet()) {
-      HashMap<String, String> attribute = searchableModel.getValue();
-      OxmEntityDescriptor entity = new OxmEntityDescriptor();
-      entity.setEntityName(attribute.get("entityName"));
-      entity.setPrimaryKeyAttributeName(
-          Arrays.asList(attribute.get("primaryKeyAttributeNames").replace(" ", "").split(",")));
-      entity
-          .setSearchableAttributes(Arrays.asList(attribute.get("searchableAttributes").split(",")));
-      searchableEntityDescriptors.put(attribute.get("entityName"), entity);
-    }
-
-    for (Entry<String, HashMap<String, String>> geoEntityModel : geoEntityOxmModel.entrySet()) {
-      HashMap<String, String> attribute = geoEntityModel.getValue();
-      OxmEntityDescriptor entity = new OxmEntityDescriptor();
-      entity.setEntityName(attribute.get("entityName"));
-      entity.setPrimaryKeyAttributeName(
-          Arrays.asList(attribute.get("primaryKeyAttributeNames").replace(" ", "").split(",")));
-      entity.setGeoLatName(attribute.get("geoLat"));
-      entity.setGeoLongName(attribute.get("geoLong"));
-      geoEntityDescriptors.put(attribute.get("entityName"), entity);
-    }
-
-    for (Entry<String, HashMap<String, String>> crossRefModel : crossReferenceEntityOxmModel
-        .entrySet()) {
-      HashMap<String, String> attribute = crossRefModel.getValue();
-      OxmEntityDescriptor entity = new OxmEntityDescriptor();
-      entity.setEntityName(attribute.get("entityName"));
-      entity.setPrimaryKeyAttributeName(
-          Arrays.asList(attribute.get("primaryKeyAttributeNames").replace(" ", "").split(",")));
-
-
-      List<String> crossEntityRefTokens =
-          Arrays.asList(attribute.get("crossEntityReference").split(","));
-
-      if (crossEntityRefTokens.size() >= 2) {
-        CrossEntityReference entityRef = new CrossEntityReference();
-        entityRef.setTargetEntityType(crossEntityRefTokens.get(0));
-
-        for (int i = 1; i < crossEntityRefTokens.size(); i++) {
-          entityRef.addReferenceAttribute(crossEntityRefTokens.get(i));
-        }
-
-        entity.setCrossEntityReference(entityRef);
-      }
-      crossReferenceEntityDescriptors.put(attribute.get("entityName"), entity);
-    }
-
-    for (Entry<String, HashMap<String, String>> suggestionEntityModel : suggestionSearchEntityOxmModel
-        .entrySet()) {
-      HashMap<String, String> attribute = suggestionEntityModel.getValue();
-
-      String entityName = attribute.get("entityName");
-      SuggestionSearchEntity suggestionSearchEntity = new SuggestionSearchEntity(this);
-      suggestionSearchEntity.setEntityType(entityName);
-
-      if (attribute.get("suggestionVerbs") != null) {
-        suggestionSearchEntity.setSuggestionConnectorWords(
-            Arrays.asList(attribute.get("suggestionVerbs").split(",")));
-      }
-
-      if (attribute.get("suggestionAliases") != null) {
-        suggestionSearchEntity
-            .setSuggestionAliases(Arrays.asList(attribute.get("suggestionAliases").split(",")));
-      }
-
-      if (attribute.get("suggestibleAttributes") != null) {
-        suggestionSearchEntity.setSuggestionPropertyTypes(
-            Arrays.asList(attribute.get("suggestibleAttributes").split(",")));
-      }
-
-      OxmEntityDescriptor entity = new OxmEntityDescriptor();
-      entity.setSuggestionSearchEntity(suggestionSearchEntity);
-      entity.setEntityName(entityName);
-
-      if (attribute.get("primaryKeyAttributeNames") != null) {
-        entity.setPrimaryKeyAttributeName(
-            Arrays.asList(attribute.get("primaryKeyAttributeNames").replace(" ", "").split(",")));
-      }
-
-      suggestionSearchEntityDescriptors.put(entityName, entity);
-    }
-  }
-
-  /**
-   * Find latest oxm version.
-   *
-   * @return the string
-   */
-  public String findLatestOxmVersion() {
-    File[] listOxmFiles = loadOxmFolder().listFiles();
-
-    if (listOxmFiles == null) {
-      return null;
-    }
-
-    Integer latestVersion = -1;
-
-    Pattern oxmFileNamePattern = Pattern.compile("^aai_oxm_v([0-9]*).xml");
-
-    for (File file : listOxmFiles) {
-      if (file.isFile()) {
-        String fileName = file.getName();
-        Matcher matcher = oxmFileNamePattern.matcher(fileName);
-        if (matcher.matches()) {
-          if (latestVersion <= Integer.parseInt(matcher.group(1))) {
-            latestVersion = Integer.parseInt(matcher.group(1));
-          }
-        }
       }
 
     }
-    if (latestVersion != -1) {
-      return "v" + latestVersion.toString();
-    } else {
-      return null;
-    }
 
-  }
-
-  /**
-   * Load oxm folder.
-   *
-   * @return the file
-   */
-  public File loadOxmFolder() {
-    return new File(TierSupportUiConstants.CONFIG_OXM_LOCATION);
-  }
-
-  /**
-   * Load oxm file name.
-   *
-   * @param version the version
-   * @return the string
-   */
-  public String loadOxmFileName(String version) {
-    return new String(TierSupportUiConstants.CONFIG_OXM_LOCATION + "aai_oxm_" + version + ".xml");
-  }
-
-  /*
-   * Get the original representation of the OXM Model
-   */
-  public Map<String, HashMap<String, String>> getOxmModel() {
-    return oxmModel;
-  }
-
-  /*
-   * Get the searchable raw map entity types
-   */
-  public Map<String, HashMap<String, String>> getSearchableOxmModel() {
-    return searchableOxmModel;
-  }
-
-  public Map<String, HashMap<String, String>> getCrossReferenceEntityOxmModel() {
-    return crossReferenceEntityOxmModel;
-  }
-
-  public Map<String, OxmEntityDescriptor> getEntityDescriptors() {
-    return entityDescriptors;
-  }
-
-  /**
-   * Gets the entity descriptor.
-   *
-   * @param type the type
-   * @return the entity descriptor
-   */
-  public OxmEntityDescriptor getEntityDescriptor(String type) {
-    return entityDescriptors.get(type);
-  }
-
-  public Map<String, OxmEntityDescriptor> getSearchableEntityDescriptors() {
-    return searchableEntityDescriptors;
-  }
-
-  /**
-   * Gets the searchable entity descriptor.
-   *
-   * @param entityType the entity type
-   * @return the searchable entity descriptor
-   */
-  public OxmEntityDescriptor getSearchableEntityDescriptor(String entityType) {
-    return searchableEntityDescriptors.get(entityType);
-  }
-
-  public Map<String, OxmEntityDescriptor> getCrossReferenceEntityDescriptors() {
-    return crossReferenceEntityDescriptors;
-  }
-
-  public Map<String, OxmEntityDescriptor> getGeoEntityDescriptors() {
-    return geoEntityDescriptors;
-  }
-
-  public Map<String, OxmEntityDescriptor> getSuggestionSearchEntityDescriptors() {
-    return suggestionSearchEntityDescriptors;
   }
 
 }

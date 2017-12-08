@@ -27,21 +27,19 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 
-import org.onap.aai.sparky.dal.aai.config.ActiveInventoryConfig;
+import org.onap.aai.cl.api.Logger;
+import org.onap.aai.cl.eelf.LoggerFactory;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
 import org.onap.aai.sparky.util.ConfigHelper;
-import org.onap.aai.sparky.viewandinspect.config.VisualizationConfig;
+import org.onap.aai.sparky.viewandinspect.config.VisualizationConfigs;
 import org.onap.aai.sparky.viewandinspect.entity.ActiveInventoryNode;
 import org.onap.aai.sparky.viewandinspect.entity.D3VisualizationOutput;
 import org.onap.aai.sparky.viewandinspect.entity.GraphMeta;
 import org.onap.aai.sparky.viewandinspect.entity.JsonNode;
 import org.onap.aai.sparky.viewandinspect.entity.JsonNodeLink;
 import org.onap.aai.sparky.viewandinspect.entity.NodeDebug;
-import org.onap.aai.cl.api.Logger;
-import org.onap.aai.cl.eelf.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -63,7 +61,6 @@ public class VisualizationTransformer {
       LoggerFactory.getInstance().getLogger(VisualizationTransformer.class);
 
   List<JsonNode> flatNodeArray = new ArrayList<JsonNode>();
-  Set<String> enrichableUriPrefixes = null;
 
   /*
    * Maybe this isn't a string but Json-Model objects that we will convert to final string
@@ -75,7 +72,7 @@ public class VisualizationTransformer {
 
 
 
-  private VisualizationConfig visualizationConfig;
+  private VisualizationConfigs visualizationConfigs;
 
 
   /**
@@ -83,9 +80,8 @@ public class VisualizationTransformer {
    *
    * @throws Exception the exception
    */
-  public VisualizationTransformer() throws Exception {
-    visualizationConfig = VisualizationConfig.getConfig();
-
+  public VisualizationTransformer(VisualizationConfigs visualizationConfigs) throws Exception {
+    this.visualizationConfigs = visualizationConfigs;
   }
 
 
@@ -108,7 +104,7 @@ public class VisualizationTransformer {
     for (JsonNode n : flatNodeArray) {
       if (n.isRootNode()) {
         n.getNodeMeta().setSearchTarget(true);
-        n.getNodeMeta().setClassName(visualizationConfig.getSelectedSearchedNodeClassName());
+        n.getNodeMeta().setClassName(this.visualizationConfigs.getSelectedSearchedNodeClassName());
       }
 
     }
@@ -160,7 +156,7 @@ public class VisualizationTransformer {
     ObjectMapper mapper = new ObjectMapper();
 
     final String fileContent = ConfigHelper.getFileContents(
-        System.getProperty("AJSC_HOME") + visualizationConfig.getAaiEntityNodeDescriptors());
+        System.getProperty("AJSC_HOME") + this.visualizationConfigs.getAaiEntityNodeDescriptors());
     com.fasterxml.jackson.databind.JsonNode aaiEntityNodeDefinitions = mapper.readTree(fileContent);
     graphMeta.setAaiEntityNodeDescriptors(aaiEntityNodeDefinitions);
 
@@ -211,7 +207,7 @@ public class VisualizationTransformer {
        * current node.
        */
 
-      if (ain.getNodeDepth() < VisualizationConfig.getConfig().getMaxSelfLinkTraversalDepth()) {
+      if (ain.getNodeDepth() < this.visualizationConfigs.getMaxSelfLinkTraversalDepth()) {
 
         Collection<String> outboundNeighbors = ain.getOutboundNeighbors();
 
@@ -266,17 +262,13 @@ public class VisualizationTransformer {
 
     for (ActiveInventoryNode n : nodeMap.values()) {
 
-      if (n.getNodeDepth() <= VisualizationConfig.getConfig().getMaxSelfLinkTraversalDepth()) {
+      if (n.getNodeDepth() <= this.visualizationConfigs.getMaxSelfLinkTraversalDepth()) {
 
-        JsonNode jsonNode = new JsonNode(n);
+        JsonNode jsonNode = new JsonNode(n, this.visualizationConfigs);
 
-        if (this.isUriEnrichable(n.getSelfLink())) {
-          jsonNode.getNodeMeta().setEnrichableNode(true);
-        }
+        jsonNode.getNodeMeta().setClassName(this.visualizationConfigs.getGeneralNodeClassName());
 
-        jsonNode.getNodeMeta().setClassName(visualizationConfig.getGeneralNodeClassName());
-
-        if (VisualizationConfig.getConfig().isVisualizationDebugEnabled()) {
+        if (this.visualizationConfigs.isVisualizationDebugEnabled()) {
 
           NodeDebug nodeDebug = jsonNode.getNodeMeta().getNodeDebug();
 
@@ -295,92 +287,4 @@ public class VisualizationTransformer {
     }
   }
 
-  /**
-   * Checks if is uri enrichable.
-   *
-   * @param uri the uri
-   * @return true, if is uri enrichable
-   */
-  private boolean isUriEnrichable(String uri) {
-    if (enrichableUriPrefixes != null) {
-      for (String prefix : enrichableUriPrefixes) {
-        if (uri.contains(prefix)) { // AAI-4089
-          return true;
-        }
-      }
-    }
-    return false;
-  }
-
-
-  /**
-   * @return the flatNodeArray
-   */
-  public List<JsonNode> getFlatNodeArray() {
-    return flatNodeArray;
-  }
-
-
-  /**
-   * @param flatNodeArray the flatNodeArray to set
-   */
-  public void setFlatNodeArray(List<JsonNode> flatNodeArray) {
-    this.flatNodeArray = flatNodeArray;
-  }
-
-
-  /**
-   * @return the enrichableUriPrefixes
-   */
-  public Set<String> getEnrichableUriPrefixes() {
-    return enrichableUriPrefixes;
-  }
-
-
-  /**
-   * @param enrichableUriPrefixes the enrichableUriPrefixes to set
-   */
-  public void setEnrichableUriPrefixes(Set<String> enrichableUriPrefixes) {
-    this.enrichableUriPrefixes = enrichableUriPrefixes;
-  }
-
-
-  /**
-   * @return the linkArrayOutput
-   */
-  public List<JsonNodeLink> getLinkArrayOutput() {
-    return linkArrayOutput;
-  }
-
-
-  /**
-   * @param linkArrayOutput the linkArrayOutput to set
-   */
-  public void setLinkArrayOutput(List<JsonNodeLink> linkArrayOutput) {
-    this.linkArrayOutput = linkArrayOutput;
-  }
-
-
-  /**
-   * @return the visualizationConfig
-   */
-  public VisualizationConfig getVisualizationConfig() {
-    return visualizationConfig;
-  }
-
-
-  /**
-   * @param visualizationConfig the visualizationConfig to set
-   */
-  public void setVisualizationConfig(VisualizationConfig visualizationConfig) {
-    this.visualizationConfig = visualizationConfig;
-  }
-
-
-  /**
-   * @return the log
-   */
-  public static Logger getLog() {
-    return LOG;
-  }
 }

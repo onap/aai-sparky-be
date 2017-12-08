@@ -54,7 +54,7 @@ public class SuggestionConfig {
   private String defaultPairingValue;
 
 
-  private SuggestionConfig() {}
+  public SuggestionConfig() {}
 
   /**
    * Returns initialized instance as per singleton pattern.
@@ -67,6 +67,10 @@ public class SuggestionConfig {
       config.initializeConfigProperties();
     }
     return config;
+  }
+
+  public static void setConfig(SuggestionConfig config) {
+    SuggestionConfig.config = config;
   }
 
   public void initializeConfigProperties() {

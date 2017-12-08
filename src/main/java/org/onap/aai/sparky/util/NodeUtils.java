@@ -27,8 +27,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.lang.Thread.UncaughtExceptionHandler;
+import java.net.URI;
 import java.nio.ByteBuffer;
 import java.security.SecureRandom;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -50,15 +52,17 @@ import java.util.regex.Pattern;
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.stream.XMLStreamConstants;
 
+import org.onap.aai.cl.api.Logger;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
 import org.onap.aai.sparky.viewandinspect.config.TierSupportUiConstants;
-import org.onap.aai.cl.api.Logger;
+import org.restlet.Request;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 
@@ -68,33 +72,8 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 public class NodeUtils {
   private static SecureRandom sRandom = new SecureRandom();
 
-  /**
-   * @return the sRandom
-   */
-  public static SecureRandom getsRandom() {
-    return sRandom;
-  }
+  private static final Pattern AAI_VERSION_PREFIX = Pattern.compile("/aai/v[0-9]+/(.*)");
 
-  /**
-   * @param sRandom the sRandom to set
-   */
-  public static void setsRandom(SecureRandom sRandom) {
-    NodeUtils.sRandom = sRandom;
-  }
-
-  /**
-   * @return the entityResourceKeyFormat
-   */
-  public static String getEntityResourceKeyFormat() {
-    return ENTITY_RESOURCE_KEY_FORMAT;
-  }
-
-  /**
-   * @return the timeBreakDownFormat
-   */
-  public static String getTimeBreakDownFormat() {
-    return TIME_BREAK_DOWN_FORMAT;
-  }
 
   public static synchronized String getRandomTxnId() {
     byte bytes[] = new byte[6];
@@ -116,6 +95,31 @@ public class NodeUtils {
     }
 
     return sb.toString();
+  }
+
+
+  public static String extractRawPathWithoutVersion(String selfLinkUri) {
+
+    try {
+
+      String rawPath = new URI(selfLinkUri).getRawPath();
+
+      Matcher m = AAI_VERSION_PREFIX.matcher(rawPath);
+
+      if (m.matches()) {
+
+        // System.out.println(m.group(0));
+        if (m.groupCount() >= 1) {
+          return m.group(1);
+        }
+        // System.out.println(m.group(2));
+
+      }
+    } catch (Exception e) {
+    }
+
+    return null;
+
   }
 
   /**
@@ -296,6 +300,14 @@ public class NodeUtils {
     return concatArray(list, " ");
   }
 
+  private static final String TIMESTAMP_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+
+  public static String getCurrentTimeStamp() {
+    SimpleDateFormat dateFormat = new SimpleDateFormat(TIMESTAMP_FORMAT);
+    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+    return dateFormat.format(timestamp);
+  }
+
   /**
    * Concat array.
    *
@@ -395,12 +407,12 @@ public class NodeUtils {
     String resourceId = null;
     if ("/".equals(link.substring(linkLength - 1))) {
       // Use-case:
-      // https://<AAI-hostname>:9292/aai/v7/business/customers/customer/1607_20160524Func_Ak1_01/service-subscriptions/service-subscription/uCPE-VMS/
+      // https://aai-ext1.test.att.com:9292/aai/v7/business/customers/customer/1607_20160524Func_Ak1_01/service-subscriptions/service-subscription/uCPE-VMS/
       startIndex = link.lastIndexOf("/", linkLength - 2);
       resourceId = link.substring(startIndex + 1, linkLength - 1);
     } else {
       // Use-case:
-      // https://<AAI-Hostname>:9292/aai/v7/business/customers/customer/1607_20160524Func_Ak1_01/service-subscriptions/service-subscription/uCPE-VMS
+      // https://aai-ext1.test.att.com:9292/aai/v7/business/customers/customer/1607_20160524Func_Ak1_01/service-subscriptions/service-subscription/uCPE-VMS
       startIndex = link.lastIndexOf("/");
       resourceId = link.substring(startIndex + 1, linkLength);
     }
@@ -490,6 +502,33 @@ public class NodeUtils {
 
     return ow.writeValueAsString(object);
   }
+
+  /**
+   * Convert object to json by selectively choosing certain fields thru filters. Example use case:
+   * based on request type we might need to send different serialization of the UiViewFilterEntity
+   *
+   * @param object the object
+   * @param pretty the pretty
+   * @return the string
+   * @throws JsonProcessingException the json processing exception
+   */
+  public static String convertObjectToJson(Object object, boolean pretty, FilterProvider filters)
+      throws JsonProcessingException {
+    ObjectWriter ow = null;
+
+    ObjectMapper mapper = new ObjectMapper();
+    mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+
+    if (pretty) {
+      ow = mapper.writer(filters).withDefaultPrettyPrinter();
+
+    } else {
+      ow = mapper.writer(filters);
+    }
+
+    return ow.writeValueAsString(object);
+  }
+
 
   /**
    * Convert json str to json node.
@@ -687,13 +726,39 @@ public class NodeUtils {
    * @throws IOException Signals that an I/O exception has occurred.
    */
   public static String getBody(HttpServletRequest request) throws IOException {
+    InputStream inputStream = request.getInputStream();
+    return getBodyFromStream(inputStream);
+  }
+
+
+
+  /**
+   * Gets the Restlet Request payload.
+   *
+   * @param request the request
+   * @return the body
+   * @throws IOException Signals that an I/O exception has occurred.
+   */
+  public static String getBody(Request request) throws IOException {
+    InputStream inputStream = request.getEntity().getStream();
+    return getBodyFromStream(inputStream);
+  }
+
+
+  /**
+   * Gets the payload from the input stream of a request.
+   *
+   * @param request the request
+   * @return the body
+   * @throws IOException Signals that an I/O exception has occurred.
+   */
+  public static String getBodyFromStream(InputStream inputStream) throws IOException {
 
     String body = null;
     StringBuilder stringBuilder = new StringBuilder();
     BufferedReader bufferedReader = null;
 
     try {
-      InputStream inputStream = request.getInputStream();
       if (inputStream != null) {
         bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
         char[] charBuffer = new char[128];
@@ -719,4 +784,23 @@ public class NodeUtils {
     body = stringBuilder.toString();
     return body;
   }
+
+
+  /**
+   * The main method.
+   *
+   * @param args the arguments
+   * @throws ParseException the parse exception
+   */
+  public static void main(String[] args) throws ParseException {
+    String date = "20170110T112312Z";
+    SimpleDateFormat originalFormat = new SimpleDateFormat("yyyyMMdd'T'hhmmss'Z'");
+    Date toDate = originalFormat.parse(date);
+    SimpleDateFormat newFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss'Z'");
+    System.out.println(newFormat.format(toDate));
+
+  }
+
+
+
 }

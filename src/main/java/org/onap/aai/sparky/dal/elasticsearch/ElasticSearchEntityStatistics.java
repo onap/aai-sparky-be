@@ -29,11 +29,10 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.onap.aai.sparky.config.oxm.OxmEntityDescriptor;
-import org.onap.aai.sparky.config.oxm.OxmModelLoader;
+import org.onap.aai.restclient.client.OperationResult;
 import org.onap.aai.sparky.dal.NetworkTransaction;
 import org.onap.aai.sparky.dal.rest.HttpMethod;
-import org.onap.aai.sparky.dal.rest.OperationResult;
+
 
 /**
  * The Class ElasticSearchEntityStatistics.
@@ -48,7 +47,6 @@ public class ElasticSearchEntityStatistics {
   private static final String ERROR = "ERROR";
 
   private Map<String, HashMap<String, AtomicInteger>> entityStatistics;
-  private OxmModelLoader loader;
 
   /**
    * Creates the entity op stats.
@@ -69,19 +67,6 @@ public class ElasticSearchEntityStatistics {
     return opStats;
 
   }
-
-  /*
-   * private void createActiveInventoryEntityStatistics() {
-   * 
-   * Map<String,OxmEntityDescriptor> descriptors = loader.getSearchableEntityDescriptors();
-   * 
-   * if(descriptors == null) { return; }
-   * 
-   * OxmEntityDescriptor d = null; for ( String key : descriptors.keySet() ) { d =
-   * descriptors.get(key); entityStatistics.put(d.getEntityName(), createEntityOpStats()); }
-   * 
-   * }
-   */
 
   /**
    * Initializecreate active inventory entity statistics.
@@ -109,10 +94,8 @@ public class ElasticSearchEntityStatistics {
    *
    * @param loader the loader
    */
-  public ElasticSearchEntityStatistics(OxmModelLoader loader) {
-    this.loader = loader;
+  public ElasticSearchEntityStatistics() {
     entityStatistics = new HashMap<String, HashMap<String, AtomicInteger>>();
-    // createActiveInventoryEntityStatistics();
     reset();
   }
 
@@ -121,18 +104,25 @@ public class ElasticSearchEntityStatistics {
    *
    * @param descriptors the descriptors
    */
-  public void initializeCountersFromOxmEntityDescriptors(
-      Map<String, OxmEntityDescriptor> descriptors) {
+  public void intializeEntityCounters(String... entityTypes) {
 
-    if (descriptors == null) {
-      return;
+    if (entityTypes != null && entityTypes.length > 0) {
+      for (String entityType : entityTypes) {
+        entityStatistics.put(entityType, createEntityOpStats());
+      }
+
     }
 
-    OxmEntityDescriptor descriptor = null;
-    for (String key : descriptors.keySet()) {
-      descriptor = descriptors.get(key);
-      entityStatistics.put(descriptor.getEntityName(), createEntityOpStats());
+  }
+
+  public void intializeEntityCounters(Set<String> entityTypes) {
+
+    if (entityTypes != null && entityTypes.size() > 0) {
+      for (String entityType : entityTypes) {
+        entityStatistics.put(entityType, createEntityOpStats());
+      }
     }
+
   }
 
   /**

@@ -48,34 +48,6 @@ public class PortalRestAPIServiceImpl implements IPortalRestAPIService {
   private static final Logger LOG = LoggerFactory.getLogger(PortalRestAPIServiceImpl.class);
   private static final String ERROR_MESSAGE = "Failed to {0} user [loginId:{1}]";
 
-  /**
-   * @return the userManager
-   */
-  public UserManager getUserManager() {
-    return userManager;
-  }
-
-  /**
-   * @param userManager the userManager to set
-   */
-  public void setUserManager(UserManager userManager) {
-    this.userManager = userManager;
-  }
-
-  /**
-   * @return the log
-   */
-  public static Logger getLog() {
-    return LOG;
-  }
-
-  /**
-   * @return the errorMessage
-   */
-  public static String getErrorMessage() {
-    return ERROR_MESSAGE;
-  }
-
   private UserManager userManager;
 
   /**
@@ -176,8 +148,13 @@ public class PortalRestAPIServiceImpl implements IPortalRestAPIService {
   // Role interface
   /////////////////////////////////////////////////////////////////////////////
 
+  /*
+   * (non-Javadoc)
+   *
+   * @see com.att.fusion.core.onboarding.crossapi.IPortalRestAPIService#getAvailableRoles()
+   */
   @Override
-  public List<EcompRole> getAvailableRoles(String requestedLoginId) throws PortalAPIException {
+  public List<EcompRole> getAvailableRoles() throws PortalAPIException {
     LOG.debug("Get available roles");
     return UserManager.getRoles();
   }
@@ -245,4 +222,5 @@ public class PortalRestAPIServiceImpl implements IPortalRestAPIService {
     formatter.applyPattern(message);
     return formatter.format(args);
   }
+
 }

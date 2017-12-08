@@ -27,7 +27,7 @@ import java.io.File;
 import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
-import org.onap.aai.sparky.synchronizer.config.NetworkStatisticsConfig;
+import org.onap.aai.sparky.sync.config.NetworkStatisticsConfig;
 import org.onap.aai.sparky.viewandinspect.config.TierSupportUiConstants;
 
 import com.fasterxml.jackson.databind.ObjectMapper;

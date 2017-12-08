@@ -32,9 +32,9 @@ import java.io.InputStream;
 import java.util.Properties;
 import java.util.Set;
 
-import org.onap.aai.sparky.logging.AaiUiMsgs;
 import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
+import org.onap.aai.sparky.logging.AaiUiMsgs;
 
 /**
  * The Class ConfigHelper.

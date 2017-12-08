@@ -25,13 +25,12 @@ package org.onap.aai.sparky.security;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
-import org.onap.aai.sparky.logging.AaiUiMsgs;
-import org.onap.aai.sparky.security.portal.config.PortalAuthenticationConfig;
 import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
-import org.openecomp.portalsdk.core.onboarding.util.PortalApiProperties;
+import org.onap.aai.sparky.logging.AaiUiMsgs;
+import org.onap.aai.sparky.security.portal.config.PortalAuthenticationConfig;
 import org.openecomp.portalsdk.core.onboarding.util.CipherUtil;
-
+import org.openecomp.portalsdk.core.onboarding.util.PortalApiProperties;
 
 /**
  * Provides authentication services for onboarded ECOMP applications.
@@ -80,7 +79,7 @@ public class EcompSso {
    * then searches for a CSP cookie; if not found, for a WebJunction header.
    *
    * @param request
-   * @return User ID if the ECOMP cookie is present and the sign-on process established an User ID;
+   * @return ATT UID if the ECOMP cookie is present and the sign-on process established an ATT UID;
    *         else null.
    */
   public static String validateEcompSso(HttpServletRequest request) {
@@ -100,23 +99,23 @@ public class EcompSso {
   }
 
   /**
-   * Searches the specified request for the CSP cookie, decodes it and gets the User ID.
+   * Searches the specified request for the CSP cookie, decodes it and gets the ATT UID.
    *
    * @param request
-   * @return User ID if the cookie is present in the request and can be decoded successfully
-   *         (expired cookies do not decode); else null.
+   * @return ATTUID if the cookie is present in the request and can be decoded successfully (expired
+   *         cookies do not decode); else null.
    */
   private static String getLoginIdFromCookie(HttpServletRequest request) {
-    String userid = null;
+    String attuid = null;
     try {
       String[] cspFields = getCspData(request);
       if (cspFields != null && cspFields.length > 5)
-        userid = cspFields[5];
+        attuid = cspFields[5];
     } catch (Throwable t) {
       LOG.info(AaiUiMsgs.LOGIN_FILTER_INFO,
           "getLoginIdFromCookie failed " + t.getLocalizedMessage());
     }
-    return userid;
+    return attuid;
   }
 
   /**

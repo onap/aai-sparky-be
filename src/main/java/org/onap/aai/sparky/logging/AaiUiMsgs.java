@@ -22,9 +22,9 @@
  */
 package org.onap.aai.sparky.logging;
 
-import com.att.eelf.i18n.EELFResourceManager;
-
 import org.onap.aai.cl.eelf.LogMessageEnum;
+
+import com.att.eelf.i18n.EELFResourceManager;
 
 /**
  * The Enum AaiUiMsgs.
@@ -52,6 +52,14 @@ public enum AaiUiMsgs implements LogMessageEnum {
   UNEXPECTED_TOKEN_COUNT,
   /** Arguments: {0} = Error/exception message. */
   ADD_SEARCH_TARGET_ATTRIBUTES_FAILED,
+  /** Arguments: {0} = Error/exception message. */
+  NODE_INTEGRITY_OVERLAY_ERROR,
+  /** Arguments: {0} = Node ID. */
+  NODE_INTEGRITY_ALREADY_PROCESSED,
+  /** Arguments: {0} = Node ID. */
+  SKIPPING_PROCESS_NODE_INTEGRITY,
+  /** Arguments: {0} = Error/exception message. */
+  FAILED_TO_PROCESS_NODE_INTEGRITY,
   /** No argument */
   MAX_EVALUATION_ATTEMPTS_EXCEEDED,
   /** Arguments: {0} = Error/exception message. */
@@ -244,10 +252,10 @@ public enum AaiUiMsgs implements LogMessageEnum {
   INTERRUPTED,
   /** Arguments: {0} = Entity Type {1} Entity */
   GEO_SYNC_IGNORING_ENTITY,
+  /** Arguments: {0} = reason */
+  OXM_LOADING_ERROR,
   /** Arguments: {0} = type */
-  OXM_FAILED_RETRIEVAL,
-  /** Arguments: {0} = Directory. */
-  OXM_FILE_NOT_FOUND,
+  OXM_FAILED_RETRIEVAL, OXM_FILE_NOT_FOUND,
   /** No argument */
   OXM_READ_ERROR_NONVERBOSE,
   /** Arguments: {0} = OXM File name */
@@ -256,7 +264,7 @@ public enum AaiUiMsgs implements LogMessageEnum {
   OXM_PARSE_ERROR_NONVERBOSE,
   /** Arguments: {0} = OXM File name {1} = Exception */
   OXM_PARSE_ERROR_VERBOSE,
-  /** No argument */
+  /** Arguments: {0} = Numerical value for loaded OXM version */
   OXM_LOAD_SUCCESS,
   /** Arguments: {0} = Entity {1} = Found property-value */
   OXM_PROP_DEF_ERR_CROSS_ENTITY_REF,
@@ -302,6 +310,20 @@ public enum AaiUiMsgs implements LogMessageEnum {
   AAI_RETRIEVAL_FAILED_GENERIC,
   /** Arguments: {0} = Self Link */
   AAI_RETRIEVAL_FAILED_FOR_SELF_LINK,
+  /** Arguments: {0} = Exception */
+  ATTRIBUTES_NOT_UPDATED_EXCEPTION,
+  /** Arguments: {0} = Message */
+  ATTRIBUTES_NOT_UPDATED_MESSAGE,
+  /** Arguments: {0} = Exception */
+  ATTRIBUTES_ERROR_GETTING_AAI_CONFIG_OR_ADAPTER,
+  /** Arguments: {0} = Schema File URI */
+  ATTRIBUTES_ERROR_LOADING_MODEL_VERSION,
+  /** Arguments: {0} = Request URI {1} = Edit Request Body */
+  ATTRIBUTES_HANDLING_EDIT,
+  /** Arguments: {0} = Object URI {1} = Attribute ID {2} Attribute Values */
+  ATTRIBUTES_UPDATE_METHOD_CALLED,
+  /** Arguments: {0} = Attribute ID */
+  ATTRIBUTES_USER_NOT_AUTHORIZED_TO_UPDATE,
   /** Arguments: {0} = Cookie */
   COOKIE_FOUND,
   /** No argument */
@@ -404,7 +426,7 @@ public enum AaiUiMsgs implements LogMessageEnum {
   /** Arguments: {0} = URL to extract parameter from */
   ERROR_REMOVING_URL_PARAM,
   /** Arguments: {0} = Hash value */
-  ERROR_INVALID_HASH, ERROR_HASH_NOT_FOUND, ERROR_READING_HTTP_REQ_PARAMS,
+  ERROR_INVALID_HASH, ERROR_HASH_NOT_FOUND, ERROR_FILTERS_NOT_FOUND, ERROR_READING_HTTP_REQ_PARAMS,
   /** Arguments: {0} = Exception */
   ERROR_D3_GRAPH_VISUALIZATION,
   /** Arguments: {0} = Exception */
@@ -417,8 +439,25 @@ public enum AaiUiMsgs implements LogMessageEnum {
   VIEW_NAME_NOT_SUPPORTED,
   /** Arguments: {0} = response code, {1} = filter name */
   ERROR_FETCHING_FILTER_VALUES,
+  /** Arguments: {0} = query type, {1} = view name */
+  ERROR_PROCESSING_WIDGET_REQUEST,
+  /** Arguments: {0} = Time in ms */
+  DR_PROCESSING_TIME,
+  /** Arguments: {0} = Response code {1} = payload */
+  DR_PROCESSING_FAILURE,
+  /** Arguments: {0} = request uri */
+  DR_REQUEST_URI_FOR_PROXY_UNKNOWN,
+  /** Arguments: {0} = origin-url {1} = dr-url */
+  DR_PROXY_FROM_TO,
+  /** Arguments: {0} = Exception */
+  URI_DECODING_EXCEPTION,
+  /** Arguments: {0} = Value {1} = Error */
+  ENCRYPTION_ERROR,
+  /** Arguments: {0} = Encrypted value {1} = Error */
+  DECRYPTION_ERROR,
   /** Arguments: {0} = URI */
   RESOURCE_NOT_FOUND;
+
   /**
    * Static initializer to ensure the resource bundles for this class are loaded...
    */

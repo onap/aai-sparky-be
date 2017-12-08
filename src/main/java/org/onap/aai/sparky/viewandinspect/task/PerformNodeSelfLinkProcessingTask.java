@@ -25,13 +25,13 @@ package org.onap.aai.sparky.viewandinspect.task;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import org.onap.aai.sparky.dal.aai.ActiveInventoryDataProvider;
-import org.onap.aai.sparky.dal.aai.config.ActiveInventoryConfig;
-import org.onap.aai.sparky.dal.rest.OperationResult;
-import org.onap.aai.sparky.logging.AaiUiMsgs;
-import org.onap.aai.sparky.viewandinspect.entity.NodeProcessingTransaction;
 import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
+import org.onap.aai.restclient.client.OperationResult;
+import org.onap.aai.sparky.dal.ActiveInventoryAdapter;
+import org.onap.aai.sparky.dal.aai.config.ActiveInventoryConfig;
+import org.onap.aai.sparky.logging.AaiUiMsgs;
+import org.onap.aai.sparky.viewandinspect.entity.NodeProcessingTransaction;
 import org.slf4j.MDC;
 
 /**
@@ -43,7 +43,7 @@ public class PerformNodeSelfLinkProcessingTask implements Supplier<NodeProcessin
       LoggerFactory.getInstance().getLogger(PerformNodeSelfLinkProcessingTask.class);
 
   private NodeProcessingTransaction txn;
-  private ActiveInventoryDataProvider aaiProvider;
+  private ActiveInventoryAdapter aaiAdapter;
   private Map<String, String> contextMap;
   private ActiveInventoryConfig aaiConfig;
 
@@ -51,12 +51,19 @@ public class PerformNodeSelfLinkProcessingTask implements Supplier<NodeProcessin
    * Instantiates a new perform node self link processing task.
    *
    * @param txn the txn
-   * @param requestParameters the request parameters
    * @param aaiProvider the aai provider
+   * @param aaiConfig the aai config
+   */
+  /**
+   * 
+   * @param txn
+   * @param requestParameters
+   * @param aaiProvider
+   * @param aaiConfig
    */
   public PerformNodeSelfLinkProcessingTask(NodeProcessingTransaction txn, String requestParameters,
-      ActiveInventoryDataProvider aaiProvider, ActiveInventoryConfig aaiConfig) {
-    this.aaiProvider = aaiProvider;
+      ActiveInventoryAdapter aaiAdapter, ActiveInventoryConfig aaiConfig) {
+    this.aaiAdapter = aaiAdapter;
     this.txn = txn;
     this.contextMap = MDC.getCopyOfContextMap();
     this.aaiConfig = aaiConfig;
@@ -72,11 +79,13 @@ public class PerformNodeSelfLinkProcessingTask implements Supplier<NodeProcessin
     MDC.setContextMap(contextMap);
     OperationResult opResult = new OperationResult();
     String link = txn.getSelfLink();
+
     if (link == null) {
       opResult.setResult(500, "Aborting self-link processing because self link is null");
       txn.setOpResult(opResult);
       return txn;
     }
+
     /**
      * Rebuild the self link:
      * 
@@ -85,7 +94,7 @@ public class PerformNodeSelfLinkProcessingTask implements Supplier<NodeProcessin
      * 
      */
 
-    final String urlSchemeAndAuthority = aaiConfig.repairSelfLink("");
+    final String urlSchemeAndAuthority = aaiAdapter.repairSelfLink("");
 
     String parameters = txn.getRequestParameters();
     link = urlSchemeAndAuthority + link;
@@ -101,8 +110,8 @@ public class PerformNodeSelfLinkProcessingTask implements Supplier<NodeProcessin
     }
 
     try {
-      opResult = aaiProvider.queryActiveInventoryWithRetries(link, "application/json",
-          ActiveInventoryConfig.getConfig().getAaiRestConfig().getNumRequestRetries());
+      opResult = aaiAdapter.queryActiveInventoryWithRetries(link, "application/json",
+          aaiConfig.getAaiRestConfig().getNumRequestRetries());
     } catch (Exception exc) {
       opResult = new OperationResult();
       opResult.setResult(500, "Querying AAI with retry failed due to an exception.");

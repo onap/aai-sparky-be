@@ -22,7 +22,7 @@
  */
 package org.onap.aai.sparky.viewandinspect.entity;
 
-import org.onap.aai.sparky.dal.rest.OperationResult;
+import org.onap.aai.restclient.client.OperationResult;
 
 /**
  * The Class NodeProcessingTransaction.

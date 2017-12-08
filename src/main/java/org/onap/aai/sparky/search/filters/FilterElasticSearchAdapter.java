@@ -34,6 +34,7 @@ import org.onap.aai.cl.eelf.LoggerFactory;
 import org.onap.aai.restclient.client.OperationResult;
 import org.onap.aai.sparky.dal.elasticsearch.SearchAdapter;
 import org.onap.aai.sparky.dal.elasticsearch.config.ElasticSearchConfig;
+import org.onap.aai.sparky.dataintegrity.config.DiUiConstants;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
 import org.onap.aai.sparky.search.filters.config.UiFilterDataSourceConfig;
 import org.onap.aai.sparky.search.filters.entity.UiFilterEntity;
@@ -42,13 +43,15 @@ import org.onap.aai.sparky.viewandinspect.config.TierSupportUiConstants;
 
 /**
  * Performs all Elasticsearch related queries for filters related to the Sparky-FE.
+ * 
+ * @author RICHARV
  */
 public class FilterElasticSearchAdapter {
 
   private static ElasticSearchConfig esConfig = null;
   private static SearchAdapter search = null;
   private static final String ES_SEARCH_API = TierSupportUiConstants.ES_SEARCH_API;
-  private static final String APP_JSON = "application/json";
+  private static final String APP_JSON = DiUiConstants.APP_JSON;
   private static final Logger LOG =
       LoggerFactory.getInstance().getLogger(FilterElasticSearchAdapter.class);
   private static final String AGGS = "aggregations";
@@ -104,7 +107,7 @@ public class FilterElasticSearchAdapter {
             FilterQueryBuilder.createFilterValueQueryObject(dataSourceConfig.getFieldName());
       }
 
-      org.onap.aai.sparky.dal.rest.OperationResult opResult =
+      OperationResult opResult =
           search.doPost(getFullUrl(dataSourceConfig.getIndexName(), ES_SEARCH_API),
               filterValueQuery.toString(), APP_JSON);
 

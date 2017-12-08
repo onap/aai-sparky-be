@@ -24,11 +24,9 @@ package org.onap.aai.sparky.dal.rest;
 
 import java.security.SecureRandom;
 
-import org.onap.aai.sparky.dal.cache.EntityCache;
-import org.onap.aai.sparky.logging.AaiUiMsgs;
-import org.onap.aai.sparky.util.NodeUtils;
 import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
+import org.onap.aai.sparky.logging.AaiUiMsgs;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.ClientResponse;
@@ -37,6 +35,9 @@ import com.sun.jersey.api.client.WebResource.Builder;
 
 /**
  * The Class RestfulDataAccessor.
+ * 
+ * TODO: DELETE ME
+ * 
  */
 public class RestfulDataAccessor implements RestDataProvider {
 
@@ -44,8 +45,6 @@ public class RestfulDataAccessor implements RestDataProvider {
 
   protected RestClientBuilder clientBuilder;
 
-  protected EntityCache entityCache;
-  private boolean cacheEnabled;
   private static final Logger LOG =
       LoggerFactory.getInstance().getLogger(RestfulDataAccessor.class);
 
@@ -66,37 +65,6 @@ public class RestfulDataAccessor implements RestDataProvider {
     this.clientBuilder = clientBuilder;
     txnIdGenerator = new SecureRandom();
     resourceNotFoundErrorsSurpressed = false;
-    cacheEnabled = false;
-    entityCache = null;
-  }
-
-  protected boolean isCacheEnabled() {
-    return cacheEnabled;
-  }
-
-  public void setCacheEnabled(boolean cacheEnabled) {
-    this.cacheEnabled = cacheEnabled;
-  }
-
-  protected EntityCache getEntityCache() {
-    return entityCache;
-  }
-
-  public void setEntityCache(EntityCache entityCache) {
-    this.entityCache = entityCache;
-  }
-
-  /**
-   * Cache result.
-   *
-   * @param result the result
-   */
-  private void cacheResult(OperationResult result) {
-    if (cacheEnabled && entityCache != null) {
-      final String id =
-          NodeUtils.generateUniqueShaDigest(result.getRequestLink(), result.getRequestPayload());
-      entityCache.put(id, result);
-    }
   }
 
   /**
@@ -119,27 +87,12 @@ public class RestfulDataAccessor implements RestDataProvider {
 
   }
 
-  /**
-   * Gets the cached data.
-   *
-   * @param link the link
-   * @param payload the payload
-   * @return the cached data
-   */
-  private OperationResult getCachedData(String link, String payload) {
-    if (cacheEnabled && entityCache != null) {
-      final String id = NodeUtils.generateUniqueShaDigest(link, payload);
-      return entityCache.get(id, link);
-    }
-    return null;
-  }
-
   /*
    * (non-Javadoc)
    * 
    * @see
-   * org.onap.aai.sparky.dal.rest.RestDataProvider#doRestfulOperation(org.onap.aai.sparky.dal.rest.
-   * HttpMethod, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+   * org.openecomp.sparky.dal.rest.RestDataProvider#doRestfulOperation(org.openecomp.sparky.dal.rest
+   * .HttpMethod, java.lang.String, java.lang.String, java.lang.String, java.lang.String)
    */
   @Override
   public OperationResult doRestfulOperation(HttpMethod method, String url, String payload,
@@ -151,31 +104,11 @@ public class RestfulDataAccessor implements RestDataProvider {
     Client client = null;
     Builder builder = null;
 
-    OperationResult operationResult = null;
-
-    /*
-     * Attempt to get cached data for the requested URL. We don't currently cache the other
-     * operations.
-     */
-
-    operationResult = getCachedData(url, payload);
-
-    if (operationResult != null) {
-
-      /*
-       * cache-hit, return what we found
-       */
-
-      // System.out.println("operationResult = " + operationResult.getResultCode());
-      // System.out.println("opresult = " + operationResult.getResult());
-      return operationResult;
-    }
-
     /*
      * else cache miss / cache disabled (default operation)
      */
 
-    operationResult = new OperationResult();
+    OperationResult operationResult = new OperationResult();
     operationResult.setRequestLink(url);
 
     try {
@@ -245,8 +178,6 @@ public class RestfulDataAccessor implements RestDataProvider {
           String.valueOf(operationResult.getResultCode()));
     }
 
-    cacheResult(operationResult);
-
     return operationResult;
 
   }
@@ -262,7 +193,7 @@ public class RestfulDataAccessor implements RestDataProvider {
   /*
    * (non-Javadoc)
    * 
-   * @see org.onap.aai.sparky.dal.rest.RestDataProvider#doGet(java.lang.String, java.lang.String)
+   * @see org.openecomp.sparky.dal.rest.RestDataProvider#doGet(java.lang.String, java.lang.String)
    */
   @Override
   public OperationResult doGet(String url, String acceptContentType) {
@@ -272,7 +203,8 @@ public class RestfulDataAccessor implements RestDataProvider {
   /*
    * (non-Javadoc)
    * 
-   * @see org.onap.aai.sparky.dal.rest.RestDataProvider#doDelete(java.lang.String, java.lang.String)
+   * @see org.openecomp.sparky.dal.rest.RestDataProvider#doDelete(java.lang.String,
+   * java.lang.String)
    */
   @Override
   public OperationResult doDelete(String url, String acceptContentType) {
@@ -282,7 +214,7 @@ public class RestfulDataAccessor implements RestDataProvider {
   /*
    * (non-Javadoc)
    * 
-   * @see org.onap.aai.sparky.dal.rest.RestDataProvider#doPost(java.lang.String, java.lang.String,
+   * @see org.openecomp.sparky.dal.rest.RestDataProvider#doPost(java.lang.String, java.lang.String,
    * java.lang.String)
    */
   @Override
@@ -294,7 +226,7 @@ public class RestfulDataAccessor implements RestDataProvider {
   /*
    * (non-Javadoc)
    * 
-   * @see org.onap.aai.sparky.dal.rest.RestDataProvider#doPut(java.lang.String, java.lang.String,
+   * @see org.openecomp.sparky.dal.rest.RestDataProvider#doPut(java.lang.String, java.lang.String,
    * java.lang.String)
    */
   @Override
@@ -306,7 +238,7 @@ public class RestfulDataAccessor implements RestDataProvider {
   /*
    * (non-Javadoc)
    * 
-   * @see org.onap.aai.sparky.dal.rest.RestDataProvider#doPatch(java.lang.String, java.lang.String,
+   * @see org.openecomp.sparky.dal.rest.RestDataProvider#doPatch(java.lang.String, java.lang.String,
    * java.lang.String)
    */
   @Override
@@ -318,7 +250,7 @@ public class RestfulDataAccessor implements RestDataProvider {
   /*
    * (non-Javadoc)
    * 
-   * @see org.onap.aai.sparky.dal.rest.RestDataProvider#doHead(java.lang.String, java.lang.String)
+   * @see org.openecomp.sparky.dal.rest.RestDataProvider#doHead(java.lang.String, java.lang.String)
    */
   @Override
   public OperationResult doHead(String url, String acceptContentType) {
@@ -350,27 +282,20 @@ public class RestfulDataAccessor implements RestDataProvider {
   /*
    * (non-Javadoc)
    * 
-   * @see org.onap.aai.sparky.dal.rest.RestDataProvider#shutdown()
+   * @see org.openecomp.sparky.dal.rest.RestDataProvider#shutdown()
    */
   @Override
   public void shutdown() {
-
-    if (entityCache != null) {
-      entityCache.shutdown();
-    }
 
   }
 
   /*
    * (non-Javadoc)
    * 
-   * @see org.onap.aai.sparky.dal.rest.RestDataProvider#clearCache()
+   * @see org.openecomp.sparky.dal.rest.RestDataProvider#clearCache()
    */
   @Override
   public void clearCache() {
-    if (cacheEnabled) {
-      entityCache.clear();
-    }
 
   }
 

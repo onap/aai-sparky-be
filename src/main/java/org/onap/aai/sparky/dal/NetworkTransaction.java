@@ -22,9 +22,10 @@
  */
 package org.onap.aai.sparky.dal;
 
+import org.onap.aai.restclient.client.OperationResult;
 import org.onap.aai.sparky.config.oxm.OxmEntityDescriptor;
 import org.onap.aai.sparky.dal.rest.HttpMethod;
-import org.onap.aai.sparky.dal.rest.OperationResult;
+
 
 /**
  * The Class NetworkTransaction.
@@ -37,11 +38,15 @@ public class NetworkTransaction {
 
   private String link;
 
+  private String queryParameters;
+
   private HttpMethod operationType;
 
   private OxmEntityDescriptor descriptor;
 
   private long createdTimeStampInMs;
+
+  private long opTimeInMs;
 
   private long taskAgeInMs;
 
@@ -50,6 +55,7 @@ public class NetworkTransaction {
    */
   public NetworkTransaction() {
     this.createdTimeStampInMs = System.currentTimeMillis();
+    this.opTimeInMs = 0L;
   }
 
   /**
@@ -64,6 +70,7 @@ public class NetworkTransaction {
     this.operationType = method;
     this.entityType = entityType;
     this.operationResult = or;
+    this.opTimeInMs = 0L;
   }
 
   public HttpMethod getOperationType() {
@@ -107,6 +114,22 @@ public class NetworkTransaction {
 
   public void setLink(String link) {
     this.link = link;
+  }
+
+  public String getQueryParameters() {
+    return queryParameters;
+  }
+
+  public void setQueryParameters(String queryParameters) {
+    this.queryParameters = queryParameters;
+  }
+
+  public long getOpTimeInMs() {
+    return opTimeInMs;
+  }
+
+  public void setOpTimeInMs(long opTimeInMs) {
+    this.opTimeInMs = opTimeInMs;
   }
 
   public OxmEntityDescriptor getDescriptor() {

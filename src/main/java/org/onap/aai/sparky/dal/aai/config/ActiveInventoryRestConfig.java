@@ -36,27 +36,6 @@ public class ActiveInventoryRestConfig {
 
   private String host;
 
-  /**
-   * @return the cacheFailures
-   */
-  public boolean isCacheFailures() {
-    return cacheFailures;
-  }
-
-  /**
-   * @param cacheFailures the cacheFailures to set
-   */
-  public void setCacheFailures(boolean cacheFailures) {
-    this.cacheFailures = cacheFailures;
-  }
-
-  /**
-   * @param shallowEntities the shallowEntities to set
-   */
-  public void setShallowEntities(List<String> shallowEntities) {
-    this.shallowEntities = shallowEntities;
-  }
-
   private String port;
 
   private int connectTimeoutInMs;
@@ -66,20 +45,6 @@ public class ActiveInventoryRestConfig {
   private int numRequestRetries;
 
   private int numResolverWorkers;
-
-  private boolean useCacheOnly;
-
-  private boolean cacheEnabled;
-
-  private boolean cacheFailures;
-
-  private String storageFolderOverride;
-
-  int numCacheWorkers;
-
-  private long maxTimeToLiveInMs;
-
-  private String resourceBasePath;
 
   private List<String> shallowEntities;
 
@@ -96,13 +61,12 @@ public class ActiveInventoryRestConfig {
    */
   public ActiveInventoryRestConfig(Properties props) {
 
-    if (props == null) {
+    if (props == null || props.isEmpty()) {
       return;
     }
 
     Properties restProps = ConfigHelper.getConfigWithPrefix("aai.rest", props);
 
-    resourceBasePath = restProps.getProperty("resourceBasePath", "/aai/v7");
     host = restProps.getProperty("host", "localhost");
     port = restProps.getProperty("port", "8443");
     numRequestRetries = Integer.parseInt(restProps.getProperty("numRequestRetries", "5"));
@@ -114,23 +78,6 @@ public class ActiveInventoryRestConfig {
     String shallowEntitiesProperty = restProps.getProperty("shallowEntities", "");
     shallowEntities = Arrays.asList(shallowEntitiesProperty.split(","));
 
-    Properties cacheProps = ConfigHelper.getConfigWithPrefix("aai.rest.cache", props);
-    cacheEnabled = Boolean.parseBoolean(cacheProps.getProperty("enabled", "false"));
-    storageFolderOverride = cacheProps.getProperty("storageFolderOverride", null);
-    cacheFailures = Boolean.parseBoolean(cacheProps.getProperty("cacheFailures", "false"));
-    useCacheOnly = Boolean.parseBoolean(cacheProps.getProperty("useCacheOnly", "false"));
-    numCacheWorkers = Integer.parseInt(cacheProps.getProperty("numWorkers", "5"));
-
-
-    if (storageFolderOverride != null && storageFolderOverride.length() == 0) {
-      storageFolderOverride = null;
-    }
-    /*
-     * The expectation of this parameter is that if the value > 0, then the cached resources will be
-     * served back instead of dipping AAI/DataLayer as long as the current resource age from the
-     * cached instance is < maxTimeToLiveInMs.
-     */
-    maxTimeToLiveInMs = Long.parseLong(cacheProps.getProperty("maxTimeToLiveInMs", "-1"));
     authenticationMode =
         RestAuthenticationMode.getRestAuthenticationMode(restProps.getProperty("authenticationMode",
             RestAuthenticationMode.SSL_CERT.getAuthenticationModeLabel()));
@@ -154,26 +101,6 @@ public class ActiveInventoryRestConfig {
     this.authenticationMode = authenticationMode;
   }
 
-  public int getNumCacheWorkers() {
-    return numCacheWorkers;
-  }
-
-  public void setNumCacheWorkers(int numCacheWorkers) {
-    this.numCacheWorkers = numCacheWorkers;
-  }
-
-  /**
-   * Should cache failures.
-   *
-   * @return true, if successful
-   */
-  public boolean shouldCacheFailures() {
-    return cacheFailures;
-  }
-
-  public void setShouldCacheFailures(boolean enabled) {
-    this.cacheFailures = enabled;
-  }
 
   /**
    * Checks if is shallow entity.
@@ -195,44 +122,12 @@ public class ActiveInventoryRestConfig {
     return false;
   }
 
-  public boolean isUseCacheOnly() {
-    return useCacheOnly;
-  }
-
-  public void setUseCacheOnly(boolean useCacheOnly) {
-    this.useCacheOnly = useCacheOnly;
-  }
-
   public int getNumResolverWorkers() {
     return numResolverWorkers;
   }
 
   public void setNumResolverWorkers(int numResolverWorkers) {
     this.numResolverWorkers = numResolverWorkers;
-  }
-
-  public long getMaxTimeToLiveInMs() {
-    return maxTimeToLiveInMs;
-  }
-
-  public void setMaxTimeToLiveInMs(long maxTimeToLiveInMs) {
-    this.maxTimeToLiveInMs = maxTimeToLiveInMs;
-  }
-
-  public boolean isCacheEnabled() {
-    return cacheEnabled;
-  }
-
-  public void setCacheEnabled(boolean cacheEnabled) {
-    this.cacheEnabled = cacheEnabled;
-  }
-
-  public String getStorageFolderOverride() {
-    return storageFolderOverride;
-  }
-
-  public void setStorageFolderOverride(String storageFolderOverride) {
-    this.storageFolderOverride = storageFolderOverride;
   }
 
   public String getHost() {
@@ -243,39 +138,12 @@ public class ActiveInventoryRestConfig {
     return port;
   }
 
-  public String getResourceBasePath() {
-    return resourceBasePath;
-  }
-
   public void setHost(String host) {
     this.host = host;
   }
 
   public void setPort(String port) {
     this.port = port;
-  }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.lang.Object#toString()
-   */
-
-
-  public void setResourceBasePath(String resourceBasePath) {
-    this.resourceBasePath = resourceBasePath;
-  }
-
-  @Override
-  public String toString() {
-    return "ActiveInventoryRestConfig [host=" + host + ", port=" + port + ", connectTimeoutInMs="
-        + connectTimeoutInMs + ", readTimeoutInMs=" + readTimeoutInMs + ", numRequestRetries="
-        + numRequestRetries + ", numResolverWorkers=" + numResolverWorkers + ", useCacheOnly="
-        + useCacheOnly + ", cacheEnabled=" + cacheEnabled + ", cacheFailures=" + cacheFailures
-        + ", storageFolderOverride=" + storageFolderOverride + ", numCacheWorkers="
-        + numCacheWorkers + ", maxTimeToLiveInMs=" + maxTimeToLiveInMs + ", resourceBasePath="
-        + resourceBasePath + ", shallowEntities=" + shallowEntities + ", authenticationMode="
-        + authenticationMode + "]";
   }
 
   public int getConnectTimeoutInMs() {

@@ -28,16 +28,37 @@ import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.Options;
 import org.apache.commons.cli.ParseException;
 import org.eclipse.jetty.util.security.Password;
+import org.onap.aai.cl.api.Logger;
+import org.onap.aai.cl.eelf.LoggerFactory;
+import org.onap.aai.sparky.logging.AaiUiMsgs;
 
 /**
  * The Class Encryptor.
  */
 public class Encryptor {
 
+  private static final Logger LOG = LoggerFactory.getInstance().getLogger(Encryptor.class);
+
   /**
    * Instantiates a new encryptor.
    */
   public Encryptor() {}
+
+  /**
+   * Encrypt value.
+   *
+   * @param value to encrypt
+   * @return the encrypted string
+   */
+  public String encryptValue(String value) {
+    String encyptedValue = "";
+    try {
+      encyptedValue = Password.obfuscate(value);
+    } catch (Exception exc) {
+      LOG.error(AaiUiMsgs.ENCRYPTION_ERROR, value, exc.toString());
+    }
+    return encyptedValue;
+  }
 
   /**
    * Decrypt value.
@@ -47,8 +68,11 @@ public class Encryptor {
    */
   public String decryptValue(String value) {
     String decyptedValue = "";
-
-    decyptedValue = Password.deobfuscate(value);
+    try {
+      decyptedValue = Password.deobfuscate(value);
+    } catch (Exception exc) {
+      LOG.error(AaiUiMsgs.DECRYPTION_ERROR, value, exc.toString());
+    }
 
     return decyptedValue;
   }
@@ -76,4 +100,54 @@ public class Encryptor {
     System.exit(1);
   }
 
+  /**
+   * The main method.
+   *
+   * @param args the arguments
+   */
+  public static void main(String[] args) {
+
+    Options options = new Options();
+    options.addOption("d", true, "value to decrypt");
+    options.addOption("h", false, "show help");
+    options.addOption("?", false, "show help");
+
+    String value = null;
+    boolean encrypt = false;
+    boolean decrypt = false;
+
+    CommandLineParser parser = new BasicParser();
+    CommandLine cmd = null;
+
+    try {
+      cmd = parser.parse(options, args);
+
+      if (cmd.hasOption("d")) {
+        value = cmd.getOptionValue("d");
+        decrypt = true;
+      }
+
+      if (cmd.hasOption("?") || cmd.hasOption("h")) {
+        usage();
+        System.exit(0);
+      }
+
+      if ((encrypt && decrypt) || (!encrypt && !decrypt)) {
+        usage("Must specify one (and only one) of the -e or -d options");
+      }
+
+      Encryptor encryptor = new Encryptor();
+
+      if (decrypt) {
+        String out = encryptor.decryptValue(value);
+        System.out.println(out);
+      }
+    } catch (ParseException exc) {
+      System.out.println("Failed to parse command line properties: " + exc.toString());
+    } catch (Exception exc) {
+      System.out.println("Failure: " + exc.toString());
+    }
+
+    System.exit(0);
+  }
 }
