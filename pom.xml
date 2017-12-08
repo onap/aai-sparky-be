@@ -18,7 +18,7 @@
 		<module.ajsc.namespace.version>v1</module.ajsc.namespace.version>
 		<ajscRuntimeVersion>2.0.0</ajscRuntimeVersion>
 		<absoluteDistFilesRoot>/appl/${project.artifactId}</absoluteDistFilesRoot>
-		<frontEndGroupdId>org.amdocs.aaiee</frontEndGroupdId>
+		<frontEndGroupdId>org.onap.aai</frontEndGroupdId>
 		<frontEndArtifactId>sparky-fe</frontEndArtifactId>
 		<frontEndVersion>1.1.0-SNAPSHOT</frontEndVersion>
 
