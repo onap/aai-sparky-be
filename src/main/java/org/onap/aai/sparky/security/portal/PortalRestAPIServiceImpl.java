@@ -154,7 +154,7 @@ public class PortalRestAPIServiceImpl implements IPortalRestAPIService {
    * @see com.att.fusion.core.onboarding.crossapi.IPortalRestAPIService#getAvailableRoles()
    */
   @Override
-  public List<EcompRole> getAvailableRoles() throws PortalAPIException {
+  public List<EcompRole> getAvailableRoles(String requestedLoginId) throws PortalAPIException {
     LOG.debug("Get available roles");
     return UserManager.getRoles();
   }
@@ -222,5 +222,4 @@ public class PortalRestAPIServiceImpl implements IPortalRestAPIService {
     formatter.applyPattern(message);
     return formatter.format(args);
   }
-
 }
