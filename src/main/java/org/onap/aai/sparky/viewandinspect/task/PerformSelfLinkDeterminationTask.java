@@ -25,13 +25,13 @@ package org.onap.aai.sparky.viewandinspect.task;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import org.onap.aai.sparky.dal.aai.ActiveInventoryDataProvider;
-import org.onap.aai.sparky.dal.aai.config.ActiveInventoryConfig;
-import org.onap.aai.sparky.dal.rest.OperationResult;
-import org.onap.aai.sparky.logging.AaiUiMsgs;
-import org.onap.aai.sparky.viewandinspect.entity.SelfLinkDeterminationTransaction;
 import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
+import org.onap.aai.restclient.client.OperationResult;
+import org.onap.aai.sparky.dal.ActiveInventoryAdapter;
+import org.onap.aai.sparky.dal.aai.config.ActiveInventoryConfig;
+import org.onap.aai.sparky.logging.AaiUiMsgs;
+import org.onap.aai.sparky.viewandinspect.entity.SelfLinkDeterminationTransaction;
 import org.slf4j.MDC;
 
 public class PerformSelfLinkDeterminationTask
@@ -41,7 +41,7 @@ public class PerformSelfLinkDeterminationTask
       LoggerFactory.getInstance().getLogger(PerformSelfLinkDeterminationTask.class);
 
   private SelfLinkDeterminationTransaction txn;
-  private ActiveInventoryDataProvider aaiProvider;
+  private ActiveInventoryAdapter aaiAdapter;
   private Map<String, String> contextMap;
 
 
@@ -53,9 +53,9 @@ public class PerformSelfLinkDeterminationTask
    * @param aaiProvider the aai provider
    */
   public PerformSelfLinkDeterminationTask(SelfLinkDeterminationTransaction txn,
-      String requestParameters, ActiveInventoryDataProvider aaiProvider) {
+      String requestParameters, ActiveInventoryAdapter aaiAdapter) {
 
-    this.aaiProvider = aaiProvider;
+    this.aaiAdapter = aaiAdapter;
     this.txn = txn;
     this.contextMap = MDC.getCopyOfContextMap();
   }
@@ -78,7 +78,7 @@ public class PerformSelfLinkDeterminationTask
     OperationResult opResult = null;
     try {
       opResult =
-          aaiProvider.queryActiveInventoryWithRetries(txn.getQueryString(), "application/json",
+          aaiAdapter.queryActiveInventoryWithRetries(txn.getQueryString(), "application/json",
               ActiveInventoryConfig.getConfig().getAaiRestConfig().getNumRequestRetries());
     } catch (Exception exc) {
       opResult = new OperationResult();

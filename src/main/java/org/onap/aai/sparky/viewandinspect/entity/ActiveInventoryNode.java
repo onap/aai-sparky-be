@@ -36,14 +36,15 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.onap.aai.sparky.config.oxm.OxmModelLoader;
-import org.onap.aai.sparky.dal.rest.OperationResult;
-import org.onap.aai.sparky.logging.AaiUiMsgs;
-import org.onap.aai.sparky.viewandinspect.config.VisualizationConfig;
-import org.onap.aai.sparky.viewandinspect.enumeration.NodeProcessingAction;
-import org.onap.aai.sparky.viewandinspect.enumeration.NodeProcessingState;
 import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
+import org.onap.aai.restclient.client.OperationResult;
+import org.onap.aai.sparky.config.oxm.OxmEntityLookup;
+import org.onap.aai.sparky.config.oxm.OxmModelLoader;
+import org.onap.aai.sparky.logging.AaiUiMsgs;
+import org.onap.aai.sparky.viewandinspect.config.VisualizationConfigs;
+import org.onap.aai.sparky.viewandinspect.enumeration.NodeProcessingAction;
+import org.onap.aai.sparky.viewandinspect.enumeration.NodeProcessingState;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -70,7 +71,6 @@ public class ActiveInventoryNode {
   private int nodeDepth;
   private OperationResult opResult;
 
-
   private boolean processingErrorOccurred;
   private List<String> errorCauses;
   private boolean selflinkRetrievalFailure;
@@ -88,14 +88,16 @@ public class ActiveInventoryNode {
   private boolean selfLinkDeterminationPending;
 
   private AtomicBoolean selfLinkProcessed;
+  private AtomicBoolean nodeIntegrityProcessed;
 
   private OxmModelLoader oxmModelLoader;
-  private VisualizationConfig visualizationConfig;
+  private VisualizationConfigs visualizationConfigs;
 
   private String entityType;
   private String primaryKeyName;
   private String primaryKeyValue;
 
+  private boolean nodeValidated;
   private boolean nodeIssue;
   private boolean ignoredByFilter;
 
@@ -108,17 +110,10 @@ public class ActiveInventoryNode {
 
   /**
    * Instantiates a new active inventory node.
-   */
-  public ActiveInventoryNode() {
-    this(null);
-  }
-
-  /**
-   * Instantiates a new active inventory node.
    *
    * @param key the key
    */
-  public ActiveInventoryNode(String key) {
+  public ActiveInventoryNode(VisualizationConfigs visualizationConfigs) {
     this.nodeId = null;
     this.entityType = null;
     this.selfLink = null;
@@ -127,13 +122,15 @@ public class ActiveInventoryNode {
     this.errorCauses = new ArrayList<String>();
     this.selflinkRetrievalFailure = false;
     this.nodeIssue = false;
+    this.nodeValidated = false;
     this.state = NodeProcessingState.INIT;
     this.selfLinkPendingResolve = false;
     this.selfLinkDeterminationPending = false;
 
     selfLinkProcessed = new AtomicBoolean(Boolean.FALSE);
+    nodeIntegrityProcessed = new AtomicBoolean(Boolean.FALSE);
     oxmModelLoader = null;
-    visualizationConfig = null;
+    this.visualizationConfigs = visualizationConfigs;
 
     isRootNode = false;
     inboundNeighbors = new ConcurrentLinkedDeque<String>();
@@ -165,7 +162,7 @@ public class ActiveInventoryNode {
 
   public void addQueryParams(Collection<String> params) {
 
-    if (params != null && !params.isEmpty()) {
+    if (params != null & params.size() > 0) {
 
       for (String param : params) {
         addQueryParam(param);
@@ -215,8 +212,8 @@ public class ActiveInventoryNode {
    *
    * @return the visualization config
    */
-  public VisualizationConfig getvisualizationConfig() {
-    return visualizationConfig;
+  public VisualizationConfigs getvisualizationConfigs() {
+    return visualizationConfigs;
   }
 
   public int getNodeDepth() {
@@ -232,8 +229,8 @@ public class ActiveInventoryNode {
    *
    * @param visualizationConfig the new visualization config
    */
-  public void setvisualizationConfig(VisualizationConfig visualizationConfig) {
-    this.visualizationConfig = visualizationConfig;
+  public void setvisualizationConfig(VisualizationConfigs visualizationConfigs) {
+    this.visualizationConfigs = visualizationConfigs;
   }
 
   public OxmModelLoader getOxmModelLoader() {
@@ -250,6 +247,14 @@ public class ActiveInventoryNode {
 
   public void setPrimaryKeyValue(String primaryKeyValue) {
     this.primaryKeyValue = primaryKeyValue;
+  }
+
+  public boolean isNodeValidated() {
+    return nodeValidated;
+  }
+
+  public void setNodeValidated(boolean nodeValidated) {
+    this.nodeValidated = nodeValidated;
   }
 
   public boolean isNodeIssue() {
@@ -338,7 +343,7 @@ public class ActiveInventoryNode {
   }
 
   public boolean isAtMaxDepth() {
-    return (nodeDepth >= VisualizationConfig.getConfig().getMaxSelfLinkTraversalDepth());
+    return (nodeDepth >= this.visualizationConfigs.getMaxSelfLinkTraversalDepth());
   }
 
   public ConcurrentLinkedDeque<String> getInboundNeighbors() {
@@ -443,8 +448,16 @@ public class ActiveInventoryNode {
     this.selfLinkProcessed.set(selfLinkProcessed);
   }
 
+  public boolean getNodeIntegrityProcessed() {
+    return nodeIntegrityProcessed.get();
+  }
+
+  public void setNodeIntegrityProcessed(boolean nodeIntegrityProcessed) {
+    this.nodeIntegrityProcessed.set(nodeIntegrityProcessed);
+  }
+
   public boolean isDirectSelfLink() {
-    // https://<AAI-Hostname>:8443/aai/v8/resources/id/2458124400
+    // https://aai-int1.test.att.com:8443/aai/v8/resources/id/2458124400
     return isDirectSelfLink(this.selfLink);
   }
 
@@ -455,7 +468,7 @@ public class ActiveInventoryNode {
    * @return true, if is direct self link
    */
   public static boolean isDirectSelfLink(String link) {
-    // https://<AAI-Hostname>:8443/aai/v8/resources/id/2458124400
+    // https://aai-int1.test.att.com:8443/aai/v8/resources/id/2458124400
 
     if (link == null) {
       return false;
@@ -625,7 +638,7 @@ public class ActiveInventoryNode {
              * probably more likely just for array node types, but we'll see.
              */
 
-            if (oxmModelLoader.getEntityDescriptor(fieldName) == null) {
+            if (OxmEntityLookup.getInstance().getEntityDescriptors().get(fieldName) == null) {
               /*
                * this is no an entity type as far as we can tell, so we can add it to our property
                * set.
@@ -645,7 +658,8 @@ public class ActiveInventoryNode {
                * complex group or relationship.
                */
 
-              if (oxmModelLoader.getEntityDescriptor(field.getKey()) == null) {
+              if (OxmEntityLookup.getInstance().getEntityDescriptors()
+                  .get(field.getKey()) == null) {
                 /*
                  * this is no an entity type as far as we can tell, so we can add it to our property
                  * set.

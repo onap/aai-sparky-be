@@ -22,7 +22,7 @@
  */
 package org.onap.aai.sparky.viewandinspect.entity;
 
-import org.onap.aai.sparky.viewandinspect.config.VisualizationConfig;
+import org.onap.aai.sparky.viewandinspect.config.VisualizationConfigs;
 import org.onap.aai.sparky.viewandinspect.enumeration.NodeProcessingState;
 
 /**
@@ -32,7 +32,6 @@ public class NodeMeta {
 
   private String className;
 
-  private boolean isEnrichableNode;
   private boolean isSearchTarget;
 
   private NodeDebug nodeDebug;
@@ -51,14 +50,19 @@ public class NodeMeta {
 
   private NodeProcessingState processingState;
 
+  private VisualizationConfigs visualizationConfigs;
+
+
+
   /**
    * Instantiates a new node meta.
    */
-  public NodeMeta() {
+  public NodeMeta(VisualizationConfigs visualizationConfigs) {
     this.isSearchTarget = false;
-    this.isEnrichableNode = false;
+    this.visualizationConfigs = visualizationConfigs;
 
-    if (VisualizationConfig.getConfig().isVisualizationDebugEnabled()) {
+
+    if (this.visualizationConfigs.isVisualizationDebugEnabled()) {
       nodeDebug = new NodeDebug();
     }
     this.numInboundNeighbors = 0;
@@ -166,10 +170,6 @@ public class NodeMeta {
     return selfLinkResponseTimeInMs;
   }
 
-  public boolean isEnrichableNode() {
-    return isEnrichableNode;
-  }
-
   public boolean isNodeIssue() {
     return nodeIssue;
   }
@@ -184,10 +184,6 @@ public class NodeMeta {
 
   public void setClassName(String className) {
     this.className = className;
-  }
-
-  public void setEnrichableNode(boolean isEnrichableNode) {
-    this.isEnrichableNode = isEnrichableNode;
   }
 
   public void setNodeIssue(boolean nodeIssue) {

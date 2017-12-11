@@ -30,6 +30,11 @@ import org.onap.aai.sparky.dal.rest.RestDataProvider;
 /**
  * The Interface ActiveInventoryDataProvider.
  */
+
+/*
+ * TODO: DELETE ME
+ */
+
 public interface ActiveInventoryDataProvider extends RestDataProvider {
 
   /**
@@ -81,7 +86,7 @@ public interface ActiveInventoryDataProvider extends RestDataProvider {
   /*
    * (non-Javadoc)
    * 
-   * @see org.onap.aai.sparky.dal.rest.RestDataProvider#shutdown()
+   * @see org.openecomp.sparky.dal.rest.RestDataProvider#shutdown()
    */
   @Override
   void shutdown();

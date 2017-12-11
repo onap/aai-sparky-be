@@ -22,10 +22,6 @@
  */
 package org.onap.aai.sparky.viewandinspect.entity;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.ObjectWriter;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -91,67 +87,5 @@ public class D3VisualizationOutput {
     this.inlineMessage = inlineMessage;
   }
 
-  /**
-   * @return the nodes
-   */
-  public List<JsonNode> getNodes() {
-    return nodes;
-  }
-
-  /**
-   * @param nodes the nodes to set
-   */
-  public void setNodes(List<JsonNode> nodes) {
-    this.nodes = nodes;
-  }
-
-  /**
-   * @return the links
-   */
-  public List<JsonNodeLink> getLinks() {
-    return links;
-  }
-
-  /**
-   * @param links the links to set
-   */
-  public void setLinks(List<JsonNodeLink> links) {
-    this.links = links;
-  }
-
-  /**
-   * The main method.
-   *
-   * @param args the arguments
-   * @throws JsonProcessingException the json processing exception
-   */
-  public static final void main(String[] args) throws JsonProcessingException {
-
-    ActiveInventoryNode pserverAin = new ActiveInventoryNode();
-    pserverAin.setNodeId("pserver.76786asd87asgd");
-    JsonNode pserver = new JsonNode(pserverAin);
-
-    List<JsonNode> nodes = new ArrayList<JsonNode>();
-    nodes.add(pserver);
-
-    JsonNodeLink l1 = new JsonNodeLink();
-    l1.setSource(pserverAin.getNodeId());
-    l1.setTarget(pserverAin.getNodeId());
-    l1.setId(l1.getSource() + "_" + l1.getTarget());
-
-    List<JsonNodeLink> links = new ArrayList<JsonNodeLink>();
-    links.add(l1);
-
-    D3VisualizationOutput output = new D3VisualizationOutput();
-    output.addNodes(nodes);
-    output.addLinks(links);
-
-
-    ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-    String json = ow.writeValueAsString(output);
-
-    System.out.println(json);
-
-  }
 
 }

@@ -32,7 +32,6 @@ import org.apache.camel.component.restlet.RestletConstants;
 import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
-import org.onap.aai.sparky.search.filters.FilteredSearchHelper;
 import org.onap.aai.sparky.search.filters.entity.UiFilterEntity;
 import org.onap.aai.sparky.search.filters.entity.UiFiltersEntity;
 import org.onap.aai.sparky.viewandinspect.config.TierSupportUiConstants;

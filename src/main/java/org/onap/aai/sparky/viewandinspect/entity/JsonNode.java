@@ -22,13 +22,14 @@
  */
 package org.onap.aai.sparky.viewandinspect.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
+import org.onap.aai.sparky.viewandinspect.config.VisualizationConfigs;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /*
  * We can use annotations to differentiate between intermediate data we use to build the node, and
@@ -77,12 +78,15 @@ public class JsonNode {
   @JsonIgnore
   private static final Logger LOG = Logger.getLogger(JsonNode.class);
 
+  private VisualizationConfigs visualizationConfigs;
+
+
   /**
    * Instantiates a new json node.
    *
    * @param ain the ain
    */
-  public JsonNode(ActiveInventoryNode ain) {
+  public JsonNode(ActiveInventoryNode ain, VisualizationConfigs visualizationConfigs) {
     this.resourceKey = ain.getNodeId();
     this.itemProperties = ain.getProperties();
     this.setItemType(ain.getEntityType());
@@ -90,6 +94,7 @@ public class JsonNode {
     this.setItemNameValue(ain.getPrimaryKeyValue());
     this.setId(ain.getNodeId());
     this.isRootNode = ain.isRootNode();
+    this.visualizationConfigs = visualizationConfigs;
 
     if (LOG.isDebugEnabled()) {
       LOG.debug("---");
@@ -100,9 +105,10 @@ public class JsonNode {
     inboundNeighbors = ain.getInboundNeighbors();
     outboundNeighbors = ain.getOutboundNeighbors();
 
-    nodeMeta = new NodeMeta();
+    nodeMeta = new NodeMeta(this.visualizationConfigs);
 
     nodeMeta.setNodeIssue(ain.isNodeIssue());
+    nodeMeta.setNodeValidated(ain.isNodeValidated());
     nodeMeta.setNodeDepth(ain.getNodeDepth());
 
     nodeMeta.setNumInboundNeighbors(ain.getInboundNeighbors().size());
@@ -177,55 +183,11 @@ public class JsonNode {
     return isRootNode;
   }
 
-  /**
-   * @return the inboundNeighbors
+  /*
+   * (non-Javadoc)
+   * 
+   * @see java.lang.Object#toString()
    */
-  public Collection<String> getInboundNeighbors() {
-    return inboundNeighbors;
-  }
-
-  /**
-   * @param inboundNeighbors the inboundNeighbors to set
-   */
-  public void setInboundNeighbors(Collection<String> inboundNeighbors) {
-    this.inboundNeighbors = inboundNeighbors;
-  }
-
-  /**
-   * @return the outboundNeighbors
-   */
-  public Collection<String> getOutboundNeighbors() {
-    return outboundNeighbors;
-  }
-
-  /**
-   * @param outboundNeighbors the outboundNeighbors to set
-   */
-  public void setOutboundNeighbors(Collection<String> outboundNeighbors) {
-    this.outboundNeighbors = outboundNeighbors;
-  }
-
-  /**
-   * @return the log
-   */
-  public static Logger getLog() {
-    return LOG;
-  }
-
-  /**
-   * @param itemProperties the itemProperties to set
-   */
-  public void setItemProperties(Map<String, String> itemProperties) {
-    this.itemProperties = itemProperties;
-  }
-
-  /**
-   * @param isRootNode the isRootNode to set
-   */
-  public void setRootNode(boolean isRootNode) {
-    this.isRootNode = isRootNode;
-  }
-
   @Override
   public String toString() {
     return "JsonNode [" + (id != null ? "id=" + id + ", " : "")
@@ -233,8 +195,8 @@ public class JsonNode {
         + (itemNameKey != null ? "itemNameKey=" + itemNameKey + ", " : "")
         + (itemNameValue != null ? "itemNameValue=" + itemNameValue + ", " : "")
         + (itemProperties != null ? "itemProperties=" + itemProperties + ", " : "")
-        + (nodeMeta != null ? "nodeMeta=" + nodeMeta + ", " : "") + "isRootNode=" + isRootNode
-        + ", " + (resourceKey != null ? "resourceKey=" + resourceKey + ", " : "")
+        + (nodeMeta != null ? "nodeMeta=" + nodeMeta + ", " : "")
+        + (resourceKey != null ? "resourceKey=" + resourceKey + ", " : "")
         + (inboundNeighbors != null ? "inboundNeighbors=" + inboundNeighbors + ", " : "")
         + (outboundNeighbors != null ? "outboundNeighbors=" + outboundNeighbors : "") + "]";
   }

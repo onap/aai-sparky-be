@@ -70,6 +70,9 @@ public class SearchServiceConfig {
   private static final String TOPOGRAPHICAL_INDEX_NAME_DEFAULT =
       "topographicalsearchindex-localhost";
 
+  private static final String ENTITY_COUNT_HISTORY_INDEX_NAME_DEFAULT =
+      "entitycounthistoryindex-localhost";
+
   private static final String VERSION_DEFAULT = "v1";
 
   public static SearchServiceConfig getConfig() throws Exception {
@@ -108,6 +111,8 @@ public class SearchServiceConfig {
     auditIndexName = sasProps.getProperty("auditIndexName", AUDIT_INDEX_NAME_DEFAULT);
     topographicalSearchIndex =
         sasProps.getProperty("topographicalIndexName", TOPOGRAPHICAL_INDEX_NAME_DEFAULT);
+    entityCountHistoryIndex = sasProps.getProperty("entityCountHistoryIndexName",
+        ENTITY_COUNT_HISTORY_INDEX_NAME_DEFAULT);
     certName = sasProps.getProperty("ssl.cert-name", "aai-client-cert.p12");
     keystorePassword = sasProps.getProperty("ssl.keystore-password",
         "OBF:1i9a1u2a1unz1lr61wn51wn11lss1unz1u301i6o");

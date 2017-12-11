@@ -36,16 +36,19 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.http.client.utils.URIBuilder;
+import org.onap.aai.cl.api.Logger;
+import org.onap.aai.cl.eelf.LoggerFactory;
+import org.onap.aai.restclient.client.OperationResult;
 import org.onap.aai.sparky.config.oxm.OxmEntityDescriptor;
+import org.onap.aai.sparky.config.oxm.OxmEntityLookup;
 import org.onap.aai.sparky.config.oxm.OxmModelLoader;
-import org.onap.aai.sparky.dal.aai.ActiveInventoryDataProvider;
+import org.onap.aai.sparky.dal.ActiveInventoryAdapter;
 import org.onap.aai.sparky.dal.aai.config.ActiveInventoryConfig;
-import org.onap.aai.sparky.dal.rest.OperationResult;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
-import org.onap.aai.sparky.synchronizer.entity.SearchableEntity;
+import org.onap.aai.sparky.sync.entity.SearchableEntity;
 import org.onap.aai.sparky.util.NodeUtils;
 import org.onap.aai.sparky.viewandinspect.config.TierSupportUiConstants;
-import org.onap.aai.sparky.viewandinspect.config.VisualizationConfig;
+import org.onap.aai.sparky.viewandinspect.config.VisualizationConfigs;
 import org.onap.aai.sparky.viewandinspect.entity.ActiveInventoryNode;
 import org.onap.aai.sparky.viewandinspect.entity.InlineMessage;
 import org.onap.aai.sparky.viewandinspect.entity.NodeProcessingTransaction;
@@ -58,8 +61,6 @@ import org.onap.aai.sparky.viewandinspect.enumeration.NodeProcessingAction;
 import org.onap.aai.sparky.viewandinspect.enumeration.NodeProcessingState;
 import org.onap.aai.sparky.viewandinspect.task.PerformNodeSelfLinkProcessingTask;
 import org.onap.aai.sparky.viewandinspect.task.PerformSelfLinkDeterminationTask;
-import org.onap.aai.cl.api.Logger;
-import org.onap.aai.cl.eelf.LoggerFactory;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -78,17 +79,18 @@ public class VisualizationContext {
 
   private static final Logger LOG =
       LoggerFactory.getInstance().getLogger(VisualizationContext.class);
-  private final ActiveInventoryDataProvider aaiProvider;
+  private final ActiveInventoryAdapter aaiAdapter;
 
   private int maxSelfLinkTraversalDepth;
   private AtomicInteger numLinksDiscovered;
   private AtomicInteger numSuccessfulLinkResolveFromCache;
   private AtomicInteger numSuccessfulLinkResolveFromFromServer;
   private AtomicInteger numFailedLinkResolve;
+  private AtomicInteger nodeIntegrityWorkOnHand;
   private AtomicInteger aaiWorkOnHand;
 
   private ActiveInventoryConfig aaiConfig;
-  private VisualizationConfig visualizationConfig;
+  private VisualizationConfigs visualizationConfigs;
   private List<String> shallowEntities;
 
   private AtomicInteger totalLinksRetrieved;
@@ -100,6 +102,7 @@ public class VisualizationContext {
   private ObjectMapper mapper;
   private InlineMessage inlineMessage = null;
 
+  private ExecutorService tabularExecutorService;
   private ExecutorService aaiExecutorService;
 
   /*
@@ -115,14 +118,16 @@ public class VisualizationContext {
    * @param loader the loader
    * @throws Exception the exception
    */
-  public VisualizationContext(long contextId, ActiveInventoryDataProvider aaiDataProvider,
-      ExecutorService aaiExecutorService, OxmModelLoader loader) throws Exception {
+  public VisualizationContext(long contextId, ActiveInventoryAdapter aaiAdapter,
+      ExecutorService tabularExecutorService, ExecutorService aaiExecutorService,
+      VisualizationConfigs visualizationConfigs) throws Exception {
 
     this.contextId = contextId;
     this.contextIdStr = "[Context-Id=" + contextId + "]";
-    this.aaiProvider = aaiDataProvider;
+    this.aaiAdapter = aaiAdapter;
+    this.tabularExecutorService = tabularExecutorService;
     this.aaiExecutorService = aaiExecutorService;
-    this.loader = loader;
+    this.visualizationConfigs = visualizationConfigs;
 
     this.nodeCache = new ConcurrentHashMap<String, ActiveInventoryNode>();
     this.numLinksDiscovered = new AtomicInteger(0);
@@ -130,13 +135,13 @@ public class VisualizationContext {
     this.numSuccessfulLinkResolveFromCache = new AtomicInteger(0);
     this.numSuccessfulLinkResolveFromFromServer = new AtomicInteger(0);
     this.numFailedLinkResolve = new AtomicInteger(0);
+    this.nodeIntegrityWorkOnHand = new AtomicInteger(0);
     this.aaiWorkOnHand = new AtomicInteger(0);
 
     this.aaiConfig = ActiveInventoryConfig.getConfig();
-    this.visualizationConfig = VisualizationConfig.getConfig();
     this.shallowEntities = aaiConfig.getAaiRestConfig().getShallowEntities();
 
-    this.maxSelfLinkTraversalDepth = visualizationConfig.getMaxSelfLinkTraversalDepth();
+    this.maxSelfLinkTraversalDepth = this.visualizationConfigs.getMaxSelfLinkTraversalDepth();
 
     this.mapper = new ObjectMapper();
     mapper.setSerializationInclusion(Include.NON_EMPTY);
@@ -164,7 +169,8 @@ public class VisualizationContext {
       return queryParams;
     }
 
-    Map<String, OxmEntityDescriptor> entityDescriptors = loader.getEntityDescriptors();
+    Map<String, OxmEntityDescriptor> entityDescriptors =
+        OxmEntityLookup.getInstance().getEntityDescriptors();
 
     try {
 
@@ -183,7 +189,7 @@ public class VisualizationContext {
 
         if (descriptor != null) {
           entityType = urlPathElements[index];
-          primaryKeyNames = descriptor.getPrimaryKeyAttributeName();
+          primaryKeyNames = descriptor.getPrimaryKeyAttributeNames();
 
           /*
            * Make sure from what ever index we matched the parent entity-type on that we can extract
@@ -270,7 +276,7 @@ public class VisualizationContext {
              * 
              */
 
-            ActiveInventoryNode newNode = new ActiveInventoryNode();
+            ActiveInventoryNode newNode = new ActiveInventoryNode(this.visualizationConfigs);
             newNode.setEntityType(entityType);
 
             /*
@@ -337,7 +343,7 @@ public class VisualizationContext {
              */
 
             String selfLinkQuery =
-                aaiProvider.getGenericQueryForSelfLink(entityType, newNode.getQueryParams());
+                aaiAdapter.getGenericQueryForSelfLink(entityType, newNode.getQueryParams());
 
             /**
              * <li>get the self-link
@@ -355,7 +361,7 @@ public class VisualizationContext {
             txn.setNewNode(newNode);
             txn.setParentNodeId(ain.getNodeId());
             aaiWorkOnHand.incrementAndGet();
-            supplyAsync(new PerformSelfLinkDeterminationTask(txn, null, aaiProvider),
+            supplyAsync(new PerformSelfLinkDeterminationTask(txn, null, aaiAdapter),
                 aaiExecutorService).whenComplete((nodeTxn, error) -> {
                   aaiWorkOnHand.decrementAndGet();
                   if (error != null) {
@@ -368,15 +374,13 @@ public class VisualizationContext {
 
                     if (opResult != null && opResult.wasSuccessful()) {
 
-                      if (opResult.isResolvedLinkFailure()) {
+                      if (!opResult.wasSuccessful()) {
                         numFailedLinkResolve.incrementAndGet();
                       }
 
-                      if (opResult.isResolvedLinkFromCache()) {
+                      if (opResult.isFromCache()) {
                         numSuccessfulLinkResolveFromCache.incrementAndGet();
-                      }
-
-                      if (opResult.isResolvedLinkFromServer()) {
+                      } else {
                         numSuccessfulLinkResolveFromFromServer.incrementAndGet();
                       }
 
@@ -425,7 +429,6 @@ public class VisualizationContext {
 
                         newChildNode.setSelfLinkPendingResolve(false);
                         newChildNode.setSelfLinkProcessed(true);
-
                         newChildNode.changeState(NodeProcessingState.NEIGHBORS_UNPROCESSED,
                             NodeProcessingAction.SELF_LINK_RESPONSE_PARSE_OK);
 
@@ -542,7 +545,7 @@ public class VisualizationContext {
 
         if (nodeValue != null && nodeValue.isValueNode()) {
 
-          if (loader.getEntityDescriptor(fieldName) == null) {
+          if (OxmEntityLookup.getInstance().getEntityDescriptors().get(fieldName) == null) {
 
             /*
              * entity property name is not an entity, thus we can add this property name and value
@@ -557,7 +560,7 @@ public class VisualizationContext {
 
           if (nodeValue.isArray()) {
 
-            if (loader.getEntityDescriptor(fieldName) == null) {
+            if (OxmEntityLookup.getInstance().getEntityDescriptors().get(fieldName) == null) {
 
               /*
                * entity property name is not an entity, thus we can add this property name and value
@@ -623,9 +626,9 @@ public class VisualizationContext {
      */
     ain.clearQueryParams();
     ain.addQueryParams(extractQueryParamsFromSelfLink(ain.getSelfLink()));
-
     ain.changeState(NodeProcessingState.NEIGHBORS_UNPROCESSED,
         NodeProcessingAction.SELF_LINK_RESPONSE_PARSE_OK);
+
 
   }
 
@@ -678,7 +681,7 @@ public class VisualizationContext {
       txn.setProcessingNode(ain);
       txn.setRequestParameters(depthModifier);
       aaiWorkOnHand.incrementAndGet();
-      supplyAsync(new PerformNodeSelfLinkProcessingTask(txn, depthModifier, aaiProvider, aaiConfig),
+      supplyAsync(new PerformNodeSelfLinkProcessingTask(txn, depthModifier, aaiAdapter, aaiConfig),
           aaiExecutorService).whenComplete((nodeTxn, error) -> {
             aaiWorkOnHand.decrementAndGet();
             if (error != null) {
@@ -703,15 +706,13 @@ public class VisualizationContext {
 
               if (opResult != null && opResult.wasSuccessful()) {
 
-                if (opResult.isResolvedLinkFailure()) {
+                if (!opResult.wasSuccessful()) {
                   numFailedLinkResolve.incrementAndGet();
                 }
 
-                if (opResult.isResolvedLinkFromCache()) {
+                if (opResult.isFromCache()) {
                   numSuccessfulLinkResolveFromCache.incrementAndGet();
-                }
-
-                if (opResult.isResolvedLinkFromServer()) {
+                } else {
                   numSuccessfulLinkResolveFromFromServer.incrementAndGet();
                 }
 
@@ -871,7 +872,7 @@ public class VisualizationContext {
            * around the root node.
            */
 
-          if (!rootNodeDiscovered || cacheNode.getNodeDepth() < VisualizationConfig.getConfig()
+          if (!rootNodeDiscovered || cacheNode.getNodeDepth() < this.visualizationConfigs
               .getMaxSelfLinkTraversalDepth()) {
 
             if (LOG.isDebugEnabled()) {
@@ -959,7 +960,7 @@ public class VisualizationContext {
             LOG.debug(AaiUiMsgs.DEBUG_GENERIC, "Unexpected array type with a key = " + fieldName);
           }
         } else if (fieldValue.isValueNode()) {
-          if (loader.getEntityDescriptor(field.getKey()) == null) {
+          if (OxmEntityLookup.getInstance().getEntityDescriptors().get(field.getKey()) == null) {
             /*
              * property key is not an entity type, add it to our property set.
              */
@@ -1101,8 +1102,8 @@ public class VisualizationContext {
       return false;
     }
 
-    List<String> pkeyNames =
-        loader.getEntityDescriptor(ain.getEntityType()).getPrimaryKeyAttributeName();
+    List<String> pkeyNames = OxmEntityLookup.getInstance().getEntityDescriptors()
+        .get(ain.getEntityType()).getPrimaryKeyAttributeNames();
 
     if (pkeyNames == null || pkeyNames.size() == 0) {
       LOG.error(AaiUiMsgs.FAILED_TO_DETERMINE_NODE_ID, "Primary key names is empty");
@@ -1179,10 +1180,9 @@ public class VisualizationContext {
       return false;
     }
 
-    OxmModelLoader modelLoader = OxmModelLoader.getInstance();
-
     Relationship[] relationshipArray = relationshipList.getRelationshipList();
     OxmEntityDescriptor descriptor = null;
+    String repairedSelfLink = null;
 
     if (relationshipArray != null) {
 
@@ -1203,7 +1203,7 @@ public class VisualizationContext {
           return false;
         }
 
-        newNode = new ActiveInventoryNode();
+        newNode = new ActiveInventoryNode(this.visualizationConfigs);
 
         String entityType = r.getRelatedTo();
 
@@ -1213,7 +1213,7 @@ public class VisualizationContext {
           }
         }
 
-        descriptor = modelLoader.getEntityDescriptor(r.getRelatedTo());
+        descriptor = OxmEntityLookup.getInstance().getEntityDescriptors().get(r.getRelatedTo());
 
         newNode.setNodeId(nodeId);
         newNode.setEntityType(entityType);
@@ -1223,7 +1223,7 @@ public class VisualizationContext {
 
         if (descriptor != null) {
 
-          List<String> pkeyNames = descriptor.getPrimaryKeyAttributeName();
+          List<String> pkeyNames = descriptor.getPrimaryKeyAttributeNames();
 
           newNode.changeState(NodeProcessingState.SELF_LINK_UNRESOLVED,
               NodeProcessingAction.SELF_LINK_SET);
@@ -1337,7 +1337,7 @@ public class VisualizationContext {
       return;
     }
 
-    ActiveInventoryNode newNode = new ActiveInventoryNode();
+    ActiveInventoryNode newNode = new ActiveInventoryNode(this.visualizationConfigs);
 
     newNode.setNodeId(searchTargetEntity.getId());
     newNode.setEntityType(searchTargetEntity.getEntityType());
@@ -1399,7 +1399,7 @@ public class VisualizationContext {
 
         case NEIGHBORS_UNPROCESSED: {
 
-          if (n.getNodeDepth() < VisualizationConfig.getConfig().getMaxSelfLinkTraversalDepth()) {
+          if (n.getNodeDepth() < this.visualizationConfigs.getMaxSelfLinkTraversalDepth()) {
             /*
              * Only process our neighbors relationships if our current depth is less than the max
              * depth
@@ -1528,7 +1528,7 @@ public class VisualizationContext {
 
           targetNode.addInboundNeighbor(srcNode.getNodeId());
 
-          if (VisualizationConfig.getConfig().makeAllNeighborsBidirectional()) {
+          if (this.visualizationConfigs.makeAllNeighborsBidirectional()) {
             targetNode.addOutboundNeighbor(srcNode.getNodeId());
           }
 
@@ -1626,7 +1626,8 @@ public class VisualizationContext {
       return null;
     }
 
-    OxmEntityDescriptor descriptor = loader.getEntityDescriptor(entityType);
+    OxmEntityDescriptor descriptor =
+        OxmEntityLookup.getInstance().getEntityDescriptors().get(entityType);
 
     if (descriptor == null) {
       LOG.error(AaiUiMsgs.FAILED_TO_DETERMINE,
@@ -1634,7 +1635,7 @@ public class VisualizationContext {
       return null;
     }
 
-    List<String> pkeyNames = descriptor.getPrimaryKeyAttributeName();
+    List<String> pkeyNames = descriptor.getPrimaryKeyAttributeNames();
 
     if (pkeyNames == null || pkeyNames.size() == 0) {
       LOG.error(AaiUiMsgs.FAILED_TO_DETERMINE,

@@ -22,9 +22,9 @@
  */
 package org.onap.aai.sparky.viewandinspect.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import java.util.Arrays;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * The Class RelationshipList.
@@ -39,20 +39,6 @@ public class RelationshipList {
 
   @JsonProperty("relationship")
   public void setRelationshipList(Relationship[] relationship) {
-    this.relationship = relationship;
-  }
-
-  /**
-   * @return the relationship
-   */
-  public Relationship[] getRelationship() {
-    return relationship;
-  }
-
-  /**
-   * @param relationship the relationship to set
-   */
-  public void setRelationship(Relationship[] relationship) {
     this.relationship = relationship;
   }
 

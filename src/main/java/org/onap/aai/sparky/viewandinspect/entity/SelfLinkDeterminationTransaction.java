@@ -22,7 +22,7 @@
  */
 package org.onap.aai.sparky.viewandinspect.entity;
 
-import org.onap.aai.sparky.dal.rest.OperationResult;
+import org.onap.aai.restclient.client.OperationResult;
 
 public class SelfLinkDeterminationTransaction {
 
@@ -31,7 +31,6 @@ public class SelfLinkDeterminationTransaction {
   private String queryString;
   private String entityUrl;
   private OperationResult opResult;
-
 
 
   public String getParentNodeId() {

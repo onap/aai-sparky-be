@@ -29,10 +29,9 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.onap.aai.sparky.config.oxm.OxmEntityDescriptor;
-import org.onap.aai.sparky.config.oxm.OxmModelLoader;
+import org.onap.aai.restclient.client.OperationResult;
 import org.onap.aai.sparky.dal.NetworkTransaction;
-import org.onap.aai.sparky.dal.rest.OperationResult;
+
 
 /**
  * The Class ActiveInventoryEntityStatistics.
@@ -50,9 +49,6 @@ public class ActiveInventoryEntityStatistics {
   private static final String NUM_RETRIES = "NumRetries";
 
   private static final String ERROR = "Error";
-
-  private OxmModelLoader loader;
-
 
   private Map<String, HashMap<String, AtomicInteger>> activeInventoryEntityStatistics;
 
@@ -75,30 +71,6 @@ public class ActiveInventoryEntityStatistics {
     return opStats;
 
   }
-
-  /*
-   * private void createSearchableActiveInventoryEntityStatistics() {
-   * 
-   * Map<String,OxmEntityDescriptor> descriptors = loader.getSearchableEntityDescriptors();
-   * 
-   * if(descriptors == null) { return; }
-   * 
-   * OxmEntityDescriptor d = null; for ( String key : descriptors.keySet() ) { d =
-   * descriptors.get(key); activeInventoryEntityStatistics.put(d.getEntityName(),
-   * createEntityOpStats()); }
-   * 
-   * }
-   */
-
-  /*
-   * private void createCrossEntityReferenceActiveInventoryEntityStatistics() {
-   * 
-   * Map<String,OxmEntityDescriptor> descriptors = loader.getCrossReferenceEntityDescriptors();
-   * 
-   * 
-   * }
-   */
-
 
   /**
    * Initializecreate active inventory entity statistics.
@@ -126,11 +98,8 @@ public class ActiveInventoryEntityStatistics {
    *
    * @param loader the loader
    */
-  public ActiveInventoryEntityStatistics(OxmModelLoader loader) {
-    this.loader = loader;
+  public ActiveInventoryEntityStatistics() {
     activeInventoryEntityStatistics = new HashMap<String, HashMap<String, AtomicInteger>>();
-    // createSearchableActiveInventoryEntityStatistics();
-    // createCrossEntityReferenceActiveInventoryEntityStatistics();
     reset();
   }
 
@@ -139,19 +108,27 @@ public class ActiveInventoryEntityStatistics {
    *
    * @param descriptors the descriptors
    */
-  public void initializeCountersFromOxmEntityDescriptors(
-      Map<String, OxmEntityDescriptor> descriptors) {
+  public void intializeEntityCounters(String... entityTypes) {
 
-    if (descriptors == null) {
-      return;
+    if (entityTypes != null && entityTypes.length > 0) {
+      for (String entityType : entityTypes) {
+        activeInventoryEntityStatistics.put(entityType, createEntityOpStats());
+      }
+
     }
 
-    OxmEntityDescriptor descriptor = null;
-    for (String key : descriptors.keySet()) {
-      descriptor = descriptors.get(key);
-      activeInventoryEntityStatistics.put(descriptor.getEntityName(), createEntityOpStats());
-    }
   }
+
+  public void intializeEntityCounters(Set<String> entityTypes) {
+
+    if (entityTypes != null && entityTypes.size() > 0) {
+      for (String entityType : entityTypes) {
+        activeInventoryEntityStatistics.put(entityType, createEntityOpStats());
+      }
+    }
+
+  }
+
 
 
   /**
@@ -230,8 +207,8 @@ public class ActiveInventoryEntityStatistics {
         opStats.get(NO_PAYLOAD).incrementAndGet();
       }
 
-      if (or.getNumRequestRetries() > 0) {
-        opStats.get(NUM_RETRIES).addAndGet(or.getNumRequestRetries());
+      if (or.getNumRetries() > 0) {
+        opStats.get(NUM_RETRIES).addAndGet(or.getNumRetries());
       }
 
     }
