@@ -34,23 +34,23 @@ import org.onap.aai.sparky.viewandinspect.entity.GraphRequest;
 
 public class GraphRequestTest {
 
-  private GraphRequest graphRequest;
-
-  @Before
-  public void init() throws Exception {
-    graphRequest = new GraphRequest();
-
-  }
-
-  @Test
-  public void updateValues() {
-
-    graphRequest.setHashId("HashID");
-    assertNotNull(graphRequest.getHashId());
-    graphRequest.setIncludeGraphMeta(true);
-    assertTrue(graphRequest.isIncludeGraphMeta());
-    assertNotNull(graphRequest.toString());
-
-  }
+	private GraphRequest graphRequest; 
+	 
+	@Before
+	  public void init() throws Exception {
+		graphRequest = new GraphRequest();
+	      
+	  }
+	
+	@Test 
+	public void updateValues() {
+	
+		graphRequest.setHashId("HashID");
+		assertNotNull(graphRequest.getHashId());
+		graphRequest.setIncludeGraphMeta(true);
+		assertTrue(graphRequest.isIncludeGraphMeta());
+		assertNotNull(graphRequest.toString());
+		
+	}
 
 }

@@ -22,6 +22,7 @@
  */
 package org.onap.aai.sparky.aggregation.sync;
 
+import org.onap.aai.sparky.config.oxm.SearchableEntityLookup;
 import org.onap.aai.sparky.dal.ActiveInventoryAdapter;
 import org.onap.aai.sparky.dal.ElasticSearchAdapter;
 import org.onap.aai.sparky.sync.ElasticSearchSchemaFactory;
@@ -43,7 +44,8 @@ public class HistoricalEntitySyncController extends SyncControllerImpl
       ActiveInventoryAdapter aaiAdapter, ElasticSearchAdapter esAdapter,
       ElasticSearchSchemaConfig schemaConfig, ElasticSearchEndpointConfig endpointConfig,
       int syncFrequencyInMinutes, NetworkStatisticsConfig aaiStatConfig,
-      NetworkStatisticsConfig esStatConfig) throws Exception {
+      NetworkStatisticsConfig esStatConfig, SearchableEntityLookup searchableEntityLookup)
+      throws Exception {
     super(syncControllerConfig);
 
     // final String controllerName = "Historical Entity Count Synchronizer";
@@ -61,7 +63,7 @@ public class HistoricalEntitySyncController extends SyncControllerImpl
     HistoricalEntitySummarizer historicalSummarizer = new HistoricalEntitySummarizer(schemaConfig,
         syncControllerConfig.getNumInternalSyncWorkers(),
         syncControllerConfig.getNumSyncActiveInventoryWorkers(),
-        syncControllerConfig.getNumSyncElasticWorkers(), aaiStatConfig, esStatConfig);
+        syncControllerConfig.getNumSyncElasticWorkers(),aaiStatConfig, esStatConfig,searchableEntityLookup);
 
     historicalSummarizer.setAaiAdapter(aaiAdapter);
     historicalSummarizer.setElasticSearchAdapter(esAdapter);
@@ -80,8 +82,8 @@ public class HistoricalEntitySyncController extends SyncControllerImpl
 
   @Override
   public void registerController() {
-    if (syncControllerRegistry != null) {
-      if (syncControllerConfig.isEnabled()) {
+    if ( syncControllerRegistry != null ) {
+      if ( syncControllerConfig.isEnabled()) { 
         syncControllerRegistry.registerSyncController(this);
       }
     }

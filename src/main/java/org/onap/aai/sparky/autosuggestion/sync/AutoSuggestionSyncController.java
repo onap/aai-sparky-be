@@ -22,8 +22,11 @@
  */
 package org.onap.aai.sparky.autosuggestion.sync;
 
+import org.onap.aai.sparky.config.oxm.OxmEntityLookup;
+import org.onap.aai.sparky.config.oxm.SuggestionEntityLookup;
 import org.onap.aai.sparky.dal.ActiveInventoryAdapter;
 import org.onap.aai.sparky.dal.ElasticSearchAdapter;
+import org.onap.aai.sparky.search.filters.config.FiltersConfig;
 import org.onap.aai.sparky.sync.ElasticSearchIndexCleaner;
 import org.onap.aai.sparky.sync.ElasticSearchSchemaFactory;
 import org.onap.aai.sparky.sync.IndexCleaner;
@@ -36,16 +39,16 @@ import org.onap.aai.sparky.sync.config.ElasticSearchSchemaConfig;
 import org.onap.aai.sparky.sync.config.NetworkStatisticsConfig;
 import org.onap.aai.sparky.sync.config.SyncControllerConfig;
 
-public class AutoSuggestionSyncController extends SyncControllerImpl
-    implements SyncControllerRegistrar {
+public class AutoSuggestionSyncController extends SyncControllerImpl implements SyncControllerRegistrar {
 
   private SyncControllerRegistry syncControllerRegistry;
-
+    
   public AutoSuggestionSyncController(SyncControllerConfig syncControllerConfig,
       ActiveInventoryAdapter aaiAdapter, ElasticSearchAdapter esAdapter,
       ElasticSearchSchemaConfig schemaConfig, ElasticSearchEndpointConfig endpointConfig,
-      NetworkStatisticsConfig aaiStatConfig, NetworkStatisticsConfig esStatConfig)
-      throws Exception {
+      NetworkStatisticsConfig aaiStatConfig, NetworkStatisticsConfig esStatConfig,
+      OxmEntityLookup oxmEntityLookup, SuggestionEntityLookup suggestionEntityLookup,
+      FiltersConfig filtersConfig) throws Exception {
     super(syncControllerConfig);
 
     // final String controllerName = "Auto Suggestion Synchronizer";
@@ -58,7 +61,8 @@ public class AutoSuggestionSyncController extends SyncControllerImpl
     AutosuggestionSynchronizer suggestionSynchronizer = new AutosuggestionSynchronizer(schemaConfig,
         syncControllerConfig.getNumInternalSyncWorkers(),
         syncControllerConfig.getNumSyncActiveInventoryWorkers(),
-        syncControllerConfig.getNumSyncElasticWorkers(), aaiStatConfig, esStatConfig);
+        syncControllerConfig.getNumSyncElasticWorkers(), aaiStatConfig, esStatConfig,
+        oxmEntityLookup, suggestionEntityLookup, filtersConfig);
 
     suggestionSynchronizer.setAaiAdapter(aaiAdapter);
     suggestionSynchronizer.setElasticSearchAdapter(esAdapter);
@@ -87,11 +91,11 @@ public class AutoSuggestionSyncController extends SyncControllerImpl
   @Override
   public void registerController() {
 
-    if (syncControllerRegistry != null) {
-      if (syncControllerConfig.isEnabled()) {
+    if ( syncControllerRegistry != null ) {
+      if ( syncControllerConfig.isEnabled()) { 
         syncControllerRegistry.registerSyncController(this);
       }
     }
-
+    
   }
 }

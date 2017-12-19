@@ -32,7 +32,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.onap.aai.sparky.security.EcompSso;
 import org.onap.aai.sparky.security.portal.config.PortalAuthenticationConfig;
-import org.onap.aai.sparky.viewandinspect.config.TierSupportUiConstants;
+import org.onap.aai.sparky.viewandinspect.config.SparkyConstants;
 import org.openecomp.portalsdk.core.onboarding.crossapi.IPortalRestAPIService;
 import org.openecomp.portalsdk.core.onboarding.exception.PortalAPIException;
 import org.openecomp.portalsdk.core.restful.domain.EcompRole;
@@ -54,7 +54,7 @@ public class PortalRestAPIServiceImpl implements IPortalRestAPIService {
    * Initialise user manager.
    */
   public PortalRestAPIServiceImpl() {
-    userManager = new UserManager(new File(TierSupportUiConstants.USERS_FILE_LOCATION));
+    userManager = new UserManager(new File(SparkyConstants.USERS_FILE_LOCATION));
   }
 
   /////////////////////////////////////////////////////////////////////////////
@@ -73,8 +73,8 @@ public class PortalRestAPIServiceImpl implements IPortalRestAPIService {
     LOG.debug("Push user [loginId:" + user.getLoginId() + "]");
 
     if (userManager.getUser(user.getLoginId()).isPresent()) {
-      String message =
-          getMessage(ERROR_MESSAGE, "push", user.getLoginId()) + ", user is already stored";
+      String message = getMessage(ERROR_MESSAGE, "push", user.getLoginId())
+          + ", user is already stored";
       LOG.error(message);
       throw new PortalAPIException(message);
     }
@@ -147,12 +147,8 @@ public class PortalRestAPIServiceImpl implements IPortalRestAPIService {
   /////////////////////////////////////////////////////////////////////////////
   // Role interface
   /////////////////////////////////////////////////////////////////////////////
-  public List<EcompRole> getAvailableRoles() throws PortalAPIException {
-    LOG.debug("Get available roles");
-    return UserManager.getRoles();
-  }
 
-  public List<EcompRole> getAvailableRoles(String requestedLoginId) throws PortalAPIException {
+  public List<EcompRole> getAvailableRoles() throws PortalAPIException {
     LOG.debug("Get available roles");
     return UserManager.getRoles();
   }
@@ -220,4 +216,11 @@ public class PortalRestAPIServiceImpl implements IPortalRestAPIService {
     formatter.applyPattern(message);
     return formatter.format(args);
   }
+
+  @Override
+  public List<EcompRole> getAvailableRoles(String requestedLoginId) throws PortalAPIException {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
 }

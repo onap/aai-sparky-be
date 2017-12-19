@@ -47,9 +47,8 @@ import org.onap.aai.sparky.config.oxm.OxmEntityDescriptor;
 import org.onap.aai.sparky.config.oxm.OxmEntityLookup;
 import org.onap.aai.sparky.config.oxm.SearchableEntityLookup;
 import org.onap.aai.sparky.config.oxm.SearchableOxmEntityDescriptor;
+import org.onap.aai.sparky.dal.ActiveInventoryAdapter;
 import org.onap.aai.sparky.dal.NetworkTransaction;
-import org.onap.aai.sparky.dal.aai.config.ActiveInventoryConfig;
-import org.onap.aai.sparky.dal.elasticsearch.config.ElasticSearchConfig;
 import org.onap.aai.sparky.dal.rest.HttpMethod;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
 import org.onap.aai.sparky.sync.AbstractEntitySynchronizer;
@@ -118,7 +117,10 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
   private Map<String, Integer> retryLimitTracker;
   private boolean isAllWorkEnumerated;
   protected ExecutorService esPutExecutor;
-
+  private CrossEntityReferenceLookup crossEntityReferenceLookup;
+  private OxmEntityLookup oxmEntityLookup;
+  private SearchableEntityLookup searchableEntityLookup;
+  
 
   /**
    * Instantiates a new cross entity reference synchronizer.
@@ -128,9 +130,13 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
    */
   public CrossEntityReferenceSynchronizer(ElasticSearchSchemaConfig schemaConfig,
       int internalSyncWorkers, int aaiWorkers, int esWorkers, NetworkStatisticsConfig aaiStatConfig,
-      NetworkStatisticsConfig esStatConfig) throws Exception {
+      NetworkStatisticsConfig esStatConfig, CrossEntityReferenceLookup crossEntityReferenceLookup,
+      OxmEntityLookup oxmEntityLookup, SearchableEntityLookup searchableEntityLookup) throws Exception {
     super(LOG, "CERS", internalSyncWorkers, aaiWorkers, esWorkers, schemaConfig.getIndexName(),
         aaiStatConfig, esStatConfig);
+    this.crossEntityReferenceLookup = crossEntityReferenceLookup;
+    this.oxmEntityLookup = oxmEntityLookup;
+    this.searchableEntityLookup = searchableEntityLookup;
     this.selflinks = new ConcurrentLinkedDeque<SelfLinkDescriptor>();
     this.retryQueue = new ConcurrentLinkedDeque<RetryCrossEntitySyncContainer>();
     this.retryLimitTracker = new ConcurrentHashMap<String, Integer>();
@@ -138,24 +144,22 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
     this.isAllWorkEnumerated = false;
     this.esPutExecutor = NodeUtils.createNamedExecutor("CERS-ES-PUT", 5, LOG);
     this.aaiEntityStats.intializeEntityCounters(
-        CrossEntityReferenceLookup.getInstance().getCrossReferenceEntityDescriptors().keySet());
+        crossEntityReferenceLookup.getCrossReferenceEntityDescriptors().keySet());
 
     this.esEntityStats.intializeEntityCounters(
-        CrossEntityReferenceLookup.getInstance().getCrossReferenceEntityDescriptors().keySet());
+        crossEntityReferenceLookup.getCrossReferenceEntityDescriptors().keySet());
     this.syncDurationInMs = -1;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /* (non-Javadoc)
    * @see org.openecomp.sparky.synchronizer.IndexSynchronizer#doSync()
    */
   @Override
   public OperationState doSync() {
     this.syncDurationInMs = -1;
-    String txnID = NodeUtils.getRandomTxnId();
+	String txnID = NodeUtils.getRandomTxnId();
     MdcContext.initialize(txnID, "CrossEntitySynchronizer", "", "Sync", "");
-
+	
     resetCounters();
     syncStartedTimeStampInMs = System.currentTimeMillis();
     launchSyncFlow();
@@ -171,9 +175,7 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
     return SynchronizerState.IDLE;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /* (non-Javadoc)
    * @see org.openecomp.sparky.synchronizer.IndexSynchronizer#getStatReport(boolean)
    */
   @Override
@@ -182,9 +184,7 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
     return getStatReport(syncDurationInMs, showFinalReport);
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /* (non-Javadoc)
    * @see org.openecomp.sparky.synchronizer.IndexSynchronizer#shutdown()
    */
   @Override
@@ -209,9 +209,9 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
    * @return the operation state
    */
   private OperationState launchSyncFlow() {
-    final Map<String, String> contextMap = MDC.getCopyOfContextMap();
+	final Map<String,String> contextMap = MDC.getCopyOfContextMap();
     Map<String, CrossEntityReferenceDescriptor> descriptorMap =
-        CrossEntityReferenceLookup.getInstance().getCrossReferenceEntityDescriptors();
+        crossEntityReferenceLookup.getCrossReferenceEntityDescriptors();
 
     if (descriptorMap.isEmpty()) {
       LOG.error(AaiUiMsgs.ERROR_LOADING_OXM);
@@ -236,7 +236,7 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
 
           @Override
           public Void get() {
-            MDC.setContextMap(contextMap);
+        	MDC.setContextMap(contextMap);
             OperationResult typeLinksResult = null;
             try {
               typeLinksResult = aaiAdapter.getSelfLinksByEntityType(key);
@@ -300,7 +300,7 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
 
       if (linkDescriptor.getSelfLink() != null && linkDescriptor.getEntityType() != null) {
 
-        descriptor = CrossEntityReferenceLookup.getInstance().getCrossReferenceEntityDescriptors()
+        descriptor = crossEntityReferenceLookup.getCrossReferenceEntityDescriptors()
             .get(linkDescriptor.getEntityType());
 
         if (descriptor == null) {
@@ -363,8 +363,6 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
       JsonNode resultData = rootNode.get("result-data");
       ArrayNode resultDataArrayNode = null;
 
-      CrossEntityReferenceLookup cerLookup = CrossEntityReferenceLookup.getInstance();
-
       if (resultData.isArray()) {
         resultDataArrayNode = (ArrayNode) resultData;
 
@@ -380,7 +378,7 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
           CrossEntityReferenceDescriptor descriptor = null;
 
           if (resourceType != null && resourceLink != null) {
-            descriptor = cerLookup.getCrossReferenceEntityDescriptors().get(resourceType);
+            descriptor = crossEntityReferenceLookup.getCrossReferenceEntityDescriptors().get(resourceType);
 
             if (descriptor == null) {
               LOG.error(AaiUiMsgs.MISSING_ENTITY_DESCRIPTOR, resourceType);
@@ -388,8 +386,8 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
               continue;
             }
             if (descriptor.hasCrossEntityReferences()) {
-              selflinks.add(new SelfLinkDescriptor(resourceLink,
-                  SynchronizerConstants.DEPTH_ALL_MODIFIER, resourceType));
+              selflinks.add(new SelfLinkDescriptor(
+                  resourceLink,SynchronizerConstants.DEPTH_ALL_MODIFIER, resourceType));
             }
           }
         }
@@ -397,60 +395,60 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
     }
   }
 
-
-
+  
+  
   /**
-   * By providing the entity type and a json node for the entity, determine the primary key name(s)
-   * + primary key value(s) sufficient to build an entity query string of the following format:
+   * By providing the entity type and a json node for the entity, determine the
+   * primary key name(s) + primary key value(s) sufficient to build an entity query string
+   * of the following format:
    * 
-   * <entityType>.<primaryKeyNames>:<primaryKeyValues>
+   *      <entityType>.<primaryKeyNames>:<primaryKeyValues>
    * 
    * @return - a composite string in the above format or null
    */
   private String determineEntityQueryString(String entityType, JsonNode entityJsonNode) {
-
+    
     OxmEntityDescriptor entityDescriptor =
-        OxmEntityLookup.getInstance().getEntityDescriptors().get(entityType);
-
+        oxmEntityLookup.getEntityDescriptors().get(entityType);
+    
     String queryString = null;
-
-    if (entityDescriptor != null) {
+    
+    if ( entityDescriptor != null ) {
 
       final List<String> primaryKeyNames = entityDescriptor.getPrimaryKeyAttributeNames();
       final List<String> keyValues = new ArrayList<String>();
       NodeUtils.extractFieldValuesFromObject(entityJsonNode, primaryKeyNames, keyValues);
 
-      queryString = entityType + "." + NodeUtils.concatArray(primaryKeyNames, "/") + ":"
-          + NodeUtils.concatArray(keyValues);
+      queryString = entityType + "." + NodeUtils.concatArray(primaryKeyNames,"/") + ":" + NodeUtils.concatArray(keyValues);
 
-    }
-
+    } 
+    
     return queryString;
 
-
+    
   }
-
+  
   /**
    * Fetch document for upsert.
    *
    * @param txn the txn
    */
   private void fetchDocumentForUpsert(NetworkTransaction txn) {
-
+    
     if (!txn.getOperationResult().wasSuccessful()) {
       LOG.error(AaiUiMsgs.SELF_LINK_GET, txn.getOperationResult().getResult());
       return;
     }
 
-    CrossEntityReferenceDescriptor cerDescriptor = CrossEntityReferenceLookup.getInstance()
+    CrossEntityReferenceDescriptor cerDescriptor = crossEntityReferenceLookup
         .getCrossReferenceEntityDescriptors().get(txn.getDescriptor().getEntityName());
-
+    
     if (cerDescriptor != null && cerDescriptor.hasCrossEntityReferences()) {
 
       final String jsonResult = txn.getOperationResult().getResult();
-
+      
       if (jsonResult != null && jsonResult.length() > 0) {
-
+        
         /**
          * Here's what we are going to do:
          * 
@@ -462,206 +460,185 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
          * <li>Generate the id that will allow the elastic-search upsert to work.
          * <li>Rinse and repeat.
          */
+          
+          CrossEntityReference cerDefinition = cerDescriptor.getCrossEntityReference();
 
-        CrossEntityReference cerDefinition = cerDescriptor.getCrossEntityReference();
+          if (cerDefinition != null) {
+            JsonNode convertedNode = null;
+            try {
+              convertedNode = NodeUtils.convertJsonStrToJsonNode(txn.getOperationResult().getResult());
+              
+              final String parentEntityQueryString = determineEntityQueryString(txn.getEntityType(), convertedNode);
+              
+              List<String> extractedParentEntityAttributeValues = new ArrayList<String>();
 
-        if (cerDefinition != null) {
-          JsonNode convertedNode = null;
-          try {
-            convertedNode =
-                NodeUtils.convertJsonStrToJsonNode(txn.getOperationResult().getResult());
+              NodeUtils.extractFieldValuesFromObject(convertedNode,
+                  cerDefinition.getReferenceAttributes(),
+                  extractedParentEntityAttributeValues);
 
-            final String parentEntityQueryString =
-                determineEntityQueryString(txn.getEntityType(), convertedNode);
+              List<JsonNode> nestedTargetEntityInstances = new ArrayList<JsonNode>();
+              NodeUtils.extractObjectsByKey(convertedNode, cerDefinition.getTargetEntityType(),
+                  nestedTargetEntityInstances);
 
-            List<String> extractedParentEntityAttributeValues = new ArrayList<String>();
+              for (JsonNode targetEntityInstance : nestedTargetEntityInstances) {
 
-            NodeUtils.extractFieldValuesFromObject(convertedNode,
-                cerDefinition.getReferenceAttributes(), extractedParentEntityAttributeValues);
+                if (cerDescriptor != null) {
+                  
+                  String childEntityType = cerDefinition.getTargetEntityType();
+                  
+                  List<String> childPrimaryKeyNames = cerDescriptor.getPrimaryKeyAttributeNames();
+                  
+                  List<String> childKeyValues = new ArrayList<String>();
+                  NodeUtils.extractFieldValuesFromObject(targetEntityInstance, childPrimaryKeyNames, childKeyValues);
+                  
+                  String childEntityQueryKeyString = childEntityType + "." + NodeUtils.concatArray(childPrimaryKeyNames,"/") + ":" + NodeUtils.concatArray(childKeyValues);
+                  
+                  /**
+                   * Build generic-query to query child instance self-link from AAI
+                   */
+                  List<String> orderedQueryKeyParams = new ArrayList<String>();
 
-            List<JsonNode> nestedTargetEntityInstances = new ArrayList<JsonNode>();
-            NodeUtils.extractObjectsByKey(convertedNode, cerDefinition.getTargetEntityType(),
-                nestedTargetEntityInstances);
+                  /**
+                   * At present, there is an issue with resolving the self-link using the
+                   * generic-query with nothing more than the service-instance identifier and the
+                   * service-subscription. There is another level of detail we don't have access to
+                   * unless we parse it out of the service-subscription self-link, which is a
+                   * coupling I would like to avoid. Fortunately, there is a workaround, but only
+                   * for service-instances, which is presently our only use-case for the
+                   * cross-entity-reference in R1707. Going forwards hopefully there will be other
+                   * ways to resolve a child self-link using parental embedded meta data that we
+                   * don't currently have.
+                   * 
+                   * The work-around with the service-instance entity-type is that it's possible to
+                   * request the self-link using only the service-instance-id because of a
+                   * historical AAI functional query requirement that it be possible to query a
+                   * service-instance only by it's service-instance-id. This entity type is the only
+                   * one in the system that can be queried this way which makes it a very limited
+                   * workaround, but good enough for the current release.
+                   */
 
-            for (JsonNode targetEntityInstance : nestedTargetEntityInstances) {
+                  if (SERVICE_INSTANCE.equals(childEntityType)) {
+                    orderedQueryKeyParams.clear();
+                    orderedQueryKeyParams.add(childEntityQueryKeyString);
+                  } else {
+                    orderedQueryKeyParams.add(parentEntityQueryString);
+                    orderedQueryKeyParams.add(childEntityQueryKeyString);
+                  }
 
-              if (cerDescriptor != null) {
+                  String genericQueryStr = null;
+                  try {
+                    genericQueryStr = aaiAdapter.getGenericQueryForSelfLink(childEntityType, orderedQueryKeyParams);
+                    
+                    if (genericQueryStr != null) {
+                      aaiWorkOnHand.incrementAndGet();
 
-                String childEntityType = cerDefinition.getTargetEntityType();
+                      OperationResult aaiQueryResult = aaiAdapter.queryActiveInventoryWithRetries(
+                          genericQueryStr, "application/json",
+                          aaiAdapter.getEndpointConfig().getNumRequestRetries());
 
-                List<String> childPrimaryKeyNames = cerDescriptor.getPrimaryKeyAttributeNames();
+                      aaiWorkOnHand.decrementAndGet();
 
-                List<String> childKeyValues = new ArrayList<String>();
-                NodeUtils.extractFieldValuesFromObject(targetEntityInstance, childPrimaryKeyNames,
-                    childKeyValues);
+                      if (aaiQueryResult!= null && aaiQueryResult.wasSuccessful()) {
+                        
+                        Collection<JsonNode> entityLinks = new ArrayList<JsonNode>();
+                        JsonNode genericQueryResult = null;
+                        try {
+                          genericQueryResult = NodeUtils.convertJsonStrToJsonNode(aaiQueryResult.getResult());
+                          
+                          if ( genericQueryResult != null ) {
+                            
+                            NodeUtils.extractObjectsByKey(genericQueryResult, "resource-link", entityLinks);
 
-                String childEntityQueryKeyString =
-                    childEntityType + "." + NodeUtils.concatArray(childPrimaryKeyNames, "/") + ":"
-                        + NodeUtils.concatArray(childKeyValues);
+                            String selfLink = null;
 
-                /**
-                 * Build generic-query to query child instance self-link from AAI
-                 */
-                List<String> orderedQueryKeyParams = new ArrayList<String>();
+                            if (entityLinks.size() != 1) {
+                              /**
+                               * an ambiguity exists where we can't reliably determine the self
+                               * link, this should be a permanent error
+                               */
+                              LOG.error(AaiUiMsgs.ENTITY_SYNC_FAILED_SELFLINK_AMBIGUITY, String.valueOf(entityLinks.size()));
+                            } else {
+                              selfLink = ((JsonNode) entityLinks.toArray()[0]).asText();
+                              
+                              SearchableOxmEntityDescriptor searchableDescriptor = searchableEntityLookup.getSearchableEntityDescriptors().get( txn.getEntityType());
+                              
+                              if (searchableDescriptor != null && searchableDescriptor.getSearchableAttributes().size() > 0) {
 
-                /**
-                 * At present, there is an issue with resolving the self-link using the
-                 * generic-query with nothing more than the service-instance identifier and the
-                 * service-subscription. There is another level of detail we don't have access to
-                 * unless we parse it out of the service-subscription self-link, which is a coupling
-                 * I would like to avoid. Fortunately, there is a workaround, but only for
-                 * service-instances, which is presently our only use-case for the
-                 * cross-entity-reference in R1707. Going forwards hopefully there will be other
-                 * ways to resolve a child self-link using parental embedded meta data that we don't
-                 * currently have.
-                 * 
-                 * The work-around with the service-instance entity-type is that it's possible to
-                 * request the self-link using only the service-instance-id because of a historical
-                 * AAI functional query requirement that it be possible to query a service-instance
-                 * only by it's service-instance-id. This entity type is the only one in the system
-                 * that can be queried this way which makes it a very limited workaround, but good
-                 * enough for the current release.
-                 */
+                                IndexableCrossEntityReference icer =
+                                    getPopulatedDocument(targetEntityInstance, cerDescriptor);
 
-                if (SERVICE_INSTANCE.equals(childEntityType)) {
-                  orderedQueryKeyParams.clear();
-                  orderedQueryKeyParams.add(childEntityQueryKeyString);
-                } else {
-                  orderedQueryKeyParams.add(parentEntityQueryString);
-                  orderedQueryKeyParams.add(childEntityQueryKeyString);
-                }
+                                for (String parentCrossEntityReferenceAttributeValue : extractedParentEntityAttributeValues) {
+                                  icer.addCrossEntityReferenceValue(
+                                      parentCrossEntityReferenceAttributeValue);
+                                }
+                                
+                                icer.setLink(ActiveInventoryAdapter.extractResourcePath(selfLink));
 
-                String genericQueryStr = null;
-                try {
-                  genericQueryStr =
-                      aaiAdapter.getGenericQueryForSelfLink(childEntityType, orderedQueryKeyParams);
+                                icer.deriveFields();
 
-                  if (genericQueryStr != null) {
-                    aaiWorkOnHand.incrementAndGet();
+                                String link = null;
+                                try {
+                                  link = elasticSearchAdapter.buildElasticSearchGetDocUrl(getIndexName(), icer.getId());
+                                } catch (Exception exc) {
+                                  LOG.error(AaiUiMsgs.ES_FAILED_TO_CONSTRUCT_QUERY, exc.getLocalizedMessage());
+                                }
 
-                    OperationResult aaiQueryResult = aaiAdapter.queryActiveInventoryWithRetries(
-                        genericQueryStr, "application/json", aaiAdapter.getNumRequestRetries());
+                                if (link != null) {
+                                  NetworkTransaction n2 = new NetworkTransaction();
+                                  n2.setLink(link);
+                                  n2.setEntityType(txn.getEntityType());
+                                  n2.setDescriptor(txn.getDescriptor());
+                                  n2.setOperationType(HttpMethod.GET);
 
-                    aaiWorkOnHand.decrementAndGet();
+                                  esWorkOnHand.incrementAndGet();
 
-                    if (aaiQueryResult != null && aaiQueryResult.wasSuccessful()) {
+                                  supplyAsync(new PerformElasticSearchRetrieval(n2, elasticSearchAdapter),
+                                      esExecutor).whenComplete((result, error) -> {
 
-                      Collection<JsonNode> entityLinks = new ArrayList<JsonNode>();
-                      JsonNode genericQueryResult = null;
-                      try {
-                        genericQueryResult =
-                            NodeUtils.convertJsonStrToJsonNode(aaiQueryResult.getResult());
+                                        esWorkOnHand.decrementAndGet();
 
-                        if (genericQueryResult != null) {
-
-                          NodeUtils.extractObjectsByKey(genericQueryResult, "resource-link",
-                              entityLinks);
-
-                          String selfLink = null;
-
-                          if (entityLinks.size() != 1) {
-                            /**
-                             * an ambiguity exists where we can't reliably determine the self link,
-                             * this should be a permanent error
-                             */
-                            LOG.error(AaiUiMsgs.ENTITY_SYNC_FAILED_SELFLINK_AMBIGUITY,
-                                String.valueOf(entityLinks.size()));
-                          } else {
-                            selfLink = ((JsonNode) entityLinks.toArray()[0]).asText();
-
-                            SearchableEntityLookup searchableEntityLookup =
-                                SearchableEntityLookup.getInstance();
-
-                            SearchableOxmEntityDescriptor searchableDescriptor =
-                                searchableEntityLookup.getSearchableEntityDescriptors()
-                                    .get(txn.getEntityType());
-
-                            if (searchableDescriptor != null
-                                && searchableDescriptor.getSearchableAttributes().size() > 0) {
-
-                              IndexableCrossEntityReference icer =
-                                  getPopulatedDocument(targetEntityInstance, cerDescriptor);
-
-                              for (String parentCrossEntityReferenceAttributeValue : extractedParentEntityAttributeValues) {
-                                icer.addCrossEntityReferenceValue(
-                                    parentCrossEntityReferenceAttributeValue);
-                              }
-
-                              icer.setLink(ActiveInventoryConfig.extractResourcePath(selfLink));
-
-                              icer.deriveFields();
-
-                              String link = null;
-                              try {
-                                link = getElasticFullUrl("/" + icer.getId(), getIndexName());
-                              } catch (Exception exc) {
-                                LOG.error(AaiUiMsgs.ES_FAILED_TO_CONSTRUCT_QUERY,
-                                    exc.getLocalizedMessage());
-                              }
-
-                              if (link != null) {
-                                NetworkTransaction n2 = new NetworkTransaction();
-                                n2.setLink(link);
-                                n2.setEntityType(txn.getEntityType());
-                                n2.setDescriptor(txn.getDescriptor());
-                                n2.setOperationType(HttpMethod.GET);
-
-                                esWorkOnHand.incrementAndGet();
-
-                                supplyAsync(
-                                    new PerformElasticSearchRetrieval(n2, elasticSearchAdapter),
-                                    esExecutor).whenComplete((result, error) -> {
-
-                                      esWorkOnHand.decrementAndGet();
-
-                                      if (error != null) {
-                                        LOG.error(AaiUiMsgs.ES_RETRIEVAL_FAILED,
-                                            error.getLocalizedMessage());
-                                      } else {
-                                        updateElasticSearchCounters(result);
-                                        performDocumentUpsert(result, icer);
-                                      }
-                                    });
+                                        if (error != null) {
+                                          LOG.error(AaiUiMsgs.ES_RETRIEVAL_FAILED, error.getLocalizedMessage());
+                                        } else {
+                                          updateElasticSearchCounters(result);
+                                          performDocumentUpsert(result, icer);
+                                        }
+                                      });
+                                }
                               }
                             }
+                          } else {
+                            LOG.error(AaiUiMsgs.ENTITY_SYNC_FAILED_DURING_AAI_RESPONSE_CONVERSION);
                           }
-                        } else {
-                          LOG.error(AaiUiMsgs.ENTITY_SYNC_FAILED_DURING_AAI_RESPONSE_CONVERSION);
+
+                        } catch (Exception exc) {
+                          LOG.error(AaiUiMsgs.JSON_CONVERSION_ERROR, JsonNode.class.toString(), exc.getLocalizedMessage());
                         }
-
-                      } catch (Exception exc) {
-                        LOG.error(AaiUiMsgs.JSON_CONVERSION_ERROR, JsonNode.class.toString(),
-                            exc.getLocalizedMessage());
+                        
+                      } else {
+                        String message = "Entity sync failed because AAI query failed with error " + aaiQueryResult.getResult(); 
+                        LOG.error(AaiUiMsgs.ENTITY_SYNC_FAILED_QUERY_ERROR, message);
                       }
-
+                      
                     } else {
-                      String message = "Entity sync failed because AAI query failed with error "
-                          + aaiQueryResult.getResult();
+                      String message = "Entity Sync failed because generic query str could not be determined.";
                       LOG.error(AaiUiMsgs.ENTITY_SYNC_FAILED_QUERY_ERROR, message);
                     }
-
-                  } else {
-                    String message =
-                        "Entity Sync failed because generic query str could not be determined.";
+                  } catch (Exception exc) {
+                    String message = "Failed to sync entity because generation of generic query failed with error = " + exc.getMessage();
                     LOG.error(AaiUiMsgs.ENTITY_SYNC_FAILED_QUERY_ERROR, message);
                   }
-                } catch (Exception exc) {
-                  String message =
-                      "Failed to sync entity because generation of generic query failed with error = "
-                          + exc.getMessage();
-                  LOG.error(AaiUiMsgs.ENTITY_SYNC_FAILED_QUERY_ERROR, message);
+                  
                 }
-
               }
+              
+            } catch (IOException ioe) {
+              LOG.error(AaiUiMsgs.JSON_PROCESSING_ERROR, ioe.getMessage());
             }
-
-          } catch (IOException ioe) {
-            LOG.error(AaiUiMsgs.JSON_PROCESSING_ERROR, ioe.getMessage());
           }
-        }
-
-      }
-
+          
+        } 
+      
     } else {
       LOG.error(AaiUiMsgs.ENTITY_SYNC_FAILED_DESCRIPTOR_NOT_FOUND, txn.getEntityType());
     }
@@ -690,7 +667,7 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
      */
     String link = null;
     try {
-      link = getElasticFullUrl("/" + icer.getId(), getIndexName());
+      link = elasticSearchAdapter.buildElasticSearchGetDocUrl(getIndexName(), icer.getId());
     } catch (Exception exc) {
       LOG.error(AaiUiMsgs.ES_LINK_UPSERT, exc.getLocalizedMessage());
       return;
@@ -749,9 +726,8 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
       if (wasEntryDiscovered) {
         if (versionNumber != null && jsonPayload != null) {
 
-          String requestPayload = elasticSearchAdapter.buildBulkImportOperationRequest(
-              getIndexName(), ElasticSearchConfig.getConfig().getType(), icer.getId(),
-              versionNumber, jsonPayload);
+          String requestPayload = elasticSearchAdapter.buildBulkImportOperationRequest(getIndexName(),
+              "default", icer.getId(), versionNumber, jsonPayload);
 
           NetworkTransaction transactionTracker = new NetworkTransaction();
           transactionTracker.setEntityType(esGetResult.getEntityType());
@@ -759,7 +735,7 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
           transactionTracker.setOperationType(HttpMethod.PUT);
 
           esWorkOnHand.incrementAndGet();
-          supplyAsync(new PerformElasticSearchUpdate(ElasticSearchConfig.getConfig().getBulkUrl(),
+          supplyAsync(new PerformElasticSearchUpdate(elasticSearchAdapter.getBulkUrl(),
               requestPayload, elasticSearchAdapter, transactionTracker), esPutExecutor)
                   .whenComplete((result, error) -> {
 
@@ -784,8 +760,7 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
           updateElasticTxn.setOperationType(HttpMethod.PUT);
 
           esWorkOnHand.incrementAndGet();
-          supplyAsync(
-              new PerformElasticSearchPut(jsonPayload, updateElasticTxn, elasticSearchAdapter),
+          supplyAsync(new PerformElasticSearchPut(jsonPayload, updateElasticTxn, elasticSearchAdapter),
               esPutExecutor).whenComplete((result, error) -> {
 
                 esWorkOnHand.decrementAndGet();
@@ -851,7 +826,7 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
         try {
           // In this retry flow the icer object has already
           // derived its fields
-          link = getElasticFullUrl("/" + icer.getId(), getIndexName());
+          link = elasticSearchAdapter.buildElasticSearchGetDocUrl(getIndexName(), icer.getId());
         } catch (Exception exc) {
           LOG.error(AaiUiMsgs.ES_FAILED_TO_CONSTRUCT_URI, exc.getLocalizedMessage());
         }

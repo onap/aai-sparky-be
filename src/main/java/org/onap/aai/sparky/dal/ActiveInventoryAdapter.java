@@ -23,6 +23,7 @@
 package org.onap.aai.sparky.dal;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -34,7 +35,6 @@ import java.util.NoSuchElementException;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 
-import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URIBuilder;
 import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
@@ -45,12 +45,11 @@ import org.onap.aai.sparky.config.oxm.OxmEntityDescriptor;
 import org.onap.aai.sparky.config.oxm.OxmEntityLookup;
 import org.onap.aai.sparky.config.oxm.OxmModelLoader;
 import org.onap.aai.sparky.dal.exception.ElasticSearchOperationException;
+import org.onap.aai.sparky.dal.rest.RestClientConstructionException;
+import org.onap.aai.sparky.dal.rest.RestClientFactory;
+import org.onap.aai.sparky.dal.rest.config.RestEndpointConfig;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
-import org.onap.aai.sparky.util.Encryptor;
 import org.onap.aai.sparky.util.NodeUtils;
-import org.onap.aai.sparky.viewandinspect.config.TierSupportUiConstants;
-
-
 
 /**
  * The Class ActiveInventoryAdapter.
@@ -67,74 +66,32 @@ public class ActiveInventoryAdapter {
 
   private static final String HTTP_SCHEME = "http";
   private static final String HTTPS_SCHEME = "https";
-
+  
   private static final String TRANSACTION_ID_PREFIX = "txnId-";
   private static final String UI_APP_NAME = "AAI-UI";
 
   private OxmModelLoader oxmModelLoader;
   private OxmEntityLookup oxmEntityLookup;
+  private RestEndpointConfig endpointConfig; 
 
   private RestClient restClient;
 
-  private String activeInventoryIpAddress;
-  private String activeInventoryServerPort;
-  private int numRequestRetries;
-  private String basicAuthUserName;
-  private String basicAuthPassword;
-  private RestAuthenticationMode restAuthenticationMode;
-  private int connectTimeoutInMs;
-  private int readTimeoutInMs;
-
   /**
    * Instantiates a new active inventory adapter.
+   * @throws RestClientConstructionException 
    *
    */
 
-  public ActiveInventoryAdapter(OxmModelLoader oxmModelLoader,
-      RestAuthenticationMode authenticationMode, boolean validateServerHostname,
-      boolean validateServerCertChain, String certFileName, String certPassword,
-      String truststoreFileName, int connectTimeoutInMs, int readTimeoutInMs)
-      throws ElasticSearchOperationException, IOException {
+  public ActiveInventoryAdapter(OxmModelLoader oxmModelLoader, OxmEntityLookup oxmEntityLookup,
+      RestEndpointConfig endpointConfig)
+      throws ElasticSearchOperationException, IOException, RestClientConstructionException {
 
     this.oxmModelLoader = oxmModelLoader;
-    this.restAuthenticationMode = authenticationMode;
-    this.connectTimeoutInMs = connectTimeoutInMs;
-    this.readTimeoutInMs = readTimeoutInMs;
-
-
-    Encryptor enc = new Encryptor();
-    String certFileNameFullPath = TierSupportUiConstants.CONFIG_AUTH_LOCATION + certFileName;
-    String decryptedCertPassword = enc.decryptValue(certPassword);
-    String truststoreFileNameFullPath =
-        TierSupportUiConstants.CONFIG_AUTH_LOCATION + truststoreFileName;
-
-    this.restClient = new RestClient().authenticationMode(authenticationMode)
-        .validateServerCertChain(validateServerCertChain)
-        .validateServerHostname(validateServerHostname).clientCertFile(certFileNameFullPath)
-        .clientCertPassword(decryptedCertPassword).trustStore(truststoreFileNameFullPath)
-        .connectTimeoutMs(connectTimeoutInMs).readTimeoutMs(readTimeoutInMs);
+    this.oxmEntityLookup = oxmEntityLookup;
+    this.endpointConfig = endpointConfig;
+    this.restClient = RestClientFactory.buildClient(endpointConfig);
 
   }
-
-  public ActiveInventoryAdapter(OxmModelLoader oxmModelLoader,
-      RestAuthenticationMode authenticationMode, boolean validateServerHostname,
-      boolean validateServerCertChain, String basicAuthUserName, String basicAuthPassword,
-      int connectTimeoutInMs, int readTimeoutInMs)
-      throws ElasticSearchOperationException, IOException {
-
-    this.oxmModelLoader = oxmModelLoader;
-    this.restAuthenticationMode = authenticationMode;
-
-    this.restClient = new RestClient().authenticationMode(authenticationMode)
-        .validateServerCertChain(validateServerCertChain)
-        .validateServerHostname(validateServerHostname).connectTimeoutMs(connectTimeoutInMs)
-        .readTimeoutMs(readTimeoutInMs);
-
-    this.basicAuthUserName = basicAuthUserName;
-    this.basicAuthPassword = basicAuthPassword;
-
-  }
-
 
   protected Map<String, List<String>> getMessageHeaders() {
 
@@ -146,7 +103,7 @@ public class ActiveInventoryAdapter {
     headers.putIfAbsent(HEADER_TRANS_ID, new ArrayList<String>());
     headers.get(HEADER_TRANS_ID).add(TRANSACTION_ID_PREFIX + NodeUtils.getRandomTxnId());
 
-    if (restAuthenticationMode == RestAuthenticationMode.SSL_BASIC) {
+    if (endpointConfig.getRestAuthenticationMode() == RestAuthenticationMode.SSL_BASIC) {
 
       headers.putIfAbsent(HEADER_AUTHORIZATION, new ArrayList<String>());
       headers.get(HEADER_AUTHORIZATION).add(getBasicAuthenticationCredentials());
@@ -157,18 +114,9 @@ public class ActiveInventoryAdapter {
   }
 
   protected String getBasicAuthenticationCredentials() {
-    String usernameAndPassword = String.join(":", basicAuthUserName, basicAuthPassword);
+    String usernameAndPassword = String.join(":", endpointConfig.getBasicAuthUserName(),
+        endpointConfig.getBasicAuthPassword());
     return "Basic " + java.util.Base64.getEncoder().encodeToString(usernameAndPassword.getBytes());
-  }
-
-  public int getNumRequestRetries() {
-    return numRequestRetries;
-  }
-
-
-
-  public void setNumRequestRetries(int numRequestRetries) {
-    this.numRequestRetries = numRequestRetries;
   }
 
   public OxmEntityLookup getOxmEntityLookup() {
@@ -177,22 +125,6 @@ public class ActiveInventoryAdapter {
 
   public void setOxmEntityLookup(OxmEntityLookup oxmEntityLookup) {
     this.oxmEntityLookup = oxmEntityLookup;
-  }
-
-  public String getActiveInventoryIpAddress() {
-    return activeInventoryIpAddress;
-  }
-
-  public void setActiveInventoryIpAddress(String activeInventoryIpAddress) {
-    this.activeInventoryIpAddress = activeInventoryIpAddress;
-  }
-
-  public String getActiveInventoryServerPort() {
-    return activeInventoryServerPort;
-  }
-
-  public void setActiveInventoryServerPort(String activeInventoryServerPort) {
-    this.activeInventoryServerPort = activeInventoryServerPort;
   }
 
   protected String getResourceBasePath() {
@@ -205,15 +137,18 @@ public class ActiveInventoryAdapter {
     return "/aai/v" + versionStr;
 
   }
-
-  public int getConnectTimeoutInMs() {
-    return this.connectTimeoutInMs;
+  
+  public static String extractResourcePath(String selflink) {
+    try {
+      return new URI(selflink).getRawPath();
+    } catch (URISyntaxException uriSyntaxException) {
+      LOG.error(AaiUiMsgs.ERROR_EXTRACTING_RESOURCE_PATH_FROM_LINK,
+          uriSyntaxException.getMessage());
+      return selflink;
+    }
   }
 
-  public int getReadTimeoutInMs() {
-    return this.readTimeoutInMs;
-  }
-
+  
   /**
    * Gets the full url.
    *
@@ -223,8 +158,8 @@ public class ActiveInventoryAdapter {
    */
   private String getFullUrl(String resourceUrl) throws Exception {
     final String basePath = getResourceBasePath();
-    return String.format("https://%s:%s%s%s", activeInventoryIpAddress, activeInventoryServerPort,
-        basePath, resourceUrl);
+    return String.format("https://%s:%s%s%s", endpointConfig.getEndpointIpAddress(),
+        endpointConfig.getEndpointServerPort(), basePath, resourceUrl);
   }
 
   public String getGenericQueryForSelfLink(String startNodeType, List<String> queryParams)
@@ -272,7 +207,6 @@ public class ActiveInventoryAdapter {
     link = getFullUrl("/search/nodes-query?search-node-type=" + entityType + "&filter="
         + primaryKeyStr + ":EXISTS");
 
-
     return restClient.get(link, getMessageHeaders(), MediaType.APPLICATION_JSON_TYPE);
 
   }
@@ -319,7 +253,8 @@ public class ActiveInventoryAdapter {
 
     }
 
-    return queryActiveInventoryWithRetries(link, "application/json", numRequestRetries);
+    return queryActiveInventoryWithRetries(link, "application/json",
+        endpointConfig.getNumRequestRetries());
 
   }
 
@@ -362,6 +297,14 @@ public class ActiveInventoryAdapter {
 
     return restClient.get(url, getMessageHeaders(), MediaType.APPLICATION_JSON_TYPE);
 
+  }
+
+  public RestEndpointConfig getEndpointConfig() {
+    return endpointConfig;
+  }
+
+  public void setEndpointConfig(RestEndpointConfig endpointConfig) {
+    this.endpointConfig = endpointConfig;
   }
 
   public OperationResult queryActiveInventoryWithRetries(String url, String responseType,
@@ -413,14 +356,14 @@ public class ActiveInventoryAdapter {
     return result;
 
   }
-
+  
   public String repairSelfLink(String selfLink) {
     return repairSelfLink(selfLink, null);
   }
 
   /**
-   * This method adds a scheme, host and port (if missing) to the passed-in URI. If these parts of
-   * the URI are already present, they will not be duplicated.
+   * This method adds a scheme, host and port (if missing) to the passed-in URI.
+   * If these parts of the URI are already present, they will not be duplicated.
    * 
    * @param selflink The URI to repair
    * @param queryParams The query parameters as a single string
@@ -431,10 +374,10 @@ public class ActiveInventoryAdapter {
       return selflink;
     }
 
-    UriBuilder builder = UriBuilder.fromPath(selflink).host(activeInventoryIpAddress)
-        .port(Integer.parseInt(activeInventoryServerPort));
+    UriBuilder builder = UriBuilder.fromPath(selflink).host(endpointConfig.getEndpointIpAddress())
+        .port(Integer.parseInt(endpointConfig.getEndpointServerPort()));
 
-    switch (restAuthenticationMode) {
+    switch (endpointConfig.getRestAuthenticationMode()) {
 
       case SSL_BASIC:
       case SSL_CERT: {
@@ -447,13 +390,11 @@ public class ActiveInventoryAdapter {
       }
     }
 
-    boolean includeQueryParams = ((null != queryParams) && (!"".equals(queryParams)));
+    boolean includeQueryParams = ( (null != queryParams) && (!"".equals(queryParams)) );
 
-    /*
-     * builder.build().toString() will encode special characters to hexadecimal pairs prefixed with
-     * a '%' so we're adding the query parameters separately, in their UTF-8 representations, so
-     * that characters such as '?', '&', etc. remain intact as needed by the synchronizer
-     */
+    /* builder.build().toString() will encode special characters to hexadecimal pairs prefixed with a '%'
+       so we're adding the query parameters separately, in their UTF-8 representations, so that
+       characters such as '?', '&', etc. remain intact as needed by the synchronizer */
     return (builder.build().toString() + (includeQueryParams ? queryParams : ""));
   }
 

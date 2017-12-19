@@ -36,52 +36,53 @@ import org.onap.aai.sparky.viewandinspect.enumeration.NodeProcessingState;
 
 public class NodeMetaTest {
 
-  private NodeMeta nodeMeta;
-  private NodeProcessingState nodeProcessingState;
-  private NodeDebug nodeDebug;
-  private VisualizationConfigs visualizationConfigs;
+	private NodeMeta nodeMeta; 
+	private NodeProcessingState nodeProcessingState;
+	private NodeDebug nodeDebug;
+	private VisualizationConfigs visualizationConfigs;
+	 
+	@Before
+	  public void init() throws Exception {
+	    this.visualizationConfigs = new VisualizationConfigs();
+		nodeMeta = new NodeMeta(visualizationConfigs);
+		nodeDebug = new NodeDebug();
+	      
+	  }
+	
+	@Test 
+	public void updateValues() {
+	
+		nodeMeta.setAtMaxDepth(true);
+		assertTrue(nodeMeta.isAtMaxDepth());
+		nodeMeta.setSelfLinkResolved(true);
+		assertTrue(nodeMeta.isSelfLinkResolved());
+		nodeMeta.setProcessingState(nodeProcessingState.READY);
+		assertNotNull(nodeMeta.getProcessingState());
+		nodeMeta.setProcessingErrorOccurred(true);
+		assertTrue(nodeMeta.isProcessingErrorOccurred());
+		nodeMeta.setHasNeighbors(true);
+		assertTrue(nodeMeta.isHasNeighbors());
+		nodeMeta.setNeighborsProcessed(true);
+		assertTrue(nodeMeta.isNeighborsProcessed());
+		nodeMeta.setNodeDepth(3);
+		assertEquals(3,nodeMeta.getNodeDepth());
+		nodeMeta.setNodeDebug(nodeDebug);
+		assertNotNull(nodeMeta.getNodeDebug());
+		nodeMeta.setClassName("generalNodeClass");
+		assertNotNull(nodeMeta.getClassName());
+		nodeMeta.setNumInboundNeighbors(34);
+		assertEquals(34,nodeMeta.getNumInboundNeighbors());
+		nodeMeta.setNumOutboundNeighbors(43);
+		assertEquals(43,nodeMeta.getNumOutboundNeighbors());
+		nodeMeta.setSelfLinkResponseTimeInMs(43);
+		assertEquals(43,nodeMeta.getSelfLinkResponseTimeInMs());
+		nodeMeta.setNodeIssue(true);
+		assertTrue(nodeMeta.isNodeIssue());
+		nodeMeta.setNodeValidated(true);
+		assertTrue(nodeMeta.isNodeValidated());
+		nodeMeta.setSearchTarget(true);
+		assertTrue(nodeMeta.isSearchTarget());
+		
 
-  @Before
-  public void init() throws Exception {
-    nodeMeta = new NodeMeta(new VisualizationConfigs());
-    nodeDebug = new NodeDebug();
-
-  }
-
-  @Test
-  public void updateValues() {
-
-    nodeMeta.setAtMaxDepth(true);
-    assertTrue(nodeMeta.isAtMaxDepth());
-    nodeMeta.setSelfLinkResolved(true);
-    assertTrue(nodeMeta.isSelfLinkResolved());
-    nodeMeta.setProcessingState(nodeProcessingState.READY);
-    assertNotNull(nodeMeta.getProcessingState());
-    nodeMeta.setProcessingErrorOccurred(true);
-    assertTrue(nodeMeta.isProcessingErrorOccurred());
-    nodeMeta.setHasNeighbors(true);
-    assertTrue(nodeMeta.isHasNeighbors());
-    nodeMeta.setNeighborsProcessed(true);
-    assertTrue(nodeMeta.isNeighborsProcessed());
-    nodeMeta.setNodeDepth(3);
-    assertEquals(3, nodeMeta.getNodeDepth());
-    nodeMeta.setNodeDebug(nodeDebug);
-    assertNotNull(nodeMeta.getNodeDebug());
-    nodeMeta.setClassName("generalNodeClass");
-    assertNotNull(nodeMeta.getClassName());
-    nodeMeta.setNumInboundNeighbors(34);
-    assertEquals(34, nodeMeta.getNumInboundNeighbors());
-    nodeMeta.setNumOutboundNeighbors(43);
-    assertEquals(43, nodeMeta.getNumOutboundNeighbors());
-    nodeMeta.setSelfLinkResponseTimeInMs(43);
-    assertEquals(43, nodeMeta.getSelfLinkResponseTimeInMs());
-    nodeMeta.setNodeIssue(true);
-    assertTrue(nodeMeta.isNodeIssue());
-    nodeMeta.setNodeValidated(true);
-    assertTrue(nodeMeta.isNodeValidated());
-    nodeMeta.setSearchTarget(true);
-    assertTrue(nodeMeta.isSearchTarget());
-
-
-  }
+	}
 }

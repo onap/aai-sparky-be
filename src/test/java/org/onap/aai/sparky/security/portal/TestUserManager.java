@@ -72,20 +72,14 @@ public class TestUserManager {
 
   enum TestData {
     // @formatter:off
-    NO_FILE("src/test/resources/portal/no-users.config"), CONCURRENT_USERS(
-        "src/test/resources/portal/concurrent-users.config"), CONCURRENT_EDIT_USERS(
-            "src/test/resources/portal/concurrent-edit-users.config");
-    // ROLES_CONFIG_FILE ("src/test/resources/portal/roles.config");
+    NO_FILE               ("src/test/resources/portal/no-users.config"),
+    CONCURRENT_USERS      ("src/test/resources/portal/concurrent-users.config"),
+    CONCURRENT_EDIT_USERS ("src/test/resources/portal/concurrent-edit-users.config");
+//    ROLES_CONFIG_FILE     ("src/test/resources/portal/roles.config");
 
     private String filename;
-
-    TestData(String filename) {
-      this.filename = filename;
-    }
-
-    public String getFilename() {
-      return this.filename;
-    }
+    TestData(String filename) {this.filename = filename;}
+    public String getFilename() {return this.filename;}
     // @formatter:on
   }
 
@@ -137,8 +131,8 @@ public class TestUserManager {
       return pushTask(concurrentUsers, String.valueOf(NodeUtils.getRandomTxnId()));
     };
 
-    List<Callable<EcompUser>> callables =
-        Arrays.asList(pushTask, pushTask, pushTask, pushTask, pushTask);
+    List<Callable<EcompUser>> callables = Arrays.asList(pushTask, pushTask, pushTask, pushTask,
+        pushTask);
 
     ExecutorService executor = Executors.newWorkStealingPool();
     executor.invokeAll(callables).stream().map(future -> {
@@ -180,9 +174,9 @@ public class TestUserManager {
       return editTask(LOGINID_3, "Amy");
     };
 
-    List<Callable<EcompUser>> callables =
-        Arrays.asList(pushTaskRandomId, pushTaskRandomId, pushTaskId3, editTaskId1,
-            pushTaskRandomId, pushTaskRandomId, editTaskId3, editTaskId2, pushTaskRandomId);
+    List<Callable<EcompUser>> callables = Arrays.asList(pushTaskRandomId, pushTaskRandomId,
+        pushTaskId3, editTaskId1, pushTaskRandomId, pushTaskRandomId, editTaskId3, editTaskId2,
+        pushTaskRandomId);
 
     ExecutorService executor = Executors.newWorkStealingPool();
     List<EcompUser> userTasks = executor.invokeAll(callables).stream().map(future -> {

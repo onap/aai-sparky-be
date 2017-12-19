@@ -31,40 +31,40 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonInclude(Include.NON_NULL)
 public class UiFilterConfig {
-
+ 
   @JsonProperty("filterId")
   private String filterId;
-
+  
   @JsonProperty("filterName")
   private String filterName;
-
+  
   @JsonProperty("displayName")
   private String displayName;
-
+  
   @JsonProperty("dataType")
   private String dataType;
-
+  
   @JsonProperty("multiSelect")
   private String multiSelect;
-
+  
   @JsonProperty("watermark")
   private String watermark;
-
+  
   @JsonProperty("defaultValue")
   private UiFilterOptionsValuesConfig defaultValue;
-
+  
   @JsonProperty("optionsType")
   private String optionsType;
-
+  
   @JsonProperty("optionsValues")
   private List<UiFilterOptionsValuesConfig> optionsValues;
-
+  
   @JsonProperty("dataSource")
   private UiFilterDataSourceConfig dataSource = new UiFilterDataSourceConfig();
-
+  
   @JsonCreator
-  public UiFilterConfig(@JsonProperty("filterId") final String filterId,
-      @JsonProperty("filterName") final String filterName,
+  public UiFilterConfig(@JsonProperty("filterId") final String filterId, 
+      @JsonProperty("filterName") final String filterName, 
       @JsonProperty("displayName") final String displayName,
       @JsonProperty("dataType") final String dataType,
       @JsonProperty("multiSelect") final String multiSelect,
@@ -72,7 +72,8 @@ public class UiFilterConfig {
       @JsonProperty("defaultValue") final UiFilterOptionsValuesConfig defaultValue,
       @JsonProperty("optionsType") final String optionsType,
       @JsonProperty("optionsValues") final List<UiFilterOptionsValuesConfig> optionsValues,
-      @JsonProperty("dataSource") final UiFilterDataSourceConfig dataSource) {
+      @JsonProperty("dataSource") final UiFilterDataSourceConfig dataSource
+      ) {
     this.filterId = filterId;
     this.filterName = filterName;
     this.displayName = displayName;
@@ -138,7 +139,7 @@ public class UiFilterConfig {
   public void setWatermark(String watermark) {
     this.watermark = watermark;
   }
-
+  
   @JsonProperty("defaultValue")
   public UiFilterOptionsValuesConfig getDefaultValue() {
     return defaultValue;
@@ -156,7 +157,6 @@ public class UiFilterConfig {
   public void setOptionsType(String optionsType) {
     this.optionsType = optionsType;
   }
-
   @JsonProperty("optionsValues")
   public List<UiFilterOptionsValuesConfig> getOptionsValues() {
     return optionsValues;

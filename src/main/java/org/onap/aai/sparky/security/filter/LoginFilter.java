@@ -119,8 +119,7 @@ public class LoginFilter implements Filter {
     final String restApiURI = request.getContextPath() + PortalApiConstants.API_PREFIX;
     if (request.getRequestURI().startsWith(restApiURI)) {
       // REST servlet checks credentials
-      LOG.debug(AaiUiMsgs.LOGIN_FILTER_DEBUG,
-          "doFilter: delegating auth to REST servlet for request " + request.getRequestURI());
+      LOG.debug(AaiUiMsgs.LOGIN_FILTER_DEBUG, "doFilter: delegating auth to REST servlet for request " + request.getRequestURI());
       chain.doFilter(request, response);
     } else {
       // All other requests require ECOMP Portal authentication
@@ -137,25 +136,25 @@ public class LoginFilter implements Filter {
           redirectURL = PortalApiProperties.getProperty(PortalApiConstants.ECOMP_REDIRECT_URL);
           logMessage = "Unauthorized login attempt.";
         }
-
+        
         LOG.debug(AaiUiMsgs.LOGIN_FILTER_DEBUG,
-            logMessage + " | Remote IP: " + request.getRemoteAddr() + " | User agent: "
-                + request.getHeader(HttpHeaders.USER_AGENT) + " | Request URL: "
-                + request.getRequestURL() + " | Redirecting to: " + redirectURL);
-
+            logMessage + 
+            " | Remote IP: " + request.getRemoteAddr() + 
+            " | User agent: " + request.getHeader(HttpHeaders.USER_AGENT) + 
+            " | Request URL: " + request.getRequestURL() +
+            " | Redirecting to: " + redirectURL); 
+        
         response.sendRedirect(redirectURL);
       } else {
         HttpSession session = request.getSession(false);
         if (session == null) {
           // New session
           session = request.getSession(true);
-          LOG.debug(AaiUiMsgs.LOGIN_FILTER_DEBUG,
-              "doFilter: created new session " + session.getId());
+          LOG.debug(AaiUiMsgs.LOGIN_FILTER_DEBUG, "doFilter: created new session " + session.getId());
           initiateSessionMgtHandler(request);
         } else {
           // Existing session
-          LOG.debug(AaiUiMsgs.LOGIN_FILTER_DEBUG,
-              "doFilter: resetting idle in existing session " + session.getId());
+          LOG.debug(AaiUiMsgs.LOGIN_FILTER_DEBUG, "doFilter: resetting idle in existing session " + session.getId());
           resetSessionMaxIdleTimeOut(request);
         }
         // Pass request back down the filter chain
@@ -221,16 +220,14 @@ public class LoginFilter implements Filter {
     try {
       HttpSession session = request.getSession(false);
       if (session != null) {
-        final Object maxIdleAttribute =
-            session.getAttribute(PortalApiConstants.GLOBAL_SESSION_MAX_IDLE_TIME);
+        final Object maxIdleAttribute = session
+            .getAttribute(PortalApiConstants.GLOBAL_SESSION_MAX_IDLE_TIME);
         if (maxIdleAttribute != null) {
           session.setMaxInactiveInterval(Integer.parseInt(maxIdleAttribute.toString()));
         }
       }
     } catch (Exception e) {
-      LOG.info(AaiUiMsgs.LOGIN_FILTER_INFO,
-          "resetSessionMaxIdleTimeOut: failed to set session max inactive interval - "
-              + e.getLocalizedMessage());
+      LOG.info(AaiUiMsgs.LOGIN_FILTER_INFO, "resetSessionMaxIdleTimeOut: failed to set session max inactive interval - " + e.getLocalizedMessage());
     }
   }
 

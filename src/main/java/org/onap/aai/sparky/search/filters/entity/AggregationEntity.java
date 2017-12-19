@@ -68,8 +68,9 @@ public class AggregationEntity {
     JsonBuilderFactory factory = Json.createBuilderFactory(null);
 
     return factory.createObjectBuilder()
-        .add("terms",
-            factory.createObjectBuilder().add("field", aggregationFieldName).add("size", size))
+        .add("terms", factory.createObjectBuilder()
+        .add("field", aggregationFieldName)
+        .add("size", size))
         .build();
   }
 

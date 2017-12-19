@@ -34,6 +34,7 @@ import org.onap.aai.restclient.client.OperationResult;
 import org.onap.aai.sparky.dal.NetworkTransaction;
 import org.onap.aai.sparky.dal.rest.HttpMethod;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
+import org.onap.aai.sparky.search.filters.config.FiltersConfig;
 import org.onap.aai.sparky.sync.AbstractEntitySynchronizer;
 import org.onap.aai.sparky.sync.IndexSynchronizer;
 import org.onap.aai.sparky.sync.config.ElasticSearchSchemaConfig;
@@ -56,10 +57,11 @@ public class VnfAliasSuggestionSynchronizer extends AbstractEntitySynchronizer
   private boolean shouldPerformRetry;
   private Map<String, String> contextMap;
   protected ExecutorService esPutExecutor;
+  private FiltersConfig filtersConfig;
 
   public VnfAliasSuggestionSynchronizer(ElasticSearchSchemaConfig schemaConfig,
       int internalSyncWorkers, int aaiWorkers, int esWorkers, NetworkStatisticsConfig aaiStatConfig,
-      NetworkStatisticsConfig esStatConfig) throws Exception {
+      NetworkStatisticsConfig esStatConfig, FiltersConfig filtersConfig) throws Exception {
     super(LOG, "VASS-" + schemaConfig.getIndexName().toUpperCase(), internalSyncWorkers, aaiWorkers,
         esWorkers, schemaConfig.getIndexName(), aaiStatConfig, esStatConfig);
 
@@ -68,6 +70,7 @@ public class VnfAliasSuggestionSynchronizer extends AbstractEntitySynchronizer
     this.synchronizerName = "VNFs Alias Suggestion Synchronizer";
     this.contextMap = MDC.getCopyOfContextMap();
     this.esPutExecutor = NodeUtils.createNamedExecutor("ASS-ES-PUT", 2, LOG);
+    this.filtersConfig = filtersConfig;
   }
 
   @Override
@@ -111,18 +114,18 @@ public class VnfAliasSuggestionSynchronizer extends AbstractEntitySynchronizer
   private void syncEntity() {
     String txnId = NodeUtils.getRandomTxnId();
     MdcContext.initialize(txnId, synchronizerName, "", "Sync", "");
-
-    AggregationSuggestionEntity syncEntity = new AggregationSuggestionEntity();
+    
+    AggregationSuggestionEntity syncEntity = new AggregationSuggestionEntity(filtersConfig);
     syncEntity.deriveFields();
     syncEntity.initializeFilters();
 
     String link = null;
     try {
-      link = getElasticFullUrl("/" + syncEntity.getId(), getIndexName());
+      link = elasticSearchAdapter.buildElasticSearchGetDocUrl(getIndexName(), syncEntity.getId());
     } catch (Exception exc) {
       LOG.error(AaiUiMsgs.ES_LINK_UPSERT, exc.getLocalizedMessage());
     }
-
+    
     try {
       String jsonPayload = null;
       jsonPayload = syncEntity.getAsJson();
@@ -134,8 +137,8 @@ public class VnfAliasSuggestionSynchronizer extends AbstractEntitySynchronizer
 
         esWorkOnHand.incrementAndGet();
         final Map<String, String> contextMap = MDC.getCopyOfContextMap();
-        supplyAsync(new PerformElasticSearchPut(jsonPayload, elasticPutTxn, elasticSearchAdapter,
-            contextMap), esPutExecutor).whenComplete((result, error) -> {
+        supplyAsync(new PerformElasticSearchPut(jsonPayload, elasticPutTxn,
+            elasticSearchAdapter, contextMap), esPutExecutor).whenComplete((result, error) -> {
 
               esWorkOnHand.decrementAndGet();
 

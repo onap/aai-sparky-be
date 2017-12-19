@@ -36,7 +36,7 @@ public class BoolQueryBuilder {
 
   private List<MatchFilterCriteriaEntity> mustFilters;
   private List<MatchFilterCriteriaEntity> shouldFilters;
-
+  
   private int minShouldMatch;
 
   public BoolQueryBuilder() {
@@ -62,15 +62,15 @@ public class BoolQueryBuilder {
     }
 
   }
-
+  
   public void setMinShouldMatch(int minShouldMatch) {
     this.minShouldMatch = minShouldMatch;
   }
-
+  
   public boolean isMatchAll() {
     return (mustFilters.isEmpty() && shouldFilters.isEmpty());
   }
-
+  
   public JsonObject getJsonObject() {
     /*
      * Specify a null config for now, but if we want normalize all the builders, we can do it at one
@@ -80,13 +80,13 @@ public class BoolQueryBuilder {
 
     JsonObjectBuilder boolBuilder = factory.createObjectBuilder();
 
-    if (!mustFilters.isEmpty()) {
+    if(!mustFilters.isEmpty()){
       JsonArrayBuilder mustArrayBuilder = factory.createArrayBuilder();
-
+      
       for (MatchFilterCriteriaEntity matchCriteria : mustFilters) {
         mustArrayBuilder.add(matchCriteria.getJsonObject());
       }
-
+      
       JsonArray mustArray = mustArrayBuilder.build();
       boolBuilder.add("must", mustArray);
     }
@@ -94,7 +94,7 @@ public class BoolQueryBuilder {
     if (!shouldFilters.isEmpty()) {
       JsonArray shouldArray = null;
       JsonArrayBuilder shouldArrayBuilder = factory.createArrayBuilder();
-
+      
       for (MatchFilterCriteriaEntity matchCriteria : shouldFilters) {
         shouldArrayBuilder.add(matchCriteria.getJsonObject());
       }
@@ -102,14 +102,14 @@ public class BoolQueryBuilder {
       shouldArray = shouldArrayBuilder.build();
       boolBuilder.add("should", shouldArray).add("min_should_match", minShouldMatch);
     }
-
+    
     JsonObjectBuilder queryObjectBuilder = factory.createObjectBuilder();
-
-    /*
-     * If both filter lists are empty then we are doing an aggregation based off fields. Just
-     * match-all for the query.
-     */
-    if (isMatchAll()) {
+    
+    /* 
+     * If both filter lists are empty then we are doing an aggregation
+     * based off fields. Just match-all for the query.
+    */
+    if(isMatchAll()) {
       JsonObject matchAllObject = factory.createObjectBuilder().build();
       queryObjectBuilder.add("match_all", matchAllObject);
     } else {

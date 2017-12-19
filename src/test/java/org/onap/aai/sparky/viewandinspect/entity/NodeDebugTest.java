@@ -34,24 +34,24 @@ import org.onap.aai.sparky.viewandinspect.entity.NodeDebug;
 
 public class NodeDebugTest {
 
+	
 
-
-  private NodeDebug nodeDebug;
-
-  @Before
-  public void init() throws Exception {
-    nodeDebug = new NodeDebug();
-
-  }
-
-  @Test
-  public void updateValues() {
-
-    nodeDebug.setProcessingErrorCauses("NullPointerException");
-    assertNotNull(nodeDebug.getProcessingErrorCauses());
-    nodeDebug.setProcessingError(true);
-    assertTrue(nodeDebug.isProcessingError());
-    nodeDebug.setMaxTraversalDepthReached(true);
-    assertTrue(nodeDebug.isMaxTraversalDepthReached());
-  }
+	private NodeDebug nodeDebug; 
+	 
+	@Before
+	  public void init() throws Exception {
+		nodeDebug = new NodeDebug();
+	      
+	  }
+	
+	@Test 
+	public void updateValues() {
+	
+		nodeDebug.setProcessingErrorCauses("NullPointerException");
+		assertNotNull(nodeDebug.getProcessingErrorCauses());
+		nodeDebug.setProcessingError(true);
+		assertTrue(nodeDebug.isProcessingError());
+		nodeDebug.setMaxTraversalDepthReached(true);
+		assertTrue(nodeDebug.isMaxTraversalDepthReached());
+	}
 }

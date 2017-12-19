@@ -29,7 +29,6 @@ import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
 import org.onap.aai.restclient.client.OperationResult;
 import org.onap.aai.sparky.dal.ActiveInventoryAdapter;
-import org.onap.aai.sparky.dal.aai.config.ActiveInventoryConfig;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
 import org.onap.aai.sparky.viewandinspect.entity.NodeProcessingTransaction;
 import org.slf4j.MDC;
@@ -45,7 +44,6 @@ public class PerformNodeSelfLinkProcessingTask implements Supplier<NodeProcessin
   private NodeProcessingTransaction txn;
   private ActiveInventoryAdapter aaiAdapter;
   private Map<String, String> contextMap;
-  private ActiveInventoryConfig aaiConfig;
 
   /**
    * Instantiates a new perform node self link processing task.
@@ -62,11 +60,10 @@ public class PerformNodeSelfLinkProcessingTask implements Supplier<NodeProcessin
    * @param aaiConfig
    */
   public PerformNodeSelfLinkProcessingTask(NodeProcessingTransaction txn, String requestParameters,
-      ActiveInventoryAdapter aaiAdapter, ActiveInventoryConfig aaiConfig) {
+      ActiveInventoryAdapter aaiAdapter) {
     this.aaiAdapter = aaiAdapter;
     this.txn = txn;
     this.contextMap = MDC.getCopyOfContextMap();
-    this.aaiConfig = aaiConfig;
   }
 
   /*
@@ -88,7 +85,7 @@ public class PerformNodeSelfLinkProcessingTask implements Supplier<NodeProcessin
 
     /**
      * Rebuild the self link:
-     * 
+     *  
      * <li>build the base url with the configured scheme + authority (server:port)
      * <li>recombine baseUrl + originalEncodedLink + queryStringParameters
      * 
@@ -98,7 +95,7 @@ public class PerformNodeSelfLinkProcessingTask implements Supplier<NodeProcessin
 
     String parameters = txn.getRequestParameters();
     link = urlSchemeAndAuthority + link;
-
+    
     if (parameters != null) {
       link += parameters;
     }
@@ -111,7 +108,7 @@ public class PerformNodeSelfLinkProcessingTask implements Supplier<NodeProcessin
 
     try {
       opResult = aaiAdapter.queryActiveInventoryWithRetries(link, "application/json",
-          aaiConfig.getAaiRestConfig().getNumRequestRetries());
+          aaiAdapter.getEndpointConfig().getNumRequestRetries());
     } catch (Exception exc) {
       opResult = new OperationResult();
       opResult.setResult(500, "Querying AAI with retry failed due to an exception.");

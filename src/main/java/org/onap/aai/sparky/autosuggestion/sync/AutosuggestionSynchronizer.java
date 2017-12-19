@@ -48,10 +48,11 @@ import org.onap.aai.sparky.config.oxm.OxmEntityDescriptor;
 import org.onap.aai.sparky.config.oxm.OxmEntityLookup;
 import org.onap.aai.sparky.config.oxm.SuggestionEntityDescriptor;
 import org.onap.aai.sparky.config.oxm.SuggestionEntityLookup;
+import org.onap.aai.sparky.dal.ActiveInventoryAdapter;
 import org.onap.aai.sparky.dal.NetworkTransaction;
-import org.onap.aai.sparky.dal.aai.config.ActiveInventoryConfig;
 import org.onap.aai.sparky.dal.rest.HttpMethod;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
+import org.onap.aai.sparky.search.filters.config.FiltersConfig;
 import org.onap.aai.sparky.sync.AbstractEntitySynchronizer;
 import org.onap.aai.sparky.sync.IndexSynchronizer;
 import org.onap.aai.sparky.sync.SynchronizerConstants;
@@ -114,6 +115,9 @@ public class AutosuggestionSynchronizer extends AbstractEntitySynchronizer
   protected ExecutorService esPutExecutor;
   private Deque<RetrySuggestionEntitySyncContainer> retryQueue;
   private Map<String, Integer> retryLimitTracker;
+  private OxmEntityLookup oxmEntityLookup;
+  private SuggestionEntityLookup suggestionEntityLookup;
+  private FiltersConfig filtersConfig;
 
   /**
    * Instantiates a new historical entity summarizer.
@@ -123,10 +127,14 @@ public class AutosuggestionSynchronizer extends AbstractEntitySynchronizer
    */
   public AutosuggestionSynchronizer(ElasticSearchSchemaConfig schemaConfig, int internalSyncWorkers,
       int aaiWorkers, int esWorkers, NetworkStatisticsConfig aaiStatConfig,
-      NetworkStatisticsConfig esStatConfig) throws Exception {
+      NetworkStatisticsConfig esStatConfig, OxmEntityLookup oxmEntityLookup,
+      SuggestionEntityLookup suggestionEntityLookup, FiltersConfig filtersConfig) throws Exception {
+
     super(LOG, "ASES-" + schemaConfig.getIndexName().toUpperCase(), internalSyncWorkers, aaiWorkers,
         esWorkers, schemaConfig.getIndexName(), aaiStatConfig, esStatConfig);
-
+    
+    this.oxmEntityLookup = oxmEntityLookup;
+    this.suggestionEntityLookup = suggestionEntityLookup;
     this.allWorkEnumerated = false;
     this.selflinks = new ConcurrentLinkedDeque<SelfLinkDescriptor>();
     this.entityCounters = new ConcurrentHashMap<String, AtomicInteger>();
@@ -136,6 +144,7 @@ public class AutosuggestionSynchronizer extends AbstractEntitySynchronizer
     this.contextMap = MDC.getCopyOfContextMap();
     this.esPutExecutor = NodeUtils.createNamedExecutor("SUES-ES-PUT", 5, LOG);
     this.syncDurationInMs = -1;
+    this.filtersConfig = filtersConfig;
   }
 
   /**
@@ -146,7 +155,7 @@ public class AutosuggestionSynchronizer extends AbstractEntitySynchronizer
   private OperationState collectAllTheWork() {
     final Map<String, String> contextMap = MDC.getCopyOfContextMap();
     Map<String, SuggestionEntityDescriptor> descriptorMap =
-        SuggestionEntityLookup.getInstance().getSuggestionSearchEntityDescriptors();
+        suggestionEntityLookup.getSuggestionSearchEntityDescriptors();
 
     if (descriptorMap.isEmpty()) {
       LOG.error(AaiUiMsgs.ERROR_LOADING_OXM_SUGGESTIBLE_ENTITIES);
@@ -281,7 +290,7 @@ public class AutosuggestionSynchronizer extends AbstractEntitySynchronizer
 
           if (resourceType != null && resourceLink != null) {
 
-            descriptor = OxmEntityLookup.getInstance().getEntityDescriptors().get(resourceType);
+            descriptor = oxmEntityLookup.getEntityDescriptors().get(resourceType);
 
             if (descriptor == null) {
               LOG.error(AaiUiMsgs.MISSING_ENTITY_DESCRIPTOR, resourceType);
@@ -312,8 +321,7 @@ public class AutosuggestionSynchronizer extends AbstractEntitySynchronizer
 
       if (linkDescriptor.getSelfLink() != null && linkDescriptor.getEntityType() != null) {
 
-        descriptor = OxmEntityLookup.getInstance().getEntityDescriptors()
-            .get(linkDescriptor.getEntityType());
+        descriptor = oxmEntityLookup.getEntityDescriptors().get(linkDescriptor.getEntityType());
 
         if (descriptor == null) {
           LOG.error(AaiUiMsgs.MISSING_ENTITY_DESCRIPTOR, linkDescriptor.getEntityType());
@@ -353,19 +361,16 @@ public class AutosuggestionSynchronizer extends AbstractEntitySynchronizer
   }
 
   /*
-   * Return a set of valid suggestion attributes for the provided entityName that are present in the
-   * JSON
-   * 
+   * Return a set of valid suggestion attributes for the provided entityName
+   * that are present in the JSON
    * @param node JSON node in which the attributes should be found
-   * 
    * @param entityName Name of the entity
-   * 
    * @return List of all valid suggestion attributes(key's)
    */
   public List<String> getSuggestableAttrNamesFromReponse(JsonNode node, String entityName) {
     List<String> suggestableAttr = new ArrayList<String>();
     HashMap<String, String> desc =
-        SuggestionEntityLookup.getInstance().getSuggestionSearchEntityOxmModel().get(entityName);
+        suggestionEntityLookup.getSuggestionSearchEntityOxmModel().get(entityName);
     String attr = desc.get("suggestibleAttributes");
     suggestableAttr = Arrays.asList(attr.split(","));
     List<String> suggestableValue = new ArrayList<>();
@@ -400,18 +405,17 @@ public class AutosuggestionSynchronizer extends AbstractEntitySynchronizer
 
         List<String> availableSuggestableAttrName =
             getSuggestableAttrNamesFromReponse(entityNode, entityName);
-
+        
         ArrayList<ArrayList<String>> uniqueLists =
             SuggestionsPermutation.getNonEmptyUniqueLists(availableSuggestableAttrName);
         // Now we have a list of all possible permutations for the status that are
         // defined for this entity type. Try inserting a document for every combination.
         for (ArrayList<String> uniqueList : uniqueLists) {
 
-          SuggestionSearchEntity sse =
-              new SuggestionSearchEntity(SuggestionEntityLookup.getInstance());
+          SuggestionSearchEntity sse = new SuggestionSearchEntity(filtersConfig, suggestionEntityLookup);
           sse.setSuggestableAttr(uniqueList);
           sse.setFilterBasedPayloadFromResponse(entityNode, entityName, uniqueList);
-          sse.setLink(ActiveInventoryConfig.extractResourcePath(txn.getLink()));
+          sse.setLink(ActiveInventoryAdapter.extractResourcePath(txn.getLink()));
           populateSuggestionSearchEntityDocument(sse, jsonResult, txn);
           // The unique id for the document will be created at derive fields
           sse.deriveFields();
@@ -419,7 +423,7 @@ public class AutosuggestionSynchronizer extends AbstractEntitySynchronizer
           if (sse.isSuggestableDoc()) {
             String link = null;
             try {
-              link = getElasticFullUrl("/" + sse.getId(), getIndexName());
+              link = elasticSearchAdapter.buildElasticSearchGetDocUrl(getIndexName(), sse.getId());
             } catch (Exception exc) {
               LOG.error(AaiUiMsgs.ES_FAILED_TO_CONSTRUCT_QUERY, exc.getLocalizedMessage());
             }
@@ -500,7 +504,7 @@ public class AutosuggestionSynchronizer extends AbstractEntitySynchronizer
      */
     String link = null;
     try {
-      link = getElasticFullUrl("/" + sse.getId(), getIndexName());
+      link = elasticSearchAdapter.buildElasticSearchGetDocUrl(getIndexName(), sse.getId());
     } catch (Exception exc) {
       LOG.error(AaiUiMsgs.ES_LINK_UPSERT, exc.getLocalizedMessage());
       return;
@@ -537,8 +541,7 @@ public class AutosuggestionSynchronizer extends AbstractEntitySynchronizer
           updateElasticTxn.setOperationType(HttpMethod.PUT);
 
           esWorkOnHand.incrementAndGet();
-          supplyAsync(
-              new PerformElasticSearchPut(jsonPayload, updateElasticTxn, elasticSearchAdapter),
+          supplyAsync(new PerformElasticSearchPut(jsonPayload, updateElasticTxn, elasticSearchAdapter),
               esPutExecutor).whenComplete((result, error) -> {
 
                 esWorkOnHand.decrementAndGet();
@@ -607,7 +610,7 @@ public class AutosuggestionSynchronizer extends AbstractEntitySynchronizer
           /*
            * In this retry flow the se object has already derived its fields
            */
-          link = getElasticFullUrl("/" + sus.getId(), getIndexName());
+          link = elasticSearchAdapter.buildElasticSearchGetDocUrl(getIndexName(), sus.getId());
         } catch (Exception exc) {
           LOG.error(AaiUiMsgs.ES_FAILED_TO_CONSTRUCT_URI, exc.getLocalizedMessage());
         }

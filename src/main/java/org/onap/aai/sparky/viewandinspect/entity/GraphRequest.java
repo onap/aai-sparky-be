@@ -23,14 +23,14 @@
 package org.onap.aai.sparky.viewandinspect.entity;
 
 public class GraphRequest {
-
+ 
   private String hashId;
   private boolean includeGraphMeta;
-
+  
   public GraphRequest() {
-
+    
   }
-
+  
   public String getHashId() {
     return hashId;
   }

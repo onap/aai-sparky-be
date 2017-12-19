@@ -34,21 +34,21 @@ import org.onap.aai.sparky.viewandinspect.entity.RelationshipData;
 
 public class RelationshipDataTest {
 
-  private RelationshipData relationshipData;
-
-  @Before
-  public void init() throws Exception {
-    relationshipData = new RelationshipData();
-
-  }
-
-  @Test
-  public void updateValues() {
-
-    relationshipData.setRelationshipKey("RelationshipKey");
-    assertNotNull(relationshipData.getRelationshipKey());
-    relationshipData.setRelationshipValue("RelationshipValues");
-    assertNotNull(relationshipData.getRelationshipValue());
-    assertNotNull(relationshipData.toString());
-  }
+	private RelationshipData relationshipData; 
+	 
+	@Before
+	  public void init() throws Exception {
+		relationshipData = new RelationshipData();
+	      
+	  }
+	
+	@Test 
+	public void updateValues() {
+	
+		relationshipData.setRelationshipKey("RelationshipKey");
+		assertNotNull(relationshipData.getRelationshipKey());
+		relationshipData.setRelationshipValue("RelationshipValues");
+		assertNotNull(relationshipData.getRelationshipValue());
+		assertNotNull(relationshipData.toString());
+	}
 }

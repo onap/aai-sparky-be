@@ -29,7 +29,7 @@ package org.onap.aai.sparky.util;
  * The Class ExceptionHelper.
  */
 public class ExceptionHelper {
-
+   
   /**
    * Extract stack trace elements.
    *
