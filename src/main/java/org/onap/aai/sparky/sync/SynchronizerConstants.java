@@ -39,7 +39,7 @@ public final class SynchronizerConstants {
   public static final String DEPTH_ALL_MODIFIER = "?depth=all";
   public static final String DEPTH_AND_NODES_ONLY_MODIFIER = "?depth=0&nodes-only";
   public static final String NODES_ONLY_MODIFIER = "?nodes-only";
-
+  
   // constants for scheduling synchronizer
   public static final int COMPONENTS_IN_TIMESTAMP = 2;
   public static final String DEFAULT_INITIAL_DELAY_IN_MS = "0";

@@ -36,13 +36,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
  * The Class SearchableEntity.
  */
 public class SearchableEntity extends IndexableEntity implements IndexDocument {
-
+  
   @JsonIgnore
   protected List<String> searchTagCollection = new ArrayList<String>();
-
+  
   @JsonIgnore
   protected List<String> searchTagIdCollection = new ArrayList<String>();
-
+  
   @JsonIgnore
   protected ObjectMapper mapper = new ObjectMapper();
 
@@ -56,11 +56,11 @@ public class SearchableEntity extends IndexableEntity implements IndexDocument {
   /*
    * Generated fields, leave the settings for junit overrides
    */
-
+  
   protected String searchTags; // generated based on searchTagCollection values
-
+  
   protected String searchTagIDs;
-
+  
   /**
    * Generates the sha based id.
    */
@@ -68,9 +68,7 @@ public class SearchableEntity extends IndexableEntity implements IndexDocument {
     this.id = NodeUtils.generateUniqueShaDigest(link);
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /* (non-Javadoc)
    * @see org.openecomp.sparky.synchronizer.entity.IndexDocument#deriveFields()
    */
   @Override
@@ -119,13 +117,11 @@ public class SearchableEntity extends IndexableEntity implements IndexDocument {
 
   @Override
   @JsonIgnore
-  public String getAsJson() throws JsonProcessingException {
+  public String getAsJson() throws JsonProcessingException  {
     return NodeUtils.convertObjectToJson(this, false);
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /* (non-Javadoc)
    * @see java.lang.Object#toString()
    */
   @Override

@@ -74,9 +74,7 @@ public class Relationship {
     this.relatedToProperty = relatedToProperty;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /* (non-Javadoc)
    * @see java.lang.Object#toString()
    */
   @Override

@@ -44,9 +44,8 @@ import org.onap.aai.sparky.config.oxm.OxmEntityDescriptor;
 import org.onap.aai.sparky.config.oxm.OxmEntityLookup;
 import org.onap.aai.sparky.config.oxm.SearchableEntityLookup;
 import org.onap.aai.sparky.config.oxm.SearchableOxmEntityDescriptor;
+import org.onap.aai.sparky.dal.ActiveInventoryAdapter;
 import org.onap.aai.sparky.dal.NetworkTransaction;
-import org.onap.aai.sparky.dal.aai.config.ActiveInventoryConfig;
-import org.onap.aai.sparky.dal.elasticsearch.config.ElasticSearchConfig;
 import org.onap.aai.sparky.dal.rest.HttpMethod;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
 import org.onap.aai.sparky.sync.AbstractEntitySynchronizer;
@@ -112,6 +111,8 @@ public class ViewInspectEntitySynchronizer extends AbstractEntitySynchronizer
   private Deque<RetrySearchableEntitySyncContainer> retryQueue;
   private Map<String, Integer> retryLimitTracker;
   protected ExecutorService esPutExecutor;
+  private OxmEntityLookup oxmEntityLookup;
+  private SearchableEntityLookup searchableEntityLookup;
 
   /**
    * Instantiates a new searchable entity synchronizer.
@@ -121,9 +122,13 @@ public class ViewInspectEntitySynchronizer extends AbstractEntitySynchronizer
    */
   public ViewInspectEntitySynchronizer(ElasticSearchSchemaConfig schemaConfig,
       int internalSyncWorkers, int aaiWorkers, int esWorkers, NetworkStatisticsConfig aaiStatConfig,
-      NetworkStatisticsConfig esStatConfig) throws Exception {
+      NetworkStatisticsConfig esStatConfig, OxmEntityLookup oxmEntityLookup,
+      SearchableEntityLookup searchableEntityLookup) throws Exception {
     super(LOG, "SES", internalSyncWorkers, aaiWorkers, esWorkers, schemaConfig.getIndexName(),
         aaiStatConfig, esStatConfig);
+    
+    this.oxmEntityLookup = oxmEntityLookup;
+    this.searchableEntityLookup = searchableEntityLookup;
     this.allWorkEnumerated = false;
     this.selflinks = new ConcurrentLinkedDeque<SelfLinkDescriptor>();
     this.retryQueue = new ConcurrentLinkedDeque<RetrySearchableEntitySyncContainer>();
@@ -131,9 +136,9 @@ public class ViewInspectEntitySynchronizer extends AbstractEntitySynchronizer
     this.synchronizerName = "Searchable Entity Synchronizer";
     this.esPutExecutor = NodeUtils.createNamedExecutor("SES-ES-PUT", 5, LOG);
     this.aaiEntityStats.intializeEntityCounters(
-        SearchableEntityLookup.getInstance().getSearchableEntityDescriptors().keySet());
+        searchableEntityLookup.getSearchableEntityDescriptors().keySet());
     this.esEntityStats.intializeEntityCounters(
-        SearchableEntityLookup.getInstance().getSearchableEntityDescriptors().keySet());
+        searchableEntityLookup.getSearchableEntityDescriptors().keySet());
     this.syncDurationInMs = -1;
   }
 
@@ -143,10 +148,13 @@ public class ViewInspectEntitySynchronizer extends AbstractEntitySynchronizer
    * @return the operation state
    */
   private OperationState collectAllTheWork() {
+    
+    
+    
     final Map<String, String> contextMap = MDC.getCopyOfContextMap();
     Map<String, SearchableOxmEntityDescriptor> descriptorMap =
-        SearchableEntityLookup.getInstance().getSearchableEntityDescriptors();
-
+        searchableEntityLookup.getSearchableEntityDescriptors();
+    
     if (descriptorMap.isEmpty()) {
       LOG.error(AaiUiMsgs.ERROR_LOADING_OXM_SEARCHABLE_ENTITIES);
       LOG.info(AaiUiMsgs.ERROR_LOADING_OXM_SEARCHABLE_ENTITIES);
@@ -155,15 +163,14 @@ public class ViewInspectEntitySynchronizer extends AbstractEntitySynchronizer
 
     Collection<String> syncTypes = descriptorMap.keySet();
 
-    /*
-     * Collection<String> syncTypes = new ArrayList<String>(); syncTypes.add("service-instance");
-     */
+    /*Collection<String> syncTypes = new ArrayList<String>();
+    syncTypes.add("service-instance");*/
 
     try {
 
       /*
-       * launch a parallel async thread to process the documents for each entity-type (to max the of
-       * the configured executor anyway)
+       * launch a parallel async thread to process the documents for each entity-type (to max the
+       * of the configured executor anyway)
        */
 
       aaiWorkOnHand.set(syncTypes.size());
@@ -228,9 +235,7 @@ public class ViewInspectEntitySynchronizer extends AbstractEntitySynchronizer
     return OperationState.OK;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /* (non-Javadoc)
    * @see org.openecomp.sparky.synchronizer.IndexSynchronizer#doSync()
    */
   @Override
@@ -238,7 +243,7 @@ public class ViewInspectEntitySynchronizer extends AbstractEntitySynchronizer
     this.syncDurationInMs = -1;
     String txnID = NodeUtils.getRandomTxnId();
     MdcContext.initialize(txnID, "SearchableEntitySynchronizer", "", "Sync", "");
-
+    
     resetCounters();
     this.allWorkEnumerated = false;
     syncStartedTimeStampInMs = System.currentTimeMillis();
@@ -263,8 +268,9 @@ public class ViewInspectEntitySynchronizer extends AbstractEntitySynchronizer
       try {
         rootNode = mapper.readTree(jsonResult);
       } catch (IOException exc) {
-        String message = "Could not deserialize JSON (representing operation result) as node tree. "
-            + "Operation result = " + jsonResult + ". " + exc.getLocalizedMessage();
+        String message =
+            "Could not deserialize JSON (representing operation result) as node tree. " +
+            "Operation result = " + jsonResult + ". " + exc.getLocalizedMessage();
         LOG.error(AaiUiMsgs.JSON_PROCESSING_ERROR, message);
       }
 
@@ -287,8 +293,7 @@ public class ViewInspectEntitySynchronizer extends AbstractEntitySynchronizer
 
           if (resourceType != null && resourceLink != null) {
 
-            descriptor = SearchableEntityLookup.getInstance().getSearchableEntityDescriptors()
-                .get(resourceType);
+            descriptor = searchableEntityLookup.getSearchableEntityDescriptors().get(resourceType);
 
             if (descriptor == null) {
               LOG.error(AaiUiMsgs.MISSING_ENTITY_DESCRIPTOR, resourceType);
@@ -297,8 +302,7 @@ public class ViewInspectEntitySynchronizer extends AbstractEntitySynchronizer
             }
 
             if (descriptor.hasSearchableAttributes()) {
-              selflinks.add(new SelfLinkDescriptor(resourceLink,
-                  SynchronizerConstants.NODES_ONLY_MODIFIER, resourceType));
+              selflinks.add(new SelfLinkDescriptor(resourceLink, SynchronizerConstants.NODES_ONLY_MODIFIER, resourceType));
             }
 
           }
@@ -322,8 +326,7 @@ public class ViewInspectEntitySynchronizer extends AbstractEntitySynchronizer
 
       if (linkDescriptor.getSelfLink() != null && linkDescriptor.getEntityType() != null) {
 
-        descriptor = OxmEntityLookup.getInstance().getEntityDescriptors()
-            .get(linkDescriptor.getEntityType());
+        descriptor = oxmEntityLookup.getEntityDescriptors().get(linkDescriptor.getEntityType());
 
         if (descriptor == null) {
           LOG.error(AaiUiMsgs.MISSING_ENTITY_DESCRIPTOR, linkDescriptor.getEntityType());
@@ -384,7 +387,7 @@ public class ViewInspectEntitySynchronizer extends AbstractEntitySynchronizer
      */
     String link = null;
     try {
-      link = getElasticFullUrl("/" + se.getId(), getIndexName());
+      link = elasticSearchAdapter.buildElasticSearchGetDocUrl(getIndexName(), se.getId());
     } catch (Exception exc) {
       LOG.error(AaiUiMsgs.ES_LINK_UPSERT, exc.getLocalizedMessage());
       return;
@@ -430,7 +433,7 @@ public class ViewInspectEntitySynchronizer extends AbstractEntitySynchronizer
             String responseSource = NodeUtils.convertObjectToJson(sourceObject.get(0), false);
             MergableEntity me = mapper.readValue(responseSource, MergableEntity.class);
             ObjectReader updater = mapper.readerForUpdating(me);
-            MergableEntity merged = updater.readValue(NodeUtils.convertObjectToJson(se, false));
+            MergableEntity merged = updater.readValue(NodeUtils.convertObjectToJson(se,false));
             jsonPayload = mapper.writeValueAsString(merged);
           }
         } catch (IOException exc) {
@@ -441,15 +444,14 @@ public class ViewInspectEntitySynchronizer extends AbstractEntitySynchronizer
           return;
         }
       } else {
-        jsonPayload = se.getAsJson();
+          jsonPayload = se.getAsJson();
       }
 
       if (wasEntryDiscovered) {
         if (versionNumber != null && jsonPayload != null) {
 
-          String requestPayload = elasticSearchAdapter.buildBulkImportOperationRequest(
-              getIndexName(), ElasticSearchConfig.getConfig().getType(), se.getId(), versionNumber,
-              jsonPayload);
+          String requestPayload = elasticSearchAdapter.buildBulkImportOperationRequest(getIndexName(),
+              "default", se.getId(), versionNumber, jsonPayload);
 
           NetworkTransaction transactionTracker = new NetworkTransaction();
           transactionTracker.setEntityType(esGetTxn.getEntityType());
@@ -457,7 +459,7 @@ public class ViewInspectEntitySynchronizer extends AbstractEntitySynchronizer
           transactionTracker.setOperationType(HttpMethod.PUT);
 
           esWorkOnHand.incrementAndGet();
-          supplyAsync(new PerformElasticSearchUpdate(ElasticSearchConfig.getConfig().getBulkUrl(),
+          supplyAsync(new PerformElasticSearchUpdate(elasticSearchAdapter.getBulkUrl(),
               requestPayload, elasticSearchAdapter, transactionTracker), esPutExecutor)
                   .whenComplete((result, error) -> {
 
@@ -475,7 +477,7 @@ public class ViewInspectEntitySynchronizer extends AbstractEntitySynchronizer
         }
 
       } else {
-
+        
         if (link != null && jsonPayload != null) {
 
           NetworkTransaction updateElasticTxn = new NetworkTransaction();
@@ -485,8 +487,7 @@ public class ViewInspectEntitySynchronizer extends AbstractEntitySynchronizer
           updateElasticTxn.setOperationType(HttpMethod.PUT);
 
           esWorkOnHand.incrementAndGet();
-          supplyAsync(
-              new PerformElasticSearchPut(jsonPayload, updateElasticTxn, elasticSearchAdapter),
+          supplyAsync(new PerformElasticSearchPut(jsonPayload, updateElasticTxn, elasticSearchAdapter),
               esPutExecutor).whenComplete((result, error) -> {
 
                 esWorkOnHand.decrementAndGet();
@@ -528,9 +529,8 @@ public class ViewInspectEntitySynchronizer extends AbstractEntitySynchronizer
     List<String> primaryKeyValues = new ArrayList<String>();
     String pkeyValue = null;
 
-    SearchableOxmEntityDescriptor searchableDescriptor = SearchableEntityLookup.getInstance()
-        .getSearchableEntityDescriptors().get(resultDescriptor.getEntityName());
-
+    SearchableOxmEntityDescriptor searchableDescriptor = searchableEntityLookup.getSearchableEntityDescriptors().get(resultDescriptor.getEntityName());
+    
     for (String keyName : searchableDescriptor.getPrimaryKeyAttributeNames()) {
       pkeyValue = NodeUtils.getNodeFieldAsText(entityNode, keyName);
       if (pkeyValue != null) {
@@ -571,9 +571,9 @@ public class ViewInspectEntitySynchronizer extends AbstractEntitySynchronizer
       return;
     }
 
-    SearchableOxmEntityDescriptor searchableDescriptor = SearchableEntityLookup.getInstance()
+    SearchableOxmEntityDescriptor searchableDescriptor = searchableEntityLookup
         .getSearchableEntityDescriptors().get(txn.getDescriptor().getEntityName());
-
+    
     try {
       if (searchableDescriptor.hasSearchableAttributes()) {
 
@@ -581,13 +581,13 @@ public class ViewInspectEntitySynchronizer extends AbstractEntitySynchronizer
         if (jsonResult != null && jsonResult.length() > 0) {
 
           SearchableEntity se = new SearchableEntity();
-          se.setLink(ActiveInventoryConfig.extractResourcePath(txn.getLink()));
+          se.setLink(ActiveInventoryAdapter.extractResourcePath(txn.getLink()));
           populateSearchableEntityDocument(se, jsonResult, txn.getDescriptor());
           se.deriveFields();
 
           String link = null;
           try {
-            link = getElasticFullUrl("/" + se.getId(), getIndexName());
+            link = elasticSearchAdapter.buildElasticSearchGetDocUrl(getIndexName(), se.getId());
           } catch (Exception exc) {
             LOG.error(AaiUiMsgs.ES_FAILED_TO_CONSTRUCT_QUERY, exc.getLocalizedMessage());
           }
@@ -676,7 +676,7 @@ public class ViewInspectEntitySynchronizer extends AbstractEntitySynchronizer
           /*
            * In this retry flow the se object has already derived its fields
            */
-          link = getElasticFullUrl("/" + se.getId(), getIndexName());
+          link = elasticSearchAdapter.buildElasticSearchGetDocUrl(getIndexName(), se.getId());
         } catch (Exception exc) {
           LOG.error(AaiUiMsgs.ES_FAILED_TO_CONSTRUCT_URI, exc.getLocalizedMessage());
         }
@@ -748,9 +748,7 @@ public class ViewInspectEntitySynchronizer extends AbstractEntitySynchronizer
 
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /* (non-Javadoc)
    * @see org.openecomp.sparky.synchronizer.IndexSynchronizer#getStatReport(boolean)
    */
   @Override
@@ -759,9 +757,7 @@ public class ViewInspectEntitySynchronizer extends AbstractEntitySynchronizer
     return this.getStatReport(syncDurationInMs, showFinalReport);
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /* (non-Javadoc)
    * @see org.openecomp.sparky.synchronizer.IndexSynchronizer#shutdown()
    */
   @Override

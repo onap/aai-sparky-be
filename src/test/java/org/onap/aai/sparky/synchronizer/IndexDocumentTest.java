@@ -44,7 +44,7 @@ import ch.qos.logback.classic.Level;
 public class IndexDocumentTest {
 
   private LogValidator logValidator;
-
+  
 
   /**
    * Inits the.

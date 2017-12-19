@@ -35,33 +35,13 @@ import org.eclipse.persistence.jaxb.dynamic.DynamicJAXBContext;
 
 public class GeoEntityLookup implements OxmModelProcessor {
 
-  // TODO: kill singleton collaborator pattern
-  private static GeoEntityLookup instance;
-
   private Map<String, HashMap<String, String>> geoEntityOxmModel;
 
   private Map<String, GeoOxmEntityDescriptor> geoEntityDescriptors;
 
-  private GeoEntityLookup() {
+  public GeoEntityLookup() {
     geoEntityOxmModel = new LinkedHashMap<String, HashMap<String, String>>();
     geoEntityDescriptors = new HashMap<String, GeoOxmEntityDescriptor>();
-  }
-
-  public synchronized static GeoEntityLookup getInstance() {
-
-    /*
-     * I hate this method and I want it to go away. The singleton pattern is transitory, I want this
-     * class to be wired via a bean reference instead. But from the starting point, it would require
-     * fixing all the classes across the code base up front and I don't want this task to expand
-     * beyond just refactoring the OxmModelLoader. For now I'll keep the singleton pattern, but I
-     * really want to get rid of it once we are properly spring wired.
-     */
-
-    if (instance == null) {
-      instance = new GeoEntityLookup();
-    }
-
-    return instance;
   }
 
   public Map<String, HashMap<String, String>> getGeoEntityOxmModel() {
@@ -82,7 +62,7 @@ public class GeoEntityLookup implements OxmModelProcessor {
 
   @Override
   public void processOxmModel(DynamicJAXBContext jaxbContext) {
-
+    
     @SuppressWarnings("rawtypes")
     List<Descriptor> descriptorsList = jaxbContext.getXMLContext().getDescriptors();
 

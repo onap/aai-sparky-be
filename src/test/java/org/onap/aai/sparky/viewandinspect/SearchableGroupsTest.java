@@ -36,36 +36,38 @@ public class SearchableGroupsTest {
       + "\"search-paths\" : [\"cloud-infrastructure\", \"business\", \"network\"]" + "}," + "{"
       + "\"group-name\" : \"cloud-infrastructure\","
       + "\"search-paths\" : [\"complexes\", \"cloud-regions\", \"pservers\"]" + "}" + "]" + "}";
-  /*
-   * @Before public void init() throws NoSuchFieldException, SecurityException,
-   * IllegalArgumentException, IllegalAccessException { Field instance =
-   * SearchableGroups.class.getDeclaredField("instance"); instance.setAccessible(true);
-   * instance.set(null, null); }
-   * 
-   * @Test public void test_FileNotFound() throws ElasticSearchOperationException {
-   * System.setProperty("AJSC_HOME", ""); SearchableGroups testGroups =
-   * SearchableGroups.getTestInstance(); assertTrue(testGroups.getGroups().isEmpty()); }
-   * 
-   * @Test public void test_FileFoundWithProperlyFormatedConfig() throws
-   * ElasticSearchOperationException { ResolverUtils testUtils = Mockito.mock(ResolverUtils.class);
-   * Mockito.when(testUtils.getConfigSettings(anyString())).thenReturn(GOOD_TEST_CONFIG);
-   * SearchableGroups testGroups = SearchableGroups.getTestInstance();
-   * 
-   * testGroups.setUtils(testUtils); testGroups.initSearchableGroups();
-   * 
-   * assertFalse(testGroups.getGroups().isEmpty());
-   * 
-   * assertFalse(testGroups.getSearchableGroups("inventory").isEmpty()); }
-   * 
-   * @Test public void test_FileFoundGroupDoesNotExist() throws ElasticSearchOperationException {
-   * ResolverUtils testUtils = Mockito.mock(ResolverUtils.class);
-   * Mockito.when(testUtils.getConfigSettings(anyString())).thenReturn(GOOD_TEST_CONFIG);
-   * SearchableGroups testGroups = SearchableGroups.getTestInstance();
-   * 
-   * testGroups.setUtils(testUtils); testGroups.initSearchableGroups();
-   * 
-   * assertFalse(testGroups.getGroups().isEmpty());
-   * 
-   * assertEquals(null, testGroups.getSearchableGroups("Test")); }
-   */
+      /*
+       * @Before public void init() throws NoSuchFieldException, SecurityException,
+       * IllegalArgumentException, IllegalAccessException { Field instance =
+       * SearchableGroups.class.getDeclaredField("instance"); instance.setAccessible(true);
+       * instance.set(null, null); }
+       * 
+       * @Test public void test_FileNotFound() throws ElasticSearchOperationException {
+       * System.setProperty("AJSC_HOME", ""); SearchableGroups testGroups =
+       * SearchableGroups.getTestInstance(); assertTrue(testGroups.getGroups().isEmpty()); }
+       * 
+       * @Test public void test_FileFoundWithProperlyFormatedConfig() throws
+       * ElasticSearchOperationException { ResolverUtils testUtils = 
+       * Mockito.mock(ResolverUtils.class);
+       * Mockito.when(testUtils.getConfigSettings(anyString())).thenReturn(GOOD_TEST_CONFIG);
+       * SearchableGroups testGroups = SearchableGroups.getTestInstance();
+       * 
+       * testGroups.setUtils(testUtils); testGroups.initSearchableGroups();
+       * 
+       * assertFalse(testGroups.getGroups().isEmpty());
+       * 
+       * assertFalse(testGroups.getSearchableGroups("inventory").isEmpty()); }
+       * 
+       * @Test public void test_FileFoundGroupDoesNotExist() throws
+       *  ElasticSearchOperationException {
+       * ResolverUtils testUtils = Mockito.mock(ResolverUtils.class);
+       * Mockito.when(testUtils.getConfigSettings(anyString())).thenReturn(GOOD_TEST_CONFIG);
+       * SearchableGroups testGroups = SearchableGroups.getTestInstance();
+       * 
+       * testGroups.setUtils(testUtils); testGroups.initSearchableGroups();
+       * 
+       * assertFalse(testGroups.getGroups().isEmpty());
+       * 
+       * assertEquals(null, testGroups.getSearchableGroups("Test")); }
+       */
 }

@@ -32,20 +32,25 @@ import org.onap.aai.sparky.search.filters.config.UiFilterListItemConfig;
 import org.onap.aai.sparky.search.filters.config.UiViewListItemConfig;
 import org.onap.aai.sparky.util.NodeUtils;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class AggregationSuggestionEntity extends IndexableEntity implements IndexDocument {
 
   private static final String FILTER_ID = "filterId";
   private static final String FILTER_LIST = "filterList";
-
+  
   private List<String> inputs = new ArrayList<>();
   private final String outputString = "VNFs";
   protected ObjectMapper mapper = new ObjectMapper();
   List<String> filterIds = new ArrayList<>();
-
-  public AggregationSuggestionEntity() {
+  
+  @JsonIgnore
+  private FiltersConfig filtersConfig;
+  
+  public AggregationSuggestionEntity(FiltersConfig filtersConfig) {
     super();
+    this.filtersConfig = filtersConfig;
     inputs.add("VNFs");
     inputs.add("generic-vnfs");
   }
@@ -58,10 +63,10 @@ public class AggregationSuggestionEntity extends IndexableEntity implements Inde
   @Override
   public String getAsJson() {
     JSONArray inputArray = new JSONArray();
-    for (String input : inputs) {
-      input = input.replace(",", "");
-      input = input.replace("[", "");
-      input = input.replace("]", "");
+    for (String input: inputs) {
+      input = input.replace(",","" );
+      input = input.replace("[","" );
+      input = input.replace("]","" );
       inputArray.put(input);
     }
 
@@ -81,7 +86,7 @@ public class AggregationSuggestionEntity extends IndexableEntity implements Inde
     JSONObject payloadNode = new JSONObject();
     payloadNode.put(FILTER_LIST, payloadFilters);
     entitySuggest.put("payload", payloadNode);
-
+    
     JSONObject rootNode = new JSONObject();
     rootNode.put("entity_suggest", entitySuggest);
 
@@ -89,7 +94,7 @@ public class AggregationSuggestionEntity extends IndexableEntity implements Inde
   }
 
   public void initializeFilters() {
-    for (UiViewListItemConfig view : FiltersConfig.getInstance().getViewsConfig().getViews()) {
+    for (UiViewListItemConfig view : filtersConfig.getViewsConfig().getViews()) {
       if (view.getViewName().equals("vnfSearch")) {
         for (UiFilterListItemConfig currentViewFilter : view.getFilters()) {
           filterIds.add(currentViewFilter.getFilterId());

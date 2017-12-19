@@ -49,9 +49,7 @@ public class RelationshipData {
     this.relationshipValue = relationshipValue;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /* (non-Javadoc)
    * @see java.lang.Object#toString()
    */
   @Override

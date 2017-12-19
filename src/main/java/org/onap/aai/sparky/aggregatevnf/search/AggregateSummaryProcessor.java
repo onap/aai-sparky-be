@@ -35,12 +35,12 @@ import org.json.JSONObject;
 import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
 import org.onap.aai.restclient.client.OperationResult;
-import org.onap.aai.sparky.dal.elasticsearch.SearchAdapter;
-import org.onap.aai.sparky.dataintegrity.config.DiUiConstants;
+import org.onap.aai.sparky.dal.ElasticSearchAdapter;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
 import org.onap.aai.sparky.search.filters.FilterQueryBuilder;
+import org.onap.aai.sparky.search.filters.config.FiltersConfig;
 import org.onap.aai.sparky.search.filters.entity.SearchFilter;
-import org.onap.aai.sparky.viewandinspect.config.TierSupportUiConstants;
+import org.onap.aai.sparky.viewandinspect.config.SparkyConstants;
 import org.restlet.Request;
 import org.restlet.Response;
 import org.restlet.data.MediaType;
@@ -48,51 +48,32 @@ import org.restlet.data.Status;
 
 public class AggregateSummaryProcessor {
 
-  private static final Logger LOG =
-      LoggerFactory.getInstance().getLogger(AggregateSummaryProcessor.class);
+  private static final Logger LOG = LoggerFactory.getInstance().getLogger(AggregateSummaryProcessor.class);
 
   private static final String KEY_FILTERS = "filters";
 
-  private SearchAdapter search = null;
-
+  private ElasticSearchAdapter elasticSearchAdapter = null;
+  
   private String vnfAggregationIndexName;
-  private String elasticSearchIp;
-  private String elatsticSearchPort;
-
-  public AggregateSummaryProcessor() {
-    try {
-      if (search == null) {
-        search = new SearchAdapter();
-      }
-    } catch (Exception exc) {
-      LOG.error(AaiUiMsgs.ERROR_GENERIC,
-          "Failed to get elastic search configuration with error = " + exc.getMessage());
-    }
+  private FiltersConfig filtersConfig;
+  
+  public AggregateSummaryProcessor(ElasticSearchAdapter elasticSearchAdapter, FiltersConfig filtersConfig) {
+    this.elasticSearchAdapter = elasticSearchAdapter;
+    this.filtersConfig = filtersConfig;
   }
-
+  
   public void setVnfAggregationIndexName(String vnfAggregationIndexName) {
     this.vnfAggregationIndexName = vnfAggregationIndexName;
   }
-
-  public void setElasticSearchIp(String elasticSearchIp) {
-    this.elasticSearchIp = elasticSearchIp;
-  }
-
-  public void setElatsticSearchPort(String elatsticSearchPort) {
-    this.elatsticSearchPort = elatsticSearchPort;
-  }
-
+  
   public void getFilteredAggregation(Exchange exchange) {
-
-    Response response =
-        exchange.getIn().getHeader(RestletConstants.RESTLET_RESPONSE, Response.class);
+    
+    Response response = exchange.getIn().getHeader(RestletConstants.RESTLET_RESPONSE, Response.class);
 
     Request request = exchange.getIn().getHeader(RestletConstants.RESTLET_REQUEST, Request.class);
 
-    /*
-     * Disables automatic Apache Camel Restlet component logging which prints out an undesirable log
-     * entry which includes client (e.g. browser) information
-     */
+    /* Disables automatic Apache Camel Restlet component logging which prints out an undesirable log entry
+       which includes client (e.g. browser) information */
     request.setLoggable(false);
 
     try {
@@ -114,29 +95,29 @@ public class AggregateSummaryProcessor {
         if (parameters.has(KEY_FILTERS)) {
           requestFilters = parameters.getJSONArray(KEY_FILTERS);
         } else {
-
+          
           JSONObject zeroResponsePayload = new JSONObject();
           zeroResponsePayload.put("count", 0);
           response.setStatus(Status.SUCCESS_OK);
           response.setEntity(zeroResponsePayload.toString(), MediaType.APPLICATION_JSON);
           exchange.getOut().setBody(response);
-
+          
           LOG.error(AaiUiMsgs.ERROR_FILTERS_NOT_FOUND);
           return;
         }
-
+      
         if (requestFilters != null && requestFilters.length() > 0) {
           List<JSONObject> filtersToQuery = new ArrayList<JSONObject>();
-          for (int i = 0; i < requestFilters.length(); i++) {
+          for(int i = 0; i < requestFilters.length(); i++) {
             JSONObject filterEntry = requestFilters.getJSONObject(i);
             filtersToQuery.add(filterEntry);
           }
-
+          
           String jsonResponsePayload = getVnfFilterAggregations(filtersToQuery);
           response.setStatus(Status.SUCCESS_OK);
           response.setEntity(jsonResponsePayload, MediaType.APPLICATION_JSON);
           exchange.getOut().setBody(response);
-
+          
         } else {
           String emptyResponse = getEmptyAggResponse();
           response.setStatus(Status.SUCCESS_OK);
@@ -146,11 +127,10 @@ public class AggregateSummaryProcessor {
         }
       }
     } catch (Exception exc) {
-      LOG.error(AaiUiMsgs.ERROR_GENERIC,
-          "FilterProcessor failed to get filter list due to error = " + exc.getMessage());
+      LOG.error(AaiUiMsgs.ERROR_GENERIC, "FilterProcessor failed to get filter list due to error = " + exc.getMessage());
     }
   }
-
+  
   private String getEmptyAggResponse() {
     JSONObject aggPayload = new JSONObject();
     aggPayload.put("totalChartHits", 0);
@@ -159,78 +139,66 @@ public class AggregateSummaryProcessor {
     payload.append("groupby_aggregation", aggPayload);
 
     return payload.toString();
-  }
-
+  }  
+  
   private static final String FILTER_ID_KEY = "filterId";
   private static final String FILTER_VALUE_KEY = "filterValue";
   private static final int DEFAULT_SHOULD_MATCH_SCORE = 1;
   private static final String VNF_FILTER_AGGREGATION = "vnfFilterAggregation";
 
-
+  
   private String getVnfFilterAggregations(List<JSONObject> filtersToQuery) throws IOException {
-
+    
     List<SearchFilter> searchFilters = new ArrayList<SearchFilter>();
-    for (JSONObject filterEntry : filtersToQuery) {
-
+    for(JSONObject filterEntry : filtersToQuery) {
+      
       String filterId = filterEntry.getString(FILTER_ID_KEY);
-      if (filterId != null) {
+      if(filterId != null) {
         SearchFilter filter = new SearchFilter();
         filter.setFilterId(filterId);
-
-        if (filterEntry.has(FILTER_VALUE_KEY)) {
+        
+        if(filterEntry.has(FILTER_VALUE_KEY)) {
           String filterValue = filterEntry.getString(FILTER_VALUE_KEY);
           filter.addValue(filterValue);
         }
-
+        
         searchFilters.add(filter);
       }
     }
-
+    
     // Create query for summary by entity type
-    JsonObject vnfSearch =
-        FilterQueryBuilder.createCombinedBoolAndAggQuery(searchFilters, DEFAULT_SHOULD_MATCH_SCORE);
+    JsonObject vnfSearch = FilterQueryBuilder.createCombinedBoolAndAggQuery(filtersConfig, searchFilters, DEFAULT_SHOULD_MATCH_SCORE);
 
     // Parse response for summary by entity type query
-    OperationResult opResult =
-        search.doPost(getFullUrl(vnfAggregationIndexName, TierSupportUiConstants.ES_SEARCH_API),
-            vnfSearch.toString(), DiUiConstants.APP_JSON);
-
+    OperationResult opResult = elasticSearchAdapter.doPost(
+        elasticSearchAdapter.buildElasticSearchUrlForApi(vnfAggregationIndexName,
+            SparkyConstants.ES_SEARCH_API),
+        vnfSearch.toString(), javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE);
+    
     return buildAggregateVnfResponseJson(opResult.getResult());
-
+    
   }
-
-  /**
-   * Get Full URL for search using elastic search configuration.
-   *
-   * @param api the api
-   * @return the full url
-   */
-  private String getFullUrl(String indexName, String api) {
-    final String host = elasticSearchIp;
-    final String port = elatsticSearchPort;
-    return String.format("http://%s:%s/%s/%s", host, port, indexName, api);
-  }
-
+  
   private String buildAggregateVnfResponseJson(String responseJsonStr) {
-
+    
     JSONObject finalOutputToFe = new JSONObject();
     JSONObject responseJson = new JSONObject(responseJsonStr);
-
-
+    
+    
     JSONObject hits = responseJson.getJSONObject("hits");
     int totalHits = hits.getInt("total");
     finalOutputToFe.put("total", totalHits);
-
+    
     JSONObject aggregations = responseJson.getJSONObject("aggregations");
     String[] aggKeys = JSONObject.getNames(aggregations);
     JSONObject aggregationsList = new JSONObject();
-
-    for (String aggName : aggKeys) {
+    
+    for(String aggName : aggKeys) {
       JSONObject aggregation = aggregations.getJSONObject(aggName);
       JSONArray buckets = aggregation.getJSONArray("buckets");
       aggregationsList.put(aggName, buckets);
     }
-
+    
     finalOutputToFe.put("aggregations", aggregationsList);
 
     return finalOutputToFe.toString();

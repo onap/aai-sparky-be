@@ -30,15 +30,15 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ElasticSearchAggregation {
-
+  
   @JsonProperty("doc_count_error_upper_bound")
   private int docCountErrorUpperBound;
-
+  
   @JsonProperty("sum_other_doc_count")
   private int sumOtherDocCount;
-
+  
   private List<BucketEntity> buckets;
-
+  
   public ElasticSearchAggregation() {
     buckets = new ArrayList<BucketEntity>();
   }
@@ -66,7 +66,7 @@ public class ElasticSearchAggregation {
   public void setBuckets(List<BucketEntity> buckets) {
     this.buckets = buckets;
   }
-
+  
   public void addBucket(BucketEntity bucket) {
     buckets.add(bucket);
   }

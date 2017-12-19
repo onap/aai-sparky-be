@@ -36,16 +36,14 @@ import org.onap.aai.restclient.client.OperationResult;
 import org.onap.aai.sparky.common.search.CommonSearchSuggestion;
 import org.onap.aai.sparky.config.oxm.OxmEntityDescriptor;
 import org.onap.aai.sparky.config.oxm.OxmEntityLookup;
-import org.onap.aai.sparky.config.oxm.OxmModelLoader;
-import org.onap.aai.sparky.dal.elasticsearch.SearchAdapter;
-import org.onap.aai.sparky.dal.sas.config.SearchServiceConfig;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
+import org.onap.aai.sparky.search.SearchServiceAdapter;
 import org.onap.aai.sparky.search.api.SearchProvider;
 import org.onap.aai.sparky.search.config.SuggestionConfig;
 import org.onap.aai.sparky.search.entity.QuerySearchEntity;
 import org.onap.aai.sparky.search.entity.SearchSuggestion;
 import org.onap.aai.sparky.util.NodeUtils;
-import org.onap.aai.sparky.viewandinspect.config.TierSupportUiConstants;
+import org.onap.aai.sparky.viewandinspect.config.SparkyConstants;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -56,42 +54,42 @@ public class ViewInspectSearchProvider implements SearchProvider {
   private static final Logger LOG =
       LoggerFactory.getInstance().getLogger(ViewInspectSearchProvider.class);
 
-  private SearchServiceConfig sasConfig = null;
-  private SearchAdapter search = null;
-  private OxmModelLoader oxmModelLoader;
+  private SearchServiceAdapter searchServiceAdapter = null;
+  private SuggestionConfig suggestionConfig; 
   private String additionalSearchSuggestionText;
-
+  
   private static final String KEY_SEARCH_RESULT = "searchResult";
   private static final String KEY_HITS = "hits";
   private static final String KEY_DOCUMENT = "document";
   private static final String KEY_CONTENT = "content";
 
-  private static final String VI_SUGGESTION_ROUTE = "schema"; // TODO -> Read route from
-  // suggestive-search.properties
-  // instead of hard coding
-
   private static final String KEY_SEARCH_TAG_IDS = "searchTagIDs";
   private static final String KEY_SEARCH_TAGS = "searchTags";
   private static final String KEY_LINK = "link";
   private static final String KEY_ENTITY_TYPE = "entityType";
-  private static final String VALUE_QUERY = "query";
 
-  public ViewInspectSearchProvider(OxmModelLoader oxmModelLoader) throws Exception {
+  private final String viewInspectIndexName;
+  private final String viewInspectSuggestionRoute;
+  private OxmEntityLookup oxmEntityLookup;
+  
+  public ViewInspectSearchProvider(SearchServiceAdapter searchServiceAdapter,
+      SuggestionConfig suggestionConfig, String viewInspectIndexName,
+      String viewInspectSuggestionRoute, OxmEntityLookup oxmEntityLookup) throws Exception {
 
-    sasConfig = SearchServiceConfig.getConfig();
-    search = new SearchAdapter();
-    suggestionConfig = SuggestionConfig.getConfig();
-    this.oxmModelLoader = oxmModelLoader;
+    this.searchServiceAdapter = searchServiceAdapter;
+    this.oxmEntityLookup = oxmEntityLookup;
+    this.suggestionConfig = suggestionConfig;
     additionalSearchSuggestionText = null;
+    this.viewInspectIndexName = viewInspectIndexName;
+    this.viewInspectSuggestionRoute = viewInspectSuggestionRoute;
 
   }
-
+  
   @Override
   public List<SearchSuggestion> search(QuerySearchEntity queryRequest) {
 
     List<SearchSuggestion> suggestionEntityList = new ArrayList<SearchSuggestion>();
-
-
+    
     /*
      * Based on the configured stop words, we need to strip any matched stop-words ( case
      * insensitively ) from the query string, before hitting elastic to prevent the words from being
@@ -105,13 +103,12 @@ public class ViewInspectSearchProvider implements SearchProvider {
       final String queryStringWithoutStopWords =
           stripStopWordsFromQuery(queryRequest.getQueryStr());
 
-      final String fullUrlStr = getSasFullUrl(sasConfig.getIndexName(), VALUE_QUERY,
-          sasConfig.getIpAddress(), sasConfig.getHttpPort(), sasConfig.getVersion());
+      final String fullUrlStr = searchServiceAdapter.buildSearchServiceQueryUrl(viewInspectIndexName); 
 
-      String postBody = String.format(VIUI_SEARCH_TEMPLATE,
-          Integer.parseInt(queryRequest.getMaxResults()), queryStringWithoutStopWords);
+      String postBody = String.format(VIUI_SEARCH_TEMPLATE, Integer.parseInt(queryRequest.getMaxResults()),
+          queryStringWithoutStopWords);
 
-      OperationResult opResult = search.doPost(fullUrlStr, postBody, "application/json");
+      OperationResult opResult = searchServiceAdapter.doPost(fullUrlStr, postBody, "application/json");
       if (opResult.getResultCode() == 200) {
         suggestionEntityList =
             generateSuggestionsForSearchResponse(opResult.getResult(), queryRequest.getQueryStr());
@@ -124,7 +121,7 @@ public class ViewInspectSearchProvider implements SearchProvider {
 
 
   }
-
+  
   public String getAdditionalSearchSuggestionText() {
     return additionalSearchSuggestionText;
   }
@@ -133,22 +130,9 @@ public class ViewInspectSearchProvider implements SearchProvider {
     this.additionalSearchSuggestionText = additionalSearchSuggestionText;
   }
 
-  /**
-   * Get Full URL for search
-   *
-   * @param api the api
-   * @param indexName
-   * @return the full url
-   */
-  private String getSasFullUrl(String indexName, String type, String ipAddress, String port,
-      String version) {
+  
 
-    return String.format("https://%s:%s/services/search-data-service/%s/search/indexes/%s/%s",
-        ipAddress, port, version, indexName, type);
-  }
-
-
-
+  
   /**
    * Builds the search response.
    *
@@ -171,7 +155,7 @@ public class ViewInspectSearchProvider implements SearchProvider {
       rootNode = mapper.readTree(operationResult);
 
       JsonNode hitsNode = rootNode.get(KEY_SEARCH_RESULT);
-
+      
 
 
       // Check if there are hits that are coming back
@@ -192,7 +176,7 @@ public class ViewInspectSearchProvider implements SearchProvider {
 
           // do the point transformation as we build the response?
           suggestionEntity = new CommonSearchSuggestion();
-          suggestionEntity.setRoute(VI_SUGGESTION_ROUTE);
+          suggestionEntity.setRoute(viewInspectSuggestionRoute);
 
           /*
            * This is where we probably want to annotate the search tags because we also have access
@@ -217,10 +201,10 @@ public class ViewInspectSearchProvider implements SearchProvider {
             // at least send back the un-annotated search tags
             suggestionEntity.setText(searchTags);
           }
-
-          if (getAdditionalSearchSuggestionText() != null) {
-            String suggestionText = suggestionEntity.getText();
-            suggestionText += TierSupportUiConstants.SUGGESTION_TEXT_SEPARATOR
+          
+          if ( getAdditionalSearchSuggestionText() != null ) {
+            String suggestionText = suggestionEntity.getText() ;
+            suggestionText += SparkyConstants.SUGGESTION_TEXT_SEPARATOR
                 + getAdditionalSearchSuggestionText();
             suggestionEntity.setText(suggestionText);
           }
@@ -236,9 +220,9 @@ public class ViewInspectSearchProvider implements SearchProvider {
     }
     return suggestionEntityList;
   }
-
-
-
+  
+  
+  
   /**
    * The current format of an UI-dropdown-item is like: "search-terms  entityType  att1=attr1_val".
    * Example, for pserver: search-terms pserver hostname=djmAG-72060,
@@ -287,7 +271,7 @@ public class ViewInspectSearchProvider implements SearchProvider {
     // simpler
     String[] queryTerms = queryStr.toLowerCase().split(" ");
 
-    OxmEntityDescriptor desc = OxmEntityLookup.getInstance().getEntityDescriptors().get(entityType);
+    OxmEntityDescriptor desc = oxmEntityLookup.getEntityDescriptors().get(entityType);
 
     if (desc == null) {
       LOG.error(AaiUiMsgs.ENTITY_NOT_FOUND_IN_OXM, entityType.toString());
@@ -337,8 +321,8 @@ public class ViewInspectSearchProvider implements SearchProvider {
           "Search tags length did not match search tag ID length for entity type " + entityType;
       LOG.error(AaiUiMsgs.ENTITY_SYNC_SEARCH_TAG_ANNOTATION_FAILED, errorMessage);
     }
-
-
+    
+    
 
     /*
      * if none of the user query terms matched the index entity search tags then we should still tag
@@ -363,7 +347,7 @@ public class ViewInspectSearchProvider implements SearchProvider {
     return searchTagsBuilder.toString();
 
   }
-
+  
   /**
    * Query terms match search tag.
    *
@@ -386,7 +370,7 @@ public class ViewInspectSearchProvider implements SearchProvider {
     return false;
 
   }
-
+  
   /**
    * Gets the value from node.
    *
@@ -409,15 +393,15 @@ public class ViewInspectSearchProvider implements SearchProvider {
     return null;
 
   }
-
+  
   private static final String VIUI_SEARCH_TEMPLATE =
       "{ " + "\"results-start\": 0," + "\"results-size\": %d," + "\"queries\": [{" + "\"must\": {"
           + "\"match\": {" + "\"field\": \"entityType searchTags crossEntityReferenceValues\","
           + "\"value\": \"%s\"," + "\"operator\": \"and\", "
           + "\"analyzer\": \"whitespace_analyzer\"" + "}" + "}" + "}]" + "}";
-
-  private SuggestionConfig suggestionConfig = null;
-
+  
+ //private SuggestionConfig suggestionConfig = null;
+  
   /**
    * @param queryStr - space separate query search terms
    * @return - query string with stop-words removed

@@ -33,9 +33,9 @@ public class ElasticSearchCountResponse {
   private Map<String, String> shards;
 
   public ElasticSearchCountResponse() {
-    this.shards = new HashMap<String, String>();
+    this.shards = new HashMap<String,String>();
   }
-
+  
   public int getCount() {
     return count;
   }
@@ -51,7 +51,7 @@ public class ElasticSearchCountResponse {
   public void setShards(Map<String, String> shards) {
     this.shards = shards;
   }
-
+  
   public void addShard(String key, String value) {
     this.shards.put(key, value);
   }

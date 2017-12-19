@@ -51,10 +51,10 @@ public class GeoIndexDocument implements Serializable, IndexDocument {
   protected String latitude;
   protected String longitude;
   protected String selfLink;
-
+  
   @JsonIgnore
   protected OxmEntityLookup oxmEntityLookup;
-
+  
   @JsonIgnore
   protected ObjectMapper mapper = new ObjectMapper();
   // generated, SHA-256 digest
@@ -164,29 +164,27 @@ public class GeoIndexDocument implements Serializable, IndexDocument {
    * 
    * @see com.att.queryrouter.dao.DocumentStoreDataEntity#getAsJson()
    */
-
+  
   @Override
   @JsonIgnore
   public String getAsJson() throws JsonProcessingException {
 
     if (latitude != null && longitude != null) {
-
+      
       /**
        * A valid entry from this class is one that has both lat and long. If one or both is missing
        * we shouldn't be indexing anything.
        */
-
+      
       return NodeUtils.convertObjectToJson(this, true);
-
+      
     }
-
+    
     return null;
 
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /* (non-Javadoc)
    * @see org.openecomp.sparky.synchronizer.entity.IndexDocument#deriveFields()
    */
   @Override
@@ -200,16 +198,14 @@ public class GeoIndexDocument implements Serializable, IndexDocument {
      */
 
     OxmEntityDescriptor descriptor = oxmEntityLookup.getEntityDescriptors().get(entityType);
-    String entityPrimaryKeyName =
-        NodeUtils.concatArray(descriptor.getPrimaryKeyAttributeNames(), "/");
+    String entityPrimaryKeyName = NodeUtils.concatArray(
+        descriptor.getPrimaryKeyAttributeNames(), "/");
 
     this.id =
         NodeUtils.generateUniqueShaDigest(entityType, entityPrimaryKeyName, entityPrimaryKeyValue);
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /* (non-Javadoc)
    * @see java.lang.Object#toString()
    */
   @Override
@@ -288,5 +284,5 @@ public class GeoIndexDocument implements Serializable, IndexDocument {
   public void setId(String id) {
     this.id = id;
   }
-
+  
 }

@@ -54,14 +54,16 @@ public class SyncControllerImpl implements SyncController {
    * The Enum InternalState.
    */
   private enum InternalState {
-    IDLE, PRE_SYNC, SYNC_OPERATION, SELECTIVE_DELETE, ABORTING_SYNC, REPAIRING_INDEX, POST_SYNC, TEST_INDEX_INTEGRITY, GENERATE_FINAL_REPORT
+    IDLE, PRE_SYNC, SYNC_OPERATION, SELECTIVE_DELETE, ABORTING_SYNC, REPAIRING_INDEX, POST_SYNC,
+    TEST_INDEX_INTEGRITY, GENERATE_FINAL_REPORT
   }
 
   /**
    * The Enum SyncActions.
    */
   public enum SyncActions {
-    SYNCHRONIZE, REPAIR_INDEX, INDEX_INTEGRITY_VALIDATION_COMPLETE, PRE_SYNC_COMPLETE, SYNC_COMPLETE, SYNC_ABORTED, SYNC_FAILURE, POST_SYNC_COMPLETE, PURGE_COMPLETE, REPORT_COMPLETE
+    SYNCHRONIZE, REPAIR_INDEX, INDEX_INTEGRITY_VALIDATION_COMPLETE, PRE_SYNC_COMPLETE,
+    SYNC_COMPLETE, SYNC_ABORTED, SYNC_FAILURE, POST_SYNC_COMPLETE, PURGE_COMPLETE, REPORT_COMPLETE
   }
 
   private Collection<IndexSynchronizer> registeredSynchronizers;
@@ -70,21 +72,22 @@ public class SyncControllerImpl implements SyncController {
   private InternalState currentInternalState;
   private ExecutorService syncControllerExecutor;
   private ExecutorService statReporterExecutor;
-
+  
   private long delayInMs;
   private long syncFrequencyInMs;
   private Date syncStartTime;
-
+  
   private Date lastExecutionDate;
-  private AtomicInteger runCount;
+  private AtomicInteger runCount; 
   private Semaphore performingActionGate;
   private Calendar creationTime;
-
+  
   private String syncStartTimeWithTimeZone;
   private String controllerName;
-
+  
   protected SyncControllerConfig syncControllerConfig;
-
+  
+  
 
 
   /**
@@ -94,9 +97,9 @@ public class SyncControllerImpl implements SyncController {
    * @throws Exception the exception
    */
   public SyncControllerImpl(SyncControllerConfig syncControllerConfig) throws Exception {
-    this(syncControllerConfig, null);
+    this(syncControllerConfig,null);
   }
-
+  
   public SyncControllerImpl(SyncControllerConfig syncControllerConfig, String targetEntityType)
       throws Exception {
 
@@ -117,7 +120,7 @@ public class SyncControllerImpl implements SyncController {
     if (targetEntityType != null) {
       controllerName += " (" + targetEntityType + ")";
     }
-
+    
     this.controllerName = controllerName;
 
     this.syncControllerExecutor = NodeUtils.createNamedExecutor("SyncController-" + controllerName,
@@ -127,13 +130,16 @@ public class SyncControllerImpl implements SyncController {
 
     this.currentInternalState = InternalState.IDLE;
 
-    this.creationTime = Calendar
-        .getInstance(TimeZone.getTimeZone(syncControllerConfig.getTimeZoneOfSyncStartTimeStamp()));
+    this.creationTime =
+        Calendar.getInstance(TimeZone.getTimeZone(syncControllerConfig.getTimeZoneOfSyncStartTimeStamp()));
 
   }
 
+  
+ 
 
-
+  
+  
   /**
    * Change internal state.
    *
@@ -141,19 +147,17 @@ public class SyncControllerImpl implements SyncController {
    * @param causedByAction the caused by action
    */
   private void changeInternalState(InternalState newState, SyncActions causedByAction) {
-    LOG.info(AaiUiMsgs.SYNC_INTERNAL_STATE_CHANGED, controllerName, currentInternalState.toString(),
-        newState.toString(), causedByAction.toString());
+    LOG.info(AaiUiMsgs.SYNC_INTERNAL_STATE_CHANGED, controllerName,
+        currentInternalState.toString(), newState.toString(), causedByAction.toString());
 
     this.currentInternalState = newState;
 
     performStateAction();
   }
-
-
-
-  /*
-   * (non-Javadoc)
-   * 
+  
+  
+  
+  /* (non-Javadoc)
    * @see org.openecomp.sparky.synchronizer.SyncController2#getDelayInMs()
    */
   @Override
@@ -161,9 +165,7 @@ public class SyncControllerImpl implements SyncController {
     return delayInMs;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /* (non-Javadoc)
    * @see org.openecomp.sparky.synchronizer.SyncController2#setDelayInMs(long)
    */
   @Override
@@ -171,9 +173,7 @@ public class SyncControllerImpl implements SyncController {
     this.delayInMs = delayInMs;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /* (non-Javadoc)
    * @see org.openecomp.sparky.synchronizer.SyncController2#getSyncFrequencyInMs()
    */
   @Override
@@ -181,9 +181,7 @@ public class SyncControllerImpl implements SyncController {
     return syncFrequencyInMs;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /* (non-Javadoc)
    * @see org.openecomp.sparky.synchronizer.SyncController2#setSyncFrequencyInMs(long)
    */
   @Override
@@ -191,9 +189,7 @@ public class SyncControllerImpl implements SyncController {
     this.syncFrequencyInMs = syncFrequencyInMs;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /* (non-Javadoc)
    * @see org.openecomp.sparky.synchronizer.SyncController2#getSyncStartTime()
    */
   @Override
@@ -201,9 +197,7 @@ public class SyncControllerImpl implements SyncController {
     return syncStartTime;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /* (non-Javadoc)
    * @see org.openecomp.sparky.synchronizer.SyncController2#setSyncStartTime(java.util.Date)
    */
   @Override
@@ -211,9 +205,7 @@ public class SyncControllerImpl implements SyncController {
     this.syncStartTime = syncStartTime;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /* (non-Javadoc)
    * @see org.openecomp.sparky.synchronizer.SyncController2#getLastExecutionDate()
    */
   @Override
@@ -221,35 +213,34 @@ public class SyncControllerImpl implements SyncController {
     return lastExecutionDate;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /* (non-Javadoc)
    * @see org.openecomp.sparky.synchronizer.SyncController2#setLastExecutionDate(java.util.Date)
    */
   @Override
   public void setLastExecutionDate(Date lastExecutionDate) {
     this.lastExecutionDate = lastExecutionDate;
   }
-
+  
   @Override
   public String getControllerName() {
     return controllerName;
   }
-
-
+  
+ 
+  
 
   @Override
   public OperationState performAction(SyncActions requestedAction) {
 
     if (currentInternalState == InternalState.IDLE) {
-
+      
       try {
-
+        
         /*
          * non-blocking semaphore acquire used to guarantee only 1 execution of the synchronization
          * at a time.
          */
-
+        
         switch (requestedAction) {
           case SYNCHRONIZE:
 
@@ -270,19 +261,18 @@ public class SyncControllerImpl implements SyncController {
                 long opEndTime = System.currentTimeMillis();
 
                 long opTime = (opEndTime - opStartTime);
-
+                
                 String durationMessage =
                     String.format(getControllerName() + " synchronization took '%d' ms.", opTime);
 
                 LOG.info(AaiUiMsgs.SYNC_DURATION, durationMessage);
-
+                
                 if (syncControllerConfig.isPeriodicSyncEnabled()) {
 
                   LOG.info(AaiUiMsgs.INFO_GENERIC,
                       getControllerName() + " next sync to begin at " + getNextSyncTime());
 
-                  TimeZone tz =
-                      TimeZone.getTimeZone(syncControllerConfig.getTimeZoneOfSyncStartTimeStamp());
+                  TimeZone tz = TimeZone.getTimeZone(syncControllerConfig.getTimeZoneOfSyncStartTimeStamp());
 
                   if (opTime > this.getSyncFrequencyInMs()) {
 
@@ -311,7 +301,7 @@ public class SyncControllerImpl implements SyncController {
           default:
             break;
         }
-
+        
         return OperationState.OK;
 
       } catch (Exception exc) {
@@ -320,7 +310,7 @@ public class SyncControllerImpl implements SyncController {
         LOG.error(AaiUiMsgs.ERROR_GENERIC, message);
         return OperationState.ERROR;
       } finally {
-
+        
       }
     } else {
       LOG.error(AaiUiMsgs.SYNC_NOT_VALID_STATE_DURING_REQUEST, currentInternalState.toString());
@@ -538,9 +528,7 @@ public class SyncControllerImpl implements SyncController {
 
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /* (non-Javadoc)
    * @see org.openecomp.sparky.synchronizer.SyncControllerInterface#shutdown()
    */
   @Override
@@ -624,9 +612,9 @@ public class SyncControllerImpl implements SyncController {
         }
       }
 
-      if (System.currentTimeMillis() > nextReportTimeStampInMs) {
+      if ( System.currentTimeMillis() > nextReportTimeStampInMs) {
         dumpPeriodicStatReport = true;
-        nextReportTimeStampInMs = System.currentTimeMillis() + 30000L;
+        nextReportTimeStampInMs = System.currentTimeMillis() + 30000L; 
       } else {
         dumpPeriodicStatReport = false;
       }
@@ -646,9 +634,7 @@ public class SyncControllerImpl implements SyncController {
 
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /* (non-Javadoc)
    * @see org.openecomp.sparky.synchronizer.SyncControllerInterface#getState()
    */
   @Override
@@ -688,5 +674,5 @@ public class SyncControllerImpl implements SyncController {
   public boolean isRunOnceSyncEnabled() {
     return syncControllerConfig.isRunOnceSyncEnabled();
   }
-
+  
 }

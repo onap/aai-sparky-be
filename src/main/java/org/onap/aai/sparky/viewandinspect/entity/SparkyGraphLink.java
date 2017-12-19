@@ -20,50 +20,54 @@
  *
  * ECOMP is a trademark and service mark of AT&T Intellectual Property.
  */
-package org.onap.aai.sparky.search.entity;
+package org.onap.aai.sparky.viewandinspect.entity;
 
-public class ExternalSearchRequestEntity {
-  private String view;
-  private String entityId;
-  private String entityType;
+/*
+ * Expected JSON Output:
+ * 
+ * { JsonNodeLink : { id : <value>, source : <value>, target : <value> } }
+ * 
+ */
 
-  public ExternalSearchRequestEntity() {
-    this.view = "";
-    this.entityId = "";
-    this.entityType = "";
+/**
+ * The Class JsonNodeLink.
+ */
+public class SparkyGraphLink {
+
+  protected String id;
+  protected String source;
+  protected String target;
+
+  public String getId() {
+    return id;
   }
 
-  public String getView() {
-    return view;
+  public void setId(String id) {
+    this.id = id;
   }
 
-  public void setView(String view) {
-    this.view = view;
+  public String getSource() {
+    return source;
   }
 
-  public String getEntityId() {
-    return entityId;
+  public void setSource(String source) {
+    this.source = source;
   }
 
-  public void setEntityId(String entityId) {
-    this.entityId = entityId;
+  public String getTarget() {
+    return target;
   }
 
-  public String getEntityType() {
-    return entityType;
+  public void setTarget(String target) {
+    this.target = target;
   }
 
-  public void setEntityType(String entityType) {
-    this.entityType = entityType;
-  }
-
-  public String createQueryString() {
-    return entityId + " " + entityType;
-  }
-
+  /* (non-Javadoc)
+   * @see java.lang.Object#toString()
+   */
   @Override
   public String toString() {
-    return "ExternalRequestEntitySearchEntity [view=" + view + ", entityId=" + entityId
-        + ", entityType=" + entityType + "]";
+    return "JsonNodeLink [id=" + id + ", source=" + source + ", target=" + target + "]";
   }
+
 }
