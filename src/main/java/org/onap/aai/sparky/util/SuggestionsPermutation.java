@@ -46,7 +46,7 @@ public class SuggestionsPermutation {
     List<String> list = new ArrayList<String>(originalList);
     String head = list.get(0);
     ArrayList<String> rest = new ArrayList<String>(list.subList(1, list.size()));
-
+    
     for (ArrayList<String> activeList : getUniqueListForSuggestions(rest)) {
       ArrayList<String> newList = new ArrayList<String>();
       newList.add(head);
@@ -56,12 +56,12 @@ public class SuggestionsPermutation {
     }
     return lists;
   }
-
-  public static ArrayList<ArrayList<String>> getNonEmptyUniqueLists(List<String> list) {
+  
+  public static ArrayList<ArrayList<String>> getNonEmptyUniqueLists(List<String> list){
     ArrayList<ArrayList<String>> lists = getUniqueListForSuggestions(list);
-    // remove empty list from the power set
-    for (ArrayList<String> emptyList : lists) {
-      if (emptyList.isEmpty()) {
+    // remove empty list from the power set 
+    for (ArrayList<String> emptyList : lists ){
+      if ( emptyList.isEmpty() ) {
         lists.remove(emptyList);
         break;
       }

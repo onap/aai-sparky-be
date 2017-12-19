@@ -35,39 +35,21 @@ import org.eclipse.persistence.dynamic.DynamicType;
 import org.eclipse.persistence.internal.oxm.mappings.Descriptor;
 import org.eclipse.persistence.jaxb.dynamic.DynamicJAXBContext;
 import org.eclipse.persistence.mappings.DatabaseMapping;
+import org.onap.aai.sparky.search.filters.config.FiltersConfig;
 import org.onap.aai.sparky.sync.entity.SuggestionSearchEntity;
 
 public class SuggestionEntityLookup implements OxmModelProcessor {
 
-  // TODO: kill singleton collaborator pattern
-  private static SuggestionEntityLookup instance;
-
   private Map<String, HashMap<String, String>> suggestionSearchEntityOxmModel;
   private Map<String, SuggestionEntityDescriptor> suggestionSearchEntityDescriptors;
-
-  private SuggestionEntityLookup() {
+  private FiltersConfig filtersConfig;
+  
+  public SuggestionEntityLookup(FiltersConfig filtersConfig) {
     suggestionSearchEntityOxmModel = new LinkedHashMap<String, HashMap<String, String>>();
     suggestionSearchEntityDescriptors = new HashMap<String, SuggestionEntityDescriptor>();
+    this.filtersConfig = filtersConfig;
   }
-
-  public synchronized static SuggestionEntityLookup getInstance() {
-
-    /*
-     * I hate this method and I want it to go away. The singleton pattern is transitory, I want this
-     * class to be wired via a bean reference instead. But from the starting point, it would require
-     * fixing all the classes across the code base up front and I don't want this task to expand
-     * beyond just refactoring the OxmModelLoader. For now I'll keep the singleton pattern, but I
-     * really want to get rid of it once we are properly spring wired.
-     */
-
-    if (instance == null) {
-      instance = new SuggestionEntityLookup();
-    }
-
-    return instance;
-  }
-
-
+  
   @Override
   public void processOxmModel(DynamicJAXBContext jaxbContext) {
 
@@ -129,7 +111,7 @@ public class SuggestionEntityLookup implements OxmModelProcessor {
                 }
               }
             }
-
+            
             if (!listOfSuggestableAttributes.isEmpty()) {
               oxmProperties.put("suggestibleAttributes",
                   String.join(",", listOfSuggestableAttributes));
@@ -150,7 +132,7 @@ public class SuggestionEntityLookup implements OxmModelProcessor {
       HashMap<String, String> attribute = suggestionEntityModel.getValue();
 
       String entityName = attribute.get("entityName");
-      SuggestionSearchEntity suggestionSearchEntity = new SuggestionSearchEntity(this);
+      SuggestionSearchEntity suggestionSearchEntity = new SuggestionSearchEntity(filtersConfig, this);
       suggestionSearchEntity.setEntityType(entityName);
 
       if (attribute.get("suggestionAliases") != null) {
@@ -174,6 +156,7 @@ public class SuggestionEntityLookup implements OxmModelProcessor {
 
       suggestionSearchEntityDescriptors.put(entityName, entity);
     }
+
   }
 
   public Map<String, HashMap<String, String>> getSuggestionSearchEntityOxmModel() {
@@ -193,5 +176,5 @@ public class SuggestionEntityLookup implements OxmModelProcessor {
       Map<String, SuggestionEntityDescriptor> suggestionSearchEntityDescriptors) {
     this.suggestionSearchEntityDescriptors = suggestionSearchEntityDescriptors;
   }
-
+  
 }

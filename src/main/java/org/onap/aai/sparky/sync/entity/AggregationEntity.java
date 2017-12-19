@@ -36,7 +36,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 public class AggregationEntity extends IndexableEntity implements IndexDocument {
   private Map<String, String> attributes = new HashMap<String, String>();
   protected ObjectMapper mapper = new ObjectMapper();
-
+  
   /**
    * Instantiates a new aggregation entity.
    */
@@ -44,9 +44,7 @@ public class AggregationEntity extends IndexableEntity implements IndexDocument 
     super();
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /* (non-Javadoc)
    * @see org.openecomp.sparky.synchronizer.entity.IndexDocument#deriveFields()
    */
   @Override
@@ -58,20 +56,19 @@ public class AggregationEntity extends IndexableEntity implements IndexDocument 
      * The best we can hope for is identification of resources by generated Id until the
      * Identity-Service UUID is tagged against all resources, then we can use that instead.
      */
-    this.id = NodeUtils.generateUniqueShaDigest(link);
+    this.id =
+        NodeUtils.generateUniqueShaDigest(link);
   }
 
-  public void copyAttributeKeyValuePair(Map<String, Object> map) {
-    for (String key : map.keySet()) {
-      if (!key.equalsIgnoreCase("relationship-list")) { // ignore relationship data which is not
-                                                        // required in aggregation
-        this.attributes.put(key, map.get(key).toString()); // not sure if entity attribute can
-                                                           // contain an object as value
+  public void copyAttributeKeyValuePair(Map<String, Object> map){
+    for(String key: map.keySet()){
+      if (!key.equalsIgnoreCase("relationship-list")){   // ignore relationship data which is not required in aggregation
+        this.attributes.put(key, map.get(key).toString());    // not sure if entity attribute can contain an object as value
       }
     }
   }
-
-  public void addAttributeKeyValuePair(String key, String value) {
+  
+  public void addAttributeKeyValuePair(String key, String value){
     this.attributes.put(key, value);
   }
 
@@ -80,15 +77,13 @@ public class AggregationEntity extends IndexableEntity implements IndexDocument 
     ObjectNode rootNode = mapper.createObjectNode();
     rootNode.put("link", this.getLink());
     rootNode.put("lastmodTimestamp", this.getEntityTimeStamp());
-    for (String key : this.attributes.keySet()) {
+    for (String key: this.attributes.keySet()){
       rootNode.put(key, this.attributes.get(key));
     }
     return rootNode.toString();
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /* (non-Javadoc)
    * @see java.lang.Object#toString()
    */
   @Override

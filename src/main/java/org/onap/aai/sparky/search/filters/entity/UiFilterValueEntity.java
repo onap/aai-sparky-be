@@ -26,9 +26,8 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
- * This class represents a single item or value to populate the FE filter component with. A
- * drop-down list, for example, may be populated with the values from several instances of this
- * class.
+ * This class represents a single item or value to populate the FE filter component with.
+ * A drop-down list, for example, may be populated with the values from several instances of this class.
  */
 @JsonInclude(Include.NON_NULL)
 public class UiFilterValueEntity {
@@ -74,6 +73,6 @@ public class UiFilterValueEntity {
         + (filterValue != null ? "filterValue=" + filterValue + ", " : "")
         + (displayName != null ? "displayName=" + displayName : "") + "]";
   }
-
-
+  
+  
 }

@@ -26,7 +26,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import javax.json.Json;
 import javax.json.JsonObjectBuilder;
@@ -39,12 +38,12 @@ import org.onap.aai.cl.mdc.MdcContext;
 import org.onap.aai.restclient.client.OperationResult;
 import org.onap.aai.restclient.client.RestClient;
 import org.onap.aai.restclient.rest.HttpUtil;
-import org.onap.aai.sparky.dal.proxy.config.DataRouterConfig;
+import org.onap.aai.sparky.dal.rest.RestClientConstructionException;
+import org.onap.aai.sparky.dal.rest.RestClientFactory;
+import org.onap.aai.sparky.dal.rest.config.RestEndpointConfig;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
-import org.onap.aai.sparky.util.ConfigHelper;
-import org.onap.aai.sparky.util.Encryptor;
 import org.onap.aai.sparky.util.NodeUtils;
-import org.onap.aai.sparky.viewandinspect.config.TierSupportUiConstants;
+import org.onap.aai.sparky.viewandinspect.config.SparkyConstants;
 import org.slf4j.MDC;
 
 /**
@@ -55,12 +54,10 @@ public class AaiUiProxyProcessor {
       LoggerFactory.getInstance().getLogger(AaiUiProxyProcessor.class);
   private static Logger auditLogger =
       LoggerFactory.getInstance().getAuditLogger(AaiUiProxyProcessor.class.getName());
-  public String configFile =
-      TierSupportUiConstants.DYNAMIC_CONFIG_APP_LOCATION + "data-router.properties";
 
   private RestClient client;
-  private DataRouterConfig config;
-  private String drBaseUrl;
+  private String synapseBaseUrl;
+
   private OperationResult operationResult = null;
 
   private String xTransactionId;
@@ -68,39 +65,20 @@ public class AaiUiProxyProcessor {
 
   private static final String ROUTER_SERVICE = "routerService";
 
-  public String getDrBaseUrl() {
-    return drBaseUrl;
-  }
-
-  public void setDrBaseUrl(String drBaseUrl) {
-    this.drBaseUrl = drBaseUrl;
-  }
 
   /**
    * Instantiates a new AaiUiProxyProcessor.
+   * 
+   * @throws RestClientConstructionException
    */
 
-  public AaiUiProxyProcessor() {
-    Properties props = ConfigHelper.loadConfigFromExplicitPath(configFile);
-    config = new DataRouterConfig(props);
-    initializeProxyProcessor(config);
+  public AaiUiProxyProcessor(RestEndpointConfig endpointConfig, String apiGatewayEndpoint)
+      throws RestClientConstructionException {
+    client = RestClientFactory.buildClient(endpointConfig);
+    synapseBaseUrl = "https://" + endpointConfig.getEndpointIpAddress() + ":"
+        + endpointConfig.getEndpointServerPort() + "/" + apiGatewayEndpoint;
   }
 
-  public AaiUiProxyProcessor(DataRouterConfig config) {
-    initializeProxyProcessor(config);
-  }
-
-  private void initializeProxyProcessor(DataRouterConfig config) {
-    Encryptor encryptor = new Encryptor();
-    client = new RestClient().validateServerHostname(false).validateServerCertChain(false)
-        .clientCertFile(TierSupportUiConstants.CONFIG_AUTH_LOCATION + config.getCertName())
-        .clientCertPassword(encryptor.decryptValue(config.getKeystorePassword()))
-        .trustStore(TierSupportUiConstants.CONFIG_AUTH_LOCATION + config.getKeystore())
-        .connectTimeoutMs(config.getConnectTimeout()).readTimeoutMs(config.getReadTimeout());
-
-    drBaseUrl =
-        "https://" + config.getHost() + ":" + config.getPort() + "/" + config.getDrUriSuffix();
-  }
 
   void setUpMdcContext(final Exchange exchange, final HttpServletRequest request) {
 
@@ -124,7 +102,7 @@ public class AaiUiProxyProcessor {
 
   private Map<String, List<String>> getHeaders() {
     Map<String, List<String>> headers = new HashMap<>();
-    headers.put("X-FromAppId", Arrays.asList(TierSupportUiConstants.APP_NAME));
+    headers.put("X-FromAppId", Arrays.asList(SparkyConstants.APP_NAME));
     headers.put("X-TransactionId", Arrays.asList(MDC.get(MdcContext.MDC_REQUEST_ID)));
     headers.put("X-FromAppId", Arrays.asList(MDC.get(MdcContext.MDC_PARTNER_NAME)));
     return headers;
@@ -151,11 +129,11 @@ public class AaiUiProxyProcessor {
     return jsonBuilder.build().toString();
   }
 
-  private String getDrUrl(String requestUri) {
+  private String getSynapseUrl(String requestUri) {
     String url = "";
     int pos = requestUri.indexOf(ROUTER_SERVICE);
     if (pos != -1) {
-      url = drBaseUrl + requestUri.substring(pos + ROUTER_SERVICE.length());
+      url = synapseBaseUrl + requestUri.substring(pos + ROUTER_SERVICE.length());
     } else {
       LOG.error(AaiUiMsgs.DR_REQUEST_URI_FOR_PROXY_UNKNOWN, requestUri);
     }
@@ -171,7 +149,7 @@ public class AaiUiProxyProcessor {
       Map<String, List<String>> headers = getHeaders();
       String proxyPayload = getProxyPayloadAsString(exchange);
       String fromUrl = (String) exchange.getIn().getHeader(Exchange.HTTP_URI);
-      String toUrl = getDrUrl(fromUrl);
+      String toUrl = getSynapseUrl(fromUrl);
       auditLogger.info(AaiUiMsgs.DR_PROXY_FROM_TO, fromUrl, toUrl);
       LOG.debug(AaiUiMsgs.DEBUG_GENERIC,
           "Proxying request:\n" + proxyPayload + "\n" + "Target URL:\n" + toUrl);
@@ -205,20 +183,20 @@ public class AaiUiProxyProcessor {
     }
   }
 
+  public String getSynapseBaseUrl() {
+    return synapseBaseUrl;
+  }
+
+  public void setSynapseBaseUrl(String synapseBaseUrl) {
+    this.synapseBaseUrl = synapseBaseUrl;
+  }
+
   public RestClient getClient() {
     return client;
   }
 
   public void setClient(RestClient client) {
     this.client = client;
-  }
-
-  public DataRouterConfig getConfig() {
-    return config;
-  }
-
-  public void setConfig(DataRouterConfig config) {
-    this.config = config;
   }
 
   protected OperationResult getOperationResult() {

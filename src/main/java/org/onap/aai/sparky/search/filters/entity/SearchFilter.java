@@ -43,18 +43,18 @@ public class SearchFilter {
   public SearchFilter() {
     values = new ArrayList<String>();
   }
-
+  
   public SearchFilter(String filterId) {
     this();
     this.filterId = filterId;
   }
-
+  
   public SearchFilter(String filterId, String... values) {
     this();
     this.filterId = filterId;
     this.values.addAll(Arrays.asList(values));
   }
-
+  
   public String getFilterId() {
     return filterId;
   }

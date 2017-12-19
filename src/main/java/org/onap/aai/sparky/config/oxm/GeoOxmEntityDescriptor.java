@@ -43,7 +43,7 @@ public class GeoOxmEntityDescriptor extends OxmEntityDescriptor {
   public void setGeoLongName(String geoLongName) {
     this.geoLongName = geoLongName;
   }
-
+  
   /**
    * Checks for geo entity.
    *

@@ -42,9 +42,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class SuggestionSearchEntity extends IndexableEntity implements IndexDocument {
   private static final String FILTER_ID = "filterId";
-  private static final String FILTER_VALUE = "filterValue";
-  private static final String FILTER_LIST = "filterList";
-
+  private static final String FILTER_VALUE = "filterValue"; 
+  private static final String FILTER_LIST = "filterList"; 
+  
   private String entityType;
   private List<String> suggestionConnectorWords = new ArrayList<String>();
   private List<String> suggestionAttributeTypes = new ArrayList<String>();
@@ -52,16 +52,16 @@ public class SuggestionSearchEntity extends IndexableEntity implements IndexDocu
   private List<String> suggestionTypeAliases = new ArrayList<String>();
   private List<String> suggestionInputPermutations = new ArrayList<String>();
   private List<String> suggestableAttr = new ArrayList<String>();
-
+  
   private Map<String, String> inputOutputData = new HashMap<String, String>();
   Map<String, UiFilterConfig> filters = new HashMap<String, UiFilterConfig>();
   private JSONObject payload = new JSONObject();
   private JSONArray payloadFilters = new JSONArray();
   private StringBuffer outputString = new StringBuffer();
   private String aliasToUse;
-
+  
   private SuggestionEntityLookup entityLookup;
-
+  
   public JSONObject getPayload() {
     return payload;
   }
@@ -69,40 +69,41 @@ public class SuggestionSearchEntity extends IndexableEntity implements IndexDocu
   public void setPayload(JSONObject payload) {
     this.payload = payload;
   }
-
+  
   protected ObjectMapper mapper = new ObjectMapper();
 
-  public SuggestionSearchEntity() {
+  public SuggestionSearchEntity(FiltersConfig filtersConfig) {
     super();
-
-    FiltersDetailsConfig filterConfigList = FiltersConfig.getInstance().getFiltersConfig();
+    
+    FiltersDetailsConfig filterConfigList = filtersConfig.getFiltersConfig();
     // Populate the map with keys that will match the suggestableAttr values
-    for (UiFilterConfig filter : filterConfigList.getFilters()) {
-      if (filter.getDataSource() != null) {
+    for(UiFilterConfig filter : filterConfigList.getFilters()) {
+      if(filter.getDataSource() != null) {
         filters.put(filter.getDataSource().getFieldName(), filter);
       }
     }
   }
-
-  public SuggestionSearchEntity(SuggestionEntityLookup entityLookup) {
-
+  
+  public SuggestionSearchEntity(FiltersConfig filtersConfig, SuggestionEntityLookup entityLookup) {
+    
     this.entityLookup = entityLookup;
-
-    FiltersDetailsConfig filterConfigList = FiltersConfig.getInstance().getFiltersConfig();
+    
+    FiltersDetailsConfig filterConfigList = filtersConfig.getFiltersConfig();
+    
     // Populate the map with keys that will match the suggestableAttr values
-    for (UiFilterConfig filter : filterConfigList.getFilters()) {
-      if (filter.getDataSource() != null) {
+    for(UiFilterConfig filter : filterConfigList.getFilters()) {
+      if(filter.getDataSource() != null) {
         filters.put(filter.getDataSource().getFieldName(), filter);
       }
     }
   }
-
+  
   public SuggestionSearchEntity(SuggestionEntityLookup entityLookup, FiltersConfig config) {
-
+    
     FiltersDetailsConfig filterConfigList = config.getFiltersConfig();
     // Populate the map with keys that will match the suggestableAttr values
-    for (UiFilterConfig filter : filterConfigList.getFilters()) {
-      if (filter.getDataSource() != null) {
+    for(UiFilterConfig filter : filterConfigList.getFilters()) {
+      if(filter.getDataSource() != null) {
         filters.put(filter.getDataSource().getFieldName(), filter);
       }
     }
@@ -125,49 +126,49 @@ public class SuggestionSearchEntity extends IndexableEntity implements IndexDocu
       }
     }
   }
-
-  public void setFilterBasedPayloadFromResponse(JsonNode node, String entityName,
-      ArrayList<String> uniqueList) {
-
+  
+  public void setFilterBasedPayloadFromResponse(JsonNode node, String entityName, ArrayList<String> uniqueList) {
+    
     HashMap<String, String> desc = entityLookup.getSuggestionSearchEntityOxmModel().get(entityName);
-
-    if (desc == null) {
+    
+    if ( desc == null ) {
       return;
     }
-
+    
     String attr = desc.get("suggestibleAttributes");
-
-    if (attr == null) {
+    
+    if ( attr == null ) {
       return;
     }
-
+    
     List<String> suggestableAttrOxm = Arrays.asList(attr.split(","));
-
+    
     /*
-     * Note: (1) 'uniqueList' is one item within the power set of the suggestable attributes. (2)
-     * 'inputeOutputData' is used to generate permutations of strings
+     * Note: 
+     * (1) 'uniqueList' is one item within the power set of the suggestable attributes.
+     * (2) 'inputeOutputData' is used to generate permutations of strings
      */
-    for (String selectiveAttr : uniqueList) {
+    for (String selectiveAttr: uniqueList) {
       if (node.get(selectiveAttr) != null) {
         inputOutputData.put(selectiveAttr, node.get(selectiveAttr).asText());
       }
     }
-
+      
     if (suggestableAttrOxm != null) {
       for (String attribute : suggestableAttrOxm) {
         if (node.get(attribute) != null && uniqueList.contains(attribute)) {
           UiFilterConfig filterConfig = filters.get(attribute);
-          if (filterConfig != null) {
+          if(filterConfig != null) {
             JSONObject filterPayload = new JSONObject();
             filterPayload.put(FILTER_ID, filterConfig.getFilterId());
             filterPayload.put(FILTER_VALUE, node.get(attribute).asText());
             this.payloadFilters.put(filterPayload);
           } else {
-            this.payload.put(attribute, node.get(attribute).asText());
+            this.payload.put(attribute, node.get(attribute).asText()); 
           }
         } else {
           UiFilterConfig emptyValueFilterConfig = filters.get(attribute);
-          if (emptyValueFilterConfig != null) {
+          if(emptyValueFilterConfig != null) {
             JSONObject emptyValueFilterPayload = new JSONObject();
             emptyValueFilterPayload.put(FILTER_ID, emptyValueFilterConfig.getFilterId());
             this.payloadFilters.put(emptyValueFilterPayload);
@@ -232,8 +233,7 @@ public class SuggestionSearchEntity extends IndexableEntity implements IndexDocu
 
     List<String> entityNames = new ArrayList<>();
     entityNames.add(entityType);
-    HashMap<String, String> desc =
-        entityLookup.getSuggestionSearchEntityOxmModel().get(this.entityType);
+    HashMap<String, String> desc = entityLookup.getSuggestionSearchEntityOxmModel().get(this.entityType);
     String attr = desc.get("suggestionAliases");
     String[] suggestionAliasesArray = attr.split(",");
     suggestionTypeAliases = Arrays.asList(suggestionAliasesArray);
@@ -244,14 +244,14 @@ public class SuggestionSearchEntity extends IndexableEntity implements IndexDocu
 
     ArrayList<String> listToPermutate = new ArrayList<>(inputOutputData.values());
 
-    for (String entity : entityNames) {
+    for (String entity : entityNames){
       listToPermutate.add(entity); // add entity-name or alias in list to permutate
       List<List<String>> lists = SuggestionsPermutation.getListPermutations(listToPermutate);
-      for (List<String> li : lists) {
+      for (List<String> li : lists){
         suggestionInputPermutations.add(String.join(" ", li));
       }
       // prepare for the next pass: remove the entity-name or alias from the list
-      listToPermutate.remove(entity);
+      listToPermutate.remove(entity); 
     }
   }
 
@@ -262,20 +262,20 @@ public class SuggestionSearchEntity extends IndexableEntity implements IndexDocu
 
   @Override
   public void deriveFields() {
-
+    
     int entryCounter = 1;
     for (Map.Entry<String, String> outputValue : inputOutputData.entrySet()) {
       if (outputValue.getValue() != null && outputValue.getValue().length() > 0) {
         this.outputString.append(outputValue.getValue());
         if (entryCounter < inputOutputData.entrySet().size()) {
           this.outputString.append(" and ");
-        } else {
+        } else{
           this.outputString.append(" ");
         }
       }
       entryCounter++;
     }
-
+    
     this.outputString.append(this.getAliasToUse());
     this.id = NodeUtils.generateUniqueShaDigest(outputString.toString());
   }

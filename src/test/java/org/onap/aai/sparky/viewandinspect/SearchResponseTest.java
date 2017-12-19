@@ -57,19 +57,19 @@ public class SearchResponseTest {
 
     SearchResponse response = new SearchResponse();
 
-    // response.setNumReturned(1);
+    //response.setNumReturned(1);
     response.setProcessingTimeInMs(512);
-    // response.setTotalFound(50);
+    //response.setTotalFound(50);
 
     List<EntityEntry> entities = new ArrayList<EntityEntry>();
-    // response.setEntities(entities);
+    //response.setEntities(entities);
 
     EntityEntry e1 = new EntityEntry();
     e1.setEntityPrimaryKeyValue("e1");
     e1.setEntityType("e1");
     e1.setSearchTags("e1");
 
-    // response.addEntityEntry(e1);
+    //response.addEntityEntry(e1);
 
     EntityEntry e2 = new EntityEntry();
 
@@ -77,15 +77,15 @@ public class SearchResponseTest {
     e2.setEntityType("e2");
     e2.setSearchTags("e2");
 
-    // response.addEntityEntry(e2);
+    //response.addEntityEntry(e2);
 
-    // assertEquals(1, response.getNumReturned());
-    // assertEquals(512, response.getProcessingTimeInMs());
-    // assertEquals(50, response.getTotalFound());
+    //assertEquals(1, response.getNumReturned());
+    //assertEquals(512, response.getProcessingTimeInMs());
+    //assertEquals(50, response.getTotalFound());
 
-    // List<EntityEntry> responseEntities = response.getEntities();
+    //List<EntityEntry> responseEntities = response.getEntities();
 
-    // assertEquals(2, responseEntities.size());
+    //assertEquals(2, responseEntities.size());
 
   }
 

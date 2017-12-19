@@ -42,144 +42,73 @@ public class SuggestionsPermutationTest {
     inputList.add("str1");
     inputList.add("str2");
     inputList.add("str3");
-
+    
     List<List<String>> expectedListOfLists = new ArrayList<List<String>>();
-    expectedListOfLists.add((new ArrayList<String>() {
-      {
-        add("str1");
-      }
-    }));
-    expectedListOfLists.add((new ArrayList<String>() {
-      {
-        add("str2");
-      }
-    }));
-    expectedListOfLists.add((new ArrayList<String>() {
-      {
-        add("str3");
-      }
-    }));
-    expectedListOfLists.add((new ArrayList<String>() {
-      {
-        add("str1");
-        add("str2");
-      }
-    }));
-    expectedListOfLists.add((new ArrayList<String>() {
-      {
-        add("str1");
-        add("str3");
-      }
-    }));
-    expectedListOfLists.add((new ArrayList<String>() {
-      {
-        add("str2");
-        add("str3");
-      }
-    }));
-    expectedListOfLists.add((new ArrayList<String>() {
-      {
-        add("str1");
-        add("str2");
-        add("str3");
-      }
-    }));
-
+    expectedListOfLists.add((new ArrayList<String>(){{add("str1");}}));
+    expectedListOfLists.add((new ArrayList<String>(){{add("str2");}}));
+    expectedListOfLists.add((new ArrayList<String>(){{add("str3");}}));
+    expectedListOfLists.add((new ArrayList<String>(){{add("str1");add("str2");}}));
+    expectedListOfLists.add((new ArrayList<String>(){{add("str1");add("str3");}}));
+    expectedListOfLists.add((new ArrayList<String>(){{add("str2");add("str3");}}));
+    expectedListOfLists.add((new ArrayList<String>(){{add("str1");add("str2");add("str3");}}));
+    
     int expectedCount = expectedListOfLists.size();
     int actualCount = 0;
-    ArrayList<ArrayList<String>> actualListOfLists =
-        SuggestionsPermutation.getNonEmptyUniqueLists(inputList);
-
-    for (List<String> list : expectedListOfLists) {
-      for (ArrayList<String> actualList : actualListOfLists) {
-        if (new HashSet(list).equals(new HashSet(actualList))) {
+    ArrayList<ArrayList<String>> actualListOfLists = SuggestionsPermutation.getNonEmptyUniqueLists(inputList);
+    
+    for (List<String> list: expectedListOfLists){
+      for (ArrayList<String> actualList: actualListOfLists) {
+        if (new HashSet(list).equals (new HashSet(actualList)) ){
           actualCount++;
         }
       }
     }
-
-    assertTrue("Missing entries in the unique list of lists for input: " + inputList.toString()
-        + ". Found: " + actualListOfLists.toString() + " expected: "
-        + expectedListOfLists.toString(), actualCount == expectedCount);
+    
+    assertTrue("Missing entries in the unique list of lists for input: " + inputList.toString() 
+      + ". Found: "+ actualListOfLists.toString()
+      + " expected: " + expectedListOfLists.toString(), actualCount == expectedCount);
   }
-
+  
   @Test
   public void testGetListPermutations() {
     List<String> inputList = new ArrayList<String>();
     inputList.add("str1");
     inputList.add("str2");
     inputList.add("str3");
-
+    
     List<List<String>> expectedPermutations = new ArrayList<List<String>>();
-    expectedPermutations.add((new ArrayList<String>() {
-      {
-        add("str1");
-        add("str2");
-        add("str3");
-      }
-    }));
-    expectedPermutations.add((new ArrayList<String>() {
-      {
-        add("str2");
-        add("str1");
-        add("str3");
-      }
-    }));
-    expectedPermutations.add((new ArrayList<String>() {
-      {
-        add("str2");
-        add("str3");
-        add("str1");
-      }
-    }));
-    expectedPermutations.add((new ArrayList<String>() {
-      {
-        add("str1");
-        add("str3");
-        add("str2");
-      }
-    }));
-    expectedPermutations.add((new ArrayList<String>() {
-      {
-        add("str3");
-        add("str1");
-        add("str2");
-      }
-    }));
-    expectedPermutations.add((new ArrayList<String>() {
-      {
-        add("str3");
-        add("str2");
-        add("str1");
-      }
-    }));
-
+    expectedPermutations.add((new ArrayList<String>(){{add("str1");add("str2");add("str3");}}));
+    expectedPermutations.add((new ArrayList<String>(){{add("str2");add("str1");add("str3");}}));
+    expectedPermutations.add((new ArrayList<String>(){{add("str2");add("str3");add("str1");}}));
+    expectedPermutations.add((new ArrayList<String>(){{add("str1");add("str3");add("str2");}}));
+    expectedPermutations.add((new ArrayList<String>(){{add("str3");add("str1");add("str2");}}));
+    expectedPermutations.add((new ArrayList<String>(){{add("str3");add("str2");add("str1");}}));
+    
     int expectedCount = expectedPermutations.size();
     int actualCount = 0;
     List<List<String>> actualPermutations = SuggestionsPermutation.getListPermutations(inputList);
-
-    for (List<String> list : expectedPermutations) {
-      for (List<String> actualList : actualPermutations) {
-        if (list.toString().equals(actualList.toString())) {
+    
+    for (List<String> list: expectedPermutations){
+      for (List<String> actualList: actualPermutations) {
+        if (list.toString().equals(actualList.toString()) ){
           actualCount++;
         }
       }
     }
-
-    assertTrue(
-        "Missing entries in the permutation of list: " + inputList.toString() + ". Found: "
-            + actualPermutations.toString() + " expected: " + expectedPermutations.toString(),
-        actualCount == expectedCount);
+    
+    assertTrue("Missing entries in the permutation of list: " 
+        + inputList.toString() + ". Found: "+ actualPermutations.toString()
+      + " expected: " + expectedPermutations.toString(), actualCount == expectedCount);
   }
 
   @Test
   public void isValidSuggestionInputPermutation_verbose_successPath() {
-
+    
     List<String> x = new ArrayList<>(Arrays.asList("A", "B", "C", "D"));
 
     ArrayList<ArrayList<String>> uniqueLists = SuggestionsPermutation.getNonEmptyUniqueLists(x);
-
-    assertTrue(uniqueLists.get(0).toString().equals("[A, B, C, D]"));
+    
+    assertTrue(uniqueLists.get(0).toString().equals("[A, B, C, D]")); 
     assertTrue(uniqueLists.get(1).toString().equals("[B, C, D]"));
     assertTrue(uniqueLists.get(2).toString().equals("[A, C, D]"));
     assertTrue(uniqueLists.get(3).toString().equals("[C, D]"));
@@ -195,7 +124,7 @@ public class SuggestionsPermutationTest {
     assertTrue(uniqueLists.get(13).toString().equals("[B]"));
     assertTrue(uniqueLists.get(14).toString().equals("[A]"));
     assertTrue(uniqueLists.size() == 15);
-
+    
   }
-
+  
 }

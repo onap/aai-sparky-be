@@ -18,14 +18,14 @@ public class TestSyncController implements SyncController {
   private boolean periodic;
   private SynchronizerState internalState;
   private Semaphore gate;
-
+  
   public TestSyncController(String name) {
     this.controllerName = name;
     this.internalState = SynchronizerState.IDLE;
     this.gate = new Semaphore(1);
   }
-
-
+  
+  
   @Override
   public String getControllerName() {
     return this.controllerName;
@@ -33,12 +33,12 @@ public class TestSyncController implements SyncController {
 
   @Override
   public OperationState performAction(SyncActions requestedAction) {
-
+    
     if (gate.tryAcquire()) {
 
       internalState = SynchronizerState.PERFORMING_SYNCHRONIZATION;
 
-      // System.out.println("performaAction = " + requestedAction);
+   //   System.out.println("performaAction = " + requestedAction);
 
       System.out.println("Sync started with thread = " + Thread.currentThread().getName()
           + " at date = " + new Date(Calendar.getInstance().getTimeInMillis()));
@@ -54,12 +54,12 @@ public class TestSyncController implements SyncController {
           + " at date = " + new Date(Calendar.getInstance().getTimeInMillis()));
       internalState = SynchronizerState.IDLE;
 
-      System.out.println("Next Sync at = " + Thread.currentThread().getName() + " at date = "
-          + new Date(Calendar.getInstance().getTimeInMillis() + 30000L));
+      System.out.println("Next Sync at = " + Thread.currentThread().getName()
+          + " at date = " + new Date(Calendar.getInstance().getTimeInMillis() + 30000L));
 
-
+      
       gate.release();
-
+      
       return OperationState.OK;
     } else {
       return OperationState.IGNORED_SYNC_NOT_IDLE;
@@ -69,30 +69,30 @@ public class TestSyncController implements SyncController {
   @Override
   public void registerEntitySynchronizer(IndexSynchronizer entitySynchronizer) {
     // TODO Auto-generated method stub
-
+    
   }
 
   @Override
   public void registerIndexValidator(IndexValidator indexValidator) {
     // TODO Auto-generated method stub
-
+    
   }
 
   @Override
   public void registerIndexCleaner(IndexCleaner indexCleaner) {
     // TODO Auto-generated method stub
-
+    
   }
 
   @Override
   public void shutdown() {
     // TODO Auto-generated method stub
-    // System.out.println("shutdown");
+   // System.out.println("shutdown");
   }
 
   @Override
   public SynchronizerState getState() {
-    // System.out.println("getState()");
+ //   System.out.println("getState()");
     return SynchronizerState.IDLE;
   }
 
@@ -105,7 +105,7 @@ public class TestSyncController implements SyncController {
   @Override
   public void setDelayInMs(long delayInMs) {
     // TODO Auto-generated method stub
-
+    
   }
 
   @Override
@@ -117,12 +117,12 @@ public class TestSyncController implements SyncController {
   @Override
   public void setSyncFrequencyInMs(long syncFrequencyInMs) {
     // TODO Auto-generated method stub
-
+    
   }
 
   @Override
   public Date getSyncStartTime() {
-    // System.out.println("getSyncStateTime()");
+//    System.out.println("getSyncStateTime()");
     // TODO Auto-generated method stub
     return null;
   }
@@ -130,7 +130,7 @@ public class TestSyncController implements SyncController {
   @Override
   public void setSyncStartTime(Date syncStartTime) {
     // TODO Auto-generated method stub
-
+    
   }
 
   @Override
@@ -142,16 +142,16 @@ public class TestSyncController implements SyncController {
   @Override
   public void setLastExecutionDate(Date lastExecutionDate) {
     // TODO Auto-generated method stub
-
+    
   }
 
-
+  
   @Override
   public Calendar getCreationTime() {
     // TODO Auto-generated method stub
     return null;
   }
-
+  
   @Override
   public String getNextSyncTime() {
     // TODO Auto-generated method stub
@@ -171,7 +171,7 @@ public class TestSyncController implements SyncController {
     // TODO Auto-generated method stub
     return false;
   }
-
-
+  
+  
 
 }

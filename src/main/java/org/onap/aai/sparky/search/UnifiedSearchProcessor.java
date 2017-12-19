@@ -51,7 +51,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class UnifiedSearchProcessor {
 
   protected static final String HASH_ID_KEY = "hashId";
-
+  
   private static final Logger LOG =
       LoggerFactory.getInstance().getLogger(UnifiedSearchProcessor.class);
 
@@ -63,7 +63,7 @@ public class UnifiedSearchProcessor {
     mapper = new ObjectMapper();
     this.useOrderedSearchProviderKeys = false;
   }
-
+  
   public boolean isUseOrderedSearchProviderKeys() {
     return useOrderedSearchProviderKeys;
   }
@@ -86,10 +86,8 @@ public class UnifiedSearchProcessor {
 
     Request request = exchange.getIn().getHeader(RestletConstants.RESTLET_REQUEST, Request.class);
 
-    /*
-     * Disables automatic Apache Camel Restlet component logging which prints out an undesirable log
-     * entry which includes client (e.g. browser) information
-     */
+    /* Disables automatic Apache Camel Restlet component logging which prints out an undesirable log entry
+       which includes client (e.g. browser) information */
     request.setLoggable(false);
 
     ClientInfo clientInfo = request.getClientInfo();
@@ -102,7 +100,7 @@ public class UnifiedSearchProcessor {
 
     try {
       String payload = exchange.getIn().getBody(String.class);
-
+      
       if (payload == null || payload.isEmpty()) {
 
         LOG.error(AaiUiMsgs.SEARCH_SERVLET_ERROR, "Request Payload is empty");
@@ -115,7 +113,7 @@ public class UnifiedSearchProcessor {
 
         QuerySearchEntity searchRequest = mapper.readValue(payload, QuerySearchEntity.class);
         int maxResultsPerSearch = Integer.valueOf(searchRequest.getMaxResults());
-
+        
         Map<String, List<SearchSuggestion>> searchProviderSuggestions =
             new HashMap<String, List<SearchSuggestion>>();
 
@@ -128,17 +126,17 @@ public class UnifiedSearchProcessor {
         }
 
         /*
-         * Using ordered search provider keys allows us to deterministically calculate how many
-         * results from each provider should be returned. At the moment, this behavior is primarily
-         * only beneficial to test classes. As there is a cost to sorted-collections in the call
-         * processing path, this behavior has been made optional.
+         * Using ordered search provider keys allows us to deterministically calculate how many results
+         * from each provider should be returned.  At the moment, this behavior is primarily only beneficial
+         * to test classes.  As there is a cost to sorted-collections in the call processing path, this behavior
+         * has been made optional.
          */
-
+        
         if (useOrderedSearchProviderKeys) {
           searchProviderSuggestions =
               new TreeMap<String, List<SearchSuggestion>>(searchProviderSuggestions);
         }
-
+        
         if (totalSuggestionsFromProviders > 0) {
 
           int suggestionIndex = 0;
@@ -146,7 +144,8 @@ public class UnifiedSearchProcessor {
           Set<Entry<String, List<SearchSuggestion>>> searchProviderResults =
               searchProviderSuggestions.entrySet();
 
-          while (totalAdded < maxResultsPerSearch && (totalAdded < totalSuggestionsFromProviders)) {
+          while (totalAdded < maxResultsPerSearch
+              && (totalAdded < totalSuggestionsFromProviders)) {
 
             for (Entry<String, List<SearchSuggestion>> searchProviderResultList : searchProviderResults) {
 
@@ -175,8 +174,7 @@ public class UnifiedSearchProcessor {
       processTime = System.currentTimeMillis() - processTime;
       searchResponse.setProcessingTimeInMs(processTime);
 
-      Response response =
-          exchange.getIn().getHeader(RestletConstants.RESTLET_RESPONSE, Response.class);
+      Response response = exchange.getIn().getHeader(RestletConstants.RESTLET_RESPONSE, Response.class);
       response.setStatus(Status.SUCCESS_OK);
       response.setEntity(searchResponseJson, MediaType.APPLICATION_JSON);
       exchange.getOut().setBody(response);
@@ -189,7 +187,7 @@ public class UnifiedSearchProcessor {
           String.class);
     }
   }
-
+  
   public SearchProviderRegistry getSearchProviderRegistry() {
     return searchProviderRegistry;
   }

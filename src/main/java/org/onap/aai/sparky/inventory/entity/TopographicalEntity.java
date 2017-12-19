@@ -144,9 +144,7 @@ public class TopographicalEntity implements Serializable {
   }
 
 
-  /*
-   * (non-Javadoc)
-   * 
+  /* (non-Javadoc)
    * @see java.lang.Object#toString()
    */
   @Override

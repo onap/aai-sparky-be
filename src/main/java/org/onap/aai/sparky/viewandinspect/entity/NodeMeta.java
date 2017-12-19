@@ -51,16 +51,16 @@ public class NodeMeta {
   private NodeProcessingState processingState;
 
   private VisualizationConfigs visualizationConfigs;
-
-
+  
+  
 
   /**
    * Instantiates a new node meta.
    */
   public NodeMeta(VisualizationConfigs visualizationConfigs) {
     this.isSearchTarget = false;
-    this.visualizationConfigs = visualizationConfigs;
-
+    this.visualizationConfigs = visualizationConfigs; 
+    
 
     if (this.visualizationConfigs.isVisualizationDebugEnabled()) {
       nodeDebug = new NodeDebug();

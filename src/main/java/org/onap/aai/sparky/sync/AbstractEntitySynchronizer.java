@@ -35,7 +35,6 @@ import org.onap.aai.sparky.dal.NetworkTransaction;
 import org.onap.aai.sparky.dal.aai.ActiveInventoryEntityStatistics;
 import org.onap.aai.sparky.dal.aai.ActiveInventoryProcessingExceptionStatistics;
 import org.onap.aai.sparky.dal.elasticsearch.ElasticSearchEntityStatistics;
-import org.onap.aai.sparky.dal.elasticsearch.config.ElasticSearchConfig;
 import org.onap.aai.sparky.dal.rest.HttpMethod;
 import org.onap.aai.sparky.dal.rest.RestOperationalStatistics;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
@@ -62,7 +61,8 @@ public abstract class AbstractEntitySynchronizer {
    * The Enum StatFlag.
    */
   protected enum StatFlag {
-    AAI_REST_STATS, AAI_ENTITY_STATS, AAI_PROCESSING_EXCEPTION_STATS, AAI_TASK_PROCESSING_STATS, ES_REST_STATS, ES_ENTITY_STATS, ES_TASK_PROCESSING_STATS
+    AAI_REST_STATS, AAI_ENTITY_STATS, AAI_PROCESSING_EXCEPTION_STATS,
+    AAI_TASK_PROCESSING_STATS, ES_REST_STATS, ES_ENTITY_STATS, ES_TASK_PROCESSING_STATS
   }
 
   protected EnumSet<StatFlag> enabledStatFlags;
@@ -92,7 +92,6 @@ public abstract class AbstractEntitySynchronizer {
   protected String synchronizerName;
 
   protected abstract boolean isSyncDone();
-
   protected boolean shouldSkipSync;
 
   public String getActiveInventoryStatisticsReport() {
@@ -254,7 +253,7 @@ public abstract class AbstractEntitySynchronizer {
   protected AbstractEntitySynchronizer(Logger logger, String syncName, int numSyncWorkers,
       int numActiveInventoryWorkers, int numElasticsearchWorkers, String indexName,
       NetworkStatisticsConfig aaiStatConfig, NetworkStatisticsConfig esStatConfig)
-      throws Exception {
+          throws Exception {
     this.logger = logger;
     this.synchronizerExecutor =
         NodeUtils.createNamedExecutor(syncName + "-INTERNAL", numSyncWorkers, logger);
@@ -263,14 +262,16 @@ public abstract class AbstractEntitySynchronizer {
     this.esExecutor =
         NodeUtils.createNamedExecutor(syncName + "-ES", numElasticsearchWorkers, logger);
     this.mapper = new ObjectMapper();
-    this.indexName = indexName;
+    this.indexName = indexName; 
     this.esRestStats = new RestOperationalStatistics();
     this.esEntityStats = new ElasticSearchEntityStatistics();
     this.aaiRestStats = new RestOperationalStatistics();
     this.aaiEntityStats = new ActiveInventoryEntityStatistics();
     this.aaiProcessingExceptionStats = new ActiveInventoryProcessingExceptionStatistics();
-    this.aaiTaskProcessingStats = new TaskProcessingStats(aaiStatConfig);
-    this.esTaskProcessingStats = new TaskProcessingStats(esStatConfig);
+    this.aaiTaskProcessingStats =
+        new TaskProcessingStats(aaiStatConfig);
+    this.esTaskProcessingStats =
+        new TaskProcessingStats(esStatConfig);
 
     this.aaiTransactionRateController =
         new TransactionRateMonitor(numActiveInventoryWorkers, aaiStatConfig);
@@ -283,9 +284,9 @@ public abstract class AbstractEntitySynchronizer {
     enabledStatFlags = EnumSet.allOf(StatFlag.class);
 
     this.synchronizerName = "Abstact Entity Synchronizer";
-
+    
     String txnID = NodeUtils.getRandomTxnId();
-    MdcContext.initialize(txnID, "AbstractEntitySynchronizer", "", "Sync", "");
+	MdcContext.initialize(txnID, "AbstractEntitySynchronizer", "", "Sync", "");
 
     this.shouldSkipSync = false;
     this.syncStartedTimeStampInMs = System.currentTimeMillis();
@@ -345,9 +346,9 @@ public abstract class AbstractEntitySynchronizer {
       if (esExecutor != null) {
         esExecutor.shutdown();
       }
-
+    
     } catch (Exception exc) {
-      logger.error(AaiUiMsgs.ERROR_SHUTDOWN_EXECUTORS, exc);
+      logger.error(AaiUiMsgs.ERROR_SHUTDOWN_EXECUTORS, exc );
     }
   }
 
@@ -355,7 +356,7 @@ public abstract class AbstractEntitySynchronizer {
    * Clear cache.
    */
   public void clearCache() {}
-
+  
   public ElasticSearchAdapter getElasticSearchAdapter() {
     return elasticSearchAdapter;
   }
@@ -370,32 +371,6 @@ public abstract class AbstractEntitySynchronizer {
 
   public void setAaiAdapter(ActiveInventoryAdapter aaiAdapter) {
     this.aaiAdapter = aaiAdapter;
-  }
-
-  /**
-   * Gets the elastic full url.
-   *
-   * @param resourceUrl the resource url
-   * @param indexName the index name
-   * @param indexType the index type
-   * @return the elastic full url
-   * @throws Exception the exception
-   */
-  protected String getElasticFullUrl(String resourceUrl, String indexName, String indexType)
-      throws Exception {
-    return ElasticSearchConfig.getConfig().getElasticFullUrl(resourceUrl, indexName, indexType);
-  }
-
-  /**
-   * Gets the elastic full url.
-   *
-   * @param resourceUrl the resource url
-   * @param indexName the index name
-   * @return the elastic full url
-   * @throws Exception the exception
-   */
-  protected String getElasticFullUrl(String resourceUrl, String indexName) throws Exception {
-    return ElasticSearchConfig.getConfig().getElasticFullUrl(resourceUrl, indexName);
   }
 
   public String getIndexName() {
@@ -473,7 +448,8 @@ public abstract class AbstractEntitySynchronizer {
 
       esTransactionRateController.trackResponseTime(txn.getOpTimeInMs());
 
-      esTaskProcessingStats.updateTaskResponseStatsHistogram(txn.getOpTimeInMs());
+      esTaskProcessingStats
+          .updateTaskResponseStatsHistogram(txn.getOpTimeInMs());
       esTaskProcessingStats.updateTaskAgeStatsHistogram(txn.getTaskAgeInMs());
 
       // don't know the cost of the lengh calc, we'll see if it causes a
@@ -531,9 +507,11 @@ public abstract class AbstractEntitySynchronizer {
     }
 
     if (enabledStatFlags.contains(StatFlag.AAI_TASK_PROCESSING_STATS)) {
-      aaiTransactionRateController.trackResponseTime(txn.getOpTimeInMs());
+      aaiTransactionRateController
+          .trackResponseTime(txn.getOpTimeInMs());
 
-      aaiTaskProcessingStats.updateTaskResponseStatsHistogram(txn.getOpTimeInMs());
+      aaiTaskProcessingStats
+          .updateTaskResponseStatsHistogram(txn.getOpTimeInMs());
       aaiTaskProcessingStats.updateTaskAgeStatsHistogram(txn.getTaskAgeInMs());
 
       // don't know the cost of the lengh calc, we'll see if it causes a

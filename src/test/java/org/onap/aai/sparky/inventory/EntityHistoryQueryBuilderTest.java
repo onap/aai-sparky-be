@@ -11,23 +11,23 @@ import org.junit.Test;
 import org.onap.aai.sparky.inventory.EntityHistoryQueryBuilder;
 
 public class EntityHistoryQueryBuilderTest {
+	
+	private EntityHistoryQueryBuilder entityHistoryQueryBuilder;
 
-  private EntityHistoryQueryBuilder entityHistoryQueryBuilder;
-
-  @Before
-  public void init() throws Exception {
-    entityHistoryQueryBuilder = new EntityHistoryQueryBuilder();
-  }
-
-  @Test
-  public void successfullBuild() {
-    entityHistoryQueryBuilder.getQuery("table");
-    assertNotNull(entityHistoryQueryBuilder.createTableQuery());
-    entityHistoryQueryBuilder.getQuery("graph");
-    assertNotNull(entityHistoryQueryBuilder.createGraphQuery());
-    entityHistoryQueryBuilder.getQuery("tree");
-    assertNull(entityHistoryQueryBuilder.getQuery("tree"));
-
-  }
+	@Before
+	  public void init() throws Exception {
+		entityHistoryQueryBuilder = new EntityHistoryQueryBuilder(); 
+	  }
+	
+	@Test 
+	public void successfullBuild() {
+		entityHistoryQueryBuilder.getQuery("table");
+		assertNotNull(entityHistoryQueryBuilder.createTableQuery());
+		entityHistoryQueryBuilder.getQuery("graph");
+		assertNotNull(entityHistoryQueryBuilder.createGraphQuery());
+		entityHistoryQueryBuilder.getQuery("tree");
+		assertNull(entityHistoryQueryBuilder.getQuery("tree"));
+		
+	}
 
 }

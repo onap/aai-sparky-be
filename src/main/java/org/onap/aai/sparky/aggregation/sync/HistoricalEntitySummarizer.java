@@ -65,8 +65,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 public class HistoricalEntitySummarizer extends AbstractEntitySynchronizer
     implements IndexSynchronizer {
 
-  private static final Logger LOG =
-      LoggerFactory.getInstance().getLogger(HistoricalEntitySummarizer.class);
+  private static final Logger LOG = LoggerFactory.getInstance().getLogger(HistoricalEntitySummarizer.class);
   private static final String INSERTION_DATE_TIME_FORMAT = "yyyyMMdd'T'HHmmssZ";
 
   private boolean allWorkEnumerated;
@@ -74,6 +73,7 @@ public class HistoricalEntitySummarizer extends AbstractEntitySynchronizer
   private boolean syncInProgress;
   private Map<String, String> contextMap;
   private ElasticSearchSchemaConfig schemaConfig;
+  private SearchableEntityLookup searchableEntityLookup;
 
   /**
    * Instantiates a new historical entity summarizer.
@@ -83,9 +83,9 @@ public class HistoricalEntitySummarizer extends AbstractEntitySynchronizer
    */
   public HistoricalEntitySummarizer(ElasticSearchSchemaConfig schemaConfig, int internalSyncWorkers,
       int aaiWorkers, int esWorkers, NetworkStatisticsConfig aaiStatConfig,
-      NetworkStatisticsConfig esStatConfig) throws Exception {
-    super(LOG, "HES", internalSyncWorkers, aaiWorkers, esWorkers, schemaConfig.getIndexName(),
-        aaiStatConfig, esStatConfig);
+      NetworkStatisticsConfig esStatConfig, SearchableEntityLookup searchableEntityLookup)
+      throws Exception {
+    super(LOG, "HES", internalSyncWorkers, aaiWorkers, esWorkers, schemaConfig.getIndexName(), aaiStatConfig, esStatConfig);
 
     this.schemaConfig = schemaConfig;
     this.allWorkEnumerated = false;
@@ -93,8 +93,9 @@ public class HistoricalEntitySummarizer extends AbstractEntitySynchronizer
     this.synchronizerName = "Historical Entity Summarizer";
     this.enabledStatFlags = EnumSet.of(StatFlag.AAI_REST_STATS, StatFlag.ES_REST_STATS);
     this.syncInProgress = false;
-    this.contextMap = MDC.getCopyOfContextMap();
+    this.contextMap = MDC.getCopyOfContextMap(); 
     this.syncDurationInMs = -1;
+    this.searchableEntityLookup = searchableEntityLookup;
   }
 
   /**
@@ -103,9 +104,9 @@ public class HistoricalEntitySummarizer extends AbstractEntitySynchronizer
    * @return the operation state
    */
   private OperationState collectAllTheWork() {
-
+	
     Map<String, SearchableOxmEntityDescriptor> descriptorMap =
-        SearchableEntityLookup.getInstance().getSearchableEntityDescriptors();
+        searchableEntityLookup.getSearchableEntityDescriptors();
 
     if (descriptorMap.isEmpty()) {
       LOG.error(AaiUiMsgs.OXM_FAILED_RETRIEVAL, "historical entities");
@@ -126,14 +127,15 @@ public class HistoricalEntitySummarizer extends AbstractEntitySynchronizer
 
           @Override
           public Void get() {
-            MDC.setContextMap(contextMap);
+        	MDC.setContextMap(contextMap);
             try {
-              OperationResult typeLinksResult = aaiAdapter.getSelfLinksByEntityType(entityType);
+              OperationResult typeLinksResult =
+                  aaiAdapter.getSelfLinksByEntityType(entityType);
               updateActiveInventoryCounters(HttpMethod.GET, entityType, typeLinksResult);
               processEntityTypeSelfLinks(entityType, typeLinksResult);
             } catch (Exception exc) {
               LOG.error(AaiUiMsgs.ERROR_GETTING_DATA_FROM_AAI, exc.getMessage());
-
+              
             }
 
             return null;
@@ -155,8 +157,7 @@ public class HistoricalEntitySummarizer extends AbstractEntitySynchronizer
       while (asyncWoH.get() > 0) {
 
         if (LOG.isDebugEnabled()) {
-          LOG.debug(AaiUiMsgs.DEBUG_GENERIC,
-              indexName + " summarizer waiting for all the links to be processed.");
+          LOG.debug(AaiUiMsgs.DEBUG_GENERIC, indexName + " summarizer waiting for all the links to be processed.");
         }
 
         Thread.sleep(250);
@@ -197,17 +198,15 @@ public class HistoricalEntitySummarizer extends AbstractEntitySynchronizer
 
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /* (non-Javadoc)
    * @see org.openecomp.sparky.synchronizer.IndexSynchronizer#doSync()
    */
   @Override
   public OperationState doSync() {
     this.syncDurationInMs = -1;
-    String txnID = NodeUtils.getRandomTxnId();
+	String txnID = NodeUtils.getRandomTxnId();
     MdcContext.initialize(txnID, "HistoricalEntitySynchronizer", "", "Sync", "");
-
+	
     if (syncInProgress) {
       LOG.info(AaiUiMsgs.HISTORICAL_SYNC_PENDING);
       return OperationState.PENDING;
@@ -276,19 +275,18 @@ public class HistoricalEntitySummarizer extends AbstractEntitySynchronizer
         @Override
         public Void get() {
           MDC.setContextMap(contextMap);
-          String jsonString =
-              Json.createObjectBuilder().add("count", entityCounterEntry.getValue().get())
-                  .add("entityType", entityCounterEntry.getKey())
-                  .add("timestamp", currentFormattedTimeStamp).build().toString();
+          String jsonString = Json.createObjectBuilder().add(
+              "count", entityCounterEntry.getValue().get())
+              .add("entityType", entityCounterEntry.getKey())
+              .add("timestamp", currentFormattedTimeStamp).build().toString();
 
           String link = null;
           try {
-            link = getElasticFullUrl("", indexName);
-            OperationResult or =
-                elasticSearchAdapter.doPost(link, jsonString, MediaType.APPLICATION_JSON_TYPE);
+            link = elasticSearchAdapter.buildElasticSearchPostUrl(indexName);
+            OperationResult or = elasticSearchAdapter.doPost(link, jsonString, MediaType.APPLICATION_JSON_TYPE);
             updateElasticSearchCounters(HttpMethod.POST, entityCounterEntry.getKey(), or);
           } catch (Exception exc) {
-            LOG.error(AaiUiMsgs.ES_STORE_FAILURE, exc.getMessage());
+            LOG.error(AaiUiMsgs.ES_STORE_FAILURE, exc.getMessage() );
           }
 
           return null;
@@ -324,9 +322,7 @@ public class HistoricalEntitySummarizer extends AbstractEntitySynchronizer
 
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /* (non-Javadoc)
    * @see org.openecomp.sparky.synchronizer.IndexSynchronizer#getStatReport(boolean)
    */
   @Override
@@ -335,9 +331,7 @@ public class HistoricalEntitySummarizer extends AbstractEntitySynchronizer
     return this.getStatReport(syncDurationInMs, showFinalReport);
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /* (non-Javadoc)
    * @see org.openecomp.sparky.synchronizer.IndexSynchronizer#shutdown()
    */
   @Override
@@ -351,8 +345,8 @@ public class HistoricalEntitySummarizer extends AbstractEntitySynchronizer
     int totalWorkOnHand = aaiWorkOnHand.get() + esWorkOnHand.get();
 
     if (LOG.isDebugEnabled()) {
-      LOG.debug(AaiUiMsgs.DEBUG_GENERIC, indexName + ", isSyncDone(), totalWorkOnHand = "
-          + totalWorkOnHand + " all work enumerated = " + allWorkEnumerated);
+      LOG.debug(AaiUiMsgs.DEBUG_GENERIC,indexName + ", isSyncDone(), totalWorkOnHand = " + totalWorkOnHand
+          + " all work enumerated = " + allWorkEnumerated);
     }
 
     if (totalWorkOnHand > 0 || !allWorkEnumerated) {
@@ -364,17 +358,14 @@ public class HistoricalEntitySummarizer extends AbstractEntitySynchronizer
     return true;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /* (non-Javadoc)
    * @see org.openecomp.sparky.synchronizer.AbstractEntitySynchronizer#clearCache()
    */
   @Override
   public void clearCache() {
 
     if (syncInProgress) {
-      LOG.debug(AaiUiMsgs.DEBUG_GENERIC,
-          "Historical Entity Summarizer in progress, request to clear cache ignored");
+      LOG.debug(AaiUiMsgs.DEBUG_GENERIC, "Historical Entity Summarizer in progress, request to clear cache ignored");
       return;
     }
 

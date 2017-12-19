@@ -77,8 +77,7 @@ public class ElasticSearchIndexCleaner implements IndexCleaner {
    * @param scrollContextTimeToLiveInMinutes the scroll context time to live in minutes
    * @param numItemsToGetBulkRequest the num items to get bulk request
    */
-  public ElasticSearchIndexCleaner(ElasticSearchAdapter esAdapter,
-      ElasticSearchEndpointConfig endpointConfig, ElasticSearchSchemaConfig schemaConfig) {
+  public ElasticSearchIndexCleaner(ElasticSearchAdapter esAdapter, ElasticSearchEndpointConfig endpointConfig, ElasticSearchSchemaConfig schemaConfig) {
     this.esAdapter = esAdapter;
     this.before = null;
     this.after = null;
@@ -148,8 +147,8 @@ public class ElasticSearchIndexCleaner implements IndexCleaner {
       presyncIds.removeAll(after.getImportedObjectIds());
 
       try {
-        LOG.info(AaiUiMsgs.ES_SYNC_SELECTIVE_DELETE, schemaConfig.getIndexName(),
-            schemaConfig.getIndexDocType(), String.valueOf(presyncIds.size()));
+        LOG.info(AaiUiMsgs.ES_SYNC_SELECTIVE_DELETE, schemaConfig.getIndexName(), schemaConfig.getIndexDocType(),
+            String.valueOf(presyncIds.size()));
 
         ObjectIdCollection bulkIds = new ObjectIdCollection();
 
@@ -163,8 +162,7 @@ public class ElasticSearchIndexCleaner implements IndexCleaner {
           numItemsInBulkRequest++;
 
           if (numItemsInBulkRequest >= endpointConfig.getScrollContextBatchRequestSize()) {
-            LOG.info(AaiUiMsgs.ES_BULK_DELETE, schemaConfig.getIndexName(),
-                String.valueOf(bulkIds.getSize()));
+            LOG.info(AaiUiMsgs.ES_BULK_DELETE, schemaConfig.getIndexName(), String.valueOf(bulkIds.getSize()));
             bulkDelete(bulkIds.getImportedObjectIds());
             numItemsRemainingToBeDeleted -= numItemsInBulkRequest;
             numItemsInBulkRequest = 0;
@@ -173,15 +171,13 @@ public class ElasticSearchIndexCleaner implements IndexCleaner {
         }
 
         if (numItemsRemainingToBeDeleted > 0) {
-          LOG.info(AaiUiMsgs.ES_BULK_DELETE, schemaConfig.getIndexName(),
-              String.valueOf(bulkIds.getSize()));
+          LOG.info(AaiUiMsgs.ES_BULK_DELETE, schemaConfig.getIndexName(), String.valueOf(bulkIds.getSize()));
           bulkDelete(bulkIds.getImportedObjectIds());
         }
 
 
       } catch (Exception exc) {
-        LOG.error(AaiUiMsgs.ES_BULK_DELETE_ERROR, schemaConfig.getIndexName(),
-            exc.getLocalizedMessage());
+        LOG.error(AaiUiMsgs.ES_BULK_DELETE_ERROR, schemaConfig.getIndexName(), exc.getLocalizedMessage());
 
       }
     }
@@ -365,9 +361,8 @@ public class ElasticSearchIndexCleaner implements IndexCleaner {
     String scrollRequestPayload =
         buildInitialScrollRequestPayload(endpointConfig.getScrollContextBatchRequestSize(), fields);
 
-    final String fullUrlStr =
-        getFullUrl("/" + schemaConfig.getIndexName() + "/" + schemaConfig.getIndexDocType()
-            + "/_search?scroll=" + endpointConfig.getScrollContextTimeToLiveInMinutes() + "m");
+    final String fullUrlStr = getFullUrl("/" + schemaConfig.getIndexName()+ "/" + schemaConfig.getIndexDocType() + "/_search?scroll="
+        + endpointConfig.getScrollContextTimeToLiveInMinutes() + "m");
 
     OperationResult result =
         esAdapter.doPost(fullUrlStr, scrollRequestPayload, MediaType.APPLICATION_JSON_TYPE);

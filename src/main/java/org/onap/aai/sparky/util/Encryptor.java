@@ -38,12 +38,12 @@ import org.onap.aai.sparky.logging.AaiUiMsgs;
 public class Encryptor {
 
   private static final Logger LOG = LoggerFactory.getInstance().getLogger(Encryptor.class);
-
   /**
    * Instantiates a new encryptor.
    */
-  public Encryptor() {}
-
+  public Encryptor() {  
+  }
+  
   /**
    * Encrypt value.
    *
@@ -59,7 +59,7 @@ public class Encryptor {
     }
     return encyptedValue;
   }
-
+  
   /**
    * Decrypt value.
    *

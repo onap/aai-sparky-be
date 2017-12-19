@@ -30,7 +30,7 @@ import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
 
-import org.onap.aai.sparky.viewandinspect.config.TierSupportUiConstants;
+import org.onap.aai.sparky.viewandinspect.config.SparkyConstants;
 import org.openecomp.portalsdk.core.restful.domain.EcompRole;
 
 import com.google.gson.Gson;
@@ -45,7 +45,7 @@ public class RolesConfig {
   private List<EcompRole> roles;
 
   private static final Gson GSON = new Gson();
-  private static final String ROLES_CONFIG_FILE = TierSupportUiConstants.ROLES_FILE_LOCATION;
+  private static final String ROLES_CONFIG_FILE = SparkyConstants.ROLES_FILE_LOCATION;
 
   private RolesConfig() {
     // Prevent instantiation
@@ -79,7 +79,8 @@ public class RolesConfig {
   }
 
   private void load() throws JsonSyntaxException, IOException, URISyntaxException {
-    Type collectionType = new TypeToken<List<EcompRole>>() {}.getType();
+    Type collectionType = new TypeToken<List<EcompRole>>() {
+    }.getType();
 
     roles = Collections.unmodifiableList(GSON
         .fromJson(new String(Files.readAllBytes(Paths.get(ROLES_CONFIG_FILE))), collectionType));

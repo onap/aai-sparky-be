@@ -34,10 +34,9 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 /**
  * Stores data for a single filter for a given UI view.
  * <p>
- * When a UI view wants to know which filters it should display, an object of this class is created
- * for each filter discovered and stores data for that filter. Each filter/object of this class is
- * added to a ViewFilterList object which is then serialized to JSON and returned to the view in the
- * response body.
+ * When a UI view wants to know which filters it should display, an object of this class is created for each
+ * filter discovered and stores data for that filter. Each filter/object of this class is added to a
+ * ViewFilterList object which is then serialized to JSON and returned to the view in the response body. 
  */
 @JsonInclude(Include.NON_NULL)
 public class UiFilterEntity {
@@ -45,18 +44,18 @@ public class UiFilterEntity {
   private String filterName;
   private String displayName;
   private String dataType;
-
+  
   private String multiSelect;
   private String watermark;
   private UiFilterOptionsValuesConfig defaultValue;
   private String optionsType;
-
+  
   private List<UiFilterOptionsValuesConfig> optionsValues;
-
+  
   private List<UiFilterValueEntity> filterValueList;
 
   public UiFilterEntity() {}
-
+  
   public UiFilterEntity(UiFilterConfig filterConfig) {
     if (filterConfig.getFilterId() != null) {
       this.setFilterId(filterConfig.getFilterId());
@@ -82,13 +81,13 @@ public class UiFilterEntity {
     if (filterConfig.getOptionsType() != null) {
       this.setOptionsType(filterConfig.getOptionsType());
     }
-    if (filterConfig.getOptionsValues() != null && !filterConfig.getOptionsValues().isEmpty()) {
+    if(filterConfig.getOptionsValues() != null && !filterConfig.getOptionsValues().isEmpty()) {
       this.setOptionsValues(filterConfig.getOptionsValues());
     } else {
       this.optionsValues = new ArrayList<UiFilterOptionsValuesConfig>();
     }
   }
-
+  
   public void addFilterValue(UiFilterValueEntity valueEntity) {
     if (null == filterValueList) {
       filterValueList = new ArrayList<>();
@@ -104,7 +103,7 @@ public class UiFilterEntity {
   public String getFilterName() {
     return filterName;
   }
-
+  
   public String getDisplayName() {
     return displayName;
   }
@@ -112,11 +111,11 @@ public class UiFilterEntity {
   public String getDataType() {
     return dataType;
   }
-
+  
   public UiFilterOptionsValuesConfig getDefaultValue() {
     return defaultValue;
   }
-
+  
   public List<UiFilterValueEntity> getFilterValueList() {
     return filterValueList;
   }
@@ -128,7 +127,7 @@ public class UiFilterEntity {
   public void setFilterName(String filterName) {
     this.filterName = filterName;
   }
-
+  
   public void setDisplayName(String displayName) {
     this.displayName = displayName;
   }
@@ -136,7 +135,7 @@ public class UiFilterEntity {
   public void setDataType(String dataType) {
     this.dataType = dataType;
   }
-
+  
   public String getMultiSelect() {
     return multiSelect;
   }
@@ -160,7 +159,7 @@ public class UiFilterEntity {
   public void setOptionsType(String optionsType) {
     this.optionsType = optionsType;
   }
-
+  
   public List<UiFilterOptionsValuesConfig> getOptionsValues() {
     return optionsValues;
   }
@@ -172,7 +171,7 @@ public class UiFilterEntity {
   public void setDefaultValue(UiFilterOptionsValuesConfig defaultValue) {
     this.defaultValue = defaultValue;
   }
-
+  
   public void setFilterValueList(List<UiFilterValueEntity> values) {
     this.filterValueList = values;
   }

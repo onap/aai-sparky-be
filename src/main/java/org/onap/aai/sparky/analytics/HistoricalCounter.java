@@ -117,30 +117,29 @@ public class HistoricalCounter {
 
     return (totalOfSamples / numSamples);
   }
-
   public void setMin(double min) {
-    this.min = min;
-  }
-
+		this.min = min;
+	}
+  
   public void setMax(double max) {
-    this.max = max;
-  }
-
+		this.max = max;
+	}
+  
   public double getTotalOfSamples() {
-    return totalOfSamples;
-  }
+		return totalOfSamples;
+	}
 
-  public void setTotalOfSamples(double totalOfSamples) {
-    this.totalOfSamples = totalOfSamples;
-  }
+	public void setTotalOfSamples(double totalOfSamples) {
+		this.totalOfSamples = totalOfSamples;
+	}
 
-  public void setNumSamples(long numSamples) {
-    this.numSamples = numSamples;
-  }
-
-  public void setMaintainSingleValue(boolean maintainSingleValue) {
-    this.maintainSingleValue = maintainSingleValue;
-  }
+	public void setNumSamples(long numSamples) {
+		this.numSamples = numSamples;
+	}
+	
+	public void setMaintainSingleValue(boolean maintainSingleValue) {
+		this.maintainSingleValue = maintainSingleValue;
+	}
 
 
   /**
@@ -154,9 +153,7 @@ public class HistoricalCounter {
     value = 0.0;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /* (non-Javadoc)
    * @see java.lang.Object#toString()
    */
   @Override
