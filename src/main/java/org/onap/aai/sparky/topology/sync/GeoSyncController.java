@@ -22,6 +22,8 @@
  */
 package org.onap.aai.sparky.topology.sync;
 
+import org.onap.aai.sparky.config.oxm.GeoEntityLookup;
+import org.onap.aai.sparky.config.oxm.OxmEntityLookup;
 import org.onap.aai.sparky.dal.ActiveInventoryAdapter;
 import org.onap.aai.sparky.dal.ElasticSearchAdapter;
 import org.onap.aai.sparky.sync.ElasticSearchIndexCleaner;
@@ -43,12 +45,12 @@ public class GeoSyncController extends SyncControllerImpl implements SyncControl
   public GeoSyncController(SyncControllerConfig syncControllerConfig,
       ActiveInventoryAdapter aaiAdapter, ElasticSearchAdapter esAdapter,
       ElasticSearchSchemaConfig schemaConfig, ElasticSearchEndpointConfig endpointConfig,
-      NetworkStatisticsConfig aaiStatConfig, NetworkStatisticsConfig esStatConfig)
-      throws Exception {
+      NetworkStatisticsConfig aaiStatConfig, NetworkStatisticsConfig esStatConfig,
+      GeoEntityLookup geoEntityLookup, OxmEntityLookup oxmEntityLookup) throws Exception {
     super(syncControllerConfig);
 
     // final String controllerName = "Inventory Geo Synchronizer";
-
+    
     IndexIntegrityValidator indexValidator = new IndexIntegrityValidator(esAdapter, schemaConfig,
         endpointConfig, ElasticSearchSchemaFactory.getIndexSchema(schemaConfig));
 
@@ -57,7 +59,8 @@ public class GeoSyncController extends SyncControllerImpl implements SyncControl
     GeoSynchronizer synchronizer =
         new GeoSynchronizer(schemaConfig, syncControllerConfig.getNumInternalSyncWorkers(),
             syncControllerConfig.getNumSyncActiveInventoryWorkers(),
-            syncControllerConfig.getNumSyncElasticWorkers(), aaiStatConfig, esStatConfig);
+            syncControllerConfig.getNumSyncElasticWorkers(), aaiStatConfig, esStatConfig,
+            geoEntityLookup, oxmEntityLookup);
 
     synchronizer.setAaiAdapter(aaiAdapter);
     synchronizer.setElasticSearchAdapter(esAdapter);
@@ -83,8 +86,8 @@ public class GeoSyncController extends SyncControllerImpl implements SyncControl
   @Override
   public void registerController() {
 
-    if (syncControllerRegistry != null) {
-      if (syncControllerConfig.isEnabled()) {
+    if ( syncControllerRegistry != null ) {
+      if ( syncControllerConfig.isEnabled()) { 
         syncControllerRegistry.registerSyncController(this);
       }
     }

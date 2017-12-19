@@ -74,7 +74,7 @@ public class PerformElasticSearchPut implements Supplier<NetworkTransaction> {
   public NetworkTransaction get() {
     txn.setTaskAgeInMs();
     MDC.setContextMap(contextMap);
-
+    
     long startTimeInMs = System.currentTimeMillis();
 
     OperationResult or =

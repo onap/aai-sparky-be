@@ -22,6 +22,8 @@
  */
 package org.onap.aai.sparky.viewandinspect.config;
 
+import java.util.ArrayList;
+
 /**
  * The Class VisualizationConfig.
  */
@@ -41,17 +43,22 @@ public class VisualizationConfigs {
 
   private int numOfThreadsToFetchNodeIntegrity;
 
-  private String entityTypesToSummarize;
-  private String vnfEntityTypes;
-
   private boolean makeAllNeighborsBidirectional;
+  
+  private ArrayList<String> shallowEntities;
 
   /**
    * Instantiates a new visualization config.
    */
   public VisualizationConfigs() {}
 
+  public ArrayList<String> getShallowEntities() {
+    return shallowEntities;
+  }
 
+  public void setShallowEntities(ArrayList<String> shallowEntities) {
+    this.shallowEntities = shallowEntities;
+  }
 
   /**
    * Make all neighbors bidirectional.
@@ -122,22 +129,6 @@ public class VisualizationConfigs {
     this.numOfThreadsToFetchNodeIntegrity = numOfThreadsToFetchNodeIntegrity;
   }
 
-  public String getEntityTypesToSummarize() {
-    return entityTypesToSummarize;
-  }
-
-  public void setEntityTypesToSummarize(String entityTypesToSummarize) {
-    this.entityTypesToSummarize = entityTypesToSummarize;
-  }
-
-  public String getVnfEntityTypes() {
-    return vnfEntityTypes;
-  }
-
-  public void setVnfEntityTypes(String vnfEntityTypes) {
-    this.vnfEntityTypes = vnfEntityTypes;
-  }
-
 
 
   @Override
@@ -151,18 +142,9 @@ public class VisualizationConfigs {
         + (searchNodeClassName != null ? "searchNodeClassName=" + searchNodeClassName + ", " : "")
         + (selectedSearchedNodeClassName != null
             ? "selectedSearchedNodeClassName=" + selectedSearchedNodeClassName + ", " : "")
-        + "numOfThreadsToFetchNodeIntegrity=" + numOfThreadsToFetchNodeIntegrity + ", "
-        + (entityTypesToSummarize != null
-            ? "entityTypesToSummarize=" + entityTypesToSummarize + ", " : "")
-        + (vnfEntityTypes != null ? "vnfEntityTypes=" + vnfEntityTypes + ", " : "")
-        + "makeAllNeighborsBidirectional=" + makeAllNeighborsBidirectional + "]";
+        + "numOfThreadsToFetchNodeIntegrity=" + numOfThreadsToFetchNodeIntegrity
+        + ", makeAllNeighborsBidirectional=" + makeAllNeighborsBidirectional + "]";
   }
-
-  /*
-   * (non-Javadoc)
-   * 
-   * @see java.lang.Object#toString()
-   */
 
 
 

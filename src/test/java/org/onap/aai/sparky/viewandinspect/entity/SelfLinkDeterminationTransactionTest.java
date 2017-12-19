@@ -30,38 +30,39 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.aai.restclient.client.OperationResult;
+import org.onap.aai.sparky.config.oxm.OxmEntityLookup;
 import org.onap.aai.sparky.viewandinspect.config.VisualizationConfigs;
-import org.onap.aai.sparky.viewandinspect.entity.ActiveInventoryNode;
-import org.onap.aai.sparky.viewandinspect.entity.SelfLinkDeterminationTransaction;
 
 
 public class SelfLinkDeterminationTransactionTest {
 
-  private SelfLinkDeterminationTransaction selfLinkDeterminationTransaction;
-  private OperationResult opResult;
-  private ActiveInventoryNode activeInventoryNode;
-  private VisualizationConfigs visualizationConfigs;
-
-  @Before
-  public void init() throws Exception {
-    selfLinkDeterminationTransaction = new SelfLinkDeterminationTransaction();
-    opResult = new OperationResult();
-    activeInventoryNode = new ActiveInventoryNode(visualizationConfigs);
-
-  }
-
-  @Test
-  public void updateValues() {
-
-    selfLinkDeterminationTransaction.setParentNodeId("ID-1");
-    assertNotNull(selfLinkDeterminationTransaction.getParentNodeId());
-    selfLinkDeterminationTransaction.setOpResult(opResult);
-    assertNotNull(selfLinkDeterminationTransaction.getOpResult());
-    selfLinkDeterminationTransaction.setQueryString("QueryString");
-    assertNotNull(selfLinkDeterminationTransaction.getQueryString());
-    selfLinkDeterminationTransaction.setEntityUrl("EntityURL");
-    assertNotNull(selfLinkDeterminationTransaction.getEntityUrl());
-    selfLinkDeterminationTransaction.setNewNode(activeInventoryNode);
-    assertNotNull(selfLinkDeterminationTransaction.getNewNode());
-  }
+	 private SelfLinkDeterminationTransaction selfLinkDeterminationTransaction; 
+	 private OperationResult opResult;
+	 private ActiveInventoryNode activeInventoryNode; 
+	 private VisualizationConfigs visualizationConfigs;
+	 private OxmEntityLookup oxmEntityLookup;
+	 
+		@Before
+		  public void init() throws Exception {
+			selfLinkDeterminationTransaction = new SelfLinkDeterminationTransaction();
+			opResult = new OperationResult(); 
+			oxmEntityLookup = new OxmEntityLookup();
+			activeInventoryNode = new ActiveInventoryNode(visualizationConfigs, oxmEntityLookup); 
+		      
+		  }
+		
+		@Test 
+		public void updateValues() {
+			
+			selfLinkDeterminationTransaction.setParentNodeId("ID-1");
+			assertNotNull(selfLinkDeterminationTransaction.getParentNodeId());
+			selfLinkDeterminationTransaction.setOpResult(opResult);
+			assertNotNull(selfLinkDeterminationTransaction.getOpResult());
+			selfLinkDeterminationTransaction.setQueryString("QueryString");
+			assertNotNull(selfLinkDeterminationTransaction.getQueryString());
+			selfLinkDeterminationTransaction.setEntityUrl("EntityURL");
+			assertNotNull(selfLinkDeterminationTransaction.getEntityUrl());
+			selfLinkDeterminationTransaction.setNewNode(activeInventoryNode);
+			assertNotNull(selfLinkDeterminationTransaction.getNewNode());
+		}
 }

@@ -38,7 +38,6 @@ import org.onap.aai.restclient.client.OperationResult;
 import org.onap.aai.sparky.config.oxm.OxmEntityLookup;
 import org.onap.aai.sparky.config.oxm.OxmModelLoader;
 import org.onap.aai.sparky.dal.ActiveInventoryAdapter;
-import org.onap.aai.sparky.dal.aai.config.ActiveInventoryConfig;
 import org.onap.aai.sparky.editattributes.exception.AttributeUpdateException;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
 
@@ -53,7 +52,7 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
  *
  */
 public class AttributeUpdater {
-
+  
   /**
    * The Class AaiEditObject.
    */
@@ -131,34 +130,30 @@ public class AttributeUpdater {
   private static final String MESSAGE_VERSION_EXTRACTION_REGEX = "\\/(v[0-9]+)";
   private static final String ATTRIBUTES_UPDATED_SUCCESSFULLY = "Attributes updated successfully";
   private static final String ATTRIBUTES_NOT_UPDATED = "Attributes not updated. ";
-  private ActiveInventoryConfig aaiConfig;
+
   private ActiveInventoryAdapter aaiAdapter;
   private UserValidator validator;
   private OxmModelLoader oxmModelLoader;
   private OxmEntityLookup oxmEntityLookup;
-
+  
   /**
    * Instantiates a new attribute updater.
-   * 
-   * @throws AttributeUpdateException
+   * @throws AttributeUpdateException 
    */
-  public AttributeUpdater(OxmModelLoader oxmModelLoader, OxmEntityLookup oxmEntityLookup,
-      ActiveInventoryAdapter activeInventoryAdapter) throws AttributeUpdateException {
+  public AttributeUpdater(OxmModelLoader oxmModelLoader, OxmEntityLookup oxmEntityLookup, ActiveInventoryAdapter activeInventoryAdapter) throws AttributeUpdateException {
     super();
     this.oxmModelLoader = oxmModelLoader;
     this.oxmEntityLookup = oxmEntityLookup;
     this.aaiAdapter = activeInventoryAdapter;
-
+    
     try {
-      this.aaiConfig = ActiveInventoryConfig.getConfig(); // TODO -> Config to become a bean
       this.validator = new UserValidator();
     } catch (Exception exc) {
-      LOG.error(AaiUiMsgs.ATTRIBUTES_ERROR_GETTING_AAI_CONFIG_OR_ADAPTER,
-          exc.getLocalizedMessage());
+      LOG.error(AaiUiMsgs.ATTRIBUTES_ERROR_GETTING_AAI_CONFIG_OR_ADAPTER, exc.getLocalizedMessage());
       throw new AttributeUpdateException(exc);
     }
   }
-
+  
   protected String getResourceBasePath() {
 
     String versionStr = null;
@@ -169,26 +164,26 @@ public class AttributeUpdater {
     return "/aai/v" + versionStr;
 
   }
-
+  
   protected URI getBaseUri() {
-    return UriBuilder.fromUri("https://" + aaiConfig.getAaiRestConfig().getHost() + ":"
-        + aaiConfig.getAaiRestConfig().getPort() + getResourceBasePath()).build();
+    return UriBuilder
+        .fromUri("https://" + aaiAdapter.getEndpointConfig().getEndpointIpAddress() + ":"
+            + aaiAdapter.getEndpointConfig().getEndpointServerPort() + getResourceBasePath())
+        .build();
   }
 
   /**
    * Update object attribute.
    *
    * @param objectUri - Valid URI of the object as per OXM model.
-   * @param attributeValues - Map of (attribute-name & attribute-value) for any attributes to be
-   *        updated to the value.
+   * @param attributeValues - Map of (attribute-name & attribute-value) for
+   *        any attributes to be updated to the value.
    * @param attUid - ATTUID of the user requesting the update.
    * @return - OperationResult with success or failure reason.
    */
-  public OperationResult updateObjectAttribute(String objectUri,
-      Map<String, Object> attributeValues, String attUid) {
+  public OperationResult updateObjectAttribute(String objectUri, Map<String, Object> attributeValues, String attUid) {
     OperationResult result = new OperationResult();
-    LOG.info(AaiUiMsgs.ATTRIBUTES_UPDATE_METHOD_CALLED, objectUri, attUid,
-        String.valueOf(attributeValues));
+    LOG.info(AaiUiMsgs.ATTRIBUTES_UPDATE_METHOD_CALLED, objectUri, attUid, String.valueOf(attributeValues));
     if (!validator.isAuthorizedUser(attUid)) {
       result.setResultCode(403);
       result.setResult(String.format("User %s is not authorized for Attributes update ", attUid));
@@ -210,24 +205,23 @@ public class AttributeUpdater {
       String jsonPayload = convertEditRequestToJson(object, attributeValues);
       String patchUri = getBaseUri().toString() + getRelativeUri(objectUri);
 
-
+      
       /*
-       * FIX ME: Dave Adams, 8-Nov-2017
+       * FIX ME:   Dave Adams, 8-Nov-2017
        */
-
-      // result = aaiAdapter.doPatch(patchUri, jsonPayload, MediaType.APPLICATION_JSON);
+      
+      //result = aaiAdapter.doPatch(patchUri, jsonPayload, MediaType.APPLICATION_JSON);
 
       result = new OperationResult();
       result.setResultCode(404);
-
+      
       if (result.getResultCode() == 200) {
         result.setResult(ATTRIBUTES_UPDATED_SUCCESSFULLY);
         String message = result.getResult() + " for " + objectUri;
         LOG.info(AaiUiMsgs.INFO_GENERIC, message);
       } else {
-        String message =
-            ATTRIBUTES_NOT_UPDATED + " For: " + objectUri + ". AAI PATCH Status Code : "
-                + result.getResultCode() + ". Error : " + result.getResult();
+        String message = ATTRIBUTES_NOT_UPDATED + " For: " + objectUri + ". AAI PATCH Status Code : "
+            + result.getResultCode() + ". Error : " + result.getResult();
         LOG.error(AaiUiMsgs.ATTRIBUTES_NOT_UPDATED_MESSAGE, message);
       }
     } catch (AttributeUpdateException exc) {
@@ -270,7 +264,7 @@ public class AttributeUpdater {
     AaiEditObject object = new AaiEditObject();
     String version = getVersionFromUri(objectUri);
 
-    if (null == version) {
+    if ( null == version ) {
       version = "v" + String.valueOf(oxmModelLoader.getLatestVersionNum());
     }
     object.setSchemaVersion(version);
@@ -288,14 +282,14 @@ public class AttributeUpdater {
     String objectJavaType = null;
     Map<String, DynamicType> entityTypeLookup = oxmEntityLookup.getEntityTypeLookup();
     DynamicType entity = entityTypeLookup.get(rootElement);
-    if (null != entity) {
+    if ( null != entity ) {
       objectJavaType = entity.getName();
-      String message =
-          "Descriptor: Alias: " + objectJavaType + " : DefaultRootElement: " + rootElement;
+      String message = "Descriptor: Alias: " + objectJavaType + " : DefaultRootElement: "
+          + rootElement;
       LOG.debug(AaiUiMsgs.DEBUG_GENERIC, message);
     }
-
-
+    
+    
     if (objectJavaType == null) {
       throw new AttributeUpdateException(
           "Object type could not be determined from the URI : " + objectUri);

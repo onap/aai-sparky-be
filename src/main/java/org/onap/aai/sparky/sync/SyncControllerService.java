@@ -208,7 +208,7 @@ public class SyncControllerService implements ApplicationListener<ApplicationCon
     /*
      * Start sync service processing when spring-context-initialization has finished
      */
-
+    
     if (!syncStarted) {
       syncStarted = true;
       startSync();

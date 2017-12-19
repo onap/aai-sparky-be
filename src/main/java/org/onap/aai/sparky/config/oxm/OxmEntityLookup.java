@@ -35,9 +35,6 @@ import org.eclipse.persistence.jaxb.dynamic.DynamicJAXBContext;
 
 public class OxmEntityLookup implements OxmModelProcessor {
 
-  // TODO: kill singleton collaborator pattern
-  private static OxmEntityLookup instance;
-
   private Map<String, HashMap<String, String>> oxmModel;
 
   private Map<String, DynamicType> entityTypeLookup;
@@ -45,29 +42,11 @@ public class OxmEntityLookup implements OxmModelProcessor {
   private Map<String, OxmEntityDescriptor> entityDescriptors;
 
 
-  private OxmEntityLookup() {
+  public OxmEntityLookup() {
     oxmModel = new LinkedHashMap<String, HashMap<String, String>>();
     entityTypeLookup = new LinkedHashMap<String, DynamicType>();
     entityDescriptors = new HashMap<String, OxmEntityDescriptor>();
   }
-
-  public synchronized static OxmEntityLookup getInstance() {
-
-    /*
-     * I hate this method and I want it to go away. The singleton pattern is transitory, I want this
-     * class to be wired via a bean reference instead. But from the starting point, it would require
-     * fixing all the classes across the code base up front and I don't want this task to expand
-     * beyond just refactoring the OxmModelLoader. For now I'll keep the singleton pattern, but I
-     * really want to get rid of it once we are properly spring wired.
-     */
-
-    if (instance == null) {
-      instance = new OxmEntityLookup();
-    }
-
-    return instance;
-  }
-
 
   @Override
   public void processOxmModel(DynamicJAXBContext jaxbContext) {
@@ -141,9 +120,9 @@ public class OxmEntityLookup implements OxmModelProcessor {
   public void setEntityDescriptors(Map<String, OxmEntityDescriptor> entityDescriptors) {
     this.entityDescriptors = entityDescriptors;
   }
-
+  
   public void addEntityDescriptor(String type, OxmEntityDescriptor descriptor) {
-    if (this.entityDescriptors != null) {
+    if ( this.entityDescriptors != null ) {
       this.entityDescriptors.put(type, descriptor);
     }
   }

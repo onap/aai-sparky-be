@@ -31,16 +31,16 @@ import java.util.List;
 public class D3VisualizationOutput {
 
   public GraphMeta graphMeta;
-  public List<JsonNode> nodes;
-  public List<JsonNodeLink> links;
+  public List<SparkyGraphNode> nodes;
+  public List<SparkyGraphLink> links;
   public InlineMessage inlineMessage;
 
   /**
    * Instantiates a new d 3 visualization output.
    */
   public D3VisualizationOutput() {
-    nodes = new ArrayList<JsonNode>();
-    links = new ArrayList<JsonNodeLink>();
+    nodes = new ArrayList<SparkyGraphNode>();
+    links = new ArrayList<SparkyGraphLink>();
     inlineMessage = null;
   }
 
@@ -66,7 +66,7 @@ public class D3VisualizationOutput {
    *
    * @param nodes the nodes
    */
-  public void addNodes(List<JsonNode> nodes) {
+  public void addNodes(List<SparkyGraphNode> nodes) {
     this.nodes.addAll(nodes);
   }
 
@@ -75,7 +75,7 @@ public class D3VisualizationOutput {
    *
    * @param links the links
    */
-  public void addLinks(List<JsonNodeLink> links) {
+  public void addLinks(List<SparkyGraphLink> links) {
     this.links.addAll(links);
   }
 

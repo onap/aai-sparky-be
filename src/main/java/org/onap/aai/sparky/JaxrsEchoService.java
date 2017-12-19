@@ -36,7 +36,7 @@ import com.att.ajsc.filemonitor.AJSCPropertiesMap;
  */
 @Path("/jaxrs-services")
 public class JaxrsEchoService {
-
+  
   /**
    * Ping.
    *

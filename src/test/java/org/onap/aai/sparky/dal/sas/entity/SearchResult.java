@@ -30,23 +30,20 @@ public class SearchResult {
 
   private int totalHits;
   private List<HitEntity> hits;
-
+  
   public int getTotalHits() {
     return totalHits;
   }
-
   public void setTotalHits(int totalHits) {
     this.totalHits = totalHits;
   }
-
   public List<HitEntity> getHits() {
     return hits;
   }
-
   public void setHits(List<HitEntity> hits) {
     this.hits = hits;
   }
-
-
-
+  
+  
+  
 }

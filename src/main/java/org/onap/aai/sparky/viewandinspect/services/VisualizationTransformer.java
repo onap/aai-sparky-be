@@ -37,8 +37,8 @@ import org.onap.aai.sparky.viewandinspect.config.VisualizationConfigs;
 import org.onap.aai.sparky.viewandinspect.entity.ActiveInventoryNode;
 import org.onap.aai.sparky.viewandinspect.entity.D3VisualizationOutput;
 import org.onap.aai.sparky.viewandinspect.entity.GraphMeta;
-import org.onap.aai.sparky.viewandinspect.entity.JsonNode;
-import org.onap.aai.sparky.viewandinspect.entity.JsonNodeLink;
+import org.onap.aai.sparky.viewandinspect.entity.SparkyGraphNode;
+import org.onap.aai.sparky.viewandinspect.entity.SparkyGraphLink;
 import org.onap.aai.sparky.viewandinspect.entity.NodeDebug;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -57,10 +57,10 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 
 public class VisualizationTransformer {
 
-  private static final Logger LOG =
-      LoggerFactory.getInstance().getLogger(VisualizationTransformer.class);
+  private static final Logger LOG = LoggerFactory.getInstance().getLogger(
+      VisualizationTransformer.class);
 
-  List<JsonNode> flatNodeArray = new ArrayList<JsonNode>();
+  List<SparkyGraphNode> flatNodeArray = new ArrayList<SparkyGraphNode>();
 
   /*
    * Maybe this isn't a string but Json-Model objects that we will convert to final string
@@ -68,10 +68,10 @@ public class VisualizationTransformer {
    * HttpServletResponse.
    */
 
-  List<JsonNodeLink> linkArrayOutput = new ArrayList<JsonNodeLink>();
+  List<SparkyGraphLink> linkArrayOutput = new ArrayList<SparkyGraphLink>();
 
 
-
+  
   private VisualizationConfigs visualizationConfigs;
 
 
@@ -80,8 +80,8 @@ public class VisualizationTransformer {
    *
    * @throws Exception the exception
    */
-  public VisualizationTransformer(VisualizationConfigs visualizationConfigs) throws Exception {
-    this.visualizationConfigs = visualizationConfigs;
+  public VisualizationTransformer(VisualizationConfigs visualizationConfigs )throws Exception{
+	  this.visualizationConfigs = visualizationConfigs; 
   }
 
 
@@ -101,7 +101,7 @@ public class VisualizationTransformer {
    */
   public void addSearchTargetAttributesToRootNode() {
 
-    for (JsonNode n : flatNodeArray) {
+    for (SparkyGraphNode n : flatNodeArray) {
       if (n.isRootNode()) {
         n.getNodeMeta().setSearchTarget(true);
         n.getNodeMeta().setClassName(this.visualizationConfigs.getSelectedSearchedNodeClassName());
@@ -134,8 +134,8 @@ public class VisualizationTransformer {
 
     output.setGraphMeta(graphMeta);
 
-    for (JsonNode n : flatNodeArray) {
-      if (n.getItemType() != null) {
+    for (SparkyGraphNode n : flatNodeArray) {
+      if ( n.getItemType()!= null) {
         output.pegCounter(n.getItemType());
       }
     }
@@ -150,7 +150,8 @@ public class VisualizationTransformer {
         String.valueOf(numLinks));
 
     if (numLinks < (numNodes - 1)) {
-      LOG.warn(AaiUiMsgs.DANGLING_NODE_WARNING, String.valueOf(numLinks), String.valueOf(numNodes));
+      LOG.warn(AaiUiMsgs.DANGLING_NODE_WARNING, String.valueOf(numLinks),
+          String.valueOf(numNodes));
     }
 
     ObjectMapper mapper = new ObjectMapper();
@@ -213,7 +214,7 @@ public class VisualizationTransformer {
 
         for (String outboundNeighbor : outboundNeighbors) {
 
-          JsonNodeLink nodeLink = new JsonNodeLink();
+          SparkyGraphLink nodeLink = new SparkyGraphLink();
 
           nodeLink.setId(UUID.randomUUID().toString());
           nodeLink.setSource(ain.getNodeId());
@@ -227,7 +228,7 @@ public class VisualizationTransformer {
 
         for (String inboundNeighbor : inboundNeighbors) {
 
-          JsonNodeLink nodeLink = new JsonNodeLink();
+          SparkyGraphLink nodeLink = new SparkyGraphLink();
 
           nodeLink.setId(UUID.randomUUID().toString());
           nodeLink.setSource(ain.getNodeId());
@@ -240,8 +241,9 @@ public class VisualizationTransformer {
 
       } else {
         if (LOG.isDebugEnabled()) {
-          LOG.debug(AaiUiMsgs.DEBUG_GENERIC, "buildLinks()," + " Filtering node = "
-              + ain.getNodeId() + " @ depth = " + ain.getNodeDepth());
+          LOG.debug(AaiUiMsgs.DEBUG_GENERIC, "buildLinks(),"
+              + " Filtering node = " + ain.getNodeId() + " @ depth = "
+              + ain.getNodeDepth());
         }
 
       }
@@ -264,7 +266,7 @@ public class VisualizationTransformer {
 
       if (n.getNodeDepth() <= this.visualizationConfigs.getMaxSelfLinkTraversalDepth()) {
 
-        JsonNode jsonNode = new JsonNode(n, this.visualizationConfigs);
+        SparkyGraphNode jsonNode = new SparkyGraphNode(n,this.visualizationConfigs);
 
         jsonNode.getNodeMeta().setClassName(this.visualizationConfigs.getGeneralNodeClassName());
 
@@ -280,8 +282,9 @@ public class VisualizationTransformer {
         flatNodeArray.add(jsonNode);
       } else {
         if (LOG.isDebugEnabled()) {
-          LOG.debug(AaiUiMsgs.DEBUG_GENERIC, "Filtering node from visualization: " + n.getNodeId()
-              + " @ depth = " + n.getNodeDepth());
+          LOG.debug(AaiUiMsgs.DEBUG_GENERIC, 
+              "Filtering node from visualization: " + n.getNodeId() + " @ depth = "
+              + n.getNodeDepth());
         }
       }
     }

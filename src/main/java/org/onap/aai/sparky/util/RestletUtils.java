@@ -26,8 +26,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.onap.aai.cl.api.Logger;
 import org.onap.aai.restclient.client.OperationResult;
-import org.onap.aai.sparky.dal.elasticsearch.SearchAdapter;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
+import org.onap.aai.sparky.search.SearchServiceAdapter;
 import org.restlet.Response;
 import org.restlet.data.MediaType;
 import org.restlet.data.Status;
@@ -42,7 +42,7 @@ public class RestletUtils {
   public HttpServletResponse convertRestletResponseToHttpServletResponse(Response restletResponse) {
     return org.restlet.ext.servlet.ServletUtils.getResponse(restletResponse);
   }
-
+  
   /**
    * Execute post query
    *
@@ -53,8 +53,8 @@ public class RestletUtils {
    * @param requestJsonPayload The request JSON payload
    * @return The operation result
    */
-  public OperationResult executePostQuery(Logger logger, SearchAdapter search, Response response,
-      String requestUrl, String requestJsonPayload) {
+  public OperationResult executePostQuery(Logger logger, SearchServiceAdapter search,
+      Response response, String requestUrl, String requestJsonPayload) {
 
     OperationResult opResult = search.doPost(requestUrl, requestJsonPayload, "application/json");
 
@@ -86,9 +86,8 @@ public class RestletUtils {
    * @param response The response
    */
   public void handleRestletErrors(Logger logger, String errorMsg, Exception exc,
-      Response response) {
-    String errorLogMsg =
-        (exc == null ? errorMsg : errorMsg + ". Error:" + exc.getLocalizedMessage());
+    Response response) {
+    String errorLogMsg = (exc == null ? errorMsg : errorMsg + ". Error:" + exc.getLocalizedMessage());
     logger.error(AaiUiMsgs.ERROR_GENERIC, errorLogMsg);
     response.setEntity(generateJsonErrorResponse(errorMsg), MediaType.APPLICATION_JSON);
   }

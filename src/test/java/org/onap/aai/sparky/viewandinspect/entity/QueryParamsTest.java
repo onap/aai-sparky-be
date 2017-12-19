@@ -34,23 +34,23 @@ import org.onap.aai.sparky.viewandinspect.entity.QueryParams;
 
 public class QueryParamsTest {
 
-  private QueryParams parameterQuery;
-
-  @Before
-  public void init() throws Exception {
-    parameterQuery = new QueryParams();
-
-  }
-
-  @Test
-  public void updateValues() {
-
-    parameterQuery.setSearchTargetPrimaryKeyValues("Internet Network");
-    assertNotNull(parameterQuery.getSearchTargetPrimaryKeyValues());
-    parameterQuery.setSearchTargetNodeId("Internet Network");
-    assertNotNull(parameterQuery.getSearchTargetNodeId());
-  }
-
-
-
+	 private QueryParams parameterQuery; 
+	 
+	@Before
+	  public void init() throws Exception {
+		parameterQuery = new QueryParams();
+	      
+	  }
+	
+	@Test 
+	public void updateValues() {
+		
+		parameterQuery.setSearchTargetPrimaryKeyValues("Internet Network");
+		assertNotNull(parameterQuery.getSearchTargetPrimaryKeyValues());
+		parameterQuery.setSearchTargetNodeId("Internet Network");
+		assertNotNull(parameterQuery.getSearchTargetNodeId());
+	}
+		
+			
+		
 }

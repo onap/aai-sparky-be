@@ -37,7 +37,7 @@ public class AutoSuggestDocumentEntityFields {
   private List<String> input;
   private PayloadEntity payload;
   private int weight;
-
+  
   public AutoSuggestDocumentEntityFields() {
     input = new ArrayList<String>();
   }
@@ -73,9 +73,9 @@ public class AutoSuggestDocumentEntityFields {
   public void setWeight(int weight) {
     this.weight = weight;
   }
-
+  
   public void addInput(String input) {
     this.input.add(input);
   }
-
+  
 }

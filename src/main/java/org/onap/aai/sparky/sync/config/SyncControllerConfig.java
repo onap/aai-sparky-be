@@ -43,17 +43,17 @@ public class SyncControllerConfig {
   private boolean enabled;
   private int syncTaskDelayInMs;
   private int syncTaskFrequencyInDays;
-
+  
   private int numSyncControllerWorkers;
   private boolean runOnceSyncEnabled;
   private boolean periodicSyncEnabled;
-
+  
   private String targetSyncStartTimeStamp;
 
   private int numInternalSyncWorkers;
   private int numSyncElasticWorkers;
   private int numSyncActiveInventoryWorkers;
-
+  
   /*
    * calculated variables based on incoming config
    */
@@ -61,8 +61,8 @@ public class SyncControllerConfig {
   private int syncTaskStartTimeHr;
   private int syncTaskStartTimeMin;
   private int syncTaskStartTimeSec;
-
-
+  
+  
 
   public SyncControllerConfig() {
     controllerName = UNKNOWN_CONTROLLER_NAME;
@@ -273,7 +273,7 @@ public class SyncControllerConfig {
    * @param taskFrequencyInMs task period in ms
    * @return the first sync time
    */
-
+  
   public long getNextSyncTime(Calendar syncTime, long timeNowInMs, int taskFrequencyInSeconds) {
     if (taskFrequencyInSeconds == 0) {
       return 0;
@@ -297,7 +297,7 @@ public class SyncControllerConfig {
   public void setTimeZoneOfSyncStartTimeStamp(String timeZoneOfSyncStartTimeStamp) {
     this.timeZoneOfSyncStartTimeStamp = timeZoneOfSyncStartTimeStamp;
   }
-
-
+  
+  
 
 }

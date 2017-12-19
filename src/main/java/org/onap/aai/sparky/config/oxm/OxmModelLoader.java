@@ -42,9 +42,9 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
 public class OxmModelLoader {
-
+  
   private static final Logger LOG = LoggerFactory.getInstance().getLogger(OxmModelLoader.class);
-
+  
   /*
    * The intent of this parameter is to be able to programmatically over-ride the latest AAI schema
    * version discovered from the aai-schema jar file. This property is optional, but if set on the
@@ -57,18 +57,18 @@ public class OxmModelLoader {
   protected int oxmApiVersionOverride;
   protected Set<OxmModelProcessor> processors;
   private int latestVersionNum = 0;
-
+  
   private final static Pattern p = Pattern.compile("aai_oxm_(v)(.*).xml");
-
+  
   public OxmModelLoader() {
     this(-1, new HashSet<OxmModelProcessor>());
   }
-
-  public OxmModelLoader(int apiVersionOverride, Set<OxmModelProcessor> oxmModelProcessors) {
+  
+  public OxmModelLoader(int apiVersionOverride,Set<OxmModelProcessor> oxmModelProcessors) {
     this.oxmApiVersionOverride = apiVersionOverride;
     this.processors = oxmModelProcessors;
   }
-
+  
   protected synchronized Map<Integer, InputStream> getStreamHandlesForOxmFromResource() {
     Map<Integer, InputStream> listOfOxmFiles = new HashMap<Integer, InputStream>();
     ClassLoader oxmClassLoader = OxmModelLoader.class.getClassLoader();
@@ -91,16 +91,16 @@ public class OxmModelLoader {
         try {
           listOfOxmFiles.put(new Integer(m.group(2)), resource.getInputStream());
         } catch (Exception e) {
-          LOG.error(AaiUiMsgs.OXM_LOADING_ERROR, resource.getFilename(), e.getMessage());
+          LOG.error(AaiUiMsgs.OXM_LOADING_ERROR,
+              resource.getFilename(), e.getMessage());
         }
       }
     }
     return listOfOxmFiles;
   }
-
+  
   /**
    * Load an oxm model.
-   * 
    * @param inputStream file handle for oxm
    */
   protected void loadModel(InputStream inputStream) {
@@ -118,14 +118,14 @@ public class OxmModelLoader {
       LOG.error(AaiUiMsgs.OXM_PARSE_ERROR_VERBOSE, "OXM v" + latestVersionNum, exc.getMessage());
     }
   }
-
+  
   /**
    * Load the latest oxm model.
    */
   public synchronized void loadLatestOxmModel() {
 
     LOG.info(AaiUiMsgs.INITIALIZE_OXM_MODEL_LOADER);
-
+    
     // find handles for available oxm models
     final Map<Integer, InputStream> listOfOxmStreams = getStreamHandlesForOxmFromResource();
     if (listOfOxmStreams.isEmpty()) {
@@ -153,7 +153,7 @@ public class OxmModelLoader {
     loadModel(stream);
 
   }
-
+  
   public int getLatestVersionNum() {
     return latestVersionNum;
   }
@@ -161,7 +161,7 @@ public class OxmModelLoader {
   public void setLatestVersionNum(int latestVersionNum) {
     this.latestVersionNum = latestVersionNum;
   }
-
+  
   /**
    * Parses the oxm context.
    *
@@ -173,12 +173,21 @@ public class OxmModelLoader {
 
       for (OxmModelProcessor processor : processors) {
 
-        processor.processOxmModel(oxmContext);
+        try {
+
+          processor.processOxmModel(oxmContext);
+
+        } catch (Exception exc) {
+
+          LOG.warn(AaiUiMsgs.WARN_GENERIC,
+              "OxmModelProcessor experienced an error. Error: " + exc.getMessage());
+
+        }
 
       }
 
     }
 
   }
-
+  
 }
