@@ -111,7 +111,7 @@ public class SecurityContextFactoryImpl implements SecurityContextFactory {
   @Override
   public void setClientCertFileName(String filename) throws IOException {
     this.clientCertFileName = filename;
-
+    
     if (filename == null) {
       this.clientCertBytes = null;
     } else {
@@ -153,7 +153,7 @@ public class SecurityContextFactoryImpl implements SecurityContextFactory {
 
         @Override
         public void checkServerTrusted(X509Certificate[] certs, String authType) {}
-      }};
+      } };
     }
 
     KeyManagerFactory kmf = KeyManagerFactory.getInstance(keyManagerAlgortihm);
@@ -164,7 +164,7 @@ public class SecurityContextFactoryImpl implements SecurityContextFactory {
     if (clientCertPassword != null) {
       pwd = clientCertPassword.toCharArray();
     }
-
+    
     if (clientCertBytes != null) {
       ks.load(new ByteArrayInputStream(clientCertBytes), pwd);
     } else {

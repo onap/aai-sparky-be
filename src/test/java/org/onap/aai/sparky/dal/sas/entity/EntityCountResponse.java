@@ -28,12 +28,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class EntityCountResponse {
-
-  private Map<String, String> shards;
+  
+  private Map<String,String> shards;
   private int count;
-
+  
   public EntityCountResponse() {
-    this.shards = new HashMap<String, String>();
+    this.shards = new HashMap<String,String>();
   }
 
   public Map<String, String> getShards() {
@@ -51,5 +51,5 @@ public class EntityCountResponse {
   public void setCount(int count) {
     this.count = count;
   }
-
+  
 }

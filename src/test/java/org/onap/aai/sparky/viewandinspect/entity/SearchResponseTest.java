@@ -33,20 +33,20 @@ import org.onap.aai.sparky.search.SearchResponse;
 
 public class SearchResponseTest {
 
-  private SearchResponse searchResponse;
-
-  @Before
-  public void init() throws Exception {
-    searchResponse = new SearchResponse();
-
-  }
-
-  @Test
-  public void updateValues() {
-
-    assertNotNull(searchResponse.toString());
-    searchResponse.setSuggestions(null);
-    assertNotNull(searchResponse.toString());
-
-  }
+	private SearchResponse searchResponse; 
+	 
+	@Before
+	  public void init() throws Exception {
+		searchResponse = new SearchResponse();
+	      
+	  }
+	
+	@Test 
+	public void updateValues() {
+	
+		assertNotNull(searchResponse.toString());
+		searchResponse.setSuggestions(null);
+		assertNotNull(searchResponse.toString());
+		
+	}
 }

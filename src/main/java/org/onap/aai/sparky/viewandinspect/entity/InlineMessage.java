@@ -57,9 +57,7 @@ public class InlineMessage {
     this.message = message;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /* (non-Javadoc)
    * @see java.lang.Object#toString()
    */
   @Override

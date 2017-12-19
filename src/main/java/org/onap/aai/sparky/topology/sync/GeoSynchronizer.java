@@ -43,7 +43,6 @@ import org.onap.aai.sparky.config.oxm.GeoOxmEntityDescriptor;
 import org.onap.aai.sparky.config.oxm.OxmEntityDescriptor;
 import org.onap.aai.sparky.config.oxm.OxmEntityLookup;
 import org.onap.aai.sparky.dal.NetworkTransaction;
-import org.onap.aai.sparky.dal.elasticsearch.config.ElasticSearchConfig;
 import org.onap.aai.sparky.dal.rest.HttpMethod;
 import org.onap.aai.sparky.inventory.entity.GeoIndexDocument;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
@@ -73,8 +72,9 @@ public class GeoSynchronizer extends AbstractEntitySynchronizer implements Index
 
   private boolean allWorkEnumerated;
   private Deque<SelfLinkDescriptor> selflinks;
-
-  private ElasticSearchConfig elasticConfig = null;
+  private GeoEntityLookup geoEntityLookup;
+  private OxmEntityLookup oxmEntityLookup;
+  
   private Map<String, GeoOxmEntityDescriptor> geoDescriptorMap = null;
 
   /**
@@ -85,23 +85,23 @@ public class GeoSynchronizer extends AbstractEntitySynchronizer implements Index
    */
   public GeoSynchronizer(ElasticSearchSchemaConfig schemaConfig, int internalSyncWorkers,
       int aaiWorkers, int esWorkers, NetworkStatisticsConfig aaiStatConfig,
-      NetworkStatisticsConfig esStatConfig) throws Exception {
+      NetworkStatisticsConfig esStatConfig, GeoEntityLookup geoEntityLookup,
+      OxmEntityLookup oxmEntityLookup) throws Exception {
 
-    super(LOG, "GEO", internalSyncWorkers, aaiWorkers, esWorkers, schemaConfig.getIndexName(),
-        aaiStatConfig, esStatConfig);
+    super(LOG, "GEO", internalSyncWorkers, aaiWorkers, esWorkers, schemaConfig.getIndexName(),aaiStatConfig, esStatConfig);
+    this.geoEntityLookup = geoEntityLookup;
+    this.oxmEntityLookup = oxmEntityLookup;
     this.allWorkEnumerated = false;
     this.selflinks = new ConcurrentLinkedDeque<SelfLinkDescriptor>();
     this.synchronizerName = "Geo Synchronizer";
-    this.geoDescriptorMap = GeoEntityLookup.getInstance().getGeoEntityDescriptors();
+    this.geoDescriptorMap = geoEntityLookup.getGeoEntityDescriptors();
     this.aaiEntityStats.intializeEntityCounters(geoDescriptorMap.keySet());
     this.esEntityStats.intializeEntityCounters(geoDescriptorMap.keySet());
     this.syncDurationInMs = -1;
   }
 
 
-  /*
-   * (non-Javadoc)
-   * 
+  /* (non-Javadoc)
    * @see org.openecomp.sparky.synchronizer.IndexSynchronizer#doSync()
    */
   @Override
@@ -113,7 +113,7 @@ public class GeoSynchronizer extends AbstractEntitySynchronizer implements Index
     syncStartedTimeStampInMs = System.currentTimeMillis();
     String txnID = NodeUtils.getRandomTxnId();
     MdcContext.initialize(txnID, "GeoSynchronizer", "", "Sync", "");
-
+	
     collectAllTheWork();
     return OperationState.OK;
   }
@@ -125,14 +125,7 @@ public class GeoSynchronizer extends AbstractEntitySynchronizer implements Index
    * @return the operation state
    */
   public OperationState collectAllTheWork() {
-    final Map<String, String> contextMap = MDC.getCopyOfContextMap();
-    if (elasticConfig == null) {
-      try {
-        elasticConfig = ElasticSearchConfig.getConfig();
-      } catch (Exception exc) {
-        LOG.error(AaiUiMsgs.CONFIGURATION_ERROR, "Search");
-      }
-    }
+	final Map<String,String> contextMap = MDC.getCopyOfContextMap();
 
     if (geoDescriptorMap.isEmpty()) {
       setShouldSkipSync(true);
@@ -157,7 +150,7 @@ public class GeoSynchronizer extends AbstractEntitySynchronizer implements Index
 
           @Override
           public Void get() {
-            MDC.setContextMap(contextMap);
+        	MDC.setContextMap(contextMap);
             OperationResult typeLinksResult = null;
             try {
               typeLinksResult = aaiAdapter.getSelfLinksByEntityType(key);
@@ -212,8 +205,7 @@ public class GeoSynchronizer extends AbstractEntitySynchronizer implements Index
 
       if (linkDescriptor.getSelfLink() != null && linkDescriptor.getEntityType() != null) {
 
-        descriptor = OxmEntityLookup.getInstance().getEntityDescriptors()
-            .get(linkDescriptor.getEntityType());
+        descriptor = oxmEntityLookup.getEntityDescriptors().get(linkDescriptor.getEntityType());
 
         if (descriptor == null) {
           LOG.error(AaiUiMsgs.MISSING_ENTITY_DESCRIPTOR, linkDescriptor.getEntityType());
@@ -311,13 +303,13 @@ public class GeoSynchronizer extends AbstractEntitySynchronizer implements Index
     if (!txn.getOperationResult().wasSuccessful()) {
       return;
     }
-
+    
     GeoOxmEntityDescriptor descriptor = geoDescriptorMap.get(txn.getEntityType());
-
-    if (descriptor == null) {
+    
+    if ( descriptor == null ) {
       return;
     }
-
+    
     try {
       if (descriptor.hasGeoEntity()) {
 
@@ -337,7 +329,7 @@ public class GeoSynchronizer extends AbstractEntitySynchronizer implements Index
 
             String link = null;
             try {
-              link = getElasticFullUrl("/" + geoDoc.getId(), getIndexName(), "default");
+              link = elasticSearchAdapter.buildElasticSearchGetDocUrl(getIndexName(), geoDoc.getId());
             } catch (Exception exc) {
               LOG.error(AaiUiMsgs.ES_FAILED_TO_CONSTRUCT_URI, exc);
             }
@@ -412,9 +404,7 @@ public class GeoSynchronizer extends AbstractEntitySynchronizer implements Index
 
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /* (non-Javadoc)
    * @see org.openecomp.sparky.synchronizer.IndexSynchronizer#getStatReport(boolean)
    */
   @Override
@@ -423,9 +413,7 @@ public class GeoSynchronizer extends AbstractEntitySynchronizer implements Index
     return this.getStatReport(syncDurationInMs, showFinalReport);
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /* (non-Javadoc)
    * @see org.openecomp.sparky.synchronizer.IndexSynchronizer#shutdown()
    */
   @Override
@@ -445,7 +433,7 @@ public class GeoSynchronizer extends AbstractEntitySynchronizer implements Index
    */
   protected void populateGeoDocument(GeoIndexDocument doc, String result,
       OxmEntityDescriptor resultDescriptor, String entityLink)
-      throws JsonProcessingException, IOException {
+          throws JsonProcessingException, IOException {
 
     doc.setSelfLink(entityLink);
     doc.setEntityType(resultDescriptor.getEntityName());
@@ -466,9 +454,9 @@ public class GeoSynchronizer extends AbstractEntitySynchronizer implements Index
 
     final String primaryCompositeKeyValue = NodeUtils.concatArray(primaryKeyValues, "/");
     doc.setEntityPrimaryKeyValue(primaryCompositeKeyValue);
-
+    
     GeoOxmEntityDescriptor descriptor = geoDescriptorMap.get(resultDescriptor.getEntityName());
-
+    
     String geoLatKey = descriptor.getGeoLatName();
     String geoLongKey = descriptor.getGeoLongName();
 

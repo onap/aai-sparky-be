@@ -101,7 +101,7 @@ public class IndexIntegrityValidator implements IndexValidator {
   public boolean exists() {
     final String fullUrlStr = getFullUrl("/" + schemaConfig.getIndexName() + "/");
     OperationResult existsResult = esAdapter.doHead(fullUrlStr, MediaType.APPLICATION_JSON_TYPE);
-
+    
     int rc = existsResult.getResultCode();
 
     if (rc >= 200 && rc < 300) {
@@ -130,7 +130,7 @@ public class IndexIntegrityValidator implements IndexValidator {
    */
   @Override
   public void createOrRepair() {
-
+    
     String message =
         "IndexIntegrityValidator.createOrRepair() for indexName = " + schemaConfig.getIndexName();
     LOG.info(AaiUiMsgs.INFO_GENERIC, message);

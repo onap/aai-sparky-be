@@ -28,9 +28,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AutoSuggestElasticHitsEntity {
-
+  
   private List<AutoSuggestElasticHitEntity> hits;
-
+  
   public AutoSuggestElasticHitsEntity() {
     hits = new ArrayList<AutoSuggestElasticHitEntity>();
   }
@@ -42,7 +42,7 @@ public class AutoSuggestElasticHitsEntity {
   public void setHits(List<AutoSuggestElasticHitEntity> hits) {
     this.hits = hits;
   }
-
+  
   public void addHit(AutoSuggestElasticHitEntity hit) {
     this.hits.add(hit);
   }

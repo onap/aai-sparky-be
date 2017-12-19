@@ -38,14 +38,11 @@ import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
 import org.onap.aai.cl.mdc.MdcContext;
 import org.onap.aai.restclient.client.OperationResult;
-import org.onap.aai.sparky.dal.elasticsearch.SearchAdapter;
-import org.onap.aai.sparky.dal.elasticsearch.config.ElasticSearchConfig;
+import org.onap.aai.sparky.dal.ElasticSearchAdapter;
 import org.onap.aai.sparky.inventory.EntityHistoryQueryBuilder;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
-import org.onap.aai.sparky.logging.util.ServletUtils;
 import org.onap.aai.sparky.util.NodeUtils;
 import org.onap.aai.sparky.util.RestletUtils;
-import org.onap.aai.sparky.viewandinspect.config.VisualizationConfigs;
 import org.restlet.Request;
 import org.restlet.Response;
 import org.restlet.data.ClientInfo;
@@ -67,46 +64,45 @@ public class EntityCountHistoryProcessor implements Processor {
 
   private static final long serialVersionUID = 1L;
 
-  private SearchAdapter search = null;
-  private ElasticSearchConfig elasticConfig = null;
-  private VisualizationConfigs visualConfigs = null;
+  private ElasticSearchAdapter elasticSearchAdapter = null;
   private ObjectMapper mapper;
-
-  private static final String SEARCH_STRING = "_search";
+  
+  private static final String SEARCH_PRETTY_STRING = "_search?pretty";
   private static final String TYPE = "type";
   private static final String TABLE = "table";
   private static final String GRAPH = "graph";
 
-  private List<String> vnfEntityTypesToSummarize;
-  private boolean summarizevnf = false;
+  private List<String> entityTypesToSummarize;
+  private List<String> vnfEntityTypes;
+  
+  private String entityCountHistoryIndexName;
+
+  private boolean summarizeVnfs = false;
 
   private RestletUtils restletUtils = new RestletUtils();
 
   /**
    * Instantiates a new Entity Count History
    */
+  
+  public EntityCountHistoryProcessor(ElasticSearchAdapter elasticSearchAdapter,
+      String entityTypesToSummarizeDelimitedList, String vnfEntityTypesDelimitedList, String entityCountHistoryIndexName) {
 
-  public EntityCountHistoryProcessor(VisualizationConfigs visualizationConfigs) {
+    this.elasticSearchAdapter = elasticSearchAdapter;
+    this.entityCountHistoryIndexName = entityCountHistoryIndexName;
 
-    this.visualConfigs = visualizationConfigs;
-    vnfEntityTypesToSummarize =
-        Arrays.asList(visualConfigs.getVnfEntityTypes().toLowerCase().split("[\\s,]+"));
-    summarizevnf = visualConfigs.getEntityTypesToSummarize().toLowerCase().contains("vnf");
-    try {
-      if (elasticConfig == null) {
-        elasticConfig = ElasticSearchConfig.getConfig();
-      }
+    entityTypesToSummarize =
+        Arrays.asList(entityTypesToSummarizeDelimitedList.toLowerCase().split("[\\s,]+"));
 
-      if (search == null) {
-        search = new SearchAdapter();
-      }
-      this.mapper = new ObjectMapper();
-      this.mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
-    } catch (Exception exc) {
-      LOG.error(AaiUiMsgs.CONFIGURATION_ERROR, exc.getLocalizedMessage());
-    }
+    vnfEntityTypes =
+        Arrays.asList(vnfEntityTypesDelimitedList.toLowerCase().split("[\\s,]+"));
+    
+    summarizeVnfs = vnfEntityTypesDelimitedList.toLowerCase().contains("vnf");
+
+    this.mapper = new ObjectMapper();
+    this.mapper.configure(SerializationFeature.INDENT_OUTPUT, true);
   }
-
+  
   /**
    * Processes a entity count history search request
    *
@@ -115,51 +111,51 @@ public class EntityCountHistoryProcessor implements Processor {
 
   @Override
   public void process(Exchange exchange) throws Exception {
+	  
+	  Request request = exchange.getIn().getHeader(RestletConstants.RESTLET_REQUEST, Request.class);
+	    Response restletResponse =
+	        exchange.getIn().getHeader(RestletConstants.RESTLET_RESPONSE, Response.class);
 
-    Request request = exchange.getIn().getHeader(RestletConstants.RESTLET_REQUEST, Request.class);
-    Response restletResponse =
-        exchange.getIn().getHeader(RestletConstants.RESTLET_RESPONSE, Response.class);
+	    Object xTransactionId = exchange.getIn().getHeader("X-TransactionId");
+	    if (xTransactionId == null) {
+	      xTransactionId = NodeUtils.getRandomTxnId();
+	    }
 
-    Object xTransactionId = exchange.getIn().getHeader("X-TransactionId");
-    if (xTransactionId == null) {
-      xTransactionId = NodeUtils.getRandomTxnId();
-    }
+	    Object partnerName = exchange.getIn().getHeader("X-FromAppId");
+	    if (partnerName == null) {
+	      partnerName = "Browser";
+	    }
 
-    Object partnerName = exchange.getIn().getHeader("X-FromAppId");
-    if (partnerName == null) {
-      partnerName = "Browser";
-    }
+	    /*
+	     * Disables automatic Apache Camel Restlet component logging which prints out an undesirable log
+	     * entry which includes client (e.g. browser) information
+	     */
+	    request.setLoggable(false);
 
-    /*
-     * Disables automatic Apache Camel Restlet component logging which prints out an undesirable log
-     * entry which includes client (e.g. browser) information
-     */
-    request.setLoggable(false);
+	    ClientInfo clientInfo = request.getClientInfo();
+	    MdcContext.initialize((String) xTransactionId, "AAI-UI", "", (String) partnerName,
+	        clientInfo.getAddress() + ":" + clientInfo.getPort());
 
-    ClientInfo clientInfo = request.getClientInfo();
-    MdcContext.initialize((String) xTransactionId, "AAI-UI", "", (String) partnerName,
-        clientInfo.getAddress() + ":" + clientInfo.getPort());
+	    String typeParameter = getTypeParameter(exchange);
 
-    String typeParameter = getTypeParameter(exchange);
+	    if (null != typeParameter && !typeParameter.isEmpty()) {
+	      OperationResult operationResult = null;
 
-    if (null != typeParameter && !typeParameter.isEmpty()) {
-      OperationResult operationResult = null;
+	      try {
+	        operationResult = getResults(restletResponse, typeParameter);
+	        restletResponse.setEntity(operationResult.getResult(), MediaType.APPLICATION_JSON);
+	      } catch (Exception exc) {
+	        LOG.error(AaiUiMsgs.CONFIGURATION_ERROR, exc.getLocalizedMessage());
+	      }
+	    } else {
+	      LOG.error(AaiUiMsgs.RESOURCE_NOT_FOUND, request.getOriginalRef().toString());
+	      String errorMessage =
+	          restletUtils.generateJsonErrorResponse("Unsupported request. Resource not found.");
+	      restletResponse.setEntity(errorMessage, MediaType.APPLICATION_JSON);
+	      restletResponse.setStatus(Status.CLIENT_ERROR_NOT_FOUND);
+	    }
 
-      try {
-        operationResult = getResults(restletResponse, typeParameter);
-        restletResponse.setEntity(operationResult.getResult(), MediaType.APPLICATION_JSON);
-      } catch (Exception exc) {
-        LOG.error(AaiUiMsgs.CONFIGURATION_ERROR, exc.getLocalizedMessage());
-      }
-    } else {
-      LOG.error(AaiUiMsgs.RESOURCE_NOT_FOUND, request.getOriginalRef().toString());
-      String errorMessage =
-          restletUtils.generateJsonErrorResponse("Unsupported request. Resource not found.");
-      restletResponse.setEntity(errorMessage, MediaType.APPLICATION_JSON);
-      restletResponse.setStatus(Status.CLIENT_ERROR_NOT_FOUND);
-    }
-
-    exchange.getOut().setBody(restletResponse);
+	    exchange.getOut().setBody(restletResponse);
   }
 
 
@@ -253,7 +249,7 @@ public class EntityCountHistoryProcessor implements Processor {
 
         for (final JsonNode entityNode : bucketsNode) {
           String entityType = entityNode.get("key").asText();
-          boolean isAVnf = vnfEntityTypesToSummarize.contains(entityType);
+          boolean isAVnf = vnfEntityTypes.contains(entityType);
           long countValue = 0;
 
           if (isAVnf || entityCountInTable.get(entityType) != null) {
@@ -267,7 +263,7 @@ public class EntityCountHistoryProcessor implements Processor {
               /*
                * Special case: Add all the VNF types together to get aggregate count
                */
-              if (summarizevnf && isAVnf) {
+              if (summarizeVnfs && isAVnf) {
                 vnfCount += countValue;
                 countValue = vnfCount;
                 entityType = "vnf";
@@ -305,15 +301,14 @@ public class EntityCountHistoryProcessor implements Processor {
   public OperationResult getResults(Response response, String type) {
     OperationResult operationResult = new OperationResult();
 
-    String requestString =
-        String.format("/%s/%s?pretty", elasticConfig.getEntityCountHistoryIndex(), SEARCH_STRING);
-
     String reqPayload = EntityHistoryQueryBuilder.getQuery(type).toString();
 
     try {
-      final String fullUrlStr = ServletUtils.getFullUrl(elasticConfig, requestString);
-      OperationResult opResult =
-          restletUtils.executePostQuery(LOG, search, response, fullUrlStr, reqPayload);
+      final String fullUrlStr = elasticSearchAdapter
+          .buildElasticSearchUrlForApi(entityCountHistoryIndexName, SEARCH_PRETTY_STRING);
+
+      OperationResult opResult = elasticSearchAdapter.doPost(fullUrlStr, reqPayload,
+          javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE);
 
       JSONObject finalOutput = null;
       if (type.equalsIgnoreCase(TABLE)) {
@@ -355,8 +350,7 @@ public class EntityCountHistoryProcessor implements Processor {
    */
   private Map<String, Long> initializeEntityMap() {
     Map<String, Long> entityMap = new HashMap<String, Long>();
-    String[] entityTypes = visualConfigs.getEntityTypesToSummarize().split(",");
-    for (String entity : entityTypes) {
+    for (String entity : entityTypesToSummarize) {
       entityMap.put(entity, (long) 0);
     }
 
@@ -403,15 +397,9 @@ public class EntityCountHistoryProcessor implements Processor {
     return typeParameter;
   }
 
-  public void setElasticConfig(ElasticSearchConfig elasticConfig) {
-    this.elasticConfig = elasticConfig;
-  }
 
   public void setRestletUtils(RestletUtils restletUtils) {
     this.restletUtils = restletUtils;
   }
 
-  public void setSearch(SearchAdapter search) {
-    this.search = search;
-  }
 }

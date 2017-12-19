@@ -29,9 +29,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.onap.aai.cl.api.Logger;
 import org.onap.aai.restclient.client.OperationResult;
-import org.onap.aai.sparky.dal.elasticsearch.SearchAdapter;
-import org.onap.aai.sparky.dal.elasticsearch.config.ElasticSearchConfig;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
+import org.onap.aai.sparky.search.SearchServiceAdapter;
 
 /**
  * The Class ServletUtils.
@@ -48,7 +47,7 @@ public class ServletUtils {
    * @return the operation result
    * @throws Exception the exception
    */
-  public static OperationResult executeGetQuery(Logger logger, SearchAdapter search,
+  public static OperationResult executeGetQuery(Logger logger, SearchServiceAdapter search,
       HttpServletResponse response, String requestUrl) throws Exception {
 
     OperationResult opResult = search.doGet(requestUrl, "application/json");
@@ -74,7 +73,7 @@ public class ServletUtils {
    * @return the operation result
    * @throws Exception the exception
    */
-  public static OperationResult executePostQuery(Logger logger, SearchAdapter search,
+  public static OperationResult executePostQuery(Logger logger, SearchServiceAdapter search,
       HttpServletResponse response, String requestUrl, String requestJsonPayload) throws Exception {
 
     OperationResult opResult = search.doPost(requestUrl, requestJsonPayload, "application/json");
@@ -100,8 +99,8 @@ public class ServletUtils {
    */
   public static void handleSearchServletErrors(Logger logger, String errorMsg, Exception exc,
       HttpServletResponse response) throws IOException {
-    String errorLogMsg =
-        (exc == null ? errorMsg : errorMsg + ". Error:" + exc.getLocalizedMessage());
+    String errorLogMsg = (exc == null ? errorMsg : errorMsg + ". Error:" 
+        + exc.getLocalizedMessage());
     logger.error(AaiUiMsgs.ERROR_GENERIC, errorLogMsg);
     response.setContentType("application/json");
     PrintWriter out = response.getWriter();
@@ -153,9 +152,9 @@ public class ServletUtils {
    * @param resourceUrl the resource url
    * @return the full url
    */
-  public static String getFullUrl(ElasticSearchConfig elasticConfig, String resourceUrl) {
-    final String host = elasticConfig.getIpAddress();
-    final String port = elasticConfig.getHttpPort();
+  public static String getFullUrl(String eHost,String ePort, String resourceUrl) {
+    final String host = eHost;
+    final String port = ePort;
     return String.format("http://%s:%s%s", host, port, resourceUrl);
   }
 }

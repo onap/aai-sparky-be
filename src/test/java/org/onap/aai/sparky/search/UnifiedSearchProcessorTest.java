@@ -39,12 +39,10 @@ import org.apache.camel.component.restlet.RestletConstants;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.onap.aai.sparky.common.search.CommonSearchSuggestion;
-import org.onap.aai.sparky.dal.elasticsearch.SearchAdapter;
 import org.onap.aai.sparky.search.SearchResponse;
 import org.onap.aai.sparky.search.UnifiedSearchProcessor;
 import org.onap.aai.sparky.search.api.SearchProvider;
@@ -62,11 +60,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 public class UnifiedSearchProcessorTest {
-
+  
   public interface Suggester {
-    public void addSuggestion(SearchSuggestion suggestion);
+    public void addSuggestion( SearchSuggestion suggestion );
   }
-
+  
   private abstract class AbstractDummySearchProvider implements SearchProvider, Suggester {
 
     private List<SearchSuggestion> suggestions;
@@ -89,7 +87,7 @@ public class UnifiedSearchProcessorTest {
     public List<SearchSuggestion> search(QuerySearchEntity queryRequest) {
       return getSuggestions();
     }
-
+    
   }
 
   private class AlphaSearchProvider extends AbstractDummySearchProvider {
@@ -101,7 +99,7 @@ public class UnifiedSearchProcessorTest {
     @Override
     public void addSuggestion(SearchSuggestion suggestion) {
       // TODO Auto-generated method stub
-
+      
     }
 
   }
@@ -115,7 +113,7 @@ public class UnifiedSearchProcessorTest {
     @Override
     public void addSuggestion(SearchSuggestion suggestion) {
       // TODO Auto-generated method stub
-
+      
     }
 
   }
@@ -129,19 +127,19 @@ public class UnifiedSearchProcessorTest {
     @Override
     public void addSuggestion(SearchSuggestion suggestion) {
       // TODO Auto-generated method stub
-
+      
     }
 
   }
-
+  
   private class PerspectiveSearchProvider implements SearchProvider {
 
     private List<String> perspectives;
-
+    
     public PerspectiveSearchProvider() {
       perspectives = new ArrayList<String>();
     }
-
+    
     public List<String> getPerspectives() {
       return perspectives;
     }
@@ -149,22 +147,22 @@ public class UnifiedSearchProcessorTest {
     public void setPerspectives(List<String> perspectives) {
       this.perspectives = perspectives;
     }
-
+    
     public void addPerspective(String perspective) {
       perspectives.add(perspective);
     }
-
+    
     @Override
     public List<SearchSuggestion> search(QuerySearchEntity queryRequest) {
       // TODO Auto-generated method stub
       return null;
     }
 
-
+    
   }
-
-  private SearchAdapter mockSearchAdapter;
-
+  
+  private SearchServiceAdapter mockSearchAdapter;
+  
   private UnifiedSearchProcessor unifiedSearchProcessor;
   private Exchange mockExchange;
   private Message mockRequestMessage;
@@ -178,7 +176,7 @@ public class UnifiedSearchProcessorTest {
   public void init() {
 
     requestClientInfo = new ClientInfo();
-
+    
     mockExchange = Mockito.mock(Exchange.class);
     mockRequestMessage = Mockito.mock(Message.class);
     mockResponseMessage = Mockito.mock(Message.class);
@@ -189,8 +187,8 @@ public class UnifiedSearchProcessorTest {
     unifiedSearchProcessor.setUseOrderedSearchProviderKeys(true);
 
     mapper = new ObjectMapper();
-
-    mockSearchAdapter = Mockito.mock(SearchAdapter.class);
+    
+    mockSearchAdapter = Mockito.mock(SearchServiceAdapter.class);
   }
 
 
@@ -201,20 +199,20 @@ public class UnifiedSearchProcessorTest {
     assertNull(unifiedSearchProcessor.getSearchProviderRegistry());
 
   }
-
-
+  
+  
   @Test
   public void validateAccessors() {
 
     SearchProviderRegistry searchProviderRegistry = new SearchProviderRegistry();
     unifiedSearchProcessor.setSearchProviderRegistry(searchProviderRegistry);
-
+    
     // initially it should be null until the bean wiring initializes it
     assertNotNull(unifiedSearchProcessor.getSearchProviderRegistry());
     assertEquals(0, searchProviderRegistry.getSearchProviders().size());
 
   }
-
+  
   private void initializeSearchMocks(String requestPayload) {
 
     Mockito.when(mockRestletRequest.getClientInfo()).thenReturn(requestClientInfo);
@@ -225,12 +223,12 @@ public class UnifiedSearchProcessorTest {
 
     Mockito.when(mockRequestMessage.getHeader(RestletConstants.RESTLET_RESPONSE, Response.class))
         .thenReturn(mockRestletResponse);
-
+    
     Mockito.when(mockExchange.getIn()).thenReturn(mockRequestMessage);
     Mockito.when(mockExchange.getOut()).thenReturn(mockResponseMessage);
 
   }
-
+  
   private void initializePerspectiveMocks(String requestPayload) throws JsonProcessingException {
     Mockito.when(mockRestletRequest.getClientInfo()).thenReturn(requestClientInfo);
 
@@ -240,42 +238,42 @@ public class UnifiedSearchProcessorTest {
 
     Mockito.when(mockRequestMessage.getHeader(RestletConstants.RESTLET_RESPONSE, Response.class))
         .thenReturn(mockRestletResponse);
-
+    
     Mockito.when(mockExchange.getIn()).thenReturn(mockRequestMessage);
     Mockito.when(mockExchange.getOut()).thenReturn(mockResponseMessage);
   }
-
+  
   private String getSearchRequestJson(String queryString, int maxResults) {
-
+    
     JSONObject root = new JSONObject();
     root.put("queryStr", queryString);
     root.put("maxResults", maxResults);
-
+    
     return root.toString();
 
   }
-
+  
   private String getExternalSearchRequestJson() {
     JSONObject root = new JSONObject();
-
+    
     root.put("view", "testView");
     root.put("entityId", "thisIsAnId");
     root.put("entityType", "pserver");
-
+    
     return root.toString();
   }
-
-
+  
+  
   @Test
   public void testSearch_search_when_noSearchProviders() throws IOException {
 
     // mock env setup
 
-    initializeSearchMocks(getSearchRequestJson("vnfs", 10));
+    initializeSearchMocks(getSearchRequestJson("vnfs",10));
 
     SearchProviderRegistry searchProviderRegistry = new SearchProviderRegistry();
     unifiedSearchProcessor.setSearchProviderRegistry(searchProviderRegistry);
-
+    
     // method under test
     unifiedSearchProcessor.search(mockExchange);
 
@@ -293,37 +291,36 @@ public class UnifiedSearchProcessorTest {
     Mockito.verify(mockResponseMessage, Mockito.atLeast(1)).setBody(responseObject.capture());
     assertEquals(MediaType.APPLICATION_JSON, payloadMediaType.getValue());
 
-    SearchResponse searchResponse =
-        mapper.readValue(entityPayload.getValue(), SearchResponse.class);
+    SearchResponse searchResponse = mapper.readValue(entityPayload.getValue(), SearchResponse.class);
 
     assertEquals(0, searchResponse.getTotalFound());
     assertEquals(0, searchResponse.getSuggestions().size());
-
+    
   }
-
+  
   @Test
   public void testSearch_search_when_ThreeSearchProviders_no_suggestions() throws IOException {
 
     // mock env setup
 
-    initializeSearchMocks(getSearchRequestJson("vnfs", 10));
+    initializeSearchMocks(getSearchRequestJson("vnfs",10));
 
     SearchProviderRegistry searchProviderRegistry = new SearchProviderRegistry();
-
+    
     AlphaSearchProvider alpha = new AlphaSearchProvider();
     BravoSearchProvider bravo = new BravoSearchProvider();
     GammaSearchProvider gamma = new GammaSearchProvider();
-
+    
     searchProviderRegistry.addSearchProvider(alpha);
     searchProviderRegistry.addSearchProvider(bravo);
     searchProviderRegistry.addSearchProvider(gamma);
-
+    
     unifiedSearchProcessor.setSearchProviderRegistry(searchProviderRegistry);
-
-
+    
+    
     // method under test
     unifiedSearchProcessor.search(mockExchange);
-
+    
     ArgumentCaptor<Status> responseCodeCaptor = ArgumentCaptor.forClass(Status.class);
     Mockito.verify(mockRestletResponse, Mockito.atLeast(1)).setStatus(responseCodeCaptor.capture());
     assertEquals(Status.SUCCESS_OK, responseCodeCaptor.getValue());
@@ -337,74 +334,72 @@ public class UnifiedSearchProcessorTest {
     ArgumentCaptor<Response> responseObject = ArgumentCaptor.forClass(Response.class);
     Mockito.verify(mockResponseMessage, Mockito.atLeast(1)).setBody(responseObject.capture());
     assertEquals(MediaType.APPLICATION_JSON, payloadMediaType.getValue());
-
+    
     /*
      * With a null view name, an empty filter set should be returned - there should be 0 filters
      */
-
-    SearchResponse searchResponse =
-        mapper.readValue(entityPayload.getValue(), SearchResponse.class);
+    
+    SearchResponse searchResponse = mapper.readValue(entityPayload.getValue(), SearchResponse.class);
 
     assertEquals(0, searchResponse.getTotalFound());
     assertEquals(0, searchResponse.getSuggestions().size());
-
+    
   }
-
+  
   private void addSuggestions(int numSuggestions, String suggestionPrefix, Suggester suggester) {
     CommonSearchSuggestion suggestion = null;
-    for (int x = 0; x < numSuggestions; x++) {
+    for ( int x = 0; x < numSuggestions; x++ ){
       suggestion = new CommonSearchSuggestion();
       suggestion.setText(suggestionPrefix + "-" + x);
       suggester.addSuggestion(suggestion);
     }
   }
-
+  
   private void addSuggestion(String perspective, String text, String hashId, Suggester suggester) {
     CommonSearchSuggestion suggestion = new CommonSearchSuggestion();
     suggestion.setText(text);
     suggestion.setHashId(hashId);
     suggester.addSuggestion(suggestion);
   }
-
+  
   private int countSuggestions(String suggestionPrefix, SearchResponse response) {
-
+    
     int totalFound = 0;
-
-    for (SearchSuggestion suggestion : response.getSuggestions()) {
-
-      if (suggestion.getText() != null && suggestion.getText().startsWith(suggestionPrefix)) {
+    
+    for ( SearchSuggestion suggestion : response.getSuggestions()) {
+      
+      if ( suggestion.getText() != null && suggestion.getText().startsWith(suggestionPrefix)) {
         totalFound++;
       }
     }
-
+    
     return totalFound;
-
+    
   }
-
-  @Ignore
+  
   @Test
   public void testSearch_search_when_ThreeSearchProviders_5suggestions_each() throws IOException {
 
     // mock env setup
 
-    initializeSearchMocks(getSearchRequestJson("vnfs", 10));
+    initializeSearchMocks(getSearchRequestJson("vnfs",10));
 
     SearchProviderRegistry searchProviderRegistry = new SearchProviderRegistry();
-
+    
     AlphaSearchProvider alpha = new AlphaSearchProvider();
     BravoSearchProvider bravo = new BravoSearchProvider();
     GammaSearchProvider gamma = new GammaSearchProvider();
-
+    
     searchProviderRegistry.addSearchProvider(alpha);
     searchProviderRegistry.addSearchProvider(bravo);
     searchProviderRegistry.addSearchProvider(gamma);
-
+    
     unifiedSearchProcessor.setSearchProviderRegistry(searchProviderRegistry);
-
-    addSuggestions(5, "alpha", alpha);
-    addSuggestions(5, "bravo", bravo);
-    addSuggestions(5, "gamma", gamma);
-
+    
+    addSuggestions(5,"alpha",alpha);
+    addSuggestions(5,"bravo",bravo);
+    addSuggestions(5,"gamma",gamma);
+    
     // method under test
     unifiedSearchProcessor.search(mockExchange);
 
@@ -421,43 +416,41 @@ public class UnifiedSearchProcessorTest {
     ArgumentCaptor<Response> responseObject = ArgumentCaptor.forClass(Response.class);
     Mockito.verify(mockResponseMessage, Mockito.atLeast(1)).setBody(responseObject.capture());
     assertEquals(MediaType.APPLICATION_JSON, payloadMediaType.getValue());
-
-    SearchResponse searchResponse =
-        mapper.readValue(entityPayload.getValue(), SearchResponse.class);
+    
+    SearchResponse searchResponse = mapper.readValue(entityPayload.getValue(), SearchResponse.class);
 
     assertEquals(10, searchResponse.getTotalFound());
     assertEquals(10, searchResponse.getSuggestions().size());
-
-    assertEquals(4, countSuggestions("alpha", searchResponse));
-    assertEquals(3, countSuggestions("bravo", searchResponse));
-    assertEquals(3, countSuggestions("gamma", searchResponse));
-
+    
+    assertEquals( 4, countSuggestions("alpha", searchResponse));
+    assertEquals( 3, countSuggestions("bravo", searchResponse));
+    assertEquals( 3, countSuggestions("gamma", searchResponse));
+    
   }
 
-  @Ignore
   @Test
   public void testSearch_search_when_ThreeSearchProviders_mixedNumSuggestions() throws IOException {
 
     // mock env setup
 
-    initializeSearchMocks(getSearchRequestJson("vnfs", 13));
+    initializeSearchMocks(getSearchRequestJson("vnfs",13));
 
     SearchProviderRegistry searchProviderRegistry = new SearchProviderRegistry();
-
+    
     AlphaSearchProvider alpha = new AlphaSearchProvider();
     BravoSearchProvider bravo = new BravoSearchProvider();
     GammaSearchProvider gamma = new GammaSearchProvider();
-
+    
     searchProviderRegistry.addSearchProvider(alpha);
     searchProviderRegistry.addSearchProvider(bravo);
     searchProviderRegistry.addSearchProvider(gamma);
-
+    
     unifiedSearchProcessor.setSearchProviderRegistry(searchProviderRegistry);
-
-    addSuggestions(45, "alpha", alpha);
-    addSuggestions(1, "bravo", bravo);
-    addSuggestions(99, "gamma", gamma);
-
+    
+    addSuggestions(45,"alpha",alpha);
+    addSuggestions(1,"bravo",bravo);
+    addSuggestions(99,"gamma",gamma);
+    
     // method under test
     unifiedSearchProcessor.search(mockExchange);
 
@@ -474,55 +467,57 @@ public class UnifiedSearchProcessorTest {
     ArgumentCaptor<Response> responseObject = ArgumentCaptor.forClass(Response.class);
     Mockito.verify(mockResponseMessage, Mockito.atLeast(1)).setBody(responseObject.capture());
     assertEquals(MediaType.APPLICATION_JSON, payloadMediaType.getValue());
-
-    SearchResponse searchResponse =
-        mapper.readValue(entityPayload.getValue(), SearchResponse.class);
+    
+    SearchResponse searchResponse = mapper.readValue(entityPayload.getValue(), SearchResponse.class);
 
     assertEquals(13, searchResponse.getTotalFound());
     assertEquals(13, searchResponse.getSuggestions().size());
-
+    
     /**
-     * There should be an even divide of suggestions per search provider relative to the suggestions
-     * available per search provider. Alpha has 45 suggestions Bravo has 1 suggestion Gamma has 99
-     * suggestions
+     * There should be an even divide of suggestions per search provider relative
+     * to the suggestions available per search provider.
+     * Alpha has 45 suggestions
+     * Bravo has 1  suggestion
+     * Gamma has 99 suggestions
      * 
-     * We only asked for 13 suggestions to be returned, so based on the suggestion distribution
-     * algorithm we will get a fair distribution of suggestions per provider relative to what each
-     * provider has available. Resulting in: 6 from Alpha 1 from Bravo 6 from Gamma
+     * We only asked for 13 suggestions to be returned, so based on the suggestion
+     * distribution algorithm we will get a fair distribution of suggestions per provider
+     * relative to what each provider has available.  Resulting in:
+     * 6 from Alpha
+     * 1 from Bravo
+     * 6 from Gamma
      * 
      */
-
-    assertEquals(6, countSuggestions("alpha", searchResponse));
-    assertEquals(1, countSuggestions("bravo", searchResponse));
-    assertEquals(6, countSuggestions("gamma", searchResponse));
-
+    
+    assertEquals( 6, countSuggestions("alpha", searchResponse));
+    assertEquals( 1, countSuggestions("bravo", searchResponse));
+    assertEquals( 6, countSuggestions("gamma", searchResponse));
+    
   }
-
-  @Ignore
+  
   @Test
-  public void testSearch_search_when_ThreeSearchProviders_wantedMoreSuggestionsThanAvailable()
-      throws IOException {
+  public void testSearch_search_when_ThreeSearchProviders_wantedMoreSuggestionsThanAvailable() throws IOException {
 
     // mock env setup
 
-    initializeSearchMocks(getSearchRequestJson("vnfs", 13));
+    initializeSearchMocks(getSearchRequestJson("vnfs",13));
 
     SearchProviderRegistry searchProviderRegistry = new SearchProviderRegistry();
-
+    
     AlphaSearchProvider alpha = new AlphaSearchProvider();
     BravoSearchProvider bravo = new BravoSearchProvider();
     GammaSearchProvider gamma = new GammaSearchProvider();
-
+    
     searchProviderRegistry.addSearchProvider(alpha);
     searchProviderRegistry.addSearchProvider(bravo);
     searchProviderRegistry.addSearchProvider(gamma);
-
+    
     unifiedSearchProcessor.setSearchProviderRegistry(searchProviderRegistry);
-
-    addSuggestions(1, "alpha", alpha);
-    addSuggestions(4, "bravo", bravo);
-    addSuggestions(0, "gamma", gamma);
-
+    
+    addSuggestions(1,"alpha",alpha);
+    addSuggestions(4,"bravo",bravo);
+    addSuggestions(0,"gamma",gamma);
+    
     // method under test
     unifiedSearchProcessor.search(mockExchange);
 
@@ -539,105 +534,100 @@ public class UnifiedSearchProcessorTest {
     ArgumentCaptor<Response> responseObject = ArgumentCaptor.forClass(Response.class);
     Mockito.verify(mockResponseMessage, Mockito.atLeast(1)).setBody(responseObject.capture());
     assertEquals(MediaType.APPLICATION_JSON, payloadMediaType.getValue());
-
-    SearchResponse searchResponse =
-        mapper.readValue(entityPayload.getValue(), SearchResponse.class);
+    
+    SearchResponse searchResponse = mapper.readValue(entityPayload.getValue(), SearchResponse.class);
 
     assertEquals(5, searchResponse.getTotalFound());
     assertEquals(5, searchResponse.getSuggestions().size());
-
-    assertEquals(1, countSuggestions("alpha", searchResponse));
-    assertEquals(4, countSuggestions("bravo", searchResponse));
-    assertEquals(0, countSuggestions("gamma", searchResponse));
-
+    
+    assertEquals( 1, countSuggestions("alpha", searchResponse));
+    assertEquals( 4, countSuggestions("bravo", searchResponse));
+    assertEquals( 0, countSuggestions("gamma", searchResponse));
+    
   }
-
+  
   private String getPerspectiveRequestJson(String hashId) {
     JSONObject root = new JSONObject();
     root.put("hashId", hashId);
     return root.toString();
   }
-
-  @Ignore
+  
   @Test
   public void testDiscoverPerspectives_search_with_valid_payload() throws JsonProcessingException {
     initializePerspectiveMocks(getPerspectiveRequestJson("thisisahashidandyouarebeautiful"));
-
+    
     PerspectiveSearchProvider search = new PerspectiveSearchProvider();
     search.addPerspective("One");
     search.addPerspective("Two");
     search.addPerspective("Three");
     SearchProviderRegistry searchProviderRegistry = new SearchProviderRegistry();
     searchProviderRegistry.addSearchProvider(search);
-
+    
     unifiedSearchProcessor.setSearchProviderRegistry(searchProviderRegistry);
-    // unifiedSearchProcessor.discoverPerspectives(mockExchange);
-
+    //unifiedSearchProcessor.discoverPerspectives(mockExchange);
+    
     ArgumentCaptor<Status> responseCodeCaptor = ArgumentCaptor.forClass(Status.class);
     Mockito.verify(mockRestletResponse, Mockito.atLeast(1)).setStatus(responseCodeCaptor.capture());
     assertEquals(Status.SUCCESS_OK, responseCodeCaptor.getValue());
-
+    
     ArgumentCaptor<String> entityPayload = ArgumentCaptor.forClass(String.class);
     ArgumentCaptor<MediaType> payloadMediaType = ArgumentCaptor.forClass(MediaType.class);
     Mockito.verify(mockRestletResponse, Mockito.atLeast(1)).setEntity(entityPayload.capture(),
         payloadMediaType.capture());
     assertNotNull(entityPayload.getValue());
-
+    
     ArgumentCaptor<Response> responseObject = ArgumentCaptor.forClass(Response.class);
     Mockito.verify(mockResponseMessage, Mockito.atLeast(1)).setBody(responseObject.capture());
     assertEquals(MediaType.APPLICATION_JSON, payloadMediaType.getValue());
-
+    
     JSONObject response = new JSONObject(entityPayload.getValue());
     JSONArray pers = response.getJSONArray("perspectives");
     assertNotNull(pers);
     assertEquals(3, pers.length());
     assertEquals("Two", pers.get(1));
   }
-
-  @Ignore
+  
   @Test
-  public void testExternalRequestEntitySearch_search_with_valid_payload()
-      throws JsonProcessingException {
+  public void testExternalRequestEntitySearch_search_with_valid_payload() throws JsonProcessingException {
     initializeSearchMocks(getExternalSearchRequestJson());
-
+    
     SearchProviderRegistry searchProviderRegistry = new SearchProviderRegistry();
-
+    
     AlphaSearchProvider alpha = new AlphaSearchProvider();
     BravoSearchProvider bravo = new BravoSearchProvider();
     GammaSearchProvider gamma = new GammaSearchProvider();
-
+    
     searchProviderRegistry.addSearchProvider(alpha);
     searchProviderRegistry.addSearchProvider(bravo);
     searchProviderRegistry.addSearchProvider(gamma);
-
+    
     unifiedSearchProcessor.setSearchProviderRegistry(searchProviderRegistry);
-
+    
     addSuggestion("testView", "testView", "ad74nw8foihdfd8", alpha);
     addSuggestion("notTestView", "this is text", "dujf7s423k", bravo);
     addSuggestion("superTestView", "this is text", "kjd8fuds75", gamma);
-
+    
     // method under test
-    // unifiedSearchProcessor.externalRequestEntitySearch(mockExchange);
-
+    //unifiedSearchProcessor.externalRequestEntitySearch(mockExchange);
+    
     ArgumentCaptor<Status> responseCodeCaptor = ArgumentCaptor.forClass(Status.class);
     Mockito.verify(mockRestletResponse, Mockito.atLeast(1)).setStatus(responseCodeCaptor.capture());
     assertEquals(Status.SUCCESS_OK, responseCodeCaptor.getValue());
-
+    
     ArgumentCaptor<String> entityPayload = ArgumentCaptor.forClass(String.class);
     ArgumentCaptor<MediaType> payloadMediaType = ArgumentCaptor.forClass(MediaType.class);
-    Mockito.verify(mockRestletResponse, Mockito.atLeast(1)).setEntity(entityPayload.capture(),
-        payloadMediaType.capture());
+    Mockito.verify(mockRestletResponse, Mockito.atLeast(1)).setEntity(entityPayload.capture(), payloadMediaType.capture());
     assertNotNull(entityPayload.getValue());
 
     ArgumentCaptor<Response> responseObject = ArgumentCaptor.forClass(Response.class);
     Mockito.verify(mockResponseMessage, Mockito.atLeast(1)).setBody(responseObject.capture());
     assertEquals(MediaType.APPLICATION_JSON, payloadMediaType.getValue());
-
+    
     JSONObject response = new JSONObject(entityPayload.getValue());
     JSONArray suggestions = response.getJSONArray("suggestions");
-
+    
     assertEquals(1, suggestions.length());
-
+    
     int totalFound = response.getInt("totalFound");
     assertEquals(1, totalFound);
   }

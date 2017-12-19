@@ -25,7 +25,7 @@ package org.onap.aai.sparky.config.oxm;
 import org.eclipse.persistence.jaxb.dynamic.DynamicJAXBContext;
 
 public interface OxmModelProcessor {
-
+  
   public void processOxmModel(DynamicJAXBContext jaxbContext);
 
 }

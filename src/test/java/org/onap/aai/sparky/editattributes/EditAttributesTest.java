@@ -62,8 +62,8 @@ import com.att.aft.dme2.internal.jettison.json.JSONObject;
 public class EditAttributesTest {
   String sampleJsonRequest =
       "{ \"entity-uri\" : \"some/uri/value/here\", \"entity-type\" : \"complex\","
-          + " \"attributes\" : { \"prov-status\" : \"PREPROV\", \"inMaint\" : \"true\","
-          + " \"isClosedLoop\" : \"false\" }}";
+      + " \"attributes\" : { \"prov-status\" : \"PREPROV\", \"inMaint\" : \"true\","
+      + " \"isClosedLoop\" : \"false\" }}";
 
   /**
    * Sets the up before class.
@@ -81,23 +81,28 @@ public class EditAttributesTest {
   @Before
   public void setUp() throws Exception {}
 
-
+  
   /**
    * Test analyze edit request body.
    */
   /*
-   * @Test public void testAnalyzeEditRequestBody() { AttributeEditProcessor aes = new
-   * AttributeEditProcessor(); EditRequest request = aes.analyzeEditRequestBody(sampleJsonRequest);
-   * System.out.println("JSON Body : " + sampleJsonRequest); assertNotNull(request); assertEquals(
-   * "URI should match", "some/uri/value/here", request.getEntityUri()); assertEquals(
-   * "Entity Type should match", "complex", request.getEntityType()); assertEquals(
-   * "Attribute ProvStatus should match", "PREPROV", request.getAttributes().get("prov-status"));
-   * assertEquals("Attribute inMaint should be true", "true",
-   * request.getAttributes().get("inMaint")); assertEquals("Attribute isClosedLoop should be false",
-   * "false", request.getAttributes().get("isClosedLoop"));
-   * 
-   * }
-   */
+  @Test
+  public void testAnalyzeEditRequestBody() {
+    AttributeEditProcessor aes = new AttributeEditProcessor();
+    EditRequest request = aes.analyzeEditRequestBody(sampleJsonRequest);
+    System.out.println("JSON Body : " + sampleJsonRequest);
+    assertNotNull(request);
+    assertEquals("URI should match", "some/uri/value/here", request.getEntityUri());
+    assertEquals("Entity Type should match", "complex", request.getEntityType());
+    assertEquals("Attribute ProvStatus should match", "PREPROV",
+        request.getAttributes().get("prov-status"));
+    assertEquals("Attribute inMaint should be true", "true",
+        request.getAttributes().get("inMaint"));
+    assertEquals("Attribute isClosedLoop should be false", "false",
+        request.getAttributes().get("isClosedLoop"));
+
+  }
+  */
 
 
   /**
@@ -108,29 +113,37 @@ public class EditAttributesTest {
    * @throws JSONException the JSON exception
    */
   /*
-   * @Test public void testEditRequest() throws IOException, ServletException, JSONException {
-   * HttpServletRequest mockRequest = mock(HttpServletRequest.class); HttpServletResponse
-   * mockResponse = mock(HttpServletResponse.class); ServletOutputStream mockOutput =
-   * mock(ServletOutputStream.class); ServletInputStream mockInput = new
-   * MockServletInputStream(sampleJsonRequest);
-   * 
-   * when(mockRequest.getRequestURI()).thenReturn("editAttributes");
-   * when(mockResponse.getOutputStream()).thenReturn(mockOutput);
-   * 
-   * when(mockRequest.getInputStream()).thenReturn(mockInput);
-   * 
-   * Principal princip = new UserPrincipal("ds1150");
-   * 
-   * when(mockRequest.getUserPrincipal()).thenReturn(princip);
-   * 
-   * PrintWriter writer = new PrintWriter("editServletTest.txt");
-   * when(mockResponse.getWriter()).thenReturn(writer); AttributeEditProcessor aes = new
-   * AttributeEditProcessor(); aes.doPost(mockRequest, mockResponse); JSONObject result = null; try
-   * { writer.close(); result = new JSONObject(FileUtils.readFileToString(new
-   * File("editServletTest.txt"), "UTF-8")); } catch (JSONException ex) { // Nothing to catch }
-   * assertNotNull(result); // assertEquals("Attributes updated successfully (just need PATCH !!!)",
-   * result.get("result")); }
-   */
+  @Test
+  public void testEditRequest() throws IOException, ServletException, JSONException {
+    HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+    HttpServletResponse mockResponse = mock(HttpServletResponse.class);
+    ServletOutputStream mockOutput = mock(ServletOutputStream.class);
+    ServletInputStream mockInput = new MockServletInputStream(sampleJsonRequest);
+
+    when(mockRequest.getRequestURI()).thenReturn("editAttributes");
+    when(mockResponse.getOutputStream()).thenReturn(mockOutput);
+
+    when(mockRequest.getInputStream()).thenReturn(mockInput);
+
+    Principal princip = new UserPrincipal("ds1150");
+
+    when(mockRequest.getUserPrincipal()).thenReturn(princip);
+
+    PrintWriter writer = new PrintWriter("editServletTest.txt");
+    when(mockResponse.getWriter()).thenReturn(writer);
+    AttributeEditProcessor aes = new AttributeEditProcessor();
+    aes.doPost(mockRequest, mockResponse);
+    JSONObject result = null;
+    try {
+      writer.close();
+      result = new JSONObject(FileUtils.readFileToString(new File("editServletTest.txt"), "UTF-8"));
+    } catch (JSONException ex) {
+      // Nothing to catch
+    }
+    assertNotNull(result);
+    // assertEquals("Attributes updated successfully (just need PATCH !!!)", result.get("result"));
+  }
+  */
 
   /**
    * Test get att uid.
@@ -139,39 +152,43 @@ public class EditAttributesTest {
    * @throws ServletException the servlet exception
    */
   /*
-   * @Test public void testGetAttUid() throws IOException, ServletException { HttpServletRequest
-   * mockRequest = mock(HttpServletRequest.class); HttpServletResponse mockResponse =
-   * mock(HttpServletResponse.class); ServletOutputStream mockOutput =
-   * mock(ServletOutputStream.class); ServletInputStream mockInput = new
-   * MockServletInputStream(sampleJsonRequest);
-   * 
-   * when(mockRequest.getRequestURI()).thenReturn("editAttributes");
-   * when(mockResponse.getOutputStream()).thenReturn(mockOutput);
-   * 
-   * when(mockRequest.getInputStream()).thenReturn(mockInput);
-   * 
-   * Principal princip = new UserPrincipal("ds1150");
-   * 
-   * when(mockRequest.getUserPrincipal()).thenReturn(princip);
-   * 
-   * PrintWriter writer = new PrintWriter("editServletTest.txt");
-   * when(mockResponse.getWriter()).thenReturn(writer);
-   * when(mockRequest.getCookies()).thenReturn(new Cookie[] {new Cookie("attESHr",
-   * "DENNIS|SEBASTIAN|dennis.sebastian@amdocs.com|||ko2649||ds1150," +
-   * "RBFMSKQ,Z9V2298,9762186|YNNNNNNNNNNNNNYNNYYNNNNN|DENNIS|EY6SC9000|")}); AttributeEditProcessor
-   * aes = new AttributeEditProcessor(); String attid = aes.getAttUid(mockRequest); assertEquals(
-   * " Expected ATTUID is wrong", "ds1150", attid);
-   * 
-   * when(mockRequest.getCookies()).thenReturn(new Cookie[] {new Cookie("attESHr",
-   * "DENNIS%7cSEBASTIAN%7cdennisse%40amdocs%2ecom%7c%7c%7cko2649%7c%7cds1150%2cRDJJFLM%" +
-   * "2cP86NJ85%2c8127688%7cYNNNNNNNNNNNNNYNNYNYNNNN%7cDENNIS%7cEY6SC9000%7c")}); attid =
-   * aes.getAttUid(mockRequest); assertEquals(" Expected ATTUID is wrong", "ds1150", attid);
-   * 
-   * when(mockRequest.getCookies()).thenReturn(new Cookie[] {}); attid = aes.getAttUid(mockRequest);
-   * assertEquals(" Expected Empty ID", "", attid);
-   * 
-   * }
-   */
+  @Test
+  public void testGetAttUid() throws IOException, ServletException {
+    HttpServletRequest mockRequest = mock(HttpServletRequest.class);
+    HttpServletResponse mockResponse = mock(HttpServletResponse.class);
+    ServletOutputStream mockOutput = mock(ServletOutputStream.class);
+    ServletInputStream mockInput = new MockServletInputStream(sampleJsonRequest);
+
+    when(mockRequest.getRequestURI()).thenReturn("editAttributes");
+    when(mockResponse.getOutputStream()).thenReturn(mockOutput);
+
+    when(mockRequest.getInputStream()).thenReturn(mockInput);
+
+    Principal princip = new UserPrincipal("ds1150");
+
+    when(mockRequest.getUserPrincipal()).thenReturn(princip);
+
+    PrintWriter writer = new PrintWriter("editServletTest.txt");
+    when(mockResponse.getWriter()).thenReturn(writer);
+    when(mockRequest.getCookies()).thenReturn(new Cookie[] {new Cookie("attESHr",
+        "DENNIS|SEBASTIAN|dennis.sebastian@amdocs.com|||ko2649||ds1150,"
+        + "RBFMSKQ,Z9V2298,9762186|YNNNNNNNNNNNNNYNNYYNNNNN|DENNIS|EY6SC9000|")});
+    AttributeEditProcessor aes = new AttributeEditProcessor();
+    String attid = aes.getAttUid(mockRequest);
+    assertEquals(" Expected ATTUID is wrong", "ds1150", attid);
+
+    when(mockRequest.getCookies()).thenReturn(new Cookie[] {new Cookie("attESHr",
+        "DENNIS%7cSEBASTIAN%7cdennisse%40amdocs%2ecom%7c%7c%7cko2649%7c%7cds1150%2cRDJJFLM%"
+        + "2cP86NJ85%2c8127688%7cYNNNNNNNNNNNNNYNNYNYNNNN%7cDENNIS%7cEY6SC9000%7c")});
+    attid = aes.getAttUid(mockRequest);
+    assertEquals(" Expected ATTUID is wrong", "ds1150", attid);
+
+    when(mockRequest.getCookies()).thenReturn(new Cookie[] {});
+    attid = aes.getAttUid(mockRequest);
+    assertEquals(" Expected Empty ID", "", attid);
+
+  }
+  */
 
   /**
    * The Class MockServletInputStream.
@@ -188,9 +205,7 @@ public class EditAttributesTest {
       this.inputStream = IOUtils.toInputStream(string);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
+    /* (non-Javadoc)
      * @see java.io.InputStream#read()
      */
     @Override

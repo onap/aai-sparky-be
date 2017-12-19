@@ -28,7 +28,7 @@ import org.onap.aai.sparky.search.entity.QuerySearchEntity;
 import org.onap.aai.sparky.search.entity.SearchSuggestion;
 
 public interface SearchProvider {
-
+   
   List<SearchSuggestion> search(QuerySearchEntity queryRequest);
-
+  
 }

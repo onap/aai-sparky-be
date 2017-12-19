@@ -26,13 +26,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class SyncControllerRegistry {
-
+  
   private List<SyncController> controllers;
-
+  
   public SyncControllerRegistry() {
     controllers = new ArrayList<SyncController>();
   }
-
+  
   public void registerSyncController(SyncController controller) {
     controllers.add(controller);
   }

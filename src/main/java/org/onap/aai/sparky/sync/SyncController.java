@@ -32,16 +32,14 @@ import org.onap.aai.sparky.sync.enumeration.SynchronizerState;
 public interface SyncController {
 
   String getControllerName();
-
   boolean isPeriodicSyncEnabled();
-
   boolean isRunOnceSyncEnabled();
 
   /**
    * Perform action.
    *
    * @param requestedAction the requested action
-   * @return
+   * @return 
    */
   OperationState performAction(SyncActions requestedAction);
 
@@ -88,9 +86,9 @@ public interface SyncController {
   Date getLastExecutionDate();
 
   void setLastExecutionDate(Date lastExecutionDate);
-
+  
   Calendar getCreationTime();
-
+  
   String getNextSyncTime();
-
+  
 }

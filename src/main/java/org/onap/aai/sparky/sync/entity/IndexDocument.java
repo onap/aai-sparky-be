@@ -26,14 +26,14 @@ package org.onap.aai.sparky.sync.entity;
  * The Interface IndexDocument.
  */
 public interface IndexDocument {
-
+  
   /**
    * Derive fields.
    */
   public void deriveFields();
 
   public String getId();
-
-  public String getAsJson() throws Exception;
-
+  
+  public String getAsJson() throws Exception; 
+  
 }
