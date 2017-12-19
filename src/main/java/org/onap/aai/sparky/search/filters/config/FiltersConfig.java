@@ -27,59 +27,35 @@ import java.io.File;
 import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
-import org.onap.aai.sparky.sync.config.NetworkStatisticsConfig;
-import org.onap.aai.sparky.viewandinspect.config.TierSupportUiConstants;
+import org.onap.aai.sparky.viewandinspect.config.SparkyConstants;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class FiltersConfig {
 
   private static final Logger LOG = LoggerFactory.getInstance().getLogger(FiltersConfig.class);
-
-  private static FiltersConfig instance;
-
+  
   private String filtersFileName;
-
+  
   private String filterMappingsFileName;
-
+  
   private FiltersForViewsConfig viewsConfig;
-
+  
   private FiltersDetailsConfig filtersConfig;
-
-  private NetworkStatisticsConfig processorConfig;
-
-  public NetworkStatisticsConfig getProcessorConfig() {
-    return processorConfig;
-  }
-
-  public void setProcessorConfig(NetworkStatisticsConfig processorConfig) {
-    this.processorConfig = processorConfig;
-  }
-
-  public static FiltersConfig getInstance() {
-    if (instance == null) {
-      instance = new FiltersConfig();
-      instance.initializeFilters();
-    }
-
-    return instance;
-  }
-
-  public static void setConfig(FiltersConfig config) {
-    FiltersConfig.instance = config;
-  }
 
   /**
    * Instantiates a new UiViewFilterConfig.
    */
-  private FiltersConfig() {}
+  public FiltersConfig() {
+    initializeFilters();
+  }
 
   /**
    * Initialize config.
    */
   private void initializeFilters() {
-    filtersFileName = TierSupportUiConstants.FILTER_LIST_FILE_DEFAULT;
-    filterMappingsFileName = TierSupportUiConstants.FILTER_MAPPING_FILE_DEFAULT;
+    filtersFileName = SparkyConstants.FILTER_LIST_FILE_DEFAULT;
+    filterMappingsFileName = SparkyConstants.FILTER_MAPPING_FILE_DEFAULT;
 
     viewsConfig = this.readUiViewsConfig();
     filtersConfig = this.readUiFiltersConfig();
@@ -112,47 +88,41 @@ public class FiltersConfig {
   public FiltersDetailsConfig getFiltersConfig() {
     return filtersConfig;
   }
-
+  
   public UiFilterConfig getFilterById(String filterId) {
-    for (UiFilterConfig filter : filtersConfig.getFilters()) {
-      if (filter.getFilterId().equals(filterId)) {
+    for ( UiFilterConfig filter : filtersConfig.getFilters()) {
+      if ( filter.getFilterId().equals(filterId)) {
         return filter;
       }
     }
-
+    
     return null;
   }
-
+  
   public void setFiltersConfig(FiltersDetailsConfig filtersConfig) {
     this.filtersConfig = filtersConfig;
   }
 
-  public FiltersDetailsConfig readUiFiltersConfig() {
+  public FiltersDetailsConfig readUiFiltersConfig(){
     ObjectMapper mapper = new ObjectMapper();
     FiltersDetailsConfig filtersConfig = null;
-    try {
-      filtersConfig =
-          mapper.readValue(new File(this.getFiltersFileName()), FiltersDetailsConfig.class);
-      System.out.println(String.valueOf(filtersConfig));
-    } catch (Exception e) {
-      LOG.error(AaiUiMsgs.ERROR_READING_JSON_SCHEMA,
-          TierSupportUiConstants.getConfigPath(this.getFiltersFileName()));
+    try{
+      filtersConfig = mapper.readValue(new File(this.getFiltersFileName()), FiltersDetailsConfig.class);
+    } catch (Exception e){
+      LOG.error(AaiUiMsgs.ERROR_READING_JSON_SCHEMA, SparkyConstants.getConfigPath(this.getFiltersFileName()));
     }
 
     return filtersConfig;
   }
 
-  public FiltersForViewsConfig readUiViewsConfig() {
+  public FiltersForViewsConfig readUiViewsConfig(){
     ObjectMapper mapper = new ObjectMapper();
     FiltersForViewsConfig viewsConfig = null;
-
+    
     try {
-      viewsConfig =
-          mapper.readValue(new File(this.getFilterMappingsFileName()), FiltersForViewsConfig.class);
-      System.out.println(String.valueOf(viewsConfig));
-    } catch (Exception e) {
-      LOG.error(AaiUiMsgs.ERROR_READING_JSON_SCHEMA,
-          TierSupportUiConstants.getConfigPath(this.getFilterMappingsFileName()));
+      viewsConfig = mapper.readValue(new File(this.getFilterMappingsFileName()), FiltersForViewsConfig.class);
+    } catch (Exception e){
+      LOG.error(AaiUiMsgs.ERROR_READING_JSON_SCHEMA, SparkyConstants.getConfigPath(this.getFilterMappingsFileName()));
     }
 
     return viewsConfig;

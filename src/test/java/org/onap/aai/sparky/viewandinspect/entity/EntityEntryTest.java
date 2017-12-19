@@ -71,7 +71,7 @@ public class EntityEntryTest {
     assertEquals("ShinyEntityType", entityEntry.getEntityType());
     assertEquals("primary_key_value", entityEntry.getEntityPrimaryKeyValue());
     assertEquals("t1 t2 t3", entityEntry.getSearchTags());
-    assertEquals("Id-1", entityEntry.getEntityId());
+    assertEquals("Id-1",entityEntry.getEntityId());
     assertNotNull(entityEntry.toString());
 
   }

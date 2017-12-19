@@ -20,45 +20,17 @@
  *
  * ECOMP is a trademark and service mark of AT&T Intellectual Property.
  */
-package org.onap.aai.sparky.dal.aai.enums;
+package org.onap.aai.sparky.dal.rest;
 
-/**
- * Authentication Modes:
- * <li>HTTP_NOAUTH - intended to represent basic HTTP no authentication
- * <li>SSL_BASIC - HTTP/S with username/password
- * <li>SSL_CERT - HTTP/S with client cert
- */
+public class RestClientConstructionException extends Exception {
 
-public enum RestAuthenticationMode {
-  HTTP_NOAUTH("HTTP_NO_AUTH"), SSL_BASIC("SSL_BASIC"), SSL_CERT("SSL_CERT"), UNKNOWN_MODE(
-      "UNKNOWN_MODE");
+  /**
+   * 
+   */
+  private static final long serialVersionUID = 1L;
 
-  private String authenticationModeLabel;
-
-  private RestAuthenticationMode(String authModelLabel) {
-    this.authenticationModeLabel = authModelLabel;
-  }
-
-  public String getAuthenticationModeLabel() {
-    return authenticationModeLabel;
-  }
-
-  public static RestAuthenticationMode getRestAuthenticationMode(String authenticationMode) {
-
-    RestAuthenticationMode mappedMode = RestAuthenticationMode.UNKNOWN_MODE;
-
-    if (authenticationMode == null) {
-      return mappedMode;
-    }
-
-    try {
-      mappedMode = RestAuthenticationMode.valueOf(authenticationMode);
-    } catch (Exception exc) {
-      mappedMode = RestAuthenticationMode.UNKNOWN_MODE;
-    }
-
-    return mappedMode;
-
+  public RestClientConstructionException(String message) {
+    super(message);
   }
 
 }

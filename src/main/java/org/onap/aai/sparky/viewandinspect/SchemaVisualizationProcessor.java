@@ -22,8 +22,6 @@
  */
 package org.onap.aai.sparky.viewandinspect;
 
-import java.security.SecureRandom;
-import java.util.concurrent.ExecutorService;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.component.restlet.RestletConstants;
@@ -31,23 +29,11 @@ import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
 import org.onap.aai.cl.mdc.MdcContext;
 import org.onap.aai.restclient.client.OperationResult;
-import org.onap.aai.sparky.config.oxm.OxmModelLoader;
-import org.onap.aai.sparky.dal.ActiveInventoryAdapter;
-import org.onap.aai.sparky.dal.ElasticSearchAdapter;
-import org.onap.aai.sparky.dal.aai.config.ActiveInventoryConfig;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
-import org.onap.aai.sparky.sync.config.ElasticSearchEndpointConfig;
-import org.onap.aai.sparky.sync.config.ElasticSearchSchemaConfig;
 import org.onap.aai.sparky.util.NodeUtils;
-import org.onap.aai.sparky.viewandinspect.config.VisualizationConfigs;
-import org.onap.aai.sparky.viewandinspect.entity.ActiveInventoryNode;
-import org.onap.aai.sparky.viewandinspect.entity.JsonNode;
-import org.onap.aai.sparky.viewandinspect.entity.NodeMeta;
 import org.onap.aai.sparky.viewandinspect.entity.QueryRequest;
-import org.onap.aai.sparky.viewandinspect.services.VisualizationContext;
 import org.onap.aai.sparky.viewandinspect.services.VisualizationService;
-import org.onap.aai.sparky.viewandinspect.services.VisualizationTransformer;
-import org.onap.aai.sparky.viewinspect.sync.ViewInspectSyncController;
+
 import org.restlet.Request;
 import org.restlet.Response;
 import org.restlet.data.ClientInfo;
@@ -57,118 +43,81 @@ import org.restlet.data.Status;
 public class SchemaVisualizationProcessor {
 
 
-  private static final Logger LOG =
-      LoggerFactory.getInstance().getLogger(SchemaVisualizationProcessor.class);
+	private static final Logger LOG =
+		      LoggerFactory.getInstance().getLogger(SchemaVisualizationProcessor.class);
 
-  private final VisualizationService visualizationService;
-  private VisualizationTransformer visualizationTransformer;
-  private VisualizationContext visualizationContext;
-  private NodeMeta nodeMeta;
-  private JsonNode jsonNode;
-  private ActiveInventoryNode activeInventoryNode;
-  private final ExecutorService tabularExecutorService;
-  private final ExecutorService aaiExecutorService;
-  private final SecureRandom secureRandom;
-  private ActiveInventoryAdapter aaiAdapter;
-  private ElasticSearchAdapter esAdapter;
-  private ElasticSearchEndpointConfig endpointConfig;
-  private ElasticSearchSchemaConfig schemaConfig;
-  private ActiveInventoryConfig aaiConfig;
+	private VisualizationService visualizationService; 
 
-  public SchemaVisualizationProcessor(VisualizationConfigs visualizationConfigs,
-      OxmModelLoader oxmModelLoader, ViewInspectSyncController viewInspectSynController)
-      throws Exception {
+	public SchemaVisualizationProcessor()throws Exception{}
 
-    this.aaiAdapter = viewInspectSynController.getAaiAdapter();
-    this.esAdapter = viewInspectSynController.getElasticSearchAdapter();
-    this.endpointConfig = viewInspectSynController.getendpointConfig();
-    this.schemaConfig = viewInspectSynController.getschemaConfig();
+	protected String generateJsonErrorResponse(String message) {
+	    return String.format("{ \"errorMessage\" : %s }", message);
+	  }
+	
+	public void setVisualizationService(VisualizationService visualizationService){
+		this.visualizationService = visualizationService; 
+	}
+	public VisualizationService getVisualizationService(){
+		return visualizationService; 
+	}
 
-    this.visualizationService = new VisualizationService(oxmModelLoader, visualizationConfigs,
-        aaiAdapter, esAdapter, endpointConfig, schemaConfig);
-    this.activeInventoryNode = new ActiveInventoryNode(visualizationConfigs);
-    this.nodeMeta = new NodeMeta(visualizationConfigs);
-    secureRandom = new SecureRandom();
-    this.tabularExecutorService = NodeUtils.createNamedExecutor("TABULAR-WORKER",
-        visualizationConfigs.getNumOfThreadsToFetchNodeIntegrity(), LOG);
-    /*
-     * Fix ActiveInvenotryConfig with properly wired in properties
-     */
-    this.aaiConfig = ActiveInventoryConfig.getConfig();
-    this.aaiExecutorService = NodeUtils.createNamedExecutor("SLNC-WORKER",
-        aaiConfig.getAaiRestConfig().getNumResolverWorkers(), LOG);
+	public void processVisualizationRequest(Exchange exchange){
 
-    this.visualizationContext = new VisualizationContext(secureRandom.nextLong(), aaiAdapter,
-        tabularExecutorService, aaiExecutorService, visualizationConfigs);
-    this.visualizationTransformer = new VisualizationTransformer(visualizationConfigs);
-    this.jsonNode = new JsonNode(activeInventoryNode, visualizationConfigs);
+		String visualizationPayload="";
+		QueryRequest hashId = null;
+		OperationResult operationResult = null;
+		Request request = null;
+		Response response = null;
+		Object xTransactionId = null;
+		Object partnerName = null;
 
-  }
+		xTransactionId = exchange.getIn().getHeader("X-TransactionId");
+	    if (xTransactionId == null) {
+	      xTransactionId = NodeUtils.getRandomTxnId();
+	    }
+	    partnerName = exchange.getIn().getHeader("X-FromAppId");
+	    if (partnerName == null) {
+	      partnerName = "Browser";
+	    }
 
-  protected String generateJsonErrorResponse(String message) {
-    return String.format("{ \"errorMessage\" : %s }", message);
-  }
+	     request = exchange.getIn().getHeader(RestletConstants.RESTLET_REQUEST, Request.class);
+	     response = exchange.getIn().getHeader(RestletConstants.RESTLET_RESPONSE, Response.class);
 
-  public void processVisualizationRequest(Exchange exchange) {
+	    /* Disables automatic Apache Camel Restlet component logging which prints out an undesirable log entry
+	       which includes client (e.g. browser) information */
+	    request.setLoggable(false);
 
-    String visualizationPayload = "";
-    QueryRequest hashId = null;
-    OperationResult operationResult = null;
-    Request request = null;
-    Response response = null;
-    Object xTransactionId = null;
-    Object partnerName = null;
+	    ClientInfo clientInfo = request.getClientInfo();
+	    MdcContext.initialize((String) xTransactionId, "AAI-UI", "", (String) partnerName, clientInfo.getAddress() + ":" + clientInfo.getPort());
 
-    xTransactionId = exchange.getIn().getHeader("X-TransactionId");
-    if (xTransactionId == null) {
-      xTransactionId = NodeUtils.getRandomTxnId();
-    }
-    partnerName = exchange.getIn().getHeader("X-FromAppId");
-    if (partnerName == null) {
-      partnerName = "Browser";
-    }
+	    	visualizationPayload = exchange.getIn().getBody(String.class);
+	    	hashId = this.getVisualizationService().analyzeQueryRequestBody(visualizationPayload);
 
-    request = exchange.getIn().getHeader(RestletConstants.RESTLET_REQUEST, Request.class);
-    response = exchange.getIn().getHeader(RestletConstants.RESTLET_RESPONSE, Response.class);
+			if (hashId != null) {
 
-    /*
-     * Disables automatic Apache Camel Restlet component logging which prints out an undesirable log
-     * entry which includes client (e.g. browser) information
-     */
-    request.setLoggable(false);
+		          operationResult = this.getVisualizationService().buildVisualizationUsingGenericQuery(hashId);
 
-    ClientInfo clientInfo = request.getClientInfo();
-    MdcContext.initialize((String) xTransactionId, "AAI-UI", "", (String) partnerName,
-        clientInfo.getAddress() + ":" + clientInfo.getPort());
+		          if(operationResult.getResultCode()== Status.SUCCESS_OK.getCode()){
 
-    visualizationPayload = exchange.getIn().getBody(String.class);
-    hashId = visualizationService.analyzeQueryRequestBody(visualizationPayload);
+		        	  response.setStatus(Status.SUCCESS_OK);
+		          }
+		          else{
+		        	  response.setStatus(Status.SERVER_ERROR_INTERNAL);
+		        	  LOG.error(AaiUiMsgs.FAILURE_TO_PROCESS_REQUEST,
+				                String.format("Failed to process Visualization Schema Payload = '%s'", visualizationPayload));
+		          }
 
-    if (hashId != null) {
+			}else{
+				operationResult = new OperationResult();
+		        operationResult.setResult(String.format("Failed to analyze Visualization Schema Payload = '%s'", visualizationPayload));
+		        response.setStatus(Status.SERVER_ERROR_INTERNAL);
+		        LOG.error(AaiUiMsgs.FAILED_TO_ANALYZE,
+		                String.format("Failed to analyze Visualization Schema Payload = '%s'", visualizationPayload));
 
-      operationResult = visualizationService.buildVisualizationUsingGenericQuery(hashId);
-
-      if (operationResult.getResultCode() == Status.SUCCESS_OK.getCode()) {
-
-        response.setStatus(Status.SUCCESS_OK);
-      } else {
-        response.setStatus(Status.SERVER_ERROR_INTERNAL);
-        LOG.error(AaiUiMsgs.FAILURE_TO_PROCESS_REQUEST, String
-            .format("Failed to process Visualization Schema Payload = '%s'", visualizationPayload));
-      }
-
-    } else {
-      operationResult = new OperationResult();
-      operationResult.setResult(String
-          .format("Failed to analyze Visualization Schema Payload = '%s'", visualizationPayload));
-      response.setStatus(Status.SERVER_ERROR_INTERNAL);
-      LOG.error(AaiUiMsgs.FAILED_TO_ANALYZE, String
-          .format("Failed to analyze Visualization Schema Payload = '%s'", visualizationPayload));
-
-    }
+			}
 
 
-    response.setEntity(operationResult.getResult(), MediaType.APPLICATION_JSON);
-    exchange.getOut().setBody(response);
-  }
+		      response.setEntity(operationResult.getResult(), MediaType.APPLICATION_JSON);
+		      exchange.getOut().setBody(response);
+	}
 }

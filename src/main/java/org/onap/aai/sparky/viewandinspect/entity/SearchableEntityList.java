@@ -34,82 +34,81 @@ import java.util.Set;
 
 public class SearchableEntityList {
 
-  private List<SearchableEntity> entities;
-
-  public SearchableEntityList() {
-    entities = new ArrayList<SearchableEntity>();
-  }
-
-  public List<SearchableEntity> getEntities() {
-    return entities;
-  }
-
-  public void setEntities(List<SearchableEntity> entities) {
-    this.entities = entities;
-  }
-
-  public void addEntity(SearchableEntity entity) {
-
-    if (!entities.contains(entity)) {
-      entities.add(entity);
+    private List<SearchableEntity> entities;
+    
+    public SearchableEntityList() {
+        entities = new ArrayList<SearchableEntity>();
     }
 
-  }
-
-  protected static SearchableEntity buildEntity(String entityType, String pkeyValue, String link,
-      Map<String, String> searchTags) {
-
-    SearchableEntity se = new SearchableEntity();
-
-    se.setEntityType(entityType);
-    se.setEntityPrimaryKeyValue(pkeyValue);
-    se.setLink(link);
-
-    if (searchTags != null) {
-
-      Set<Entry<String, String>> entrySet = searchTags.entrySet();
-
-      for (Entry<String, String> entry : entrySet) {
-        se.addSearchTagWithKey(entry.getKey(), entry.getValue());
-      }
+    public List<SearchableEntity> getEntities() {
+        return entities;
     }
 
-    se.deriveFields();
-
-    return se;
-
-  }
-
-  protected static Map<String, String> getSearchTagMap(String... tags) {
-
-    HashMap<String, String> dataMap = new HashMap<String, String>();
-
-    if (tags != null && tags.length >= 2) {
-
-      int numTags = tags.length;
-      int index = 0;
-
-      while (index < numTags) {
-
-        if (index + 1 < numTags) {
-          // we have enough parameters for the current set
-          dataMap.put(tags[index], tags[index + 1]);
-          index += 2;
-        } else {
-          break;
+    public void setEntities(List<SearchableEntity> entities) {
+        this.entities = entities;
+    }
+    
+    public void addEntity(SearchableEntity entity) {
+        
+        if ( !entities.contains(entity)) {
+            entities.add(entity);
         }
-      }
-
+        
     }
 
-    return dataMap;
+    protected static SearchableEntity buildEntity(String entityType, String pkeyValue, String link, Map<String,String> searchTags ) {
+        
+        SearchableEntity se = new SearchableEntity();
+        
+        se.setEntityType(entityType);
+        se.setEntityPrimaryKeyValue(pkeyValue);
+        se.setLink(link);
+        
+        if ( searchTags != null) {
+            
+            Set<Entry<String, String>> entrySet = searchTags.entrySet();
+            
+            for ( Entry<String, String> entry : entrySet ) {
+                se.addSearchTagWithKey(entry.getKey(), entry.getValue());
+            }
+        }
+        
+        se.deriveFields();
+        
+        return se;
+        
+    }
+    
+    protected static Map<String,String> getSearchTagMap(String... tags) {
+        
+        HashMap<String,String> dataMap = new HashMap<String,String>();
+        
+        if ( tags != null && tags.length >= 2 ) {
+            
+            int numTags = tags.length;
+            int index = 0;
+            
+            while ( index < numTags ) {
+                
+                if ( index + 1 < numTags ) {
+                    // we have enough parameters for the current set
+                    dataMap.put(tags[index], tags[index+1]);
+                    index += 2;
+                } else {
+                    break;
+                }
+            }
+            
+        }
+        
+        return dataMap;
+        
+        
+    }
 
-
-  }
-
-  @Override
-  public String toString() {
-    return "SearchableEntityList [" + (entities != null ? "entities=" + entities : "") + "]";
-  }
+    @Override
+    public String toString() {
+        return "SearchableEntityList [" + (entities != null ? "entities=" + entities : "") + "]";
+    }
 
 }

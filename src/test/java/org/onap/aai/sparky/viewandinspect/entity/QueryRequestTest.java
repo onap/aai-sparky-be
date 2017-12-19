@@ -32,23 +32,23 @@ import org.junit.Test;
 import org.onap.aai.sparky.viewandinspect.entity.QueryRequest;
 
 public class QueryRequestTest {
-
-  private QueryRequest requestQuery;
-
-  @Before
-  public void init() throws Exception {
-    requestQuery = new QueryRequest();
-
-  }
-
-  @Test
-  public void updateValues() {
-
-    requestQuery.setHashId("claymore-service-tree");
-    assertNotNull(requestQuery.getHashId());
-    assertNotNull(requestQuery.toString());
-    requestQuery.setHashId(null);
-    assertNotNull(requestQuery.toString());
-  }
+	
+	 private QueryRequest requestQuery; 
+	 
+		@Before
+		  public void init() throws Exception {
+			requestQuery = new QueryRequest();
+		      
+		  }
+		
+		@Test 
+		public void updateValues() {
+		
+			requestQuery.setHashId("claymore-service-tree");
+			assertNotNull(requestQuery.getHashId());
+			assertNotNull(requestQuery.toString());
+			requestQuery.setHashId(null);
+			assertNotNull(requestQuery.toString());
+		}
 
 }

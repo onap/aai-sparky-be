@@ -29,26 +29,23 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @JsonInclude(Include.NON_NULL)
 public class UiFilterDataSourceConfig {
-
+ 
   @JsonProperty("indexName")
   private String indexName;
-
+  
   @JsonProperty("docType")
   private String docType;
-
+  
   @JsonProperty("fieldName")
   private String fieldName;
-
+  
   @JsonProperty("pathToField")
   private String pathToField;
-
-  public UiFilterDataSourceConfig() {}
-
+ 
+  public UiFilterDataSourceConfig(){}
+  
   @JsonCreator
-  public UiFilterDataSourceConfig(@JsonProperty("indexName") final String indexName,
-      @JsonProperty("docType") final String docType,
-      @JsonProperty("fieldName") final String fieldName,
-      @JsonProperty("pathToField") final String pathToField) {
+  public UiFilterDataSourceConfig(@JsonProperty("indexName") final String indexName, @JsonProperty("docType") final String docType, @JsonProperty("fieldName") final String fieldName, @JsonProperty("pathToField") final String pathToField) {
     this.indexName = indexName;
     this.docType = docType;
     this.fieldName = fieldName;
@@ -81,12 +78,12 @@ public class UiFilterDataSourceConfig {
   public void setFieldName(String fieldName) {
     this.fieldName = fieldName;
   }
-
+  
   @JsonProperty("pathToField")
   public String getPathToField() {
     return pathToField;
   }
-
+  
   public void setPathToField(String pathToField) {
     this.pathToField = pathToField;
   }

@@ -35,35 +35,14 @@ import org.eclipse.persistence.jaxb.dynamic.DynamicJAXBContext;
 
 public class CrossEntityReferenceLookup implements OxmModelProcessor {
 
-  // TODO: kill singleton collaborator pattern
-  private static CrossEntityReferenceLookup instance;
-
   private Map<String, HashMap<String, String>> crossReferenceEntityOxmModel;
   private Map<String, CrossEntityReferenceDescriptor> crossReferenceEntityDescriptors;
 
 
-  private CrossEntityReferenceLookup() {
+  public CrossEntityReferenceLookup() {
     crossReferenceEntityOxmModel = new LinkedHashMap<String, HashMap<String, String>>();
     crossReferenceEntityDescriptors = new HashMap<String, CrossEntityReferenceDescriptor>();
   }
-
-  public synchronized static CrossEntityReferenceLookup getInstance() {
-
-    /*
-     * I hate this method and I want it to go away. The singleton pattern is transitory, I want this
-     * class to be wired via a bean reference instead. But from the starting point, it would require
-     * fixing all the classes across the code base up front and I don't want this task to expand
-     * beyond just refactoring the OxmModelLoader. For now I'll keep the singleton pattern, but I
-     * really want to get rid of it once we are properly spring wired.
-     */
-
-    if (instance == null) {
-      instance = new CrossEntityReferenceLookup();
-    }
-
-    return instance;
-  }
-
 
   @Override
   public void processOxmModel(DynamicJAXBContext jaxbContext) {
@@ -85,7 +64,7 @@ public class CrossEntityReferenceLookup implements OxmModelProcessor {
       }
 
       String entityName = desc.getDefaultRootElement();
-
+      
       // add entityName
       oxmProperties.put("entityName", entityName);
 
@@ -104,7 +83,7 @@ public class CrossEntityReferenceLookup implements OxmModelProcessor {
       }
 
     }
-
+  
     for (Entry<String, HashMap<String, String>> crossRefModel : crossReferenceEntityOxmModel
         .entrySet()) {
       HashMap<String, String> attribute = crossRefModel.getValue();
@@ -148,7 +127,8 @@ public class CrossEntityReferenceLookup implements OxmModelProcessor {
       Map<String, CrossEntityReferenceDescriptor> crossReferenceEntityDescriptors) {
     this.crossReferenceEntityDescriptors = crossReferenceEntityDescriptors;
   }
+  
+  
 
-
-
+ 
 }

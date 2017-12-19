@@ -39,123 +39,149 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class SuggestionSearchEntityTest {
   private SuggestionSearchEntity suggestionSearchEntity;
   ObjectMapper mapper = new ObjectMapper();
-  private static FiltersConfig config = null;
+  private static FiltersConfig config = null; 
 
   @BeforeClass
   public static void init() throws IOException {
-    config = FiltersConfig.getInstance();
+    config = new FiltersConfig();
     config.setFilterMappingsFileName("src/test/resources/filters/aaiui_views.json");
     config.setFiltersFileName("src/test/resources/filters/aaiui_filters.json");
     config.setViewsConfig(config.readUiViewsConfig());
     config.setFiltersConfig(config.readUiFiltersConfig());
-
+    
   }
-
-  public JsonNode getTestNodeForVnf_withProvAndOrchStatus()
-      throws JsonProcessingException, IOException {
-    String str = "{" + "\"vnf-id\": \"1\"," + "\"vnf-name\": \"2\"," + "\"vnf-type\": \"3\","
-        + "\"orchestration-status\": \"o1\"," + "\"prov-status\": \"p1\"" + "}";
-
+  
+  public JsonNode getTestNodeForVnf_withProvAndOrchStatus() throws JsonProcessingException, IOException{
+    String str = "{"
+        + "\"vnf-id\": \"1\","
+        + "\"vnf-name\": \"2\","
+        + "\"vnf-type\": \"3\","
+        + "\"orchestration-status\": \"o1\","
+        + "\"prov-status\": \"p1\""
+        + "}";
+    
     return mapper.readTree(str);
   }
-
-  public JsonNode getTestNodeForVnf_withOrchStatus() throws JsonProcessingException, IOException {
-    String str = "{" + "\"vnf-id\": \"1\"," + "\"vnf-name\": \"2\"," + "\"vnf-type\": \"3\","
-        + "\"orchestration-status\": \"o1\"" + "}";
-
+  
+  public JsonNode getTestNodeForVnf_withOrchStatus() throws JsonProcessingException, IOException{
+    String str = "{"
+        + "\"vnf-id\": \"1\","
+        + "\"vnf-name\": \"2\","
+        + "\"vnf-type\": \"3\","
+        + "\"orchestration-status\": \"o1\""
+        + "}";
+    
     return mapper.readTree(str);
   }
-
-  public JsonNode getFilterListForOrchestrationStatusOnly(String orcStat)
-      throws JsonProcessingException, IOException {
+  
+  public JsonNode getFilterListForOrchestrationStatusOnly(String orcStat) throws JsonProcessingException, IOException{
     String str = "{\"filterList\":[{\"filterId\":\"2\"},{\"filterId\":\"1\",\"filterValue\":"
         + orcStat + "}]}";
     return mapper.readTree(str);
   }
-
-  public String getStrFilterListForOrchestrationStatusOnly(String orcStat)
-      throws JsonProcessingException, IOException {
+  
+  public String getStrFilterListForOrchestrationStatusOnly(String orcStat) 
+      throws JsonProcessingException, IOException{
     String str = "{\"filterList\":[{\"filterId\":\"2\"},{\"filterId\":\"1\",\"filterValue\":"
-        + orcStat + "}," + "{\"filterId\":\"7\"}," + "{\"filterId\":\"8\"}" + "]}";
+        + orcStat + "},"
+        + "{\"filterId\":\"7\"},"
+        + "{\"filterId\":\"8\"}"
+        + "]}";
     return str;
   }
-
-  public String getStrFilterListForOrcStatAndProvStat(String orcStat, String provStat)
-      throws JsonProcessingException, IOException {
-    String str = "{\"filterList\"" + ":[{\"filterId\":\"2\"," + "\"filterValue\":" + provStat
-        + "},{\"filterId\":\"1\",\"filterValue\":" + orcStat + "}," + "{\"filterId\":\"7\"},"
-        + "{\"filterId\":\"8\"}" + "]}";
+  
+  public String getStrFilterListForOrcStatAndProvStat(String orcStat, String provStat) 
+      throws JsonProcessingException, IOException{
+    String str = "{\"filterList\""
+        + ":[{\"filterId\":\"2\","
+        + "\"filterValue\":" + provStat
+        + "},{\"filterId\":\"1\",\"filterValue\":"
+        + orcStat + "},"
+            + "{\"filterId\":\"7\"},"
+            + "{\"filterId\":\"8\"}"
+            + "]}";
     return str;
   }
-
-  public ArrayList<String> getSingleElementOrcStatUniqueList() {
+  
+  public ArrayList<String> getSingleElementOrcStatUniqueList(){
     ArrayList<String> list = new ArrayList<String>();
     list.add("orchestration-status");
-    return list;
+    return list; 
   }
-
-  public ArrayList<String> getTwoElementUniqueList() {
+  
+  public ArrayList<String> getTwoElementUniqueList(){
     ArrayList<String> list = new ArrayList<String>();
     list.add("prov-status");
     list.add("orchestration-status");
-    return list;
+    return list; 
   }
-
+  
   // Testing the filters payload (for ES) when only one suggestible attribute is present
   // Use case: testing a single-element set from the power set of all attributes
-  /*
-   * @Test public void test_params_for_suggestions_with_orcStat_o1(){ suggestionSearchEntity = new
-   * SuggestionSearchEntity(SuggestionEntityLookup.getInstance(), config);
-   * suggestionSearchEntity.setEntityType("generic-vnf"); JsonNode node = null; try{ node =
-   * getTestNodeForVnf_withOrchStatus();
-   * suggestionSearchEntity.setFilterBasedPayloadFromResponse(node,
-   * suggestionSearchEntity.getEntityType(), this.getSingleElementOrcStatUniqueList()); JSONObject
-   * json = suggestionSearchEntity.getPayload(); JSONObject exectedFilterPayload = new JSONObject(
-   * this.getStrFilterListForOrchestrationStatusOnly("o1"));
-   * 
-   * final JsonNode tree1 = mapper.readTree(json.toString()); final JsonNode tree2 =
-   * mapper.readTree(exectedFilterPayload.toString());
-   * 
-   * assertTrue("Filter list not equal. Found: " + json + ". Expected: " + exectedFilterPayload,
-   * tree1.equals(tree2));
-   * 
-   * Map<String, String> inputOutput = suggestionSearchEntity.getInputOutputData(); Map<String,
-   * String> expectedInputOutput = new HashMap<String, String>();
-   * expectedInputOutput.put("orchestration-status", "o1"); final JsonNode tree3 =
-   * mapper.readTree(mapper.writeValueAsString(inputOutput)); final JsonNode tree4 =
-   * mapper.readTree(mapper.writeValueAsString(expectedInputOutput));
-   * 
-   * assertTrue("inputs for suggestions are not equal", tree3.equals(tree4));
-   * 
-   * } catch (Exception e){ fail("Failed to get test node."); } }
-   */
+  /*@Test
+  public void test_params_for_suggestions_with_orcStat_o1(){
+    suggestionSearchEntity = new SuggestionSearchEntity(SuggestionEntityLookup.getInstance(), config);
+    suggestionSearchEntity.setEntityType("generic-vnf");
+    JsonNode node = null;
+    try{
+      node = getTestNodeForVnf_withOrchStatus();
+      suggestionSearchEntity.setFilterBasedPayloadFromResponse(node, 
+          suggestionSearchEntity.getEntityType(), this.getSingleElementOrcStatUniqueList());
+      JSONObject json = suggestionSearchEntity.getPayload();
+      JSONObject exectedFilterPayload = new JSONObject(
+          this.getStrFilterListForOrchestrationStatusOnly("o1"));
 
-  // Testing the filters payload (for ES) when multiple suggestible attributes are present
+      final JsonNode tree1 = mapper.readTree(json.toString());
+      final JsonNode tree2 = mapper.readTree(exectedFilterPayload.toString());
+
+      assertTrue("Filter list not equal. Found: " + json + ". Expected: " + exectedFilterPayload,
+          tree1.equals(tree2));
+      
+      Map<String, String> inputOutput = suggestionSearchEntity.getInputOutputData();
+      Map<String, String> expectedInputOutput = new HashMap<String, String>();
+      expectedInputOutput.put("orchestration-status", "o1");
+      final JsonNode tree3 = mapper.readTree(mapper.writeValueAsString(inputOutput));
+      final JsonNode tree4 = mapper.readTree(mapper.writeValueAsString(expectedInputOutput));
+
+      assertTrue("inputs for suggestions are not equal", tree3.equals(tree4));
+      
+    } catch (Exception e){
+      fail("Failed to get test node.");
+    }
+  }*/
+  
+  //Testing the filters payload (for ES) when multiple suggestible attributes are present
   // Use case: testing a 2-element set from the power set of all attributes
-  /*
-   * @Test public void test_params_for_suggestions_with_orcStat_o1_provStat_p1(){
-   * suggestionSearchEntity = new SuggestionSearchEntity();
-   * suggestionSearchEntity.setEntityType("generic-vnf"); JsonNode node = null; try{ node =
-   * getTestNodeForVnf_withProvAndOrchStatus();
-   * suggestionSearchEntity.setFilterBasedPayloadFromResponse(node,
-   * suggestionSearchEntity.getEntityType(), this.getTwoElementUniqueList()); JSONObject json =
-   * suggestionSearchEntity.getPayload(); JSONObject exectedFilterPayload = new JSONObject(
-   * this.getStrFilterListForOrcStatAndProvStat("o1", "p1"));
-   * 
-   * final JsonNode tree1 = mapper.readTree(json.toString()); final JsonNode tree2 =
-   * mapper.readTree(exectedFilterPayload.toString());
-   * 
-   * assertTrue("Filter list not equal. Found: " + json + ". Expected: " + exectedFilterPayload,
-   * tree1.equals(tree2));
-   * 
-   * Map<String, String> inputOutput = suggestionSearchEntity.getInputOutputData(); Map<String,
-   * String> expectedInputOutput = new HashMap<String, String>();
-   * expectedInputOutput.put("orchestration-status", "o1"); expectedInputOutput.put("prov-status",
-   * "p1"); final JsonNode tree3 = mapper.readTree(mapper.writeValueAsString(inputOutput)); final
-   * JsonNode tree4 = mapper.readTree(mapper.writeValueAsString(expectedInputOutput));
-   * 
-   * assertTrue("inputs for suggestions are not equal", tree3.equals(tree4));
-   * 
-   * } catch (Exception e){ fail("Failed to get node."); } }
-   */
+  /*@Test
+  public void test_params_for_suggestions_with_orcStat_o1_provStat_p1(){
+    suggestionSearchEntity = new SuggestionSearchEntity();
+    suggestionSearchEntity.setEntityType("generic-vnf");
+    JsonNode node = null;
+    try{
+      node = getTestNodeForVnf_withProvAndOrchStatus();
+      suggestionSearchEntity.setFilterBasedPayloadFromResponse(node, 
+          suggestionSearchEntity.getEntityType(), this.getTwoElementUniqueList());
+      JSONObject json = suggestionSearchEntity.getPayload();
+      JSONObject exectedFilterPayload = new JSONObject(
+          this.getStrFilterListForOrcStatAndProvStat("o1", "p1"));
+
+      final JsonNode tree1 = mapper.readTree(json.toString());
+      final JsonNode tree2 = mapper.readTree(exectedFilterPayload.toString());
+
+      assertTrue("Filter list not equal. Found: " + json + ". Expected: " + exectedFilterPayload,
+          tree1.equals(tree2));
+      
+      Map<String, String> inputOutput = suggestionSearchEntity.getInputOutputData();
+      Map<String, String> expectedInputOutput = new HashMap<String, String>();
+      expectedInputOutput.put("orchestration-status", "o1");
+      expectedInputOutput.put("prov-status", "p1");
+      final JsonNode tree3 = mapper.readTree(mapper.writeValueAsString(inputOutput));
+      final JsonNode tree4 = mapper.readTree(mapper.writeValueAsString(expectedInputOutput));
+
+      assertTrue("inputs for suggestions are not equal", tree3.equals(tree4));
+      
+    } catch (Exception e){
+      fail("Failed to get node.");
+    }
+  }*/
 }

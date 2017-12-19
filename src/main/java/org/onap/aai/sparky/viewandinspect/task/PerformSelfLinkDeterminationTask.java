@@ -29,13 +29,11 @@ import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
 import org.onap.aai.restclient.client.OperationResult;
 import org.onap.aai.sparky.dal.ActiveInventoryAdapter;
-import org.onap.aai.sparky.dal.aai.config.ActiveInventoryConfig;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
 import org.onap.aai.sparky.viewandinspect.entity.SelfLinkDeterminationTransaction;
 import org.slf4j.MDC;
 
-public class PerformSelfLinkDeterminationTask
-    implements Supplier<SelfLinkDeterminationTransaction> {
+public class PerformSelfLinkDeterminationTask implements Supplier<SelfLinkDeterminationTransaction> {
 
   private static final Logger logger =
       LoggerFactory.getInstance().getLogger(PerformSelfLinkDeterminationTask.class);
@@ -52,17 +50,15 @@ public class PerformSelfLinkDeterminationTask
    * @param requestParameters the request parameters
    * @param aaiProvider the aai provider
    */
-  public PerformSelfLinkDeterminationTask(SelfLinkDeterminationTransaction txn,
-      String requestParameters, ActiveInventoryAdapter aaiAdapter) {
-
+  public PerformSelfLinkDeterminationTask(SelfLinkDeterminationTransaction txn, String requestParameters,
+      ActiveInventoryAdapter aaiAdapter) {
+    
     this.aaiAdapter = aaiAdapter;
     this.txn = txn;
     this.contextMap = MDC.getCopyOfContextMap();
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /* (non-Javadoc)
    * @see java.util.function.Supplier#get()
    */
   @Override
@@ -77,9 +73,8 @@ public class PerformSelfLinkDeterminationTask
 
     OperationResult opResult = null;
     try {
-      opResult =
-          aaiAdapter.queryActiveInventoryWithRetries(txn.getQueryString(), "application/json",
-              ActiveInventoryConfig.getConfig().getAaiRestConfig().getNumRequestRetries());
+      opResult = aaiAdapter.queryActiveInventoryWithRetries(txn.getQueryString(), "application/json",
+          aaiAdapter.getEndpointConfig().getNumRequestRetries());
     } catch (Exception exc) {
       opResult = new OperationResult();
       opResult.setResult(500, "Querying AAI with retry failed due to an exception.");

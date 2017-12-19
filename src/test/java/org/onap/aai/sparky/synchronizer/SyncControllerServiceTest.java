@@ -10,25 +10,25 @@ public class SyncControllerServiceTest {
   private TestSyncController alpha;
   private SyncControllerService syncService;
   private SyncControllerRegistry syncControllerRegistry;
-
+  
   @Before
   public void init() {
     alpha = new TestSyncController("alpha");
     syncControllerRegistry = new SyncControllerRegistry();
-    syncService = new SyncControllerService(syncControllerRegistry, 5, 5);
+    syncService = new SyncControllerService(syncControllerRegistry, 5,5);
 
   }
 
   @Test
   public void validateControllerRegistration() {
-
-    syncControllerRegistry.registerSyncController(alpha);
+     
+    syncControllerRegistry.registerSyncController( alpha );
 
     syncService.startSync();
-
+    
     syncService.shutdown();
 
   }
-
-
+  
+  
 }

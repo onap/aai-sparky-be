@@ -49,9 +49,7 @@ public class RelatedToProperty {
     this.propertyValue = propertyValue;
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /* (non-Javadoc)
    * @see java.lang.Object#toString()
    */
   @Override

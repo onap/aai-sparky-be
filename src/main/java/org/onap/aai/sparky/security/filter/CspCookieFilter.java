@@ -49,7 +49,7 @@ import org.onap.aai.cl.eelf.LoggerFactory;
 import org.onap.aai.cl.mdc.MdcContext;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
 import org.onap.aai.sparky.util.NodeUtils;
-import org.onap.aai.sparky.viewandinspect.config.TierSupportUiConstants;
+import org.onap.aai.sparky.viewandinspect.config.SparkyConstants;
 
 // import esGateKeeper.esGateKeeper;
 
@@ -82,17 +82,15 @@ public class CspCookieFilter implements Filter {
   private static final Logger LOG = LoggerFactory.getInstance().getLogger(CspCookieFilter.class);
 
 
-  /*
-   * (non-Javadoc)
-   * 
+  /* (non-Javadoc)
    * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
    */
   @Override
   public void init(FilterConfig filterConfig) throws ServletException {
-    String txnID = NodeUtils.getRandomTxnId();
-    MdcContext.initialize(txnID, "CspCookieFilter", "", "Init", "");
-
-    try {
+	String txnID = NodeUtils.getRandomTxnId();
+	MdcContext.initialize(txnID, "CspCookieFilter", "", "Init", "");
+	
+	try {
       setConfigurationProperties(filterConfig);
     } catch (IOException exc) {
       LOG.error(AaiUiMsgs.ERROR_CSP_CONFIG_FILE);
@@ -101,11 +99,8 @@ public class CspCookieFilter implements Filter {
   }
 
 
-  /*
-   * (non-Javadoc)
-   * 
-   * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse,
-   * javax.servlet.FilterChain)
+  /* (non-Javadoc)
+   * @see javax.servlet.Filter#doFilter(javax.servlet.ServletRequest, javax.servlet.ServletResponse, javax.servlet.FilterChain)
    */
   @Override
   public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
@@ -134,9 +129,7 @@ public class CspCookieFilter implements Filter {
   }
 
 
-  /*
-   * (non-Javadoc)
-   * 
+  /* (non-Javadoc)
    * @see javax.servlet.Filter#destroy()
    */
   @Override
@@ -149,15 +142,14 @@ public class CspCookieFilter implements Filter {
    * @throws IOException if the properties failed to load.
    */
   private void setConfigurationProperties(FilterConfig filterConfig) throws IOException {
-    InputStream inputStream = new FileInputStream(TierSupportUiConstants.STATIC_CONFIG_APP_LOCATION
+    InputStream inputStream = new FileInputStream(SparkyConstants.STATIC_CONFIG_APP_LOCATION
         + filterConfig.getInitParameter(FILTER_PARAMETER_CONFIG));
     Properties cspProperties = new Properties();
     cspProperties.load(inputStream);
     globalLoginUrl = cspProperties.getProperty(PROPERTY_GLOBAL_LOGIN_URL);
     applicationId = cspProperties.getProperty(PROPERTY_APPLICATION_ID);
     gateKeeperEnvironment = cspProperties.getProperty(PROPERTY_GATEKEEPER_ENVIRONMENT);
-    redirectDomains =
-        Arrays.asList(cspProperties.getProperty(PROPERTY_REDIRECT_DOMAINS).split(","));
+    redirectDomains = Arrays.asList(cspProperties.getProperty(PROPERTY_REDIRECT_DOMAINS).split(","));
   }
 
   /**
@@ -197,37 +189,36 @@ public class CspCookieFilter implements Filter {
       // Fix for Safari 7.0.2 onwards to avoid login page cache
       response.addHeader("Cache-Control", "no-cache, no-store");
       String redirectURL = createRedirectUrl(request);
-      if (this.isValidRedirectURL(redirectURL)) {
-        response.sendRedirect(redirectURL);
-        LOG.debug(AaiUiMsgs.VALID_REDIRECT_URL, redirectURL);
-      } else {
-        response.sendError(400, "Bad redirect URL: " + redirectURL);
-        LOG.error(AaiUiMsgs.INVALID_REDIRECT_URL, redirectURL);
+      if (this.isValidRedirectURL(redirectURL)){
+          response.sendRedirect(redirectURL);
+          LOG.debug(AaiUiMsgs.VALID_REDIRECT_URL, redirectURL);
+      } else{ 
+          response.sendError(400, "Bad redirect URL: " + redirectURL);
+          LOG.error(AaiUiMsgs.INVALID_REDIRECT_URL, redirectURL);
       }
     }
   }
-
+  
   /**
    * Checks if a redirect url is valid
-   * 
    * @param url URL to validate
    * @return true if URL is a valid redirect URL, false otherwise
    */
-  private boolean isValidRedirectURL(String url) {
-    String redirectTo = url.substring(url.indexOf("?retURL=") + "?retURL=".length());
-    try {
-      redirectTo = URLDecoder.decode(redirectTo, StandardCharsets.UTF_8.toString());
-    } catch (UnsupportedEncodingException e) {
-      LOG.error(AaiUiMsgs.UNSUPPORTED_URL_ENCODING, e.getLocalizedMessage());
+  private boolean isValidRedirectURL (String url){
+      String redirectTo = url.substring(url.indexOf("?retURL=")+ "?retURL=".length());
+      try {
+          redirectTo = URLDecoder.decode(redirectTo, StandardCharsets.UTF_8.toString());
+      } catch (UnsupportedEncodingException e) {
+          LOG.error(AaiUiMsgs.UNSUPPORTED_URL_ENCODING, e.getLocalizedMessage());
+          return false;
+      }
+      for (String domain: this.redirectDomains){
+          if (redirectTo.endsWith(domain))
+              return true;
+      }
       return false;
-    }
-    for (String domain : this.redirectDomains) {
-      if (redirectTo.endsWith(domain))
-        return true;
-    }
-    return false;
   }
-
+  
 
   /**
    * Returns <code>true</code> if the request is an AJAX request.

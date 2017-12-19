@@ -81,14 +81,12 @@ public class EntityHistoryQueryBuilder {
   public static JsonObject createTableQuery() {
     JsonObjectBuilder jsonBuilder = Json.createObjectBuilder();
 
-    jsonBuilder
-        .add("aggs",
-            Json.createObjectBuilder().add("group_by_entityType",
-                Json.createObjectBuilder()
-                    .add("terms",
-                        Json.createObjectBuilder().add("field", "entityType").add("size", 0))
-                    .add("aggs", Json.createObjectBuilder().add("sort_by_date",
-                        Json.createObjectBuilder().add("top_hits", createTopHitsBlob())))));
+    jsonBuilder.add("aggs",
+        Json.createObjectBuilder().add("group_by_entityType",
+            Json.createObjectBuilder()
+                .add("terms", Json.createObjectBuilder().add("field", "entityType").add("size", 0))
+                .add("aggs", Json.createObjectBuilder().add("sort_by_date",
+                    Json.createObjectBuilder().add("top_hits", createTopHitsBlob())))));
     jsonBuilder.add("size", 0);
 
     return jsonBuilder.build();
