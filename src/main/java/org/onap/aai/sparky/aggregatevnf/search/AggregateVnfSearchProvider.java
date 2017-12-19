@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.json.JsonObject;
+import javax.ws.rs.core.MediaType;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -33,66 +34,36 @@ import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
 import org.onap.aai.restclient.client.OperationResult;
 import org.onap.aai.sparky.common.search.CommonSearchSuggestion;
-import org.onap.aai.sparky.dal.elasticsearch.SearchAdapter;
-import org.onap.aai.sparky.dataintegrity.config.DiUiConstants;
+import org.onap.aai.sparky.dal.ElasticSearchAdapter;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
 import org.onap.aai.sparky.search.api.SearchProvider;
 import org.onap.aai.sparky.search.entity.QuerySearchEntity;
 import org.onap.aai.sparky.search.entity.SearchSuggestion;
 import org.onap.aai.sparky.search.filters.entity.UiFilterValueEntity;
 import org.onap.aai.sparky.util.NodeUtils;
-import org.onap.aai.sparky.viewandinspect.config.TierSupportUiConstants;
+import org.onap.aai.sparky.viewandinspect.config.SparkyConstants;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class AggregateVnfSearchProvider implements SearchProvider {
-
-  private static final Logger LOG =
-      LoggerFactory.getInstance().getLogger(AggregateVnfSearchProvider.class);
+  
+  private static final Logger LOG = LoggerFactory.getInstance().getLogger(AggregateVnfSearchProvider.class);
 
   private ObjectMapper mapper;
-  private static SearchAdapter search = null;
-
+  private ElasticSearchAdapter elasticSearchAdapter = null;
   private String autoSuggestIndexName;
-  private String elasticSearchIp;
-  private String elatsticSearchPort;
+  private String vnfSearchSuggestionRoute;
 
-  public AggregateVnfSearchProvider() {
-
+  public AggregateVnfSearchProvider(ElasticSearchAdapter elasticSearchAdapter,
+      String autoSuggestIndexName, String vnfSearchSuggestionRoute) {
     mapper = new ObjectMapper();
-
-    try {
-      if (search == null) {
-        search = new SearchAdapter();
-      }
-    } catch (Exception exc) {
-      LOG.error(AaiUiMsgs.CONFIGURATION_ERROR,
-          "Search Configuration Error.  Error = " + exc.getMessage());
-    }
+    this.elasticSearchAdapter = elasticSearchAdapter;
+    this.autoSuggestIndexName = autoSuggestIndexName;
+    this.vnfSearchSuggestionRoute = vnfSearchSuggestionRoute;
   }
-
+  
   public void setAutoSuggestIndexName(String autoSuggestIndexName) {
     this.autoSuggestIndexName = autoSuggestIndexName;
-  }
-
-  public void setElasticSearchIp(String elasticSearchIp) {
-    this.elasticSearchIp = elasticSearchIp;
-  }
-
-  public void setElatsticSearchPort(String elatsticSearchPort) {
-    this.elatsticSearchPort = elatsticSearchPort;
-  }
-
-  /**
-   * Get Full URL for search using elastic search configuration.
-   *
-   * @param api the api
-   * @return the full url
-   */
-  private String getFullUrl(String indexName, String api) {
-    final String host = elasticSearchIp;
-    final String port = elatsticSearchPort;
-    return String.format("http://%s:%s/%s/%s", host, port, indexName, api);
   }
 
   @Override
@@ -103,13 +74,13 @@ public class AggregateVnfSearchProvider implements SearchProvider {
     try {
 
       /* Create suggestions query */
-      JsonObject vnfSearch = VnfSearchQueryBuilder.createSuggestionsQuery(
-          String.valueOf(queryRequest.getMaxResults()), queryRequest.getQueryStr());
+      JsonObject vnfSearch = VnfSearchQueryBuilder.createSuggestionsQuery(String.valueOf(queryRequest.getMaxResults()), queryRequest.getQueryStr());
 
       /* Parse suggestions response */
-      OperationResult opResult =
-          search.doPost(getFullUrl(autoSuggestIndexName, TierSupportUiConstants.ES_SUGGEST_API),
-              vnfSearch.toString(), DiUiConstants.APP_JSON);
+      OperationResult opResult = elasticSearchAdapter.doPost(
+          elasticSearchAdapter.buildElasticSearchUrlForApi(autoSuggestIndexName,
+              SparkyConstants.ES_SUGGEST_API),
+          vnfSearch.toString(), MediaType.APPLICATION_JSON_TYPE);
 
       String result = opResult.getResult();
 
@@ -129,11 +100,8 @@ public class AggregateVnfSearchProvider implements SearchProvider {
           if (querySuggestion != null) {
             CommonSearchSuggestion responseSuggestion = new CommonSearchSuggestion();
             responseSuggestion.setText(querySuggestion.getString("text"));
-            responseSuggestion.setRoute("vnfSearch"); // TODO -> Read route from
-                                                      // suggestive-search.properties instead of
-                                                      // hard coding
-            responseSuggestion
-                .setHashId(NodeUtils.generateUniqueShaDigest(querySuggestion.getString("text")));
+            responseSuggestion.setRoute(vnfSearchSuggestionRoute);
+            responseSuggestion.setHashId(NodeUtils.generateUniqueShaDigest(querySuggestion.getString("text")));
 
             // Extract filter list from JSON and add to response suggestion
             JSONObject payload = querySuggestion.getJSONObject("payload");
@@ -141,8 +109,7 @@ public class AggregateVnfSearchProvider implements SearchProvider {
               JSONArray filterList = payload.getJSONArray("filterList");
               for (int filter = 0; filter < filterList.length(); filter++) {
                 String filterValueString = filterList.getJSONObject(filter).toString();
-                UiFilterValueEntity filterValue =
-                    mapper.readValue(filterValueString, UiFilterValueEntity.class);
+                UiFilterValueEntity filterValue = mapper.readValue(filterValueString, UiFilterValueEntity.class);
                 responseSuggestion.getFilterValues().add(filterValue);
               }
             }
@@ -156,5 +123,5 @@ public class AggregateVnfSearchProvider implements SearchProvider {
 
     return returnList;
   }
-
+  
 }

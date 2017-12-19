@@ -43,8 +43,7 @@ import org.slf4j.MDC;
  */
 public class PerformActiveInventoryRetrieval implements Supplier<NetworkTransaction> {
 
-  private static Logger logger =
-      LoggerFactory.getInstance().getLogger(PerformActiveInventoryRetrieval.class);
+  private static Logger logger = LoggerFactory.getInstance().getLogger(PerformActiveInventoryRetrieval.class);
 
   private NetworkTransaction txn;
   private ActiveInventoryAdapter aaiAdapter;
@@ -63,9 +62,7 @@ public class PerformActiveInventoryRetrieval implements Supplier<NetworkTransact
     this.contextMap = MDC.getCopyOfContextMap();
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /* (non-Javadoc)
    * @see java.util.function.Supplier#get()
    */
   @Override
@@ -78,12 +75,10 @@ public class PerformActiveInventoryRetrieval implements Supplier<NetworkTransact
     OperationResult result = null;
     try {
 
-      final String absoluteSelfLink =
-          aaiAdapter.repairSelfLink(txn.getLink(), txn.getQueryParameters());
+      final String absoluteSelfLink = aaiAdapter.repairSelfLink(txn.getLink(), txn.getQueryParameters());
       result = aaiAdapter.queryActiveInventoryWithRetries(absoluteSelfLink, "application/json", 5);
     } catch (Exception exc) {
-      logger.error(AaiUiMsgs.ERROR_GENERIC,
-          "Failure to resolve self link from AAI.  Error = " + exc.getMessage());
+      logger.error(AaiUiMsgs.ERROR_GENERIC,"Failure to resolve self link from AAI.  Error = " + exc.getMessage());
       result = new OperationResult(500,
           "Caught an exception while trying to resolve link = " + exc.getMessage());
     } finally {

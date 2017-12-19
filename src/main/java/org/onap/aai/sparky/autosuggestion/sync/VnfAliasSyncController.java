@@ -24,6 +24,7 @@ package org.onap.aai.sparky.autosuggestion.sync;
 
 import org.onap.aai.sparky.dal.ActiveInventoryAdapter;
 import org.onap.aai.sparky.dal.ElasticSearchAdapter;
+import org.onap.aai.sparky.search.filters.config.FiltersConfig;
 import org.onap.aai.sparky.sync.ElasticSearchIndexCleaner;
 import org.onap.aai.sparky.sync.ElasticSearchSchemaFactory;
 import org.onap.aai.sparky.sync.IndexCleaner;
@@ -39,14 +40,14 @@ import org.onap.aai.sparky.sync.config.SyncControllerConfig;
 public class VnfAliasSyncController extends SyncControllerImpl implements SyncControllerRegistrar {
 
   private SyncControllerRegistry syncControllerRegistry;
-
+  
   public VnfAliasSyncController(SyncControllerConfig syncControllerConfig,
       ActiveInventoryAdapter aaiAdapter, ElasticSearchAdapter esAdapter,
       ElasticSearchSchemaConfig schemaConfig, ElasticSearchEndpointConfig endpointConfig,
-      NetworkStatisticsConfig aaiStatConfig, NetworkStatisticsConfig esStatConfig)
-      throws Exception {
+      NetworkStatisticsConfig aaiStatConfig, NetworkStatisticsConfig esStatConfig,
+      FiltersConfig filtersConfig) throws Exception {
     super(syncControllerConfig);
-
+    
     // final String controllerName = "VNFs Alias Suggestion Synchronizer";
 
     IndexIntegrityValidator indexValidator = new IndexIntegrityValidator(esAdapter, schemaConfig,
@@ -57,7 +58,7 @@ public class VnfAliasSyncController extends SyncControllerImpl implements SyncCo
     VnfAliasSuggestionSynchronizer synchronizer = new VnfAliasSuggestionSynchronizer(schemaConfig,
         syncControllerConfig.getNumInternalSyncWorkers(),
         syncControllerConfig.getNumSyncActiveInventoryWorkers(),
-        syncControllerConfig.getNumSyncElasticWorkers(), aaiStatConfig, esStatConfig);
+        syncControllerConfig.getNumSyncElasticWorkers(), aaiStatConfig, esStatConfig, filtersConfig);
 
     synchronizer.setAaiAdapter(aaiAdapter);
     synchronizer.setElasticSearchAdapter(esAdapter);
@@ -82,14 +83,14 @@ public class VnfAliasSyncController extends SyncControllerImpl implements SyncCo
 
   @Override
   public void registerController() {
-
-    if (syncControllerRegistry != null) {
-      if (syncControllerConfig.isEnabled()) {
+    
+    if ( syncControllerRegistry != null ) {
+      if ( syncControllerConfig.isEnabled()) { 
         syncControllerRegistry.registerSyncController(this);
       }
     }
-
+    
   }
-
-
+  
+  
 }

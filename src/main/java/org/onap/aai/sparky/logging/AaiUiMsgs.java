@@ -75,7 +75,8 @@ public enum AaiUiMsgs implements LogMessageEnum {
   /** Arguments: {0} = Reason. */
   FAILED_TO_ADD_SKELETON_NODE,
   /** Arguments: {0} = Reason. */
-  FAILED_TO_PROCESS_SKELETON_NODE, INVALID_RESOLVE_STATE_DURING_INIT,
+  FAILED_TO_PROCESS_SKELETON_NODE,
+  INVALID_RESOLVE_STATE_DURING_INIT,
   /** Arguments: {0} = Reason. */
   FAILED_TO_PROCESS_INITIAL_STATE,
   /** Arguments: {0} = Relationship. */
@@ -127,7 +128,7 @@ public enum AaiUiMsgs implements LogMessageEnum {
   /** Arguments: {0} = Current state, {1} = New state {2} = Triggering action */
   ACTIVE_INV_NODE_CHANGE_STATE_NO_NODE_ID,
   /** Arguments: {0} = Count Key {1} = Aggregation Key. */
-  AGGREGATION_KEY_ERROR,
+  AGGREGATION_KEY_ERROR, 
   /** Arguments: {0} Configuration */
   CONFIGURATION_ERROR,
   /** Arguments: {0} = Source. */
@@ -141,7 +142,7 @@ public enum AaiUiMsgs implements LogMessageEnum {
   /** No argument */
   INVALID_REQUEST_PARAMS,
   /** Arguments: {0} = Key. */
-  ERROR_SORTING_VIOLATION_DATA,
+  ERROR_SORTING_VIOLATION_DATA, 
   /** Arguments: {0} = exception */
   ERROR_SERVLET_PROCESSSING,
   /** Arguments: {0} = exception */
@@ -210,7 +211,7 @@ public enum AaiUiMsgs implements LogMessageEnum {
   COLLECT_TOTAL,
   /** Arguments: {0} Number of required fetches */
   SYNC_NUMBER_REQ_FETCHES,
-  /** Arguments: {0} Number of total fetches {1} Number of available records */
+  /** Arguments: {0} Number of total fetches {1} Number of available records*/
   SYNC_NUMBER_TOTAL_FETCHES,
   /** Arguments: {0} Completion Time */
   COLLECT_TOTAL_TIME,
@@ -241,32 +242,33 @@ public enum AaiUiMsgs implements LogMessageEnum {
   /** No argument */
   HISTORICAL_SYNC_PENDING,
   /** Arguments: {0} = Time */
-  HISTORICAL_SYNC_TO_BEGIN,
+  HISTORICAL_SYNC_TO_BEGIN,  
   /** Arguments: {0} = message */
   DEBUG_GENERIC,
   /** Arguments: {0} = message */
   INFO_GENERIC,
   /** Arguments: {0} = message */
   WARN_GENERIC,
-  /** Arguments: {0} = context {1} = Exception */
+  /** Arguments: {0} = context {1} = Exception*/
   INTERRUPTED,
   /** Arguments: {0} = Entity Type {1} Entity */
   GEO_SYNC_IGNORING_ENTITY,
   /** Arguments: {0} = reason */
   OXM_LOADING_ERROR,
   /** Arguments: {0} = type */
-  OXM_FAILED_RETRIEVAL, OXM_FILE_NOT_FOUND,
+  OXM_FAILED_RETRIEVAL,
+  OXM_FILE_NOT_FOUND,
   /** No argument */
   OXM_READ_ERROR_NONVERBOSE,
   /** Arguments: {0} = OXM File name */
   OXM_READ_ERROR_VERBOSE,
   /** No argument */
   OXM_PARSE_ERROR_NONVERBOSE,
-  /** Arguments: {0} = OXM File name {1} = Exception */
+  /** Arguments: {0} = OXM File name {1} = Exception*/
   OXM_PARSE_ERROR_VERBOSE,
   /** Arguments: {0} = Numerical value for loaded OXM version */
   OXM_LOAD_SUCCESS,
-  /** Arguments: {0} = Entity {1} = Found property-value */
+  /** Arguments: {0} = Entity {1} = Found property-value*/
   OXM_PROP_DEF_ERR_CROSS_ENTITY_REF,
   /** Arguments: {0} = Sequence Number */
   ETAG_RETRY_SEQ,
@@ -368,7 +370,7 @@ public enum AaiUiMsgs implements LogMessageEnum {
   SKIP_PERIODIC_SYNC_AS_SYNC_DIDNT_FINISH,
   /** Arguments: {0} = Message */
   SYNC_DURATION,
-  /** Arguments: {0} = Entity Type */
+ /** Arguments: {0} = Entity Type */
   ENTITY_SYNC_FAILED_DESCRIPTOR_NOT_FOUND,
   /** Arguments: {0} = AAI Query Result */
   ENTITY_SYNC_FAILED_DURING_AAI_RESPONSE_CONVERSION,
@@ -380,10 +382,7 @@ public enum AaiUiMsgs implements LogMessageEnum {
   SELF_LINK_DETERMINATION_FAILED_UNEXPECTED_LINKS,
   /** Arguments: {1} = Query {2} = Operation Result Code {3} = Operation Result */
   SELF_LINK_RETRIEVAL_FAILED,
-  /**
-   * Arguments: {0} = Controller {1} = Synchronizer Current Internal State {2} = New State {3} =
-   * Caused By Action
-   */
+  /** Arguments: {0} = Controller {1} = Synchronizer Current Internal State {2} = New State {3} = Caused By Action */
   SYNC_INTERNAL_STATE_CHANGED,
   /** Arguments: {0} = Message */
   SYNC_INVALID_CONFIG_PARAM,
@@ -402,7 +401,8 @@ public enum AaiUiMsgs implements LogMessageEnum {
   /** Arguments: {0} = File name */
   FILE_NOT_FOUND,
   /** Arguments: {0} = File name */
-  FILE_READ_IN_PROGRESS, ERROR_LOADING_OXM_SUGGESTIBLE_ENTITIES,
+  FILE_READ_IN_PROGRESS,
+  ERROR_LOADING_OXM_SUGGESTIBLE_ENTITIES,
   /** Arguments: {0} = Error message */
   ES_SUGGESTION_SEARCH_ENTITY_SYNC_ERROR,
   /** Arguments: {0} = Error message */
@@ -426,12 +426,15 @@ public enum AaiUiMsgs implements LogMessageEnum {
   /** Arguments: {0} = URL to extract parameter from */
   ERROR_REMOVING_URL_PARAM,
   /** Arguments: {0} = Hash value */
-  ERROR_INVALID_HASH, ERROR_HASH_NOT_FOUND, ERROR_FILTERS_NOT_FOUND, ERROR_READING_HTTP_REQ_PARAMS,
+  ERROR_INVALID_HASH,
+  ERROR_HASH_NOT_FOUND,
+  ERROR_FILTERS_NOT_FOUND,
+  ERROR_READING_HTTP_REQ_PARAMS,
   /** Arguments: {0} = Exception */
   ERROR_D3_GRAPH_VISUALIZATION,
   /** Arguments: {0} = Exception */
   ERROR_AAI_QUERY_WITH_RETRY,
-  /** Arguments: Error extracting resource path from self-link. Error = {0} */
+  /** Arguments: Error extracting resource path from self-link.  Error = {0} */
   ERROR_EXTRACTING_RESOURCE_PATH_FROM_LINK,
   /** Arguments: {0} = Schema file location */
   ERROR_READING_JSON_SCHEMA,

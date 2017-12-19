@@ -28,6 +28,7 @@ import java.util.Map;
 
 import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
+import org.onap.aai.sparky.config.oxm.OxmEntityLookup;
 import org.onap.aai.sparky.config.oxm.SuggestionEntityDescriptor;
 import org.onap.aai.sparky.config.oxm.SuggestionEntityLookup;
 import org.onap.aai.sparky.dal.ActiveInventoryAdapter;
@@ -61,19 +62,22 @@ public class AggregationSyncControllerFactory implements SyncControllerRegistrar
   private ElasticSearchEndpointConfig elasticSearchEndpointConfig;
   private SyncControllerConfig syncControllerConfig;
   private SyncControllerRegistry syncControllerRegistry;
-  private NetworkStatisticsConfig aaiStatConfig;
+  private NetworkStatisticsConfig aaiStatConfig; 
   private NetworkStatisticsConfig esStatConfig;
-
+  private OxmEntityLookup oxmEntityLookup;
+  
   private List<SyncController> syncControllers;
 
   public AggregationSyncControllerFactory(ElasticSearchEndpointConfig esEndpointConfig,
       SyncControllerConfig syncControllerConfig, SyncControllerRegistry syncControllerRegistry,
-      SuggestionEntityLookup suggestionEntityLookup) {
+      SuggestionEntityLookup suggestionEntityLookup,
+      OxmEntityLookup oxmEntityLookup) {
     this.syncControllers = new ArrayList<SyncController>();
     this.elasticSearchEndpointConfig = esEndpointConfig;
     this.syncControllerConfig = syncControllerConfig;
     this.syncControllerRegistry = syncControllerRegistry;
     this.suggestionEntityLookup = suggestionEntityLookup;
+    this.oxmEntityLookup = oxmEntityLookup;
   }
 
   public NetworkStatisticsConfig getAaiStatConfig() {
@@ -153,13 +157,13 @@ public class AggregationSyncControllerFactory implements SyncControllerRegistrar
   public void buildControllers() {
 
     if (syncControllerConfig.isEnabled()) {
-
+      
       Map<String, SuggestionEntityDescriptor> suggestionEntitites =
           suggestionEntityLookup.getSuggestionSearchEntityDescriptors();
       SyncControllerImpl aggregationSyncController = null;
 
       for (String entityType : suggestionEntitites.keySet()) {
-
+        
         String indexName = aggregationEntityToIndexMap.get(entityType);
 
         if (indexName == null) {
@@ -180,16 +184,16 @@ public class AggregationSyncControllerFactory implements SyncControllerRegistrar
             continue;
           }
 
-          IndexIntegrityValidator aggregationIndexValidator =
-              new IndexIntegrityValidator(esAdapter, schemaConfig, elasticSearchEndpointConfig,
-                  ElasticSearchSchemaFactory.getIndexSchema(schemaConfig));
+          IndexIntegrityValidator aggregationIndexValidator = new IndexIntegrityValidator(esAdapter,
+              schemaConfig, elasticSearchEndpointConfig, ElasticSearchSchemaFactory.getIndexSchema(schemaConfig));
 
           aggregationSyncController.registerIndexValidator(aggregationIndexValidator);
 
           AggregationSynchronizer aggSynchronizer = new AggregationSynchronizer(entityType,
               schemaConfig, syncControllerConfig.getNumInternalSyncWorkers(),
               syncControllerConfig.getNumSyncActiveInventoryWorkers(),
-              syncControllerConfig.getNumSyncElasticWorkers(), aaiStatConfig, esStatConfig);
+              syncControllerConfig.getNumSyncElasticWorkers(), aaiStatConfig, esStatConfig,
+              oxmEntityLookup);
 
           aggSynchronizer.setAaiAdapter(aaiAdapter);
           aggSynchronizer.setElasticSearchAdapter(esAdapter);
@@ -203,9 +207,9 @@ public class AggregationSyncControllerFactory implements SyncControllerRegistrar
 
           syncControllers.add(aggregationSyncController);
         } catch (Exception exc) {
-
+          
           exc.printStackTrace();
-
+          
           LOG.error(AaiUiMsgs.ERROR_GENERIC,
               "Failed to build aggregation sync controller.  Error : " + exc.getMessage());
         }
@@ -219,14 +223,14 @@ public class AggregationSyncControllerFactory implements SyncControllerRegistrar
 
   @Override
   public void registerController() {
-
+    
     buildControllers();
-
-    if (syncControllerRegistry != null) {
-      for (SyncController controller : syncControllers) {
+    
+    if ( syncControllerRegistry != null ) {
+      for ( SyncController controller : syncControllers ) {
         syncControllerRegistry.registerSyncController(controller);
       }
     }
-
+    
   }
 }

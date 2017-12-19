@@ -52,7 +52,7 @@ public class NodeProcessingTransaction {
       return null;
     }
 
-    return processingNode.getSelfLink();
+    return processingNode.getSelfLink(); 
   }
 
   public String getSelfLinkWithModifiers() {
@@ -93,9 +93,7 @@ public class NodeProcessingTransaction {
 
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /* (non-Javadoc)
    * @see java.lang.Object#toString()
    */
   @Override

@@ -30,23 +30,13 @@ import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
-import org.onap.aai.sparky.dataintegrity.config.DiUiConstants;
 
 /**
  * Build a JSON payload to send to elastic search to get vnf search data.
  */
 
 public class VnfSearchQueryBuilder {
-  static final String SEVERITY = DiUiConstants.SEVERITY;
-  static final String TIMESTAMP = DiUiConstants.KEY_TIMESTAMP;
-  static final String VIOLATIONS = DiUiConstants.VIOLATIONS;
-  static final String CATEGORY = DiUiConstants.CATEGORY;
-  static final String ENTITY_TYPE = DiUiConstants.ENTITY_TYPE;
-
-  static final String ITEM = DiUiConstants.KEY_ITEM;
-  static final String ITEM_AGG = DiUiConstants.KEY_ITEM_AGG;
-  static final String BY_ITEM = DiUiConstants.KEY_BY_ITEM;
-  static final String BUCKETS = DiUiConstants.KEY_BUCKETS;
+	
 
   /**
    * Creates the suggestions query.

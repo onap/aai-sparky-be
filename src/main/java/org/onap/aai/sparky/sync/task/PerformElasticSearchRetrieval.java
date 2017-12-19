@@ -54,15 +54,13 @@ public class PerformElasticSearchRetrieval implements Supplier<NetworkTransactio
     this.contextMap = MDC.getCopyOfContextMap();
   }
 
-  /*
-   * (non-Javadoc)
-   * 
+  /* (non-Javadoc)
    * @see java.util.function.Supplier#get()
    */
   @Override
   public NetworkTransaction get() {
-    MDC.setContextMap(contextMap);
-    long startTimeInMs = System.currentTimeMillis();
+	MDC.setContextMap(contextMap);
+	long startTimeInMs = System.currentTimeMillis();
     OperationResult or = esAdapter.doGet(txn.getLink(), MediaType.APPLICATION_JSON_TYPE);
     txn.setOperationResult(or);
     txn.setOpTimeInMs(System.currentTimeMillis() - startTimeInMs);

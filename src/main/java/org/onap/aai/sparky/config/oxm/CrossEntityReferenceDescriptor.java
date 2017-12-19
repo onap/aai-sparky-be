@@ -32,7 +32,7 @@ public class CrossEntityReferenceDescriptor extends OxmEntityDescriptor {
   public void setCrossEntityReference(CrossEntityReference crossEntityReference) {
     this.crossEntityReference = crossEntityReference;
   }
-
+  
   /**
    * Checks for cross entity references.
    *

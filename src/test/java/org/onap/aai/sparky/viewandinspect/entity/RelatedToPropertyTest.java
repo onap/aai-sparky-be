@@ -33,22 +33,22 @@ import org.onap.aai.sparky.viewandinspect.entity.RelatedToProperty;
 
 public class RelatedToPropertyTest {
 
-  private RelatedToProperty relatedToProperty;
-
-  @Before
-  public void init() throws Exception {
-    relatedToProperty = new RelatedToProperty();
-
-  }
-
-  @Test
-  public void successfulInitializationAndUpdate() {
-
-    relatedToProperty.setPropertyKey("PropertyKey-1");
-    assertNotNull(relatedToProperty.getPropertyKey());
-    relatedToProperty.setPropertyValue("PropertyValue-1");
-    assertNotNull(relatedToProperty.getPropertyValue());
-    assertNotNull(relatedToProperty.toString());
-  }
-
+	 private RelatedToProperty relatedToProperty; 
+	 
+		@Before
+		  public void init() throws Exception {
+			relatedToProperty = new RelatedToProperty();
+		      
+		  }
+		
+		@Test 
+		public void successfulInitializationAndUpdate() {
+			
+			relatedToProperty.setPropertyKey("PropertyKey-1");
+			assertNotNull(relatedToProperty.getPropertyKey());
+			relatedToProperty.setPropertyValue("PropertyValue-1");
+			assertNotNull(relatedToProperty.getPropertyValue());
+			assertNotNull(relatedToProperty.toString());
+		}
+			
 }

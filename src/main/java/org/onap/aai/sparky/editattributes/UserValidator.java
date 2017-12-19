@@ -29,7 +29,7 @@ import java.util.List;
 import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
-import org.onap.aai.sparky.viewandinspect.config.TierSupportUiConstants;
+import org.onap.aai.sparky.viewandinspect.config.SparkyConstants;
 
 /**
  * Validates users against a user authorization file.
@@ -38,7 +38,7 @@ public class UserValidator {
 
   private static final Logger LOG = LoggerFactory.getInstance().getLogger(UserValidator.class);
   private static final String USER_AUTH_FILE =
-      TierSupportUiConstants.AUTHORIZED_USERS_FILE_LOCATION;
+      SparkyConstants.AUTHORIZED_USERS_FILE_LOCATION;
 
   private UserAuthorizationReader userAuthorizationReader =
       new UserAuthorizationReader(new File(USER_AUTH_FILE));

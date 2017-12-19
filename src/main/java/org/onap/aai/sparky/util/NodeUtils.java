@@ -54,7 +54,7 @@ import javax.xml.stream.XMLStreamConstants;
 
 import org.onap.aai.cl.api.Logger;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
-import org.onap.aai.sparky.viewandinspect.config.TierSupportUiConstants;
+import org.onap.aai.sparky.viewandinspect.config.SparkyConstants;
 import org.restlet.Request;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -71,14 +71,14 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
  */
 public class NodeUtils {
   private static SecureRandom sRandom = new SecureRandom();
-
+  
   private static final Pattern AAI_VERSION_PREFIX = Pattern.compile("/aai/v[0-9]+/(.*)");
 
-
-  public static synchronized String getRandomTxnId() {
-    byte bytes[] = new byte[6];
-    sRandom.nextBytes(bytes);
-    return Integer.toUnsignedString(ByteBuffer.wrap(bytes).getInt());
+  
+  public static synchronized String getRandomTxnId(){
+      byte bytes[] = new byte[6];
+      sRandom.nextBytes(bytes);
+      return Integer.toUnsignedString(ByteBuffer.wrap(bytes).getInt());
   }
 
   /**
@@ -96,30 +96,28 @@ public class NodeUtils {
 
     return sb.toString();
   }
-
-
+  
+  
   public static String extractRawPathWithoutVersion(String selfLinkUri) {
 
     try {
 
       String rawPath = new URI(selfLinkUri).getRawPath();
-
+      
       Matcher m = AAI_VERSION_PREFIX.matcher(rawPath);
 
       if (m.matches()) {
 
-        // System.out.println(m.group(0));
-        if (m.groupCount() >= 1) {
+        if ( m.groupCount() >= 1) {
           return m.group(1);
         }
-        // System.out.println(m.group(2));
-
+          
       }
     } catch (Exception e) {
     }
-
+    
     return null;
-
+    
   }
 
   /**
@@ -148,8 +146,7 @@ public class NodeUtils {
    * @param logger the logger
    * @return the executor service
    */
-  public static ExecutorService createNamedExecutor(String name, int numWorkers,
-      final Logger logger) {
+  public static ExecutorService createNamedExecutor(String name, int numWorkers, final Logger logger) {
     UncaughtExceptionHandler uncaughtExceptionHandler = new Thread.UncaughtExceptionHandler() {
 
       @Override
@@ -177,7 +174,7 @@ public class NodeUtils {
 
     if (link != null) {
 
-      Pattern pattern = Pattern.compile(TierSupportUiConstants.URI_VERSION_REGEX_PATTERN);
+      Pattern pattern = Pattern.compile(SparkyConstants.URI_VERSION_REGEX_PATTERN);
       Matcher matcher = pattern.matcher(link);
       if (matcher.find()) {
         uri = link.substring(matcher.end());
@@ -299,15 +296,15 @@ public class NodeUtils {
   public static String concatArray(List<String> list) {
     return concatArray(list, " ");
   }
-
-  private static final String TIMESTAMP_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
-
+  
+ private static final String TIMESTAMP_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSZ";
+  
   public static String getCurrentTimeStamp() {
     SimpleDateFormat dateFormat = new SimpleDateFormat(TIMESTAMP_FORMAT);
     Timestamp timestamp = new Timestamp(System.currentTimeMillis());
     return dateFormat.format(timestamp);
   }
-
+  
   /**
    * Concat array.
    *
@@ -492,7 +489,7 @@ public class NodeUtils {
 
     ObjectMapper mapper = new ObjectMapper();
     mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-
+    
     if (pretty) {
       ow = mapper.writer().withDefaultPrettyPrinter();
 
@@ -502,9 +499,10 @@ public class NodeUtils {
 
     return ow.writeValueAsString(object);
   }
-
+  
   /**
-   * Convert object to json by selectively choosing certain fields thru filters. Example use case:
+   * Convert object to json by selectively choosing certain fields thru filters.
+   * Example use case: 
    * based on request type we might need to send different serialization of the UiViewFilterEntity
    *
    * @param object the object
@@ -518,7 +516,7 @@ public class NodeUtils {
 
     ObjectMapper mapper = new ObjectMapper();
     mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-
+    
     if (pretty) {
       ow = mapper.writer(filters).withDefaultPrettyPrinter();
 
@@ -528,7 +526,7 @@ public class NodeUtils {
 
     return ow.writeValueAsString(object);
   }
-
+  
 
   /**
    * Convert json str to json node.
@@ -575,10 +573,10 @@ public class NodeUtils {
   public static void extractObjectsByKey(JsonNode node, String searchKey,
       Collection<JsonNode> foundObjects) {
 
-    if (node == null) {
+    if ( node == null ) {
       return;
     }
-
+    
     if (node.isObject()) {
       Iterator<Map.Entry<String, JsonNode>> nodeIterator = node.fields();
 
@@ -717,7 +715,7 @@ public class NodeUtils {
       return timestamp;
     }
   }
-
+ 
   /**
    * Gets the HttpRequest payload.
    *
@@ -729,8 +727,8 @@ public class NodeUtils {
     InputStream inputStream = request.getInputStream();
     return getBodyFromStream(inputStream);
   }
-
-
+  
+  
 
   /**
    * Gets the Restlet Request payload.
@@ -743,7 +741,7 @@ public class NodeUtils {
     InputStream inputStream = request.getEntity().getStream();
     return getBodyFromStream(inputStream);
   }
-
+  
 
   /**
    * Gets the payload from the input stream of a request.
@@ -785,7 +783,7 @@ public class NodeUtils {
     return body;
   }
 
-
+  
   /**
    * The main method.
    *

@@ -27,7 +27,7 @@ import java.io.IOException;
 import org.onap.aai.sparky.dal.exception.ElasticSearchOperationException;
 import org.onap.aai.sparky.sync.config.ElasticSearchSchemaConfig;
 import org.onap.aai.sparky.util.ConfigHelper;
-import org.onap.aai.sparky.viewandinspect.config.TierSupportUiConstants;
+import org.onap.aai.sparky.viewandinspect.config.SparkyConstants;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -59,8 +59,8 @@ public class ElasticSearchSchemaFactory {
     return indexConfig;
   }
 
-
-
+  
+  
   public static String getIndexSchema(ElasticSearchSchemaConfig schemaConfig)
       throws ElasticSearchOperationException {
 
@@ -71,18 +71,17 @@ public class ElasticSearchSchemaFactory {
 
       if (schemaConfig.getIndexSettingsFileName() != null) {
         esSettingsNode = mapper.readTree(getConfigAsString(SETTINGS,
-            TierSupportUiConstants.getConfigPath(schemaConfig.getIndexSettingsFileName())));
+            SparkyConstants.getConfigPath(schemaConfig.getIndexSettingsFileName())));
       }
 
       if (schemaConfig.getIndexMappingsFileName() != null) {
         esMappingsNodes = mapper.readTree(getConfigAsString(MAPPINGS,
-            TierSupportUiConstants.getConfigPath(schemaConfig.getIndexMappingsFileName())));
+            SparkyConstants.getConfigPath(schemaConfig.getIndexMappingsFileName())));
       }
 
     } catch (IOException e1) {
-
-      throw new ElasticSearchOperationException(
-          "Caught an exception building initial ES index. Error: " + e1.getMessage());
+      
+      throw new ElasticSearchOperationException("Caught an exception building initial ES index. Error: " + e1.getMessage());
     }
 
     ObjectNode esConfig = null;

@@ -30,9 +30,9 @@ public class ElasticSearchEndpointConfig {
   private int scrollContextBatchRequestSize;
 
   public ElasticSearchEndpointConfig() {
-
+    
   }
-
+  
   public String getEsIpAddress() {
     return esIpAddress;
   }

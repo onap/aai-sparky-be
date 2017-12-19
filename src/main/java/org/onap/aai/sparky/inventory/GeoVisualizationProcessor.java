@@ -32,10 +32,8 @@ import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
 import org.onap.aai.cl.mdc.MdcContext;
 import org.onap.aai.restclient.client.OperationResult;
-import org.onap.aai.sparky.dal.elasticsearch.SearchAdapter;
-import org.onap.aai.sparky.dal.elasticsearch.config.ElasticSearchConfig;
+import org.onap.aai.sparky.dal.ElasticSearchAdapter;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
-import org.onap.aai.sparky.logging.util.ServletUtils;
 import org.onap.aai.sparky.util.NodeUtils;
 import org.restlet.Request;
 import org.restlet.Response;
@@ -57,39 +55,20 @@ public class GeoVisualizationProcessor {
       LoggerFactory.getInstance().getLogger(GeoVisualizationProcessor.class);
 
   private ObjectMapper mapper;
-  private SearchAdapter search = null;
-  private ElasticSearchConfig elasticConfig = null;
+  private ElasticSearchAdapter elasticSearchAdapter = null;
+  private String topographicalSearchIndexName;
 
   private static final String SEARCH_STRING = "_search";
-  private static final String SEARCH_PARAMETER =
-      "?filter_path=hits.hits._source&_source=location&size=5000&q=entityType:";
+  private static final String SEARCH_PARAMETER = "?filter_path=hits.hits._source&_source=location&size=5000&q=entityType:";
   private static final String PARAMETER_KEY = "entity";
 
   /**
    * Instantiates a new geo visualization processor
    */
-  public GeoVisualizationProcessor() {
+  public GeoVisualizationProcessor(ElasticSearchAdapter elasticSearchAdapter, String topographicalSearchIndexName)  {
     this.mapper = new ObjectMapper();
-
-    try {
-      if (elasticConfig == null) {
-        elasticConfig = ElasticSearchConfig.getConfig();
-      }
-      if (search == null) {
-        search = new SearchAdapter();
-      }
-      this.mapper = new ObjectMapper();
-    } catch (Exception exc) {
-
-    }
-  }
-
-  public void setSearch(SearchAdapter search) {
-    this.search = search;
-  }
-
-  public void setElasticConfig(ElasticSearchConfig elasticConfig) {
-    this.elasticConfig = elasticConfig;
+    this.elasticSearchAdapter = elasticSearchAdapter;
+    this.topographicalSearchIndexName = topographicalSearchIndexName;
   }
 
   /**
@@ -103,7 +82,7 @@ public class GeoVisualizationProcessor {
   protected OperationResult getGeoVisualizationResults(Exchange exchange) throws Exception {
     OperationResult operationResult = new OperationResult();
 
-
+    
     Object xTransactionId = exchange.getIn().getHeader("X-TransactionId");
     if (xTransactionId == null) {
       xTransactionId = NodeUtils.getRandomTxnId();
@@ -116,37 +95,34 @@ public class GeoVisualizationProcessor {
 
     Request request = exchange.getIn().getHeader(RestletConstants.RESTLET_REQUEST, Request.class);
 
-    /*
-     * Disables automatic Apache Camel Restlet component logging which prints out an undesirable log
-     * entry which includes client (e.g. browser) information
-     */
+    /* Disables automatic Apache Camel Restlet component logging which prints out an undesirable log entry
+       which includes client (e.g. browser) information */
     request.setLoggable(false);
 
     ClientInfo clientInfo = request.getClientInfo();
-    MdcContext.initialize((String) xTransactionId, "AAI-UI", "", (String) partnerName,
-        clientInfo.getAddress() + ":" + clientInfo.getPort());
-
+    MdcContext.initialize((String) xTransactionId, "AAI-UI", "", (String) partnerName, clientInfo.getAddress() + ":" + clientInfo.getPort());
+    
     String entityType = "";
-
+    
     Form form = request.getResourceRef().getQueryAsForm();
     for (Parameter parameter : form) {
-      if (PARAMETER_KEY.equals(parameter.getName())) {
+      if(PARAMETER_KEY.equals(parameter.getName())) {
         entityType = parameter.getName();
       }
     }
-
-    String parameters = SEARCH_PARAMETER + entityType;
-    String requestString = String.format("/%s/%s/%s", elasticConfig.getTopographicalSearchIndex(),
-        SEARCH_STRING, parameters);
+    
+    String api = SEARCH_STRING + SEARCH_PARAMETER + entityType;
+    
+    final String requestUrl = elasticSearchAdapter.buildElasticSearchUrlForApi(topographicalSearchIndexName, api);
 
     try {
-      final String fullUrlStr = ServletUtils.getFullUrl(elasticConfig, requestString);
-      OperationResult opResult = search.doGet(fullUrlStr, "application/json");
+      
+      OperationResult opResult =
+          elasticSearchAdapter.doGet(requestUrl, javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE);
 
       JSONObject finalOutputJson = formatOutput(opResult.getResult());
 
-      Response response =
-          exchange.getIn().getHeader(RestletConstants.RESTLET_RESPONSE, Response.class);
+      Response response = exchange.getIn().getHeader(RestletConstants.RESTLET_RESPONSE, Response.class);
       response.setStatus(Status.SUCCESS_OK);
       response.setEntity(String.valueOf(finalOutputJson), MediaType.APPLICATION_JSON);
       exchange.getOut().setBody(response);

@@ -31,30 +31,37 @@ import javax.ws.rs.core.MediaType;
 
 import org.onap.aai.restclient.client.OperationResult;
 import org.onap.aai.restclient.client.RestClient;
-import org.onap.aai.restclient.enums.RestAuthenticationMode;
+import org.onap.aai.sparky.dal.rest.RestClientConstructionException;
+import org.onap.aai.sparky.dal.rest.RestClientFactory;
+import org.onap.aai.sparky.dal.rest.config.RestEndpointConfig;
 
 /**
  * The Class ElasticSearchAdapter.
- * 
+
  */
 public class ElasticSearchAdapter {
 
   private static final String BULK_IMPORT_INDEX_TEMPLATE =
       "{\"index\":{\"_index\":\"%s\",\"_type\":\"%s\",\"_id\":\"%s\", \"_version\":\"%s\"}}\n";
 
+  private static final String BULK_API = "_bulk";
+  
+  private static final String DEFAULT_TYPE = "default";
+  
   private RestClient restClient;
-
+  private RestEndpointConfig endpointConfig;
+  
   /**
    * Instantiates a new elastic search adapter.
+   * @throws RestClientConstructionException 
    */
-  public ElasticSearchAdapter(RestAuthenticationMode restAuthenticationMode, int connectTimeoutInMs,
-      int readTimeoutInMs) {
+  public ElasticSearchAdapter(RestEndpointConfig endpointConfig) throws RestClientConstructionException {
 
-    this.restClient = new RestClient().authenticationMode(restAuthenticationMode)
-        .connectTimeoutMs(connectTimeoutInMs).readTimeoutMs(readTimeoutInMs);
+    this.restClient = RestClientFactory.buildClient(endpointConfig);
+    this.endpointConfig = endpointConfig;
 
   }
-
+  
   protected Map<String, List<String>> getMessageHeaders() {
     Map<String, List<String>> headers = new HashMap<String, List<String>>();
     // insert mandatory headers if there are any
@@ -81,18 +88,17 @@ public class ElasticSearchAdapter {
 
   public OperationResult doPatch(String url, String jsonPayload, MediaType acceptContentType) {
 
-    Map<String, List<String>> headers = getMessageHeaders();
+    Map<String,List<String>> headers = getMessageHeaders();
     headers.putIfAbsent("X-HTTP-Method-Override", new ArrayList<String>());
     headers.get("X-HTTP-Method-Override").add("PATCH");
-
-    return restClient.post(url, jsonPayload, headers, MediaType.APPLICATION_JSON_TYPE,
-        acceptContentType);
+    
+    return restClient.post(url, jsonPayload, headers, MediaType.APPLICATION_JSON_TYPE, acceptContentType);
   }
 
   public OperationResult doHead(String url, MediaType acceptContentType) {
     return restClient.head(url, getMessageHeaders(), acceptContentType);
   }
-
+  
   public OperationResult doBulkOperation(String url, String payload) {
     return restClient.put(url, payload, getMessageHeaders(),
         MediaType.APPLICATION_FORM_URLENCODED_TYPE, MediaType.APPLICATION_JSON_TYPE);
@@ -109,7 +115,7 @@ public class ElasticSearchAdapter {
     return requestPayload.toString();
 
   }
-
+  
   public OperationResult retrieveEntityById(String host, String port, String indexName,
       String docType, String resourceUrl) {
     String esUrl =
@@ -117,4 +123,33 @@ public class ElasticSearchAdapter {
     return doGet(esUrl, MediaType.APPLICATION_JSON_TYPE);
   }
 
+  public String buildElasticSearchUrlForApi(String indexName, String api) {
+    return String.format("http://%s:%s/%s/%s", endpointConfig.getEndpointIpAddress(),
+        endpointConfig.getEndpointServerPort(), indexName, api);
+  }
+  
+  public String buildElasticSearchUrl(String indexName, String docType) {
+    return String.format("http://%s:%s/%s/%s", endpointConfig.getEndpointIpAddress(),
+        endpointConfig.getEndpointServerPort(), indexName, docType);
+  }
+
+  public String buildElasticSearchGetDocUrl(String indexName, String docType, String docId) {
+    return String.format("http://%s:%s/%s/%s/%s", endpointConfig.getEndpointIpAddress(),
+        endpointConfig.getEndpointServerPort(), indexName, docType, docId);
+  }
+
+  public String buildElasticSearchGetDocUrl(String indexName, String docId) {
+    return buildElasticSearchGetDocUrl(indexName, DEFAULT_TYPE, docId);
+  }
+
+  public String buildElasticSearchPostUrl(String indexName) {
+    return String.format("http://%s:%s/%s/%s", endpointConfig.getEndpointIpAddress(),
+        endpointConfig.getEndpointServerPort(), indexName, DEFAULT_TYPE);
+  }
+  
+  public String getBulkUrl() {
+    return String.format("http://%s:%s/%s", endpointConfig.getEndpointIpAddress(),
+        endpointConfig.getEndpointServerPort(), BULK_API);
+  }
+  
 }

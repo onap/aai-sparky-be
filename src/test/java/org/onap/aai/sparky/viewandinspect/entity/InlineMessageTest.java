@@ -33,23 +33,23 @@ import org.onap.aai.sparky.viewandinspect.entity.InlineMessage;
 
 public class InlineMessageTest {
 
-  private InlineMessage inlineMsg;
-
-  @Before
-  public void init() throws Exception {
-    inlineMsg = new InlineMessage("InlineMessage1", "InlineMessage2");
-
-  }
-
-  @Test
-  public void successfulInitializationAndUpdate() {
-
-    inlineMsg.setLevel("Level-1");
-    assertNotNull(inlineMsg.getLevel());
-    inlineMsg.setMessage("InlineMessage3");
-    assertNotNull(inlineMsg.getMessage());
-    assertNotNull(inlineMsg.toString());
-  }
-
-
+	 private InlineMessage inlineMsg; 
+	 
+		@Before
+		  public void init() throws Exception {
+			inlineMsg = new InlineMessage("InlineMessage1","InlineMessage2");
+		      
+		  }
+		
+		@Test 
+		public void successfulInitializationAndUpdate() {
+			
+			inlineMsg.setLevel("Level-1");
+			assertNotNull(inlineMsg.getLevel());
+			inlineMsg.setMessage("InlineMessage3");
+			assertNotNull(inlineMsg.getMessage());
+			assertNotNull(inlineMsg.toString());
+		}
+			
+	
 }

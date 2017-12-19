@@ -92,17 +92,15 @@ public class AttributeEditProcessor {
     EditRequest editRequest = null;
     OperationResult operationResult = new OperationResult();
 
-    Response response =
-        exchange.getIn().getHeader(RestletConstants.RESTLET_RESPONSE, Response.class);
-    response.setStatus(Status.SUCCESS_OK); // 200 is assumed unless an actual exception occurs (a
-                                           // failure is still a valid response)
-
+    Response response = exchange.getIn().getHeader(RestletConstants.RESTLET_RESPONSE, Response.class);
+    response.setStatus(Status.SUCCESS_OK); // 200 is assumed unless an actual exception occurs (a failure is still a valid response)
+    
     boolean wasErrorDuringProcessing = false;
     String errorMessage = null;
-
-
+    
+    
     try {
-
+      
       if (payload != null && !payload.isEmpty()) {
         editRequest = mapper.readValue(payload, EditRequest.class);
 
@@ -111,12 +109,12 @@ public class AttributeEditProcessor {
           String attUid = getAttUid(request.getCookies());
           String objectUri = editRequest.getEntityUri();
           Map<String, Object> attributeValues = editRequest.getAttributes();
-
+          
           if (attUid != null && !attUid.isEmpty() && objectUri != null && !objectUri.isEmpty()
               && attributeValues != null && !attributeValues.isEmpty()) {
 
             LOG.info(AaiUiMsgs.ATTRIBUTES_HANDLING_EDIT, objectUri, editRequest.toString());
-
+            
             operationResult = attrUpdater.updateObjectAttribute(objectUri, attributeValues, attUid);
 
             boolean wasSuccess = (operationResult.getResultCode() == 200);
@@ -135,8 +133,8 @@ public class AttributeEditProcessor {
       operationResult.setResult(500, "Error encountered while trying to update attributes.");
       response.setStatus(Status.SERVER_ERROR_INTERNAL);
     }
-
-    if (wasErrorDuringProcessing) {
+    
+    if(wasErrorDuringProcessing) {
       LOG.error(AaiUiMsgs.ATTRIBUTES_NOT_UPDATED_MESSAGE, errorMessage);
     }
 
