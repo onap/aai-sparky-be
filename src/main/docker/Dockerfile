@@ -15,7 +15,7 @@ RUN export JAVA_HOME
 
 # Build up the deployment folder structure
 RUN mkdir -p $MICRO_HOME
-copy swm/package/nix/dist_files/appl/inventory-ui-service/${project.version}/ $MICRO_HOME/
+copy swm/package/nix/dist_files/appl/sparky-be/${project.version}/ $MICRO_HOME/
 RUN ls -la $BIN_HOME/
 RUN chmod 755 $BIN_HOME/*
 RUN ln -s /logs $MICRO_HOME/logs
