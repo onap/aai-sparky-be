@@ -217,10 +217,9 @@ public class PortalRestAPIServiceImpl implements IPortalRestAPIService {
     return formatter.format(args);
   }
 
-  @Override
   public List<EcompRole> getAvailableRoles(String requestedLoginId) throws PortalAPIException {
-    // TODO Auto-generated method stub
-    return null;
+    LOG.debug("Get available roles");
+    return UserManager.getRoles();
   }
 
 }
