@@ -168,26 +168,17 @@ public class OxmModelLoader {
    * @param oxmContext the oxm context
    */
   private void parseOxmContext(DynamicJAXBContext oxmContext) {
-
-    if (processors != null && processors.size() > 0) {
-
-      for (OxmModelProcessor processor : processors) {
-
-        try {
-
-          processor.processOxmModel(oxmContext);
-
-        } catch (Exception exc) {
-
-          LOG.warn(AaiUiMsgs.WARN_GENERIC,
-              "OxmModelProcessor experienced an error. Error: " + exc.getMessage());
-
-        }
-
+    
+    if ( processors != null && processors.size() > 0) {
+      
+      for ( OxmModelProcessor processor : processors ) {
+        
+        processor.processOxmModel(oxmContext);
+        
       }
-
+      
     }
-
+    
   }
   
 }
