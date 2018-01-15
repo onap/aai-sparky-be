@@ -156,7 +156,6 @@ public class SuggestionEntityLookup implements OxmModelProcessor {
 
       suggestionSearchEntityDescriptors.put(entityName, entity);
     }
-
   }
 
   public Map<String, HashMap<String, String>> getSuggestionSearchEntityOxmModel() {

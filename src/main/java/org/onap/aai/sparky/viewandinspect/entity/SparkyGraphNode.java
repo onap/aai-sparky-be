@@ -22,11 +22,18 @@
  */
 package org.onap.aai.sparky.viewandinspect.entity;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.log4j.Logger;
+import org.onap.aai.cl.api.Logger;
+import org.onap.aai.cl.eelf.LoggerFactory;
+import org.onap.aai.sparky.aggregatevnf.search.AggregateSummaryProcessor;
+import org.onap.aai.sparky.logging.AaiUiMsgs;
+import org.onap.aai.sparky.subscription.config.SubscriptionConfig;
+import org.onap.aai.sparky.subscription.payload.entity.ObjectInspectorPayload;
+import org.onap.aai.sparky.viewandinspect.config.SparkyConstants;
 import org.onap.aai.sparky.viewandinspect.config.VisualizationConfigs;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -61,6 +68,7 @@ public class SparkyGraphNode {
   private String itemNameValue;
   private Map<String, String> itemProperties;
   private NodeMeta nodeMeta;
+  private ObjectInspectorPayload externalResourcePayload;
 
   @JsonIgnore
   private boolean isRootNode;
@@ -76,8 +84,8 @@ public class SparkyGraphNode {
 
 
   @JsonIgnore
-  private static final Logger LOG = Logger.getLogger(SparkyGraphNode.class);
-  
+  private static final Logger LOG = LoggerFactory.getInstance().getLogger(SparkyGraphNode.class);
+
   private VisualizationConfigs visualizationConfigs;
 
 
@@ -86,7 +94,7 @@ public class SparkyGraphNode {
    *
    * @param ain the ain
    */
-  public SparkyGraphNode(ActiveInventoryNode ain,VisualizationConfigs visualizationConfigs ) {
+  public SparkyGraphNode(ActiveInventoryNode ain, VisualizationConfigs visualizationConfigs) {
     this.resourceKey = ain.getNodeId();
     this.itemProperties = ain.getProperties();
     this.setItemType(ain.getEntityType());
@@ -106,7 +114,7 @@ public class SparkyGraphNode {
     outboundNeighbors = ain.getOutboundNeighbors();
 
     nodeMeta = new NodeMeta(this.visualizationConfigs);
-    
+
     nodeMeta.setNodeIssue(ain.isNodeIssue());
     nodeMeta.setNodeValidated(ain.isNodeValidated());
     nodeMeta.setNodeDepth(ain.getNodeDepth());
@@ -119,6 +127,24 @@ public class SparkyGraphNode {
     nodeMeta.setProcessingErrorOccurred(ain.isProcessingErrorOccurred());
     nodeMeta.setHasNeighbors(
         ain.getOutboundNeighbors().size() > 0 || ain.getInboundNeighbors().size() > 0);
+    SubscriptionConfig subscriptionConf = SubscriptionConfig.getConfig();
+    if (subscriptionConf.getIsLaunchOIEnabled()) {
+      try {
+        Collection<String> entityTypes = subscriptionConf.getAnnEntitiyTypes();
+        for (String entityType : entityTypes) {
+          if (entityType.equals(this.getItemType())) {
+            ObjectInspectorPayload lic = ObjectInspectorPayload.getOIPayload();
+            lic.getMessage().getPayload().getParams().setObjectName(this.getItemNameValue());
+            this.setExternalResourcePayload(lic);
+            break;
+          }
+        }
+      } catch (IOException e) {
+        String message = "Could not map JSON to object " + "Attempted to convert: "
+            + SparkyConstants.SUBSCRIPTION_OI_MAPPING + ". Error: " + e.getLocalizedMessage();
+        LOG.error(AaiUiMsgs.JSON_PROCESSING_ERROR, message);
+      }
+    }
     nodeMeta.setProcessingState(ain.getState());
 
   }
@@ -183,7 +209,17 @@ public class SparkyGraphNode {
     return isRootNode;
   }
 
-  /* (non-Javadoc)
+  public ObjectInspectorPayload getExternalResourcePayload() {
+    return externalResourcePayload;
+  }
+
+  public void setExternalResourcePayload(ObjectInspectorPayload externalResourcePayload) {
+    this.externalResourcePayload = externalResourcePayload;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.lang.Object#toString()
    */
   @Override
