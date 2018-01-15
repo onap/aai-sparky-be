@@ -89,7 +89,6 @@ public class SuggestionSearchEntity extends IndexableEntity implements IndexDocu
     this.entityLookup = entityLookup;
     
     FiltersDetailsConfig filterConfigList = filtersConfig.getFiltersConfig();
-    
     // Populate the map with keys that will match the suggestableAttr values
     for(UiFilterConfig filter : filterConfigList.getFilters()) {
       if(filter.getDataSource() != null) {

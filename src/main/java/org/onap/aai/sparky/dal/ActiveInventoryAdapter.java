@@ -207,6 +207,7 @@ public class ActiveInventoryAdapter {
     link = getFullUrl("/search/nodes-query?search-node-type=" + entityType + "&filter="
         + primaryKeyStr + ":EXISTS");
 
+
     return restClient.get(link, getMessageHeaders(), MediaType.APPLICATION_JSON_TYPE);
 
   }

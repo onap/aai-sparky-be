@@ -86,6 +86,9 @@ public class SparkyConstants {
   public static final String FILTER_MAPPING_FILE_DEFAULT =
       CONFIG_FILTERS_BASE_LOCATION + "filters" + FILESEP + "aaiui_views.json";
   
+  public static final String SUBSCRIPTION_OI_MAPPING =
+      CONFIG_FILTERS_BASE_LOCATION + "subscription_object_inspector_mapping.json";
+  
   public static final String SUGGESTION_TEXT_SEPARATOR = " -- ";
 
   // Injected Attributes

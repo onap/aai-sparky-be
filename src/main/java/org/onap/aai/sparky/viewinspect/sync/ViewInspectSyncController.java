@@ -57,6 +57,7 @@ public class ViewInspectSyncController extends SyncControllerImpl
       SearchableEntityLookup searchableEntityLookup) throws Exception {
     super(syncControllerConfig);
 
+
     // final String controllerName = "View and Inspect Entity Synchronizer";
 
      this.aaiAdapter = aaiAdapter; 
@@ -68,29 +69,29 @@ public class ViewInspectSyncController extends SyncControllerImpl
 
     registerIndexValidator(indexValidator);
 
+
     ViewInspectEntitySynchronizer ses = new ViewInspectEntitySynchronizer(schemaConfig,
         syncControllerConfig.getNumInternalSyncWorkers(),
         syncControllerConfig.getNumSyncActiveInventoryWorkers(),
         syncControllerConfig.getNumSyncElasticWorkers(), aaiStatConfig, esStatConfig,
         oxmEntityLookup, searchableEntityLookup);
     
-    
     ses.setAaiAdapter(aaiAdapter);
     ses.setElasticSearchAdapter(esAdapter);
 
     registerEntitySynchronizer(ses);
-    
+
     CrossEntityReferenceSynchronizer cers = new CrossEntityReferenceSynchronizer(schemaConfig,
         syncControllerConfig.getNumInternalSyncWorkers(),
         syncControllerConfig.getNumSyncActiveInventoryWorkers(),
         syncControllerConfig.getNumSyncElasticWorkers(),aaiStatConfig,esStatConfig,
         crossEntityReferenceLookup, oxmEntityLookup, searchableEntityLookup);
-    
+
     cers.setAaiAdapter(aaiAdapter);
     cers.setElasticSearchAdapter(esAdapter);
 
     registerEntitySynchronizer(cers);
-    
+
     IndexCleaner indexCleaner =
         new ElasticSearchIndexCleaner(esAdapter, endpointConfig, schemaConfig);
 
