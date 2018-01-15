@@ -81,7 +81,7 @@ public class SearchableEntityLookup implements OxmModelProcessor {
       if (oxmProperties.containsKey("searchableAttributes")) {
         searchableOxmModel.put(entityName, oxmProperties);
       }
-      
+
     }
 
     for (Entry<String, HashMap<String, String>> searchableModel : searchableOxmModel.entrySet()) {
