@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_e1993920",
+        "filename": "src/main/java/org/onap/aai/sparky/config/oxm/OxmModelLoader.java",
+        "patchSetId": 4
+      },
+      "lineNbr": 172,
+      "author": {
+        "id": 1157
+      },
+      "writtenOn": "2018-01-15T22:30:23Z",
+      "side": 1,
+      "message": "Can you put the exception handling back in instead of deleting it?  I put that handling in during my sparky-be work to prevent the system from crashing in situations where the OXM content is missing / can\u0027t be read in.",
+      "revId": "f4b04e38995176f7a4bd1f2e668e3a69434107db",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
