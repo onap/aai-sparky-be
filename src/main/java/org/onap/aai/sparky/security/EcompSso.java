@@ -29,8 +29,9 @@ import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
 import org.onap.aai.sparky.security.portal.config.PortalAuthenticationConfig;
-import org.openecomp.portalsdk.core.onboarding.util.CipherUtil;
 import org.openecomp.portalsdk.core.onboarding.util.PortalApiProperties;
+
+import esGateKeeper.esGateKeeper;
 
 /**
  * Provides authentication services for onboarded ECOMP applications.
@@ -40,7 +41,7 @@ public class EcompSso {
   public static final String EP_SERVICE = "EPService";
   public static final String CSP_COOKIE_NAME = "csp_cookie_name";
   public static final String CSP_GATE_KEEPER_PROD_KEY = "csp_gate_keeper_prod_key";
-  public static final String ONAP_ENABLED = "ONAP_ENABLED";
+  public static final String ONAP_ENABLED = "ONAP_ENABLED"; 
   private static final Logger LOG = LoggerFactory.getInstance().getLogger(EcompSso.class);
 
   /**
@@ -86,12 +87,10 @@ public class EcompSso {
     boolean isOnapEnabled = PortalAuthenticationConfig.getInstance().getIsOnapEnabled();
     if (isOnapEnabled) {
       if (isEPServiceCookiePresent(request)) {
-        /*
-         * This is a "temporary" fix until proper separation between closed source and open source
-         * code is reached
-         */
+        /* This is a "temporary" fix until proper separation
+         * between closed source and open source code is reached */
         return ONAP_ENABLED;
-      }
+      } 
       return null;
     } else {
       return getLoginIdFromCookie(request);
@@ -145,11 +144,15 @@ public class EcompSso {
           "getCspData: failed to get property " + CSP_GATE_KEEPER_PROD_KEY);
     }
 
-    String cspCookieDecrypted = "";
-    try {
-      cspCookieDecrypted = CipherUtil.decrypt(cspCookieEncrypted, "");
-    } catch (Exception e) {
-      LOG.info(AaiUiMsgs.LOGIN_FILTER_INFO, "decrypting cookie failed " + e.getLocalizedMessage());
+    // Second parameter was sysname prior to 4/11/07
+    String cspCookieDecrypted = null;
+    boolean debugGatekeeper = true;
+    if (debugGatekeeper) {
+      // TODO: supply actual hour offset from GMT as 4th parameter
+      cspCookieDecrypted = esGateKeeper.esGateKeeper(cspCookieEncrypted, "CSP", gateKeeperProdKey,
+          -5, "/tmp/esGateKeeper_log");
+    } else {
+      cspCookieDecrypted = esGateKeeper.esGateKeeper(cspCookieEncrypted, "CSP", gateKeeperProdKey);
     }
 
     String[] cspData = cspCookieDecrypted.split("\\|");

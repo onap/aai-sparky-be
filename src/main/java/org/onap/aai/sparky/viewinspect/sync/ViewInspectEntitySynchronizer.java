@@ -148,9 +148,6 @@ public class ViewInspectEntitySynchronizer extends AbstractEntitySynchronizer
    * @return the operation state
    */
   private OperationState collectAllTheWork() {
-    
-    
-    
     final Map<String, String> contextMap = MDC.getCopyOfContextMap();
     Map<String, SearchableOxmEntityDescriptor> descriptorMap =
         searchableEntityLookup.getSearchableEntityDescriptors();
