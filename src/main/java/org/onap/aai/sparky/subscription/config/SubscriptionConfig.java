@@ -22,12 +22,7 @@
  */
 package org.onap.aai.sparky.subscription.config;
 
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.Properties;
-
-import org.onap.aai.sparky.util.ConfigHelper;
-import org.onap.aai.sparky.viewandinspect.config.SparkyConstants;
 
 
 /**
@@ -35,170 +30,108 @@ import org.onap.aai.sparky.viewandinspect.config.SparkyConstants;
  */
 public class SubscriptionConfig {
 
-  public static final String CONFIG_FILE =
-      SparkyConstants.DYNAMIC_CONFIG_APP_LOCATION + "subscription.properties";
+  private static final String EMPTY_TARGET = "";
+  private static final String EMPTY_ORIGIN = "";
+  private static final String EMPTY_MESSAGE_TYPE = "";
+  private static final String EMPTY_TOPIC = "";
 
-  private static SubscriptionConfig instance;
 
-  private String subscriptionTarget;
-  
-  private String subscriptionOrigin;
-  
-  private String subscriptionMessageType;
-  
-  private String subscriptionTopic;
+  private String subscriptionTarget = EMPTY_TARGET;
+  private String subscriptionOrigin = EMPTY_ORIGIN;
+  private String subscriptionMessageType = EMPTY_MESSAGE_TYPE;
+  private String subscriptionTopic = EMPTY_TOPIC;
 
-  private String launchOITarget;
-  
-  private String launchOIOrigin;
-  
-  private String launchOIMessageType;
-  
-  private String launchOITopic;
-  
-  private Boolean isLaunchOIEnabled;
-  
+  private String launchOITarget = EMPTY_TARGET;
+  private String launchOIOrigin = EMPTY_ORIGIN;
+  private String launchOIMessageType = EMPTY_MESSAGE_TYPE;
+  private String launchOITopic = EMPTY_TOPIC;
+
+  private Boolean isLaunchOIEnabled = false;
+
   private Collection<String> annEntitiyTypes;
-  
-  private static final String TARGET = "";
-  
-  private static final String ORIGIN = "";
-  
-  private static final String MESSAGE_TYPE = "";
-  
-  private static final String TOPIC = "";
- 
-
-
-
-  public static SubscriptionConfig getConfig(){
-
-    if (instance == null) {
-      instance = new SubscriptionConfig();
-      instance.initializeProperties();
-    }
-    return instance;
-  }
-
-  public static void setConfig(SubscriptionConfig config) {
-    /*
-     * Explicitly allow setting the configuration singleton. This will be useful for automation.
-     */
-
-	  SubscriptionConfig.instance = config;
-  }
 
   /**
    * Instantiates a new Subscription config.
    */
-  public SubscriptionConfig() {
-    // test method
-  }  
+  public SubscriptionConfig() {}
 
-
-  /**
-   * Initialize properties.
-   */
-  private void initializeProperties() {
-    Properties props = ConfigHelper.loadConfigFromExplicitPath(CONFIG_FILE);
-    
-    if (props == null || props.isEmpty()) {
-      //Disable subscription launch if the file is missing
-      this.setIsLaunchOIEnabled(false);
-      return;
-    }
-    subscriptionTarget = props.getProperty("subscription.target", TARGET);
-    subscriptionOrigin = props.getProperty("subscription.origin", ORIGIN);
-    subscriptionMessageType = props.getProperty("subscription.messageType", MESSAGE_TYPE);
-    subscriptionTopic = props.getProperty("subscription.topic", TOPIC);
-    
-    this.setLaunchOITarget(props.getProperty("launchOI.target", TARGET));
-    this.setLaunchOIOrigin(props.getProperty("launchOI.origin", ORIGIN));
-    this.setLaunchOIMessageType(props.getProperty("launchOI.messageType", MESSAGE_TYPE));
-    this.setLaunchOITopic(props.getProperty("launchOI.topic", TOPIC));
-    
-    this.setAnnEntitiyTypes(Arrays.asList(props.getProperty("launchOI.entityTypes", "").split(",")));
-    this.setIsLaunchOIEnabled(Boolean.parseBoolean(props.getProperty("launchOI.enable", "false")));
-  }
-
-  
   public String getSubscriptionTarget() {
     return subscriptionTarget;
   }
 
   public void setSubscriptionTarget(String target) {
     this.subscriptionTarget = target;
-  }  
-  
+  }
+
   public String getSubscriptionOrigin() {
-	return subscriptionOrigin;
+    return subscriptionOrigin;
   }
 
   public void setSubscriptionOrigin(String origin) {
     this.subscriptionOrigin = origin;
-  }  
-  
+  }
+
   public String getSubscriptionMessageType() {
-	return subscriptionMessageType;
+    return subscriptionMessageType;
   }
 
   public void setSubscriptionMessageType(String messageType) {
-     this.subscriptionMessageType = messageType;
-  }   
-  
+    this.subscriptionMessageType = messageType;
+  }
+
   public String getSubscriptionTopic() {
-	return subscriptionTopic;
+    return subscriptionTopic;
   }
 
   public void setSubscriptionTopic(String topic) {
     this.subscriptionTopic = topic;
   }
 
-public String getLaunchOITarget() {
-	return launchOITarget;
-}
+  public String getLaunchOITarget() {
+    return launchOITarget;
+  }
 
-public void setLaunchOITarget(String launchOITarget) {
-	this.launchOITarget = launchOITarget;
-}
+  public void setLaunchOITarget(String launchOITarget) {
+    this.launchOITarget = launchOITarget;
+  }
 
-public String getLaunchOIOrigin() {
-	return launchOIOrigin;
-}
+  public String getLaunchOIOrigin() {
+    return launchOIOrigin;
+  }
 
-public void setLaunchOIOrigin(String launchOIOrigin) {
-	this.launchOIOrigin = launchOIOrigin;
-}
+  public void setLaunchOIOrigin(String launchOIOrigin) {
+    this.launchOIOrigin = launchOIOrigin;
+  }
 
-public String getLaunchOIMessageType() {
-	return launchOIMessageType;
-}
+  public String getLaunchOIMessageType() {
+    return launchOIMessageType;
+  }
 
-public void setLaunchOIMessageType(String launchOIMessageType) {
-	this.launchOIMessageType = launchOIMessageType;
-}
+  public void setLaunchOIMessageType(String launchOIMessageType) {
+    this.launchOIMessageType = launchOIMessageType;
+  }
 
-public String getLaunchOITopic() {
-	return launchOITopic;
-}
+  public String getLaunchOITopic() {
+    return launchOITopic;
+  }
 
-public void setLaunchOITopic(String launchOITopic) {
-	this.launchOITopic = launchOITopic;
-}
+  public void setLaunchOITopic(String launchOITopic) {
+    this.launchOITopic = launchOITopic;
+  }
 
-public Collection<String> getAnnEntitiyTypes() {
-	return annEntitiyTypes;
-}
+  public Collection<String> getAnnEntitiyTypes() {
+    return annEntitiyTypes;
+  }
 
-public void setAnnEntitiyTypes(Collection<String> annEntitiyTypes) {
-	this.annEntitiyTypes = annEntitiyTypes;
-}
+  public void setAnnEntitiyTypes(Collection<String> annEntitiyTypes) {
+    this.annEntitiyTypes = annEntitiyTypes;
+  }
 
-public Boolean getIsLaunchOIEnabled() {
-	return isLaunchOIEnabled;
-}
+  public Boolean getIsLaunchOIEnabled() {
+    return isLaunchOIEnabled;
+  }
 
-public void setIsLaunchOIEnabled(Boolean isLaunchOIEnabled) {
-	this.isLaunchOIEnabled = isLaunchOIEnabled;
-}
+  public void setIsLaunchOIEnabled(Boolean isLaunchOIEnabled) {
+    this.isLaunchOIEnabled = isLaunchOIEnabled;
+  }
 }

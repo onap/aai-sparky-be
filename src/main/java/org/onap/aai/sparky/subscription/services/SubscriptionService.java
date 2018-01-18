@@ -27,31 +27,37 @@ import org.onap.aai.restclient.client.OperationResult;
 import org.onap.aai.sparky.subscription.config.SubscriptionConfig;
 
 
-public class SubscriptionService {  
-	
+public class SubscriptionService {
+
+  SubscriptionConfig config;
+  
+  public SubscriptionService(SubscriptionConfig subscriptionConfig) {
+    this.config = subscriptionConfig;
+  }
+  
   public OperationResult buildSubscriptionPayload() throws Exception {
     OperationResult returnValue = new OperationResult();
     returnValue.setResultCode(200);
-    SubscriptionConfig subscriptionConf = getSubscriptionPayload(); 
-    JSONObject subscriptionRequest = new JSONObject();
- 
+    JSONObject subscriptionResponse = new JSONObject();
+    JSONObject subscriptionDetails = new JSONObject();
 
-    if(subscriptionConf.getSubscriptionTarget().isEmpty() && subscriptionConf.getSubscriptionTopic().isEmpty() && 
-    		subscriptionConf.getSubscriptionMessageType().isEmpty() && 	subscriptionConf.getSubscriptionOrigin().isEmpty()) {
-    	returnValue.setResult(500,"{}");    	
+
+    if (config.getSubscriptionTarget().isEmpty()
+        && config.getSubscriptionTopic().isEmpty()
+        && config.getSubscriptionMessageType().isEmpty()
+        && config.getSubscriptionOrigin().isEmpty()) {
+      subscriptionResponse.put("subscriptionEnabled", false);
     } else {
-	   subscriptionRequest.put("target", subscriptionConf.getSubscriptionTarget());
-	   subscriptionRequest.put("topic", subscriptionConf.getSubscriptionTopic());
-	   subscriptionRequest.put("messageType", subscriptionConf.getSubscriptionMessageType());
-	   subscriptionRequest.put("origin", subscriptionConf.getSubscriptionOrigin());
-	   returnValue.setResult(subscriptionRequest.toString());
-	   returnValue.setResultCode(200);
-    } 
+      subscriptionResponse.put("subscriptionEnabled", true);
+      subscriptionDetails.put("target", config.getSubscriptionTarget());
+      subscriptionDetails.put("topic", config.getSubscriptionTopic());
+      subscriptionDetails.put("messageType", config.getSubscriptionMessageType());
+      subscriptionDetails.put("origin", config.getSubscriptionOrigin());
+    }
+    
+    subscriptionResponse.put("subscriptionDetails", subscriptionDetails);
+    returnValue.setResult(subscriptionResponse.toString());
+    
     return returnValue;
-    
-    
-  }  
-  public SubscriptionConfig getSubscriptionPayload() throws Exception {	 
-	  return SubscriptionConfig.getConfig();
-  }   
+  }
 }

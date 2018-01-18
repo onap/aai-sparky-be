@@ -101,19 +101,18 @@ public class ObjectInspectorPayload {
 	}
 	
 	private static ObjectInspectorPayload lic;
-	public static ObjectInspectorPayload getOIPayload() throws JsonParseException, JsonMappingException, IOException{
+	public static ObjectInspectorPayload getOIPayload(SubscriptionConfig subscriptionConf) throws JsonParseException, JsonMappingException, IOException{
 		if(lic == null){
 			ObjectMapper mapper = new ObjectMapper();
 			lic = mapper.readValue(new File(SparkyConstants.SUBSCRIPTION_OI_MAPPING), ObjectInspectorPayload.class);
-			lic.intitializeOIPayload();
+			lic.intitializeOIPayload(subscriptionConf);
 		}
 		
 		return lic;
 	}
 	
-	private void intitializeOIPayload(){
+	private void intitializeOIPayload(SubscriptionConfig subscriptionConf) {
 		try {
-			SubscriptionConfig subscriptionConf = SubscriptionConfig.getConfig();
 			lic.setOrigin(subscriptionConf.getLaunchOIOrigin());
 			lic.setTarget(subscriptionConf.getLaunchOITarget());
 			lic.setTopic(subscriptionConf.getLaunchOITopic());

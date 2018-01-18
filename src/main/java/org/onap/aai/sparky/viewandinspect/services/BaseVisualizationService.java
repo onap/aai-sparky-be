@@ -38,6 +38,7 @@ import org.onap.aai.sparky.config.oxm.OxmModelLoader;
 import org.onap.aai.sparky.dal.ActiveInventoryAdapter;
 import org.onap.aai.sparky.dal.ElasticSearchAdapter;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
+import org.onap.aai.sparky.subscription.config.SubscriptionConfig;
 import org.onap.aai.sparky.sync.config.ElasticSearchEndpointConfig;
 import org.onap.aai.sparky.sync.config.ElasticSearchSchemaConfig;
 import org.onap.aai.sparky.sync.entity.SearchableEntity;
@@ -70,19 +71,21 @@ public class BaseVisualizationService implements VisualizationService {
   private final SecureRandom secureRandom;
 
   private VisualizationConfigs visualizationConfigs;
+  private SubscriptionConfig subConfig;
   private ElasticSearchEndpointConfig endpointEConfig;
   private ElasticSearchSchemaConfig schemaEConfig;
   private OxmEntityLookup oxmEntityLookup;
   
-  public BaseVisualizationService(OxmModelLoader loader,VisualizationConfigs visualizationConfigs,
+  public BaseVisualizationService(OxmModelLoader loader, VisualizationConfigs visualizationConfigs,
 		  ActiveInventoryAdapter aaiAdapter,ElasticSearchAdapter esAdapter,
 		  ElasticSearchEndpointConfig endpointConfig, ElasticSearchSchemaConfig schemaConfig, int numActiveInventoryWorkers, 
-		  OxmEntityLookup oxmEntityLookup) throws Exception {
+		  OxmEntityLookup oxmEntityLookup, SubscriptionConfig subscriptionConfig) throws Exception {
    
     this.visualizationConfigs = visualizationConfigs;
     this.endpointEConfig = endpointConfig; 
     this.schemaEConfig = schemaConfig; 
     this.oxmEntityLookup = oxmEntityLookup;
+    this.subConfig = subscriptionConfig;
 
     secureRandom = new SecureRandom();
     
@@ -264,7 +267,7 @@ public class BaseVisualizationService implements VisualizationService {
 
     VisualizationTransformer transformer = null;
     try {
-      transformer = new VisualizationTransformer(visualizationConfigs);
+      transformer = new VisualizationTransformer(visualizationConfigs, subConfig);
     } catch (Exception exc) {
       throw new ServletException(
           "Failed to create VisualizationTransformer instance because of execption", exc);

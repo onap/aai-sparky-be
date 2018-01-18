@@ -87,14 +87,14 @@ public class SparkyGraphNode {
   private static final Logger LOG = LoggerFactory.getInstance().getLogger(SparkyGraphNode.class);
 
   private VisualizationConfigs visualizationConfigs;
-
+  private SubscriptionConfig subConfig;
 
   /**
-   * Instantiates a new json node.
+   * Instantiates a new SparkyGraphNode.
    *
    * @param ain the ain
    */
-  public SparkyGraphNode(ActiveInventoryNode ain, VisualizationConfigs visualizationConfigs) {
+  public SparkyGraphNode(ActiveInventoryNode ain, VisualizationConfigs visualizationConfigs, SubscriptionConfig subConfig) {
     this.resourceKey = ain.getNodeId();
     this.itemProperties = ain.getProperties();
     this.setItemType(ain.getEntityType());
@@ -103,6 +103,7 @@ public class SparkyGraphNode {
     this.setId(ain.getNodeId());
     this.isRootNode = ain.isRootNode();
     this.visualizationConfigs = visualizationConfigs;
+    this.setSubConfig(subConfig);
 
     if (LOG.isDebugEnabled()) {
       LOG.debug("---");
@@ -127,13 +128,13 @@ public class SparkyGraphNode {
     nodeMeta.setProcessingErrorOccurred(ain.isProcessingErrorOccurred());
     nodeMeta.setHasNeighbors(
         ain.getOutboundNeighbors().size() > 0 || ain.getInboundNeighbors().size() > 0);
-    SubscriptionConfig subscriptionConf = SubscriptionConfig.getConfig();
-    if (subscriptionConf.getIsLaunchOIEnabled()) {
+
+    if (subConfig.getIsLaunchOIEnabled()) {
       try {
-        Collection<String> entityTypes = subscriptionConf.getAnnEntitiyTypes();
+        Collection<String> entityTypes = subConfig.getAnnEntitiyTypes();
         for (String entityType : entityTypes) {
           if (entityType.equals(this.getItemType())) {
-            ObjectInspectorPayload lic = ObjectInspectorPayload.getOIPayload();
+            ObjectInspectorPayload lic = ObjectInspectorPayload.getOIPayload(subConfig);
             lic.getMessage().getPayload().getParams().setObjectName(this.getItemNameValue());
             this.setExternalResourcePayload(lic);
             break;
@@ -216,6 +217,14 @@ public class SparkyGraphNode {
   public void setExternalResourcePayload(ObjectInspectorPayload externalResourcePayload) {
     this.externalResourcePayload = externalResourcePayload;
   }
+  
+  public SubscriptionConfig getSubConfig() {
+    return subConfig;
+  }
+
+  public void setSubConfig(SubscriptionConfig subConfig) {
+    this.subConfig = subConfig;
+  }
 
   /*
    * (non-Javadoc)
@@ -234,6 +243,4 @@ public class SparkyGraphNode {
         + (inboundNeighbors != null ? "inboundNeighbors=" + inboundNeighbors + ", " : "")
         + (outboundNeighbors != null ? "outboundNeighbors=" + outboundNeighbors : "") + "]";
   }
-
-
 }

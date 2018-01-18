@@ -32,6 +32,7 @@ import java.util.UUID;
 import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
+import org.onap.aai.sparky.subscription.config.SubscriptionConfig;
 import org.onap.aai.sparky.util.ConfigHelper;
 import org.onap.aai.sparky.viewandinspect.config.VisualizationConfigs;
 import org.onap.aai.sparky.viewandinspect.entity.ActiveInventoryNode;
@@ -69,19 +70,19 @@ public class VisualizationTransformer {
    */
 
   List<SparkyGraphLink> linkArrayOutput = new ArrayList<SparkyGraphLink>();
-
-
   
   private VisualizationConfigs visualizationConfigs;
-
+  private SubscriptionConfig subConfig;
 
   /**
    * Instantiates a new visualization transformer.
    *
    * @throws Exception the exception
    */
-  public VisualizationTransformer(VisualizationConfigs visualizationConfigs )throws Exception{
+  public VisualizationTransformer(VisualizationConfigs visualizationConfigs,
+      SubscriptionConfig subConfig) throws Exception {
 	  this.visualizationConfigs = visualizationConfigs; 
+	  this.subConfig = subConfig;
   }
 
 
@@ -266,7 +267,7 @@ public class VisualizationTransformer {
 
       if (n.getNodeDepth() <= this.visualizationConfigs.getMaxSelfLinkTraversalDepth()) {
 
-        SparkyGraphNode jsonNode = new SparkyGraphNode(n,this.visualizationConfigs);
+        SparkyGraphNode jsonNode = new SparkyGraphNode(n, this.visualizationConfigs, this.subConfig);
 
         jsonNode.getNodeMeta().setClassName(this.visualizationConfigs.getGeneralNodeClassName());
 
