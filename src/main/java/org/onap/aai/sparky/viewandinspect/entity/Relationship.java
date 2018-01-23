@@ -32,6 +32,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 public class Relationship {
 
   protected String relatedTo;
+  protected String relationshipLabel;
   protected String relatedLink;
   protected RelationshipData[] relationshipData;
   protected RelatedToProperty[] relatedToProperty;
@@ -45,6 +46,15 @@ public class Relationship {
     this.relatedTo = relatedTo;
   }
 
+  public String getRelationshipLabel() {
+    return relationshipLabel;
+  }
+
+  @JsonProperty("relationship-label")
+  public void setRelationshipLabel(String relationshipLabel) {
+    this.relationshipLabel = relationshipLabel;
+  }
+  
   public String getRelatedLink() {
     return relatedLink;
   }
@@ -63,8 +73,6 @@ public class Relationship {
     this.relationshipData = relationshipData;
   }
 
-
-
   public RelatedToProperty[] getRelatedToProperty() {
     return relatedToProperty;
   }
@@ -79,11 +87,8 @@ public class Relationship {
    */
   @Override
   public String toString() {
-    return "Relationship [relatedTo=" + relatedTo + ", relatedLink=" + relatedLink
-        + ", relationshipData=" + Arrays.toString(relationshipData) + ", relatedToProperty="
-        + Arrays.toString(relatedToProperty) + "]";
+    return "Relationship [relatedTo=" + relatedTo + ", relationshipLabel=" + relationshipLabel
+        + ", relatedLink=" + relatedLink + ", relationshipData=" + Arrays.toString(relationshipData)
+        + ", relatedToProperty=" + Arrays.toString(relatedToProperty) + "]";
   }
-
-
-
 }

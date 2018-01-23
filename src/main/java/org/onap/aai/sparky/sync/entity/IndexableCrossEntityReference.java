@@ -26,8 +26,8 @@ import java.util.ArrayList;
 
 import org.onap.aai.sparky.util.NodeUtils;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 /**
@@ -38,7 +38,6 @@ public class IndexableCrossEntityReference extends IndexableEntity implements In
 
   protected String crossReferenceEntityValues;
   protected ArrayList<String> crossEntityReferenceCollection = new ArrayList<String>();
-  protected ObjectMapper mapper = new ObjectMapper();
 
   /**
    * Instantiates a new indexable cross entity reference.
@@ -77,6 +76,7 @@ public class IndexableCrossEntityReference extends IndexableEntity implements In
     this.crossReferenceEntityValues = NodeUtils.concatArray(crossEntityReferenceCollection, ";");
   }
 
+  @JsonIgnore // Since this is a "get" we need to JSON ignore otherwise it will be called when converting to JSON
   @Override
   public String getAsJson() throws JsonProcessingException {
 
@@ -90,10 +90,6 @@ public class IndexableCrossEntityReference extends IndexableEntity implements In
         + (crossReferenceEntityValues != null
             ? "crossReferenceEntityValues=" + crossReferenceEntityValues + ", " : "")
         + (crossEntityReferenceCollection != null
-            ? "crossEntityReferenceCollection=" + crossEntityReferenceCollection + ", " : "")
-        + (mapper != null ? "mapper=" + mapper : "") + "]";
+            ? "crossEntityReferenceCollection=" + crossEntityReferenceCollection + ", " : "");
   }
-
-
-
 }

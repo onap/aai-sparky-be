@@ -485,9 +485,16 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
                 if (cerDescriptor != null) {
                   
                   String childEntityType = cerDefinition.getTargetEntityType();
+                  OxmEntityDescriptor childDesciptor = oxmEntityLookup.getEntityDescriptors().get(childEntityType);
                   
-                  List<String> childPrimaryKeyNames = cerDescriptor.getPrimaryKeyAttributeNames();
+                  List<String> childPrimaryKeyNames = null;
                   
+                  if (childDesciptor != null) {
+                    childPrimaryKeyNames = childDesciptor.getPrimaryKeyAttributeNames();
+                  } else {
+                    childPrimaryKeyNames = new ArrayList<String>();
+                  }
+                                
                   List<String> childKeyValues = new ArrayList<String>();
                   NodeUtils.extractFieldValuesFromObject(targetEntityInstance, childPrimaryKeyNames, childKeyValues);
                   
