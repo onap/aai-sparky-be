@@ -193,7 +193,7 @@ public class CspCookieFilter implements Filter {
           response.sendRedirect(redirectURL);
           LOG.debug(AaiUiMsgs.VALID_REDIRECT_URL, redirectURL);
       } else{ 
-          response.sendError(400, "Bad redirect URL: " + redirectURL);
+          response.sendError(400, "Bad redirect URL");
           LOG.error(AaiUiMsgs.INVALID_REDIRECT_URL, redirectURL);
       }
     }
