@@ -49,7 +49,6 @@ public class AbstractStatistics implements ComponentStatistics {
    * sync-lock the creation of counters during initialization, but run time should not use lock
    * synchronization, only thread safe types
    * 
-   * @see com.att.ecomp.uicommon.resolver.stat.ComponentStatistics#addCounter(java.lang.String)
    */
   @Override
   public synchronized void addCounter(String key) {

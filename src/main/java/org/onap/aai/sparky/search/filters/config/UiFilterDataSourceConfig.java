@@ -22,7 +22,7 @@
  */
 package org.onap.aai.sparky.search.filters.config;
 
-import com.att.aft.dme2.internal.jackson.annotate.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.annotation.JsonProperty;

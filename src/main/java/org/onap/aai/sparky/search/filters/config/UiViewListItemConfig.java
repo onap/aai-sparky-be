@@ -25,7 +25,7 @@ package org.onap.aai.sparky.search.filters.config;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.att.aft.dme2.internal.jackson.annotate.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class UiViewListItemConfig {

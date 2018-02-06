@@ -162,7 +162,6 @@ public class GeoIndexDocument implements Serializable, IndexDocument {
   /*
    * (non-Javadoc)
    * 
-   * @see com.att.queryrouter.dao.DocumentStoreDataEntity#getAsJson()
    */
   
   @Override

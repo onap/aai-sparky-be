@@ -114,12 +114,6 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- <dependency> <groupId>com.att.csp</groupId> <artifactId>gatekeeper</artifactId> 
-			<version>1.0</version> <scope>system</scope> <systemPath>${project.basedir}/local-repository/gatekeeper-1.0.jar</systemPath> 
-			</dependency> <dependency> <groupId>com.att.csp</groupId> <artifactId>PSE_Lite</artifactId> 
-			<version>1.0</version> <scope>system</scope> <systemPath>${project.basedir}/local-repository/PSE_Lite-1.0.jar</systemPath> 
-			</dependency> -->
-
 		<dependency>
 			<groupId>org.eclipse.persistence</groupId>
 			<artifactId>eclipselink</artifactId>

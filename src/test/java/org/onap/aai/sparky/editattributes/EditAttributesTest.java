@@ -25,36 +25,16 @@
 
 package org.onap.aai.sparky.editattributes;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
-import java.security.Principal;
 
 import javax.servlet.ReadListener;
-import javax.servlet.ServletException;
 import javax.servlet.ServletInputStream;
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.openejb.core.security.jaas.UserPrincipal;
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Test;
-import org.onap.aai.sparky.editattributes.AttributeEditProcessor;
-import org.onap.aai.sparky.editattributes.entity.EditRequest;
 
-import com.att.aft.dme2.internal.jettison.json.JSONException;
-import com.att.aft.dme2.internal.jettison.json.JSONObject;
 
 /**
  * The Class EditAttributesTest.
@@ -145,50 +125,7 @@ public class EditAttributesTest {
   }
   */
 
-  /**
-   * Test get att uid.
-   *
-   * @throws IOException Signals that an I/O exception has occurred.
-   * @throws ServletException the servlet exception
-   */
-  /*
-  @Test
-  public void testGetAttUid() throws IOException, ServletException {
-    HttpServletRequest mockRequest = mock(HttpServletRequest.class);
-    HttpServletResponse mockResponse = mock(HttpServletResponse.class);
-    ServletOutputStream mockOutput = mock(ServletOutputStream.class);
-    ServletInputStream mockInput = new MockServletInputStream(sampleJsonRequest);
-
-    when(mockRequest.getRequestURI()).thenReturn("editAttributes");
-    when(mockResponse.getOutputStream()).thenReturn(mockOutput);
-
-    when(mockRequest.getInputStream()).thenReturn(mockInput);
-
-    Principal princip = new UserPrincipal("ds1150");
-
-    when(mockRequest.getUserPrincipal()).thenReturn(princip);
-
-    PrintWriter writer = new PrintWriter("editServletTest.txt");
-    when(mockResponse.getWriter()).thenReturn(writer);
-    when(mockRequest.getCookies()).thenReturn(new Cookie[] {new Cookie("attESHr",
-        "DENNIS|SEBASTIAN|dennis.sebastian@amdocs.com|||ko2649||ds1150,"
-        + "RBFMSKQ,Z9V2298,9762186|YNNNNNNNNNNNNNYNNYYNNNNN|DENNIS|EY6SC9000|")});
-    AttributeEditProcessor aes = new AttributeEditProcessor();
-    String attid = aes.getAttUid(mockRequest);
-    assertEquals(" Expected ATTUID is wrong", "ds1150", attid);
-
-    when(mockRequest.getCookies()).thenReturn(new Cookie[] {new Cookie("attESHr",
-        "DENNIS%7cSEBASTIAN%7cdennisse%40amdocs%2ecom%7c%7c%7cko2649%7c%7cds1150%2cRDJJFLM%"
-        + "2cP86NJ85%2c8127688%7cYNNNNNNNNNNNNNYNNYNYNNNN%7cDENNIS%7cEY6SC9000%7c")});
-    attid = aes.getAttUid(mockRequest);
-    assertEquals(" Expected ATTUID is wrong", "ds1150", attid);
-
-    when(mockRequest.getCookies()).thenReturn(new Cookie[] {});
-    attid = aes.getAttUid(mockRequest);
-    assertEquals(" Expected Empty ID", "", attid);
-
-  }
-  */
+  
 
   /**
    * The Class MockServletInputStream.

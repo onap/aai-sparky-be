@@ -64,9 +64,6 @@ public class PortalRestAPIServiceImpl implements IPortalRestAPIService {
   /*
    * (non-Javadoc)
    *
-   * @see
-   * com.att.fusion.core.onboarding.crossapi.IPortalRestAPIService#pushUser(com.att.fusion.core.
-   * restful.domain.EcompUser)
    */
   @Override
   public void pushUser(EcompUser user) throws PortalAPIException {
@@ -91,8 +88,6 @@ public class PortalRestAPIServiceImpl implements IPortalRestAPIService {
   /*
    * (non-Javadoc)
    *
-   * @see com.att.fusion.core.onboarding.crossapi.IPortalRestAPIService#editUser(java.lang.String,
-   * com.att.fusion.core.restful.domain.EcompUser)
    */
   @Override
   public void editUser(String loginId, EcompUser user) throws PortalAPIException {
@@ -116,7 +111,6 @@ public class PortalRestAPIServiceImpl implements IPortalRestAPIService {
   /*
    * (non-Javadoc)
    *
-   * @see com.att.fusion.core.onboarding.crossapi.IPortalRestAPIService#getUser(java.lang.String)
    */
   @Override
   public EcompUser getUser(String loginId) throws PortalAPIException {
@@ -131,7 +125,6 @@ public class PortalRestAPIServiceImpl implements IPortalRestAPIService {
   /*
    * (non-Javadoc)
    *
-   * @see com.att.fusion.core.onboarding.crossapi.IPortalRestAPIService#getUsers()
    */
   @Override
   public List<EcompUser> getUsers() throws PortalAPIException {
@@ -157,7 +150,6 @@ public class PortalRestAPIServiceImpl implements IPortalRestAPIService {
    * (non-Javadoc)
    *
    * @see
-   * com.att.fusion.core.onboarding.crossapi.IPortalRestAPIService#getUserRoles(java.lang.String)
    */
   @Override
   public List<EcompRole> getUserRoles(String loginId) throws PortalAPIException {
@@ -168,9 +160,6 @@ public class PortalRestAPIServiceImpl implements IPortalRestAPIService {
   /*
    * (non-Javadoc)
    *
-   * @see
-   * com.att.fusion.core.onboarding.crossapi.IPortalRestAPIService#pushUserRole(java.lang.String,
-   * java.util.List)
    */
   @Override
   public void pushUserRole(String loginId, List<EcompRole> roles) throws PortalAPIException {
@@ -197,9 +186,6 @@ public class PortalRestAPIServiceImpl implements IPortalRestAPIService {
   /*
    * (non-Javadoc)
    *
-   * @see
-   * com.att.fusion.core.onboarding.crossapi.IPortalRestAPIService#isAppAuthenticated(javax.servlet.
-   * http.HttpServletRequest)
    */
   @Override
   public boolean isAppAuthenticated(HttpServletRequest request) throws PortalAPIException {

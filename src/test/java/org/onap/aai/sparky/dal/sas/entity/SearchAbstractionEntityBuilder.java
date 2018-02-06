@@ -41,7 +41,7 @@ public class SearchAbstractionEntityBuilder {
     doc.addContent("entityPrimaryKeyValue", "example-vnf-id-val-4394");
     doc.addContent("entityType",            "vpe");
     doc.addContent("searchTags",            "example-vnf-id-val-4394;example-vnf-name-val-4394;example-vnf-name2-val-4394");
-    doc.addContent("link",                  "https://aai-ext1.test.att.com:8443/aai/v9/network/vpes/vpe/example-vnf-id-val-4394");
+    doc.addContent("link",                  "https://ext1.test.onap.com:8443/aai/v9/network/vpes/vpe/example-vnf-id-val-4394");
     doc.addContent("searchTagIDs",          "0;1;2");
     doc.addContent("lastmodTimestamp",      "2017-04-18T17:20:48.072-0400");
 
@@ -64,7 +64,7 @@ public class SearchAbstractionEntityBuilder {
     doc.addContent("entityPrimaryKeyValue", "vpe-vnf-id-team4-11");
     doc.addContent("entityType",            "vpe");
     doc.addContent("searchTags",            "vpe-vnf-id-team4-11;example-vnf-name-val-9512;example-vnf-name2-val-9512");
-    doc.addContent("link",                  "https://aai-ext1.test.att.com:8443/aai/v9/network/vpes/vpe/vpe-vnf-id-team4-11");
+    doc.addContent("link",                  "https://ext1.test.onap.com:8443/aai/v9/network/vpes/vpe/vpe-vnf-id-team4-11");
     doc.addContent("searchTagIDs",          "0;1;2");
     doc.addContent("lastmodTimestamp",      "2017-04-18T17:20:48.175-0400");
 
@@ -87,7 +87,7 @@ public class SearchAbstractionEntityBuilder {
     doc.addContent("entityPrimaryKeyValue", "example-vnf-id-val-6176");
     doc.addContent("entityType",            "generic-vnf");
     doc.addContent("searchTags",            "example-vnf-id-val-6176;example-vnf-name-val-6176;example-vnf-name2-val-6176");
-    doc.addContent("link",                  "https://aai-ext1.test.att.com:8443/aai/v9/network/generic-vnfs/generic-vnf/example-vnf-id-val-6176");
+    doc.addContent("link",                  "https://ext1.test.onap.com:8443/aai/v9/network/generic-vnfs/generic-vnf/example-vnf-id-val-6176");
     doc.addContent("searchTagIDs",          "0;1;2");
     doc.addContent("lastmodTimestamp",      "2017-04-18T17:29:39.889-0400");
 
@@ -110,7 +110,7 @@ public class SearchAbstractionEntityBuilder {
     doc.addContent("entityPrimaryKeyValue", "vnf-id-team4-11");
     doc.addContent("entityType",            "newvce");
     doc.addContent("searchTags",            "vnf-id-team4-11;example-vnf-name-val-5313;example-vnf-name2-val-5313");
-    doc.addContent("link",                  "https://aai-ext1.test.att.com:8443/aai/v9/network/newvces/newvce/vnf-id-team4-11");
+    doc.addContent("link",                  "https://ext1.test.onap.com:8443/aai/v9/network/newvces/newvce/vnf-id-team4-11");
     doc.addContent("searchTagIDs",          "0;1;2");
     doc.addContent("lastmodTimestamp",      "2017-04-18T17:21:08.142-0400");
 
@@ -133,7 +133,7 @@ public class SearchAbstractionEntityBuilder {
     doc.addContent("entityPrimaryKeyValue", "example-vnf-id2-val-9501");
     doc.addContent("entityType",            "newvce");
     doc.addContent("searchTags",            "example-vnf-id2-val-9501;example-vnf-name-val-9501;example-vnf-name2-val-9501");
-    doc.addContent("link",                  "https://aai-ext1.test.att.com:8443/aai/v9/network/newvces/newvce/example-vnf-id2-val-9501");
+    doc.addContent("link",                  "https://ext1.test.onap.com:8443/aai/v9/network/newvces/newvce/example-vnf-id2-val-9501");
     doc.addContent("searchTagIDs",          "0;1;2");
     doc.addContent("lastmodTimestamp",      "2017-04-18T17:21:23.323-0400");
 
@@ -156,7 +156,7 @@ public class SearchAbstractionEntityBuilder {
     doc.addContent("entityPrimaryKeyValue", "vnf-id-dm-auto-10");
     doc.addContent("entityType",            "vce");
     doc.addContent("searchTags",            "vpe-id-dm-auto-10;vnf-id-dm-auto-10;vnf-name-dm-auto-10;vnf-name2-dm-auto-10");
-    doc.addContent("link",                  "https://aai-ext1.test.att.com:8443/aai/v9/network/vces/vce/vnf-id-dm-auto-10");
+    doc.addContent("link",                  "https://ext1.test.onap.com:8443/aai/v9/network/vces/vce/vnf-id-dm-auto-10");
     doc.addContent("searchTagIDs",          "0;1;2;3");
     doc.addContent("lastmodTimestamp",      "2017-04-18T17:24:57.209-0400");
 
@@ -179,7 +179,7 @@ public class SearchAbstractionEntityBuilder {
     doc.addContent("entityPrimaryKeyValue", "e3e59c5b-ad48-44d0-b3e4-80eacdcee4c7");
     doc.addContent("entityType",            "generic-vnf");
     doc.addContent("searchTags",            "e3e59c5b-ad48-44d0-b3e4-80eacdcee4c7;VNF_Test_vNF_modules_01");
-    doc.addContent("link",                  "https://aai-ext1.test.att.com:8443/aai/v9/network/generic-vnfs/generic-vnf/e3e59c5b-ad48-44d0-b3e4-80eacdcee4c7");
+    doc.addContent("link",                  "https://ext1.test.onap.com:8443/aai/v9/network/generic-vnfs/generic-vnf/e3e59c5b-ad48-44d0-b3e4-80eacdcee4c7");
     doc.addContent("searchTagIDs",          "0;1");
     doc.addContent("lastmodTimestamp",      "2017-04-18T17:26:34.603-0400");
 
@@ -202,7 +202,7 @@ public class SearchAbstractionEntityBuilder {
     doc.addContent("entityPrimaryKeyValue", "fusion-jitsi-vnf-001");
     doc.addContent("entityType",            "generic-vnf");
     doc.addContent("searchTags",            "fusion-jitsi-vnf-001;fusion-jitsi-vnf");
-    doc.addContent("link",                  "https://aai-ext1.test.att.com:8443/aai/v9/network/generic-vnfs/generic-vnf/fusion-jitsi-vnf-001");
+    doc.addContent("link",                  "https://ext1.test.onap.com:8443/aai/v9/network/generic-vnfs/generic-vnf/fusion-jitsi-vnf-001");
     doc.addContent("searchTagIDs",          "0;1");
     doc.addContent("lastmodTimestamp",      "2017-04-18T17:28:14.293-0400");
 
@@ -225,7 +225,7 @@ public class SearchAbstractionEntityBuilder {
     doc.addContent("entityPrimaryKeyValue", "vnfm0003v");
     doc.addContent("entityType",            "generic-vnf");
     doc.addContent("searchTags",            "vnfm0003v;vnfm0003v");
-    doc.addContent("link",                  "https://aai-ext1.test.att.com:8443/aai/v9/network/generic-vnfs/generic-vnf/vnfm0003v");
+    doc.addContent("link",                  "https://ext1.test.onap.com:8443/aai/v9/network/generic-vnfs/generic-vnf/vnfm0003v");
     doc.addContent("searchTagIDs",          "0;1");
     doc.addContent("lastmodTimestamp",      "2017-04-18T17:29:39.594-0400");
 
@@ -248,7 +248,7 @@ public class SearchAbstractionEntityBuilder {
     doc.addContent("entityPrimaryKeyValue", "amist456vnf");
     doc.addContent("entityType",            "generic-vnf");
     doc.addContent("searchTags",            "amist456vnf;amist456vnf");
-    doc.addContent("link",                  "https://aai-ext1.test.att.com:8443/aai/v9/network/generic-vnfs/generic-vnf/amist456vnf");
+    doc.addContent("link",                  "https://ext1.test.onap.com:8443/aai/v9/network/generic-vnfs/generic-vnf/amist456vnf");
     doc.addContent("searchTagIDs",          "0;1");
     doc.addContent("lastmodTimestamp",      "2017-04-18T17:28:28.163-0400");
 
