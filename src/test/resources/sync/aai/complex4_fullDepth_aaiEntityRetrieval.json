@@ -1,0 +1,30 @@
+{
+    "physical-location-id": "HMBGGEANN02-4",
+    "resource-version": "1494001844620",
+    "physical-location-type": "EQUIPMENT LOCATION-4",
+    "street1": "WENDENSTRASSE 379-4",
+    "city": "HAMBURG-4",
+    "state": "GE",
+    "postal-code": "20097-4",
+    "country": "USA",
+    "region": "US",
+    "relationship-list": {
+        "relationship": [
+            {
+                "related-to": "pserver",
+                "related-link": "/aai/v11/cloud-infrastructure/pservers/pserver/GER-45-IIGA-TRANSPORT_ONLY_DEL-4",
+                "relationship-data": [
+                    {
+                        "relationship-key": "pserver.hostname",
+                        "relationship-value": "GER-45-IIGA-TRANSPORT_ONLY_DEL-4"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "pserver.pserver-name2-4"
+                    }
+                ]
+            }
+        ]
+    }
+}

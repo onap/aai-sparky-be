@@ -21,7 +21,7 @@
  *
  * ECOMP and OpenECOMP are trademarks
  * and service marks of AT&T Intellectual Property.
- */
+ *
 
 package org.onap.aai.sparky.security.portal;
 
@@ -280,4 +280,4 @@ public class TestPortalRestAPIServiceImpl {
 
     assertThat(portalApi.isAppAuthenticated(request), is(true));
   }
-}
+}*/

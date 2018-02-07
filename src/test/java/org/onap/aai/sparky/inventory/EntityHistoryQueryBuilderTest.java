@@ -19,6 +19,7 @@ public class EntityHistoryQueryBuilderTest {
 		entityHistoryQueryBuilder = new EntityHistoryQueryBuilder(); 
 	  }
 	
+	@SuppressWarnings("static-access")
 	@Test 
 	public void successfullBuild() {
 		entityHistoryQueryBuilder.getQuery("table");

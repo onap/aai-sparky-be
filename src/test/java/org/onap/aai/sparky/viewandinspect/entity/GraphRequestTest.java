@@ -26,6 +26,7 @@
 package org.onap.aai.sparky.viewandinspect.entity;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
@@ -45,11 +46,15 @@ public class GraphRequestTest {
 	@Test 
 	public void updateValues() {
 	
-		graphRequest.setHashId("HashID");
+		graphRequest.setHashId("364c836b7f4c0d2a5b917693719741fa5e576b3da818a");
 		assertNotNull(graphRequest.getHashId());
 		graphRequest.setIncludeGraphMeta(true);
 		assertTrue(graphRequest.isIncludeGraphMeta());
 		assertNotNull(graphRequest.toString());
+		graphRequest.setHashId(null);
+		assertNull(graphRequest.getHashId());
+		assertNotNull(graphRequest.toString());
+		
 		
 	}
 

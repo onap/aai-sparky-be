@@ -25,21 +25,35 @@
 
 package org.onap.aai.sparky.viewandinspect.entity;
 
-public class ActiveInventoryNodeTest {}
-/*
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.ArrayList;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.onap.aai.restclient.client.OperationResult;
+import org.onap.aai.sparky.config.oxm.OxmEntityLookup;
+import org.onap.aai.sparky.viewandinspect.config.VisualizationConfigs;
+
+public class ActiveInventoryNodeTest {
+
 	 private ActiveInventoryNode activeInventoryNode; 
-	 private List<String> lst = new ArrayList<String>();
+	private ArrayList<String> lst = new ArrayList<String>();
 	 private OperationResult opResult; 
-	 private VisualizationConfig visualConfig; 
-	 private DataIntegrityEntity dataIntegrity;
-	 private NodeIntegrity nodeIntegrity;
+	 private VisualizationConfigs visualConfig; 
+	 private OxmEntityLookup oxmEntityLookup; 
 	 
 		@Before
 		  public void init() throws Exception {
-			activeInventoryNode = new ActiveInventoryNode("Key-1");
-		    visualConfig = new VisualizationConfig(); 
-		    dataIntegrity = new DataIntegrityEntity();
-		    nodeIntegrity = new NodeIntegrity(); 
+			
+			 visualConfig = new VisualizationConfigs(); 
+			 oxmEntityLookup = new OxmEntityLookup(); 
+			activeInventoryNode = new ActiveInventoryNode(visualConfig,oxmEntityLookup);
+		 
 		  }
 		
 		@Test 
@@ -57,14 +71,12 @@ public class ActiveInventoryNodeTest {}
 			assertNotNull(activeInventoryNode.getRelationshipLists());
 			activeInventoryNode.setOpResult(opResult);
 			assertNull(activeInventoryNode.getOpResult());
-			activeInventoryNode.setDataIntegrityEntity(dataIntegrity);
-			assertNotNull(activeInventoryNode.getDataIntegrityEntity());
 			activeInventoryNode.setPrimaryKeyName("PrimaryKeyName");
 			assertNotNull(activeInventoryNode.getPrimaryKeyName());
 			activeInventoryNode.setNodeDepth(2);
 			assertEquals(2,activeInventoryNode.getNodeDepth());
 			activeInventoryNode.setvisualizationConfig(visualConfig);
-			assertNotNull(activeInventoryNode.getvisualizationConfig());
+			assertNotNull(activeInventoryNode.getvisualizationConfigs());
 			activeInventoryNode.setNodeValidated(true);
 			assertTrue(activeInventoryNode.isNodeValidated());
 			activeInventoryNode.setPrimaryKeyValue("PrimaryKeyValue");
@@ -77,8 +89,6 @@ public class ActiveInventoryNodeTest {}
 			assertTrue(activeInventoryNode.hasProcessedNeighbors());
 			activeInventoryNode.setResolvedSelfLink(true);
 			assertTrue(activeInventoryNode.hasResolvedSelfLink());
-			activeInventoryNode.setItemIntegrity(nodeIntegrity);
-			assertNotNull(activeInventoryNode.getItemIntegrity());
 			activeInventoryNode.addInboundNeighbor("InBoundNodeID");
 			activeInventoryNode.addOutboundNeighbor("OutBoundNodeID");
 			assertTrue(activeInventoryNode.hasNeighbors());
@@ -97,7 +107,7 @@ public class ActiveInventoryNodeTest {}
 			assertTrue(activeInventoryNode.getSelfLinkProcessed());
 			activeInventoryNode.setNodeIntegrityProcessed(true);
 			assertTrue(activeInventoryNode.getNodeIntegrityProcessed());
-			assertFalse(activeInventoryNode.isDirectSelfLink("NoDirectLink"));
+			assertFalse(activeInventoryNode.isDirectSelfLink());
 			activeInventoryNode.setProcessingErrorOccurred(true);
 			assertTrue(activeInventoryNode.isProcessingErrorOccurred());
 			activeInventoryNode.setNodeId("NodeId-1");
@@ -115,4 +125,4 @@ public class ActiveInventoryNodeTest {}
 			activeInventoryNode.processPathedSelfLinkResponse("","startNodeType","startNodeResourceKey");
 		   
 		}
-}*/
+}

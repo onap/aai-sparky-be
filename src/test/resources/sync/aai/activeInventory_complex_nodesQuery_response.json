@@ -1,0 +1,24 @@
+{
+  "result-data" : [
+     {
+        "resource-type" : "complex",
+        "resource-link" : "https://a.server.some.where:8443/aai/v7/complexes/complex/complex1"
+     },
+     {
+        "resource-type" : "complex",
+        "resource-link" : "https://a.server.some.where:8443/aai/v7/complexes/complex/complex2"
+     },
+     {
+        "resource-type" : "complex",
+        "resource-link" : "https://a.server.some.where:8443/aai/v7/complexes/complex/complex3"
+     },
+     {
+        "resource-type" : "complex",
+        "resource-link" : "https://a.server.some.where:8443/aai/v7/complexes/complex/complex4"
+     },
+     {
+        "resource-type" : "complex",
+        "resource-link" : "https://a.server.some.where:8443/aai/v7/complexes/complex/complex5"
+     }
+  ]
+}

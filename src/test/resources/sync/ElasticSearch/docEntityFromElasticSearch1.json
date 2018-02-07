@@ -1,0 +1,17 @@
+{
+  "_index" : "aggregate_generic-vnf_index",
+  "_type" : "default",
+  "_id" : "a5583fff3d57e0412363a9edfc265fd95374e6e0ef7b7061c7286622da904848",
+  "_version" : 1,
+  "found" : true,
+  "_source" : {
+     "link" : "/aai/v11/network/generic-vnfs/generic-vnf/genericvnft2i11bd2",
+     "lastmodTimestamp" : "2018-01-29T03:35:46.859-0500",
+     "vnf-id" : "genericvnft2i11bd2",
+     "in-maint" : "false",
+     "resource-version" : "1508939769479",
+     "vnf-name" : "genericvnft2i11bd2",
+     "vnf-type" : "VirtualNetworkFunctionType",
+     "is-closed-loop-disabled" : "true"
+   }
+ }

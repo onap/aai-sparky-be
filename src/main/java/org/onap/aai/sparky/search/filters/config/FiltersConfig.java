@@ -49,6 +49,14 @@ public class FiltersConfig {
   public FiltersConfig() {
     initializeFilters();
   }
+  
+  public FiltersConfig(String filtersFileName, String filterMappingsFileName) {
+    this.filtersFileName = filtersFileName;
+    this.filterMappingsFileName = filterMappingsFileName;
+    
+    viewsConfig = this.readUiViewsConfig();
+    filtersConfig = this.readUiFiltersConfig();
+  }
 
   /**
    * Initialize config.
@@ -103,7 +111,7 @@ public class FiltersConfig {
     this.filtersConfig = filtersConfig;
   }
 
-  public FiltersDetailsConfig readUiFiltersConfig(){
+  public FiltersDetailsConfig readUiFiltersConfig() {
     ObjectMapper mapper = new ObjectMapper();
     FiltersDetailsConfig filtersConfig = null;
     try{
@@ -115,7 +123,7 @@ public class FiltersConfig {
     return filtersConfig;
   }
 
-  public FiltersForViewsConfig readUiViewsConfig(){
+  public FiltersForViewsConfig readUiViewsConfig() {
     ObjectMapper mapper = new ObjectMapper();
     FiltersForViewsConfig viewsConfig = null;
     

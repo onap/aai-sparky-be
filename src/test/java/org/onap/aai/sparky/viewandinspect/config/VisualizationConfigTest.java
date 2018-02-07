@@ -1,85 +1,62 @@
 package org.onap.aai.sparky.viewandinspect.config;
 
-public class VisualizationConfigTest {}
-/*
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
-	private VisualizationConfig visualConfig,visualNullConfig; 
+import java.util.ArrayList;
+
+import org.junit.Before;
+import org.junit.Test;
+
+public class VisualizationConfigTest {
+
+
+	private VisualizationConfigs visualConfig;
+	private ArrayList<String>  shallowEntities; 
 	
 	@Before
 	  public void init() throws Exception {
-		visualConfig = new VisualizationConfig();
+		visualConfig = new VisualizationConfigs();
+		shallowEntities = new ArrayList<String>();
 	      
 	  }
 	
-	@Test 
-	public void successfullInitialization() {
-		assertFalse(visualConfig.makeAllNeighborsBidirectional());
-		assertFalse(visualConfig.isAquariusEnabled());
-		assertFalse(visualConfig.isVisualizationDebugEnabled());
-		assertFalse(visualConfig.isExternalGraphServiceEnabled());
-		assertEquals(2,visualConfig.getMaxSelfLinkTraversalDepth());
-		assertEquals(3,visualConfig.getNumOfThreadsToFetchNodeIntegrity());
-		assertNotNull(visualConfig.getExternalGraphServiceAuthenticationMode());
-		assertNull(visualConfig.getAquariusEndpoint());
-		assertNotNull(visualConfig.getSelectedSearchedNodeClassName());
-		assertNotNull(visualConfig.getGeneralNodeClassName());
-		assertNotNull(visualConfig.getSearchNodeClassName());
-		assertNull(visualConfig.getAaiEntityNodeDescriptors());
-		assertNotNull(visualConfig.getEntityTypesToSummarize());
-		assertNotNull(visualConfig.getVnfEntityTypes());
-		assertNotNull(visualConfig.getExternalGraphServiceEndpoint());
-		assertNotNull(visualNullConfig.getConfig());
-	}
 	
 	@Test 
 	public void updateValues() {
 		
+		visualConfig.setShallowEntities(shallowEntities);
+		assertNotNull(visualConfig.getShallowEntities());
 		visualConfig.setMakeAllNeighborsBidirectional(true);
 		assertTrue(visualConfig.makeAllNeighborsBidirectional());
-		
-		visualConfig.setAquariusEnabled(true);
-		assertTrue(visualConfig.isAquariusEnabled());
-		
+		visualConfig.setSelectedSearchedNodeClassName("selectedsearchedNodeClass");
+		assertNotNull(visualConfig.getSelectedSearchedNodeClassName());
+		visualConfig.setGeneralNodeClassName("generalNodeClass");
+		assertNotNull(visualConfig.getGeneralNodeClassName());
+		visualConfig.setSearchNodeClassName("searchedNodeClass");
+		assertNotNull(visualConfig.getSearchNodeClassName());
+		visualConfig.setAaiEntityNodeDescriptors("/etc/aaiEntityNodeDescriptors.json");
+		assertNotNull(visualConfig.getAaiEntityNodeDescriptors());
 		visualConfig.setVisualizationDebugEnabled(true);
 		assertTrue(visualConfig.isVisualizationDebugEnabled());
-		
-		visualConfig.setExternalGraphServiceEnabled(true);
-		assertTrue(visualConfig.isExternalGraphServiceEnabled());
-		
 		visualConfig.setMaxSelfLinkTraversalDepth(3);
 		assertEquals(3,visualConfig.getMaxSelfLinkTraversalDepth());
-		
-		visualConfig.setNumOfThreadsToFetchNodeIntegrity(2);
-		assertEquals(2,visualConfig.getNumOfThreadsToFetchNodeIntegrity());
-		
-		visualConfig.setExternalGraphServiceEndpoint("EndpointUnkown");
-		assertNotNull(visualConfig.getExternalGraphServiceAuthenticationMode());
-		
-		visualConfig.setAquariusEndpoint("EndpointUnkown");
-		assertNotNull(visualConfig.getAquariusEndpoint());
-		
-		visualConfig.setSelectedSearchedNodeClassName("ClassNameUnkown");
-		assertNotNull(visualConfig.getSelectedSearchedNodeClassName());
-		
-		visualConfig.setGeneralNodeClassName("ClassNameUnknown");
-		assertNotNull(visualConfig.getGeneralNodeClassName());
-		
-		visualConfig.setSearchNodeClassName("ClassNameUnknown");
-		assertNotNull(visualConfig.getSearchNodeClassName());
-		
-		visualConfig.setAaiEntityNodeDescriptors("NotNull");
-		assertNotNull(visualConfig.getAaiEntityNodeDescriptors());
-		
-		visualConfig.setEntityTypesToSummarize("complex,pserver,vserver,vnf");
-		assertNotNull(visualConfig.getEntityTypesToSummarize());
-		
-		visualConfig.setVnfEntityTypes("generic-vnf,vce,vpe");
-		assertNotNull(visualConfig.getVnfEntityTypes());
-		
-		visualConfig.setExternalGraphServiceAuthenticationMode(RestAuthenticationMode.SSL_BASIC);
-		assertNotNull(visualConfig.getVnfEntityTypes());	
+		visualConfig.setNumOfThreadsToFetchNodeIntegrity(25);
+		assertEquals(25,visualConfig.getNumOfThreadsToFetchNodeIntegrity());
+		assertNotNull(visualConfig.toString());	
+		visualConfig.setAaiEntityNodeDescriptors(null);
+		assertNull(visualConfig.getAaiEntityNodeDescriptors());
+		visualConfig.setGeneralNodeClassName(null);
+		assertNull(visualConfig.getGeneralNodeClassName());
+		visualConfig.setSearchNodeClassName(null);
+		assertNull(visualConfig.getSearchNodeClassName());
+		visualConfig.setSelectedSearchedNodeClassName(null);
+		assertNull(visualConfig.getSelectedSearchedNodeClassName());
+		assertNotNull(visualConfig.toString());	
 		
 		
 	}
 	
-}*/
+}

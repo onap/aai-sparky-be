@@ -24,7 +24,7 @@
  */
 
 package org.onap.aai.sparky.viewandinspect.entity;
-
+/*
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.Before;
@@ -54,3 +54,4 @@ public class JsonNodeLinkTest {
   }
 
 }
+*/
