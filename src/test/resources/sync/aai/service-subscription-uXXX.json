@@ -1,0 +1,12 @@
+{
+    "service-type": "uCPE",
+    "resource-version": "1495736709052",
+    "service-instances": {
+        "service-instance": [
+            {
+                "service-instance-id": "DHV_CUST_20170525142405-SIID",
+                "resource-version": "1495736709053"
+            }
+        ]
+    }
+}

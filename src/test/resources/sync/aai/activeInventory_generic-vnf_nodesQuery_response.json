@@ -1,0 +1,16 @@
+{
+    "result-data": [
+        {
+            "resource-type": "generic-vnf",
+            "resource-link": "/aai/v11/network/generic-vnfs/generic-vnf/8f87ab96-42bb-48c6-94c5-05f04bc8e271"
+        },
+        {
+            "resource-type": "generic-vnf",
+            "resource-link": "/aai/v11/network/generic-vnfs/generic-vnf/61c4e837-9032-49d8-99ea-4a4a3c5d9905"
+        },
+        {
+            "resource-type": "generic-vnf",
+            "resource-link": "/aai/v11/network/generic-vnfs/generic-vnf/generic-vnf-test19"
+        }
+    ]
+}

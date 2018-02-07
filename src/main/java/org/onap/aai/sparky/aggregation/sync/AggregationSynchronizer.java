@@ -176,9 +176,8 @@ public class AggregationSynchronizer extends AbstractEntitySynchronizer
             aaiWorkOnHand.decrementAndGet();
             processEntityTypeSelfLinks(typeLinksResult);
           } catch (Exception exc) {
-            // TODO -> LOG, what should be logged here?
-            
-            exc.printStackTrace();
+        	  LOG.error(AaiUiMsgs.ERROR_GENERIC, "Processing execption while building working set.  Error:" 
+                       + exc.getMessage());
           }
 
           return null;
@@ -589,12 +588,15 @@ public class AggregationSynchronizer extends AbstractEntitySynchronizer
           }
         }
 
-     } catch (JsonProcessingException exc) {
-      // TODO -> LOG, waht should be logged here?
-    } catch (IOException exc) {
-      // TODO -> LOG, waht should be logged here?
-    }
-  }
+		} catch (JsonProcessingException exc) {
+			LOG.error(AaiUiMsgs.ERROR_GENERIC,
+					"There was a JSON processing error fetching the elastic document for upsert.  Error: "
+							+ exc.getMessage());
+		} catch (IOException exc) {
+			LOG.error(AaiUiMsgs.ERROR_GENERIC,
+					"There was an IO error fetching the elastic document for upsert.  Error: " + exc.getMessage());
+		}
+	  }
   
   
   /**
@@ -622,6 +624,10 @@ public class AggregationSynchronizer extends AbstractEntitySynchronizer
   private void processEntityTypeSelfLinks(OperationResult operationResult) {
 
     JsonNode rootNode = null;
+    
+    if ( operationResult == null ) {
+    	return;
+    }
 
     final String jsonResult = operationResult.getResult();
 

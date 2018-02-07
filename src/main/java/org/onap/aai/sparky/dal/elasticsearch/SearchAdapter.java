@@ -37,7 +37,7 @@ import org.onap.aai.restclient.client.OperationResult;
 import org.onap.aai.restclient.client.RestClient;
 import org.onap.aai.sparky.dal.sas.config.SearchServiceConfig;
 import org.onap.aai.sparky.util.Encryptor;
-import org.onap.aai.sparky.viewandinspect.config.TierSupportUiConstants;
+import org.onap.aai.sparky.viewandinspect.config.SparkyConstants;
 import org.slf4j.MDC;
 
 
@@ -63,9 +63,9 @@ public class SearchAdapter {
     Encryptor encryptor = new Encryptor();
 
     client = new RestClient().validateServerHostname(false).validateServerCertChain(false)
-        .clientCertFile(TierSupportUiConstants.CONFIG_AUTH_LOCATION + sasConfig.getCertName())
+        .clientCertFile(SparkyConstants.CONFIG_AUTH_LOCATION + sasConfig.getCertName())
         .clientCertPassword(encryptor.decryptValue(sasConfig.getKeystorePassword()))
-        .trustStore(TierSupportUiConstants.CONFIG_AUTH_LOCATION + sasConfig.getKeystore());
+        .trustStore(SparkyConstants.CONFIG_AUTH_LOCATION + sasConfig.getKeystore());
 
     commonHeaders = new HashMap<String, List<String>>();
     commonHeaders.put("Accept", Arrays.asList("application/json"));

@@ -1,0 +1,60 @@
+{
+    "global-customer-id": "e433710f-9217-458d-a79d-1c7aff376d89",
+    "subscriber-name": "USP VOICE",
+    "subscriber-type": "INFRA",
+    "resource-version": "1494001938080",
+    "service-subscriptions": {
+        "service-subscription": [
+            {
+                "service-type": "TSBC",
+                "resource-version": "1494001891362",
+                "service-instances": {
+                    "service-instance": [
+                        {
+                            "service-instance-id": "a46ca55c-e9bd-4e68-9c49-c98933240218",
+                            "service-instance-name": "si_failtest",
+                            "model-invariant-id": "732263bd-0655-428d-a347-d65676d1a949",
+                            "resource-version": "1494001997513"
+                        },
+                        {
+                            "service-instance-id": "c0edefb0-2505-4a34-85cc-96c4cd5a121d",
+                            "service-instance-name": "test-343432",
+                            "model-invariant-id": "709d1be4-9a3f-4a29-8c4d-a20465e808a3",
+                            "model-version-id": "240376de-870e-48df-915a-31f140eedd2c",
+                            "resource-version": "1500370094198",
+                            "orchestration-status": "Active"
+                        }
+                    ]
+                },
+                "relationship-list": {
+                    "relationship": [
+                        {
+                            "related-to": "tenant",
+                            "related-link": "/aai/v11/cloud-infrastructure/cloud-regions/cloud-region/att-aic/mtn6/tenants/tenant/ece35e4a79d547d193451ac38d700046",
+                            "relationship-data": [
+                                {
+                                    "relationship-key": "cloud-region.cloud-owner",
+                                    "relationship-value": "att-aic"
+                                },
+                                {
+                                    "relationship-key": "cloud-region.cloud-region-id",
+                                    "relationship-value": "mtn6"
+                                },
+                                {
+                                    "relationship-key": "tenant.tenant-id",
+                                    "relationship-value": "ece35e4a79d547d193451ac38d700046"
+                                }
+                            ],
+                            "related-to-property": [
+                                {
+                                    "property-key": "tenant.tenant-name",
+                                    "property-value": "AIN Web Tool-15-D-sspstMAIL"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}

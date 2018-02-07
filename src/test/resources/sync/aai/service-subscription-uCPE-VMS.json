@@ -1,0 +1,12 @@
+{
+    "service-type": "uCPE-VMS",
+    "resource-version": "1506087955078",
+    "service-instances": {
+        "service-instance": [
+            {
+                "service-instance-id": "USMSO8DOMIL0223UJZZ01",
+                "resource-version": "1506087955081"
+            }
+        ]
+    }
+}

@@ -1,0 +1,16 @@
+{
+    "result-data": [
+        {
+            "resource-type": "service-subscription",
+            "resource-link": "/aai/v11/business/customers/customer/1710_2.3_09192017_DSG_9/service-subscriptions/service-subscription/uCPE-VMS"
+        },
+        {
+            "resource-type": "service-subscription",
+            "resource-link": "/aai/v11/business/customers/customer/e433710f-9217-458d-a79d-1c7aff376d89/service-subscriptions/service-subscription/TSBC"
+        },
+        {
+            "resource-type": "service-subscription",
+            "resource-link": "/aai/v11/business/customers/customer/DHV_20170525142406/service-subscriptions/service-subscription/uXXX"
+        }
+    ]
+}
