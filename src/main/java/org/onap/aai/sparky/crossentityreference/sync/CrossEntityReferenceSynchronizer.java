@@ -243,7 +243,8 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
               aaiWorkOnHand.decrementAndGet();
               processEntityTypeSelfLinks(typeLinksResult);
             } catch (Exception exc) {
-              // TODO -> LOG, what should be logged here?
+              LOG.error(AaiUiMsgs.ERROR_GENERIC,
+                  "An error occurred processing entity selflinks. Error: " + exc.getMessage());
             }
 
             return null;
@@ -281,7 +282,9 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
       retryLimitTracker.clear();
 
     } catch (Exception exc) {
-      // TODO -> LOG, waht should be logged here?
+      LOG.error(AaiUiMsgs.ERROR_GENERIC,
+          "An error occurred during entity synchronization. Error: " + exc.getMessage());
+
     }
 
     return OperationState.OK;
@@ -564,56 +567,57 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
                                * link, this should be a permanent error
                                */
                               LOG.error(AaiUiMsgs.ENTITY_SYNC_FAILED_SELFLINK_AMBIGUITY, String.valueOf(entityLinks.size()));
-                            } else {
-                              selfLink = ((JsonNode) entityLinks.toArray()[0]).asText();
-                              
-                              SearchableOxmEntityDescriptor searchableDescriptor = searchableEntityLookup.getSearchableEntityDescriptors().get( txn.getEntityType());
-                              
-                              if (searchableDescriptor != null && searchableDescriptor.getSearchableAttributes().size() > 0) {
+                          } else {
+                            selfLink = ((JsonNode) entityLinks.toArray()[0]).asText();
 
-                                IndexableCrossEntityReference icer =
-                                    getPopulatedDocument(targetEntityInstance, cerDescriptor);
 
-                                for (String parentCrossEntityReferenceAttributeValue : extractedParentEntityAttributeValues) {
-                                  icer.addCrossEntityReferenceValue(
-                                      parentCrossEntityReferenceAttributeValue);
-                                }
-                                
-                                icer.setLink(ActiveInventoryAdapter.extractResourcePath(selfLink));
+                            IndexableCrossEntityReference icer =
+                                getPopulatedDocument(targetEntityInstance, cerDescriptor);
 
-                                icer.deriveFields();
-
-                                String link = null;
-                                try {
-                                  link = elasticSearchAdapter.buildElasticSearchGetDocUrl(getIndexName(), icer.getId());
-                                } catch (Exception exc) {
-                                  LOG.error(AaiUiMsgs.ES_FAILED_TO_CONSTRUCT_QUERY, exc.getLocalizedMessage());
-                                }
-
-                                if (link != null) {
-                                  NetworkTransaction n2 = new NetworkTransaction();
-                                  n2.setLink(link);
-                                  n2.setEntityType(txn.getEntityType());
-                                  n2.setDescriptor(txn.getDescriptor());
-                                  n2.setOperationType(HttpMethod.GET);
-
-                                  esWorkOnHand.incrementAndGet();
-
-                                  supplyAsync(new PerformElasticSearchRetrieval(n2, elasticSearchAdapter),
-                                      esExecutor).whenComplete((result, error) -> {
-
-                                        esWorkOnHand.decrementAndGet();
-
-                                        if (error != null) {
-                                          LOG.error(AaiUiMsgs.ES_RETRIEVAL_FAILED, error.getLocalizedMessage());
-                                        } else {
-                                          updateElasticSearchCounters(result);
-                                          performDocumentUpsert(result, icer);
-                                        }
-                                      });
-                                }
-                              }
+                            for (String parentCrossEntityReferenceAttributeValue : extractedParentEntityAttributeValues) {
+                              icer.addCrossEntityReferenceValue(
+                                  parentCrossEntityReferenceAttributeValue);
                             }
+
+                            icer.setLink(ActiveInventoryAdapter.extractResourcePath(selfLink));
+
+                            icer.deriveFields();
+
+                            String link = null;
+                            try {
+                              link = elasticSearchAdapter
+                                  .buildElasticSearchGetDocUrl(getIndexName(), icer.getId());
+                            } catch (Exception exc) {
+                              LOG.error(AaiUiMsgs.ES_FAILED_TO_CONSTRUCT_QUERY,
+                                  exc.getLocalizedMessage());
+                            }
+
+                            if (link != null) {
+                              NetworkTransaction n2 = new NetworkTransaction();
+                              n2.setLink(link);
+                              n2.setEntityType(txn.getEntityType());
+                              n2.setDescriptor(txn.getDescriptor());
+                              n2.setOperationType(HttpMethod.GET);
+
+                              esWorkOnHand.incrementAndGet();
+
+                              supplyAsync(
+                                  new PerformElasticSearchRetrieval(n2, elasticSearchAdapter),
+                                  esExecutor).whenComplete((result, error) -> {
+
+                                    esWorkOnHand.decrementAndGet();
+
+                                    if (error != null) {
+                                      LOG.error(AaiUiMsgs.ES_RETRIEVAL_FAILED,
+                                          error.getLocalizedMessage());
+                                    } else {
+                                      updateElasticSearchCounters(result);
+                                      performDocumentUpsert(result, icer);
+                                    }
+                                  });
+                            }
+
+                          }
                           } else {
                             LOG.error(AaiUiMsgs.ENTITY_SYNC_FAILED_DURING_AAI_RESPONSE_CONVERSION);
                           }

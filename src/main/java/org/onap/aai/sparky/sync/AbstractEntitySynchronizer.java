@@ -411,16 +411,6 @@ public abstract class AbstractEntitySynchronizer {
    * Update elastic search counters.
    *
    * @param method the method
-   * @param or the or
-   */
-  protected void updateElasticSearchCounters(HttpMethod method, OperationResult or) {
-    updateElasticSearchCounters(new NetworkTransaction(method, null, or));
-  }
-
-  /**
-   * Update elastic search counters.
-   *
-   * @param method the method
    * @param entityType the entity type
    * @param or the or
    */
@@ -463,16 +453,6 @@ public abstract class AbstractEntitySynchronizer {
       esTaskProcessingStats
           .updateTransactionsPerSecondHistogram((long) esTransactionRateController.getCurrentTps());
     }
-  }
-
-  /**
-   * Update active inventory counters.
-   *
-   * @param method the method
-   * @param or the or
-   */
-  protected void updateActiveInventoryCounters(HttpMethod method, OperationResult or) {
-    updateActiveInventoryCounters(new NetworkTransaction(method, null, or));
   }
 
   /**

@@ -1,0 +1,26 @@
+{
+    "service-instance-id": "8e953267-4cd8-45ec-ae7f-bdeb018656c0",
+    "service-instance-name": "a1",
+    "service-type": "service_type_shani",
+    "service-role": "service_role_shani",
+    "environment-context": "General_Revenue-Bearing",
+    "workload-context": "Production",
+    "model-invariant-id": "340f3957-ff0a-4503-866d-a34fd1b97450",
+    "model-version-id": "ee2d8783-8495-4fb1-9553-6cdbd2dd3a50",
+    "resource-version": "1509355912484",
+    "orchestration-status": "Active",
+    "relationship-list": {
+        "relationship": [
+            {
+                "related-to": "owning-entity",
+                "related-link": "/aai/v11/business/owning-entities/owning-entity/2356a43d-ed56-43b6-aefc-8391b82588c9",
+                "relationship-data": [
+                    {
+                        "relationship-key": "owning-entity.owning-entity-id",
+                        "relationship-value": "2356a43d-ed56-43b6-aefc-8391b82588c9"
+                    }
+                ]
+            }
+        ]
+    }
+}

@@ -1,0 +1,118 @@
+{
+    "vnf-id": "generic-vnf-2",
+    "vnf-name": "zmtn6apndns_v6_01",
+    "vnf-type": "APNDNS_mm779p_II/APNDNS_mm779p_II 0",
+    "service-id": "a9a77d5a-123e-4ca2-9eb9-0b015d2ee0fb",
+    "prov-status": "PREPROV",
+    "orchestration-status": "Created",
+    "in-maint": false,
+    "is-closed-loop-disabled": false,
+    "resource-version": "1511184323962",
+    "model-invariant-id": "f3f6ed00-cd41-4e96-b669-0daa10da5491",
+    "model-version-id": "f76e6281-d80f-4403-9603-4245b0c8d8cd",
+    "model-customization-id": "f499ebb9-4383-42c1-8ace-2b682f312504",
+    "nf-type": "DNS",
+    "nf-function": "APN-DNS",
+    "nf-role": "VDNS",
+    "nf-naming-code": "null",
+    "relationship-list": {
+        "relationship": [
+            {
+                "related-to": "service-instance",
+                "related-link": "/aai/v11/business/customers/customer/a9a77d5a-123e-4ca2-9eb9-0b015d2ee0fb/service-subscriptions/service-subscription/Nimbus/service-instances/service-instance/3a743f07-86cc-47db-bee5-03fa91c77748",
+                "relationship-data": [
+                    {
+                        "relationship-key": "customer.global-customer-id",
+                        "relationship-value": "a9a77d5a-123e-4ca2-9eb9-0b015d2ee0fb"
+                    },
+                    {
+                        "relationship-key": "service-subscription.service-type",
+                        "relationship-value": "Nimbus"
+                    },
+                    {
+                        "relationship-key": "service-instance.service-instance-id",
+                        "relationship-value": "3a743f07-86cc-47db-bee5-03fa91c77748"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "service-instance.service-instance-name",
+                        "property-value": "APNDNS_mm779p_II_V6"
+                    }
+                ]
+            },
+            {
+                "related-to": "line-of-business",
+                "related-link": "/aai/v11/business/lines-of-business/line-of-business/lob1",
+                "relationship-data": [
+                    {
+                        "relationship-key": "line-of-business.line-of-business-name",
+                        "relationship-value": "lob1"
+                    }
+                ]
+            },
+            {
+                "related-to": "platform",
+                "related-link": "/aai/v11/business/platforms/platform/platform1",
+                "relationship-data": [
+                    {
+                        "relationship-key": "platform.platform-name",
+                        "relationship-value": "platform1"
+                    }
+                ]
+            },
+            {
+                "related-to": "volume-group",
+                "related-link": "/aai/v11/cloud-infrastructure/cloud-regions/cloud-region/att-aic/mtn6/volume-groups/volume-group/03ec51a4-2ea9-4947-b66a-b01c7b9e9ea5",
+                "relationship-data": [
+                    {
+                        "relationship-key": "cloud-region.cloud-owner",
+                        "relationship-value": "att-aic"
+                    },
+                    {
+                        "relationship-key": "cloud-region.cloud-region-id",
+                        "relationship-value": "mtn6"
+                    },
+                    {
+                        "relationship-key": "volume-group.volume-group-id",
+                        "relationship-value": "03ec51a4-2ea9-4947-b66a-b01c7b9e9ea5"
+                    }
+                ]
+            },
+            {
+                "related-to": "volume-group",
+                "related-link": "/aai/v11/cloud-infrastructure/cloud-regions/cloud-region/att-aic/mtn6/volume-groups/volume-group/1b3bf4c2-a4cc-4c37-afcc-ec49f5c1c653",
+                "relationship-data": [
+                    {
+                        "relationship-key": "cloud-region.cloud-owner",
+                        "relationship-value": "att-aic"
+                    },
+                    {
+                        "relationship-key": "cloud-region.cloud-region-id",
+                        "relationship-value": "mtn6"
+                    },
+                    {
+                        "relationship-key": "volume-group.volume-group-id",
+                        "relationship-value": "1b3bf4c2-a4cc-4c37-afcc-ec49f5c1c653"
+                    }
+                ]
+            }
+        ]
+    },
+    "vf-modules": {
+        "vf-module": [
+            {
+                "vf-module-id": "1b5602c0-b0c7-42fd-9bbd-8d503e464c5a",
+                "vf-module-name": "APNDNS_V6_base",
+                "heat-stack-id": "APNDNS_V6_base/bd3aa649-179f-4017-a848-f9a90cfa8908",
+                "orchestration-status": "active",
+                "is-base-vf-module": true,
+                "resource-version": "1511271087769",
+                "model-invariant-id": "874a259a-c4a3-4928-bbaa-0cd391ea3ec8",
+                "model-version-id": "417a7a36-87f8-4366-8d7b-95e47f1009b9",
+                "model-customization-id": "76a64957-74c7-4598-84c9-aa0e94bd2a69",
+                "module-index": 0
+            }
+        ]
+    }
+}

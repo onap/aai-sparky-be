@@ -404,12 +404,12 @@ public class NodeUtils {
     String resourceId = null;
     if ("/".equals(link.substring(linkLength - 1))) {
       // Use-case:
-      // https://ext1.test.onap.com:9292/aai/v7/business/customers/customer/1607_20160524Func_Ak1_01/service-subscriptions/service-subscription/uCPE-VMS/
+      // https://ext1.test.onap.com:9292/aai/v7/business/customers/customer/customer-1/service-subscriptions/service-subscription/service-subscription-1/
       startIndex = link.lastIndexOf("/", linkLength - 2);
       resourceId = link.substring(startIndex + 1, linkLength - 1);
     } else {
       // Use-case:
-      // https://ext1.test.onap.com:9292/aai/v7/business/customers/customer/1607_20160524Func_Ak1_01/service-subscriptions/service-subscription/uCPE-VMS
+      // https://ext1.test.onap.com:9292/aai/v7/business/customers/customer/customer-1/service-subscriptions/service-subscription/service-subscription-1
       startIndex = link.lastIndexOf("/");
       resourceId = link.substring(startIndex + 1, linkLength);
     }

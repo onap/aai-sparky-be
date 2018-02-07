@@ -1,0 +1,136 @@
+{
+    "vnf-id": "generic-vnf-1",
+    "vnf-name": "vProbe_Fe_VEPMS_sk316t_sd_01",
+    "vnf-type": "vProbe Fe VEPMS_sk316t/vProbe Fe VEPMS_sk316t 0",
+    "service-id": "a9a77d5a-123e-4ca2-9eb9-0b015d2ee0fb",
+    "prov-status": "PREPROV",
+    "orchestration-status": "Created",
+    "in-maint": false,
+    "is-closed-loop-disabled": false,
+    "resource-version": "1511102454640",
+    "model-invariant-id": "b8dba4bd-04ee-42bc-8c41-db06addb6866",
+    "model-version-id": "c9e7826d-c4b8-40c7-83e4-d9f96e7d5827",
+    "model-customization-id": "d2ca6d16-6529-4362-b53e-7bf4141372b1",
+    "nf-type": "PROBES",
+    "nf-function": "vProbes (Frontend )",
+    "nf-role": "vLB",
+    "nf-naming-code": "null",
+    "relationship-list": {
+        "relationship": [
+            {
+                "related-to": "service-instance",
+                "related-link": "/aai/v11/business/customers/customer/a9a77d5a-123e-4ca2-9eb9-0b015d2ee0fb/service-subscriptions/service-subscription/Mobility/service-instances/service-instance/22663785-ebb9-49c7-b95b-209537e6627f",
+                "relationship-data": [
+                    {
+                        "relationship-key": "customer.global-customer-id",
+                        "relationship-value": "a9a77d5a-123e-4ca2-9eb9-0b015d2ee0fb"
+                    },
+                    {
+                        "relationship-key": "service-subscription.service-type",
+                        "relationship-value": "Mobility"
+                    },
+                    {
+                        "relationship-key": "service-instance.service-instance-id",
+                        "relationship-value": "22663785-ebb9-49c7-b95b-209537e6627f"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "service-instance.service-instance-name",
+                        "property-value": "vProbe_Fe_VEPMS_sk316t_sd"
+                    }
+                ]
+            },
+            {
+                "related-to": "line-of-business",
+                "related-link": "/aai/v11/business/lines-of-business/line-of-business/lob1",
+                "relationship-data": [
+                    {
+                        "relationship-key": "line-of-business.line-of-business-name",
+                        "relationship-value": "lob1"
+                    }
+                ]
+            },
+            {
+                "related-to": "platform",
+                "related-link": "/aai/v11/business/platforms/platform/platform1",
+                "relationship-data": [
+                    {
+                        "relationship-key": "platform.platform-name",
+                        "relationship-value": "platform1"
+                    }
+                ]
+            },
+            {
+                "related-to": "volume-group",
+                "related-link": "/aai/v11/cloud-infrastructure/cloud-regions/cloud-region/att-aic/mtn6/volume-groups/volume-group/ecf748d5-be43-45ae-a8b1-c8520d144bdf",
+                "relationship-data": [
+                    {
+                        "relationship-key": "cloud-region.cloud-owner",
+                        "relationship-value": "att-aic"
+                    },
+                    {
+                        "relationship-key": "cloud-region.cloud-region-id",
+                        "relationship-value": "mtn6"
+                    },
+                    {
+                        "relationship-key": "volume-group.volume-group-id",
+                        "relationship-value": "ecf748d5-be43-45ae-a8b1-c8520d144bdf"
+                    }
+                ]
+            },
+            {
+                "related-to": "volume-group",
+                "related-link": "/aai/v11/cloud-infrastructure/cloud-regions/cloud-region/att-aic/mtn6/volume-groups/volume-group/1e26c1a7-8a91-4459-ba02-8cc2d70dd065",
+                "relationship-data": [
+                    {
+                        "relationship-key": "cloud-region.cloud-owner",
+                        "relationship-value": "att-aic"
+                    },
+                    {
+                        "relationship-key": "cloud-region.cloud-region-id",
+                        "relationship-value": "mtn6"
+                    },
+                    {
+                        "relationship-key": "volume-group.volume-group-id",
+                        "relationship-value": "1e26c1a7-8a91-4459-ba02-8cc2d70dd065"
+                    }
+                ]
+            },
+            {
+                "related-to": "volume-group",
+                "related-link": "/aai/v11/cloud-infrastructure/cloud-regions/cloud-region/att-aic/mtn6/volume-groups/volume-group/5223cfdc-50bf-4607-9651-2270384d6414",
+                "relationship-data": [
+                    {
+                        "relationship-key": "cloud-region.cloud-owner",
+                        "relationship-value": "att-aic"
+                    },
+                    {
+                        "relationship-key": "cloud-region.cloud-region-id",
+                        "relationship-value": "mtn6"
+                    },
+                    {
+                        "relationship-key": "volume-group.volume-group-id",
+                        "relationship-value": "5223cfdc-50bf-4607-9651-2270384d6414"
+                    }
+                ]
+            }
+        ]
+    },
+    "vf-modules": {
+        "vf-module": [
+            {
+                "vf-module-id": "eba81b96-851e-4374-9b9e-d186527f3c46",
+                "vf-module-name": "zmtn6afprb01_base1_sd_02",
+                "heat-stack-id": "zmtn6afprb01_base1_sd_02/cfd1203d-ff2f-49a3-a40b-72ac67cd8432",
+                "orchestration-status": "active",
+                "is-base-vf-module": true,
+                "resource-version": "1511301104226",
+                "model-invariant-id": "c01b5b9f-0760-4bcc-93b5-e1b24dd9bcfa",
+                "model-version-id": "30e71b66-93c6-4e0f-b7ff-de26b45c83e9",
+                "model-customization-id": "caaf8b40-03e9-4c58-9d18-613f564e2ea8",
+                "module-index": 0
+            }
+        ]
+    }
+}

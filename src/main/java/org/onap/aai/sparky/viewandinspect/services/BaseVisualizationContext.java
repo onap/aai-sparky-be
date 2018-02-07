@@ -98,6 +98,7 @@ public class BaseVisualizationContext implements VisualizationContext {
   
   private ExecutorService aaiExecutorService;
   private OxmEntityLookup oxmEntityLookup;
+  private boolean rootNodeFound;
 
   /*
    * The node cache is intended to be a flat structure indexed by a primary key to avoid needlessly
@@ -137,8 +138,17 @@ public class BaseVisualizationContext implements VisualizationContext {
     this.mapper = new ObjectMapper();
     mapper.setSerializationInclusion(Include.NON_EMPTY);
     mapper.setPropertyNamingStrategy(new PropertyNamingStrategy.KebabCaseStrategy());
+    this.rootNodeFound = false;
   }
   
+  protected boolean isRootNodeFound() {
+    return rootNodeFound;
+  }
+
+  protected void setRootNodeFound(boolean rootNodeFound) {
+    this.rootNodeFound = rootNodeFound;
+  }
+
   public long getContextId() {
     return contextId;
   }
@@ -351,7 +361,7 @@ public class BaseVisualizationContext implements VisualizationContext {
             aaiWorkOnHand.incrementAndGet();
             supplyAsync(new PerformSelfLinkDeterminationTask(txn, null, aaiAdapter),
                 aaiExecutorService).whenComplete((nodeTxn, error) -> {
-                  aaiWorkOnHand.decrementAndGet();
+                  
                   if (error != null) {
                     LOG.error(AaiUiMsgs.SELF_LINK_DETERMINATION_FAILED_GENERIC, selfLinkQuery);
                   } else {
@@ -435,6 +445,8 @@ public class BaseVisualizationContext implements VisualizationContext {
                     }
 
                   }
+                  
+                  aaiWorkOnHand.decrementAndGet();
 
                 });
 
@@ -671,7 +683,7 @@ public class BaseVisualizationContext implements VisualizationContext {
       supplyAsync(
           new PerformNodeSelfLinkProcessingTask(txn, depthModifier, aaiAdapter),
           aaiExecutorService).whenComplete((nodeTxn, error) -> {
-            aaiWorkOnHand.decrementAndGet();
+            
             if (error != null) {
 
               /*
@@ -729,6 +741,8 @@ public class BaseVisualizationContext implements VisualizationContext {
 
               }
             }
+            
+            aaiWorkOnHand.decrementAndGet();
 
           });
 
@@ -793,7 +807,11 @@ public class BaseVisualizationContext implements VisualizationContext {
    * @param queryParams the query params
    * @return true, if successful
    */
-  private boolean findAndMarkRootNode(QueryParams queryParams) {
+  private void findAndMarkRootNode(QueryParams queryParams) {
+
+    if (isRootNodeFound()) {
+      return;
+    }
 
     for (ActiveInventoryNode cacheNode : nodeCache.values()) {
 
@@ -801,11 +819,9 @@ public class BaseVisualizationContext implements VisualizationContext {
         cacheNode.setNodeDepth(0);
         cacheNode.setRootNode(true);
         LOG.info(AaiUiMsgs.ROOT_NODE_DISCOVERED, queryParams.getSearchTargetNodeId());
-        return true;
+        setRootNodeFound(true);
       }
     }
-
-    return false;
 
   }
 
@@ -814,14 +830,15 @@ public class BaseVisualizationContext implements VisualizationContext {
    *
    * @param rootNodeDiscovered the root node discovered
    */
-  private void processCurrentNodeStates(boolean rootNodeDiscovered) {
+  private void processCurrentNodeStates(QueryParams queryParams) {
     /*
      * Force an evaluation of node depths before determining if we should limit state-based
      * traversal or processing.
      */
-    if (rootNodeDiscovered) {
-      evaluateNodeDepths();
-    }
+    
+    findAndMarkRootNode(queryParams);
+    
+    verifyOutboundNeighbors();
 
     for (ActiveInventoryNode cacheNode : nodeCache.values()) {
 
@@ -861,16 +878,15 @@ public class BaseVisualizationContext implements VisualizationContext {
            * around the root node.
            */
           
-          if (!rootNodeDiscovered || cacheNode.getNodeDepth() < this.visualizationConfigs.getMaxSelfLinkTraversalDepth()) {
+          if (!isRootNodeFound() || cacheNode.getNodeDepth() < this.visualizationConfigs
+              .getMaxSelfLinkTraversalDepth()) {
 
             if (LOG.isDebugEnabled()) {
               LOG.debug(AaiUiMsgs.DEBUG_GENERIC, 
-                  "SLNC::processCurrentNodeState() -- Node at max depth,"
+                  "processCurrentNodeState() -- Node at max depth,"
                   + " halting processing at current state = -- "
                       + cacheNode.getState() + " nodeId = " + cacheNode.getNodeId());
             }
-
-            
             
             processNeighbors(cacheNode.getNodeId());
 
@@ -880,9 +896,6 @@ public class BaseVisualizationContext implements VisualizationContext {
         }
         default:
           break;
-
-
-
       }
 
     }
@@ -1347,10 +1360,13 @@ public class BaseVisualizationContext implements VisualizationContext {
      * always be equal to zero.
      */
 
-    if (queryParams.getSearchTargetNodeId().equals(newNode.getNodeId())) {
-      newNode.setNodeDepth(0);
-      newNode.setRootNode(true);
-      LOG.info(AaiUiMsgs.ROOT_NODE_DISCOVERED, queryParams.getSearchTargetNodeId());
+    if (!isRootNodeFound()) {
+      if (queryParams.getSearchTargetNodeId().equals(newNode.getNodeId())) {
+        newNode.setNodeDepth(0);
+        newNode.setRootNode(true);
+        LOG.info(AaiUiMsgs.ROOT_NODE_DISCOVERED, queryParams.getSearchTargetNodeId());
+        setRootNodeFound(true);
+      }
     }
 
     newNode.setSelfLink(searchTargetEntity.getLink());
@@ -1358,22 +1374,14 @@ public class BaseVisualizationContext implements VisualizationContext {
     nodeCache.putIfAbsent(newNode.getNodeId(), newNode);
   }
 
-  /**
-   * Checks for out standing work.
-   *
-   * @return true, if successful
-   */
-  private boolean hasOutStandingWork() {
-
+  private int getTotalWorkOnHand() {
+    
     int numNodesWithPendingStates = 0;
-
-    /*
-     * Force an evaluation of node depths before determining if we should limit state-based
-     * traversal or processing.
-     */
-
-    evaluateNodeDepths();
-
+    
+    if( isRootNodeFound()) {
+      evaluateNodeDepths();
+    }
+    
     for (ActiveInventoryNode n : nodeCache.values()) {
 
       switch (n.getState()) {
@@ -1410,9 +1418,39 @@ public class BaseVisualizationContext implements VisualizationContext {
 
     }
 
-    LOG.debug(AaiUiMsgs.OUTSTANDING_WORK_PENDING_NODES, String.valueOf(numNodesWithPendingStates));
+    LOG.debug(AaiUiMsgs.OUTSTANDING_WORK_PENDING_NODES,
+        String.valueOf(numNodesWithPendingStates));
 
-    return (numNodesWithPendingStates > 0);
+    int totalWorkOnHand = aaiWorkOnHand.get() + numNodesWithPendingStates;
+    
+    return totalWorkOnHand;
+    
+  }
+  
+  /**
+   * Checks for out standing work.
+   *
+   * @return true, if successful
+   */
+  private void processOutstandingWork(QueryParams queryParams) {
+    
+    while (getTotalWorkOnHand() > 0) {
+
+      /*
+       * Force an evaluation of node depths before determining if we should limit state-based
+       * traversal or processing.
+       */
+
+      processCurrentNodeStates(queryParams);
+
+      try {
+        Thread.sleep(10);
+      } catch (InterruptedException exc) {
+        LOG.error(AaiUiMsgs.PROCESSING_LOOP_INTERUPTED, exc.getMessage());
+        return;
+      }
+
+    }
 
   }
 
@@ -1424,70 +1462,26 @@ public class BaseVisualizationContext implements VisualizationContext {
 
     try {
 
+
       if (searchtargetEntity == null) {
         LOG.error(AaiUiMsgs.SELF_LINK_PROCESSING_ERROR, contextIdStr + " - Failed to"
             + " processSelfLinks, searchtargetEntity is null");
         return;
       }
 
-      processSearchableEntity(searchtargetEntity, queryParams);
-
       long startTimeInMs = System.currentTimeMillis();
 
-      /*
-       * wait until all transactions are complete or guard-timer expires.
-       */
-
-      long totalResolveTime = 0;
-      boolean hasOutstandingWork = hasOutStandingWork();
-      boolean outstandingWorkGuardTimerFired = false;
-      long maxGuardTimeInMs = 5000;
-      long guardTimeInMs = 0;
-      boolean foundRootNode = false;
-
+      processSearchableEntity(searchtargetEntity, queryParams);
       
       /*
-       * TODO:   Put a count-down-latch in place of the while loop, but if we do that then
-       * we'll need to decouple the visualization processing from the main thread so it can continue to process while
-       * the main thread is waiting on for count-down-latch gate to open.  This may also be easier once we move to the
-       * VisualizationService + VisualizationContext ideas. 
+       * This method is blocking until we decouple it with a CountDownLatch await condition,
+       * and make the internal graph processing more event-y.
        */
       
+      processOutstandingWork(queryParams);
+
+      long totalResolveTime = (System.currentTimeMillis() - startTimeInMs);
       
-      while (hasOutstandingWork || !outstandingWorkGuardTimerFired) {
-
-        if (!foundRootNode) {
-          foundRootNode = findAndMarkRootNode(queryParams);
-        }
-
-        processCurrentNodeStates(foundRootNode);
-
-        verifyOutboundNeighbors();
-
-        try {
-          Thread.sleep(500);
-        } catch (InterruptedException exc) {
-          LOG.error(AaiUiMsgs.PROCESSING_LOOP_INTERUPTED, exc.getMessage());
-          return;
-        }
-
-        totalResolveTime = (System.currentTimeMillis() - startTimeInMs);
-
-        if (!hasOutstandingWork) {
-
-          guardTimeInMs += 500;
-
-          if (guardTimeInMs > maxGuardTimeInMs) {
-            outstandingWorkGuardTimerFired = true;
-          }
-        } else {
-          guardTimeInMs = 0;
-        }
-
-        hasOutstandingWork = hasOutStandingWork();
-
-      }
-
       long opTime = System.currentTimeMillis() - startTimeInMs;
 
       LOG.info(AaiUiMsgs.ALL_TRANSACTIONS_RESOLVED, String.valueOf(totalResolveTime),

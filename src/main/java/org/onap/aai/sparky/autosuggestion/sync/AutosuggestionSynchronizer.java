@@ -143,6 +143,8 @@ public class AutosuggestionSynchronizer extends AbstractEntitySynchronizer
     this.syncInProgress = false;
     this.contextMap = MDC.getCopyOfContextMap();
     this.esPutExecutor = NodeUtils.createNamedExecutor("SUES-ES-PUT", 5, LOG);
+    this.retryQueue = new ConcurrentLinkedDeque<RetrySuggestionEntitySyncContainer>();
+    this.retryLimitTracker = new ConcurrentHashMap<String, Integer>();
     this.syncDurationInMs = -1;
     this.filtersConfig = filtersConfig;
   }
@@ -187,7 +189,9 @@ public class AutosuggestionSynchronizer extends AbstractEntitySynchronizer
               aaiWorkOnHand.decrementAndGet();
               processEntityTypeSelfLinks(typeLinksResult);
             } catch (Exception exc) {
-              // TODO -> LOG, what should be logged here?
+              LOG.error(AaiUiMsgs.ERROR_GENERIC,
+                  "An error occurred while processing entity self-links. Error: "
+                      + exc.getMessage());
             }
 
             return null;
@@ -228,7 +232,8 @@ public class AutosuggestionSynchronizer extends AbstractEntitySynchronizer
       retryLimitTracker.clear();
 
     } catch (Exception exc) {
-      // TODO -> LOG, waht should be logged here?
+      LOG.error(AaiUiMsgs.ERROR_GENERIC,
+          "An error occurred while performing the sync.  Error: " + exc.getMessage());
     }
 
     return OperationState.OK;
@@ -258,6 +263,10 @@ public class AutosuggestionSynchronizer extends AbstractEntitySynchronizer
   private void processEntityTypeSelfLinks(OperationResult operationResult) {
 
     JsonNode rootNode = null;
+    
+    if ( operationResult == null ) {
+    	return;
+    }
 
     final String jsonResult = operationResult.getResult();
 
@@ -361,25 +370,38 @@ public class AutosuggestionSynchronizer extends AbstractEntitySynchronizer
   }
 
   /*
-   * Return a set of valid suggestion attributes for the provided entityName
-   * that are present in the JSON
+   * Return a set of valid suggestion attributes for the provided entityName that are present in the
+   * JSON
+   * 
    * @param node JSON node in which the attributes should be found
+   * 
    * @param entityName Name of the entity
+   * 
    * @return List of all valid suggestion attributes(key's)
    */
   public List<String> getSuggestableAttrNamesFromReponse(JsonNode node, String entityName) {
     List<String> suggestableAttr = new ArrayList<String>();
+
     HashMap<String, String> desc =
         suggestionEntityLookup.getSuggestionSearchEntityOxmModel().get(entityName);
-    String attr = desc.get("suggestibleAttributes");
-    suggestableAttr = Arrays.asList(attr.split(","));
-    List<String> suggestableValue = new ArrayList<>();
-    for (String attribute : suggestableAttr) {
-      if (node.get(attribute) != null && node.get(attribute).asText().length() > 0) {
-        suggestableValue.add(attribute);
+
+    if (desc != null) {
+
+      String attr = desc.get("suggestibleAttributes");
+
+      if (attr != null) {
+        suggestableAttr = Arrays.asList(attr.split(","));
+        List<String> suggestableValue = new ArrayList<String>();
+        for (String attribute : suggestableAttr) {
+          if (node.get(attribute) != null && node.get(attribute).asText().length() > 0) {
+            suggestableValue.add(attribute);
+          }
+        }
+        return suggestableValue;
       }
     }
-    return suggestableValue;
+
+    return new ArrayList<String>();
   }
 
   /**
@@ -454,9 +476,9 @@ public class AutosuggestionSynchronizer extends AbstractEntitySynchronizer
         }
       }
     } catch (JsonProcessingException exc) {
-      // TODO -> LOG, waht should be logged here?
+    	LOG.error(AaiUiMsgs.ERROR_GENERIC, "There was a json processing error while processing the result from elasticsearch. Error: " + exc.getMessage());
     } catch (IOException exc) {
-      // TODO -> LOG, waht should be logged here?
+    	LOG.error(AaiUiMsgs.ERROR_GENERIC, "There was a io processing error while processing the result from elasticsearch. Error: " + exc.getMessage());
     }
   }
 
