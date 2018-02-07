@@ -1,0 +1,16 @@
+{
+    "result-data": [
+        {
+            "resource-type": "service-subscription",
+            "resource-link": "/aai/v11/business/customers/customer/customer-1/service-subscriptions/service-subscription/service-subscription1"
+        },
+        {
+            "resource-type": "service-subscription",
+            "resource-link": "/aai/v11/business/customers/customer/customer-2/service-subscriptions/service-subscription/service-subscription-2"
+        },
+        {
+            "resource-type": "service-subscription",
+            "resource-link": "/aai/v11/business/customers/customer/customer-3/service-subscriptions/service-subscription/service-subscription-3"
+        }
+    ]
+}

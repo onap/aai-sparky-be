@@ -1,0 +1,12 @@
+{
+    "service-instance-id": "service-instance-53",
+    "service-instance-name": "a1",
+    "service-type": "si53-type",
+    "service-role": "si53-role",
+    "environment-context": "Universe",
+    "workload-context": "Nano",
+    "model-invariant-id": "340f3957-ff0a-4503-866d-a34fd1b97450",
+    "model-version-id": "ee2d8783-8495-4fb1-9553-6cdbd2dd3a50",
+    "resource-version": "1509355912484",
+    "orchestration-status": "Active",
+}

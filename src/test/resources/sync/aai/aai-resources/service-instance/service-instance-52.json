@@ -1,0 +1,12 @@
+{
+    "service-instance-id": "service-instance-52",
+    "service-instance-name": "si52",
+    "service-type": "",
+    "service-role": "",
+    "environment-context": "null",
+    "workload-context": "null",
+    "model-invariant-id": "d7b48529-6ae2-49f0-8633-b29e7cd4d4ce",
+    "model-version-id": "44671b15-83dd-4db7-a36e-dfada3eaa2f9",
+    "resource-version": "1508144995828",
+    "orchestration-status": "Active"
+}

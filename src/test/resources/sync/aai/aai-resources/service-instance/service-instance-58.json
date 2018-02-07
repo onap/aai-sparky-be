@@ -1,0 +1,32 @@
+{
+    "service-instance-id": "service-instance-58",
+    "service-instance-name": "a3",
+    "service-type": "",
+    "service-role": "",
+    "environment-context": "FluffyClouds",
+    "workload-context": "TasteGood",
+    "model-invariant-id": "d5937aa1-37fb-4ed0-8c30-5144b89a64ae",
+    "model-version-id": "06ac9663-54cf-4c77-b926-6e8757cf6380",
+    "resource-version": "1509356358573",
+    "orchestration-status": "Active",
+    "relationship-list": {
+        "relationship": [
+            {
+                "related-to": "generic-vnf",
+                "related-link": "/aai/v11/network/generic-vnfs/generic-vnf/9c925d7e-1a94-4784-a45b-408c8cc96fa8",
+                "relationship-data": [
+                    {
+                        "relationship-key": "generic-vnf.vnf-id",
+                        "relationship-value": "9c925d7e-1a94-4784-a45b-408c8cc96fa8"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "generic-vnf.vnf-name",
+                        "property-value": "dfdsfds"
+                    }
+                ]
+            }
+        ]
+    }
+}

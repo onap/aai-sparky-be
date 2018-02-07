@@ -1,0 +1,26 @@
+{
+    "service-instance-id": "service-instance-50",
+    "service-instance-name": "s01",
+    "service-type": "",
+    "service-role": "",
+    "environment-context": "Universe",
+    "workload-context": "QuantumContext",
+    "model-invariant-id": "5b9c0f33-eec1-484a-bf77-736a6644d7a8",
+    "model-version-id": "b75e0d22-05ff-4448-9266-5f0d4e1dbbd6",
+    "resource-version": "1510659038818",
+    "orchestration-status": "Active",
+    "relationship-list": {
+        "relationship": [
+            {
+                "related-to": "project",
+                "related-link": "/aai/v11/business/projects/project/project1",
+                "relationship-data": [
+                    {
+                        "relationship-key": "project.project-name",
+                        "relationship-value": "project1"
+                    }
+                ]
+            }
+        ]
+    }
+}

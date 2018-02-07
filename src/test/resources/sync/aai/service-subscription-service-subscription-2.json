@@ -1,0 +1,350 @@
+{
+    "service-type": "service-subscription-2",
+    "resource-version": "1494001891362",
+    "service-instances": {
+        "service-instance": [
+            {
+                "service-instance-id": "service-instance-54",
+                "service-instance-name": "si_failtest",
+                "model-invariant-id": "732263bd-0655-428d-a347-d65676d1a949",
+                "resource-version": "1494001997513"
+            },
+            {
+                "service-instance-id": "service-instance-55",
+                "service-instance-name": "test-343432",
+                "model-invariant-id": "709d1be4-9a3f-4a29-8c4d-a20465e808a3",
+                "model-version-id": "240376de-870e-48df-915a-31f140eedd2c",
+                "resource-version": "1500370094198",
+                "orchestration-status": "Active"
+            },
+            {
+                "service-instance-id": "service-instance-50",
+                "service-instance-name": "s01",
+                "service-type": "",
+                "service-role": "",
+                "environment-context": "General_Revenue-Bearing",
+                "workload-context": "Production",
+                "model-invariant-id": "5b9c0f33-eec1-484a-bf77-736a6644d7a8",
+                "model-version-id": "b75e0d22-05ff-4448-9266-5f0d4e1dbbd6",
+                "resource-version": "1510659038818",
+                "orchestration-status": "Active",
+                "relationship-list": {
+                    "relationship": [
+                        {
+                            "related-to": "project",
+                            "related-link": "/aai/v11/business/projects/project/project1",
+                            "relationship-data": [
+                                {
+                                    "relationship-key": "project.project-name",
+                                    "relationship-value": "project1"
+                                }
+                            ]
+                        },
+                        {
+                            "related-to": "owning-entity",
+                            "related-link": "/aai/v11/business/owning-entities/owning-entity/589fe0db-26c4-45e5-9f4e-a246c74fce76",
+                            "relationship-data": [
+                                {
+                                    "relationship-key": "owning-entity.owning-entity-id",
+                                    "relationship-value": "589fe0db-26c4-45e5-9f4e-a246c74fce76"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                "service-instance-id": "service-instance-52",
+                "service-instance-name": "shanitest",
+                "service-type": "",
+                "service-role": "",
+                "environment-context": "null",
+                "workload-context": "null",
+                "model-invariant-id": "d7b48529-6ae2-49f0-8633-b29e7cd4d4ce",
+                "model-version-id": "44671b15-83dd-4db7-a36e-dfada3eaa2f9",
+                "resource-version": "1508144995828",
+                "orchestration-status": "Active"
+            },
+            {
+                "service-instance-id": "service-instance-57",
+                "service-instance-name": "first_macro_shani",
+                "service-type": "",
+                "service-role": "",
+                "environment-context": "General_Revenue-Bearing",
+                "workload-context": "Production",
+                "model-invariant-id": "5b9c0f33-eec1-484a-bf77-736a6644d7a8",
+                "model-version-id": "b75e0d22-05ff-4448-9266-5f0d4e1dbbd6",
+                "resource-version": "1508071197869",
+                "orchestration-status": "Active"
+            },
+            {
+                "service-instance-id": "service-instance-53",
+                "service-instance-name": "a1",
+                "service-type": "service_type_shani",
+                "service-role": "service_role_shani",
+                "environment-context": "General_Revenue-Bearing",
+                "workload-context": "Production",
+                "model-invariant-id": "340f3957-ff0a-4503-866d-a34fd1b97450",
+                "model-version-id": "ee2d8783-8495-4fb1-9553-6cdbd2dd3a50",
+                "resource-version": "1509355912484",
+                "orchestration-status": "Active",
+                "relationship-list": {
+                    "relationship": [
+                        {
+                            "related-to": "owning-entity",
+                            "related-link": "/aai/v11/business/owning-entities/owning-entity/2356a43d-ed56-43b6-aefc-8391b82588c9",
+                            "relationship-data": [
+                                {
+                                    "relationship-key": "owning-entity.owning-entity-id",
+                                    "relationship-value": "2356a43d-ed56-43b6-aefc-8391b82588c9"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                "service-instance-id": "service-instance-58",
+                "service-instance-name": "a3",
+                "service-type": "",
+                "service-role": "",
+                "environment-context": "General_Revenue-Bearing",
+                "workload-context": "Production",
+                "model-invariant-id": "d5937aa1-37fb-4ed0-8c30-5144b89a64ae",
+                "model-version-id": "06ac9663-54cf-4c77-b926-6e8757cf6380",
+                "resource-version": "1509356358573",
+                "orchestration-status": "Active",
+                "relationship-list": {
+                    "relationship": [
+                        {
+                            "related-to": "generic-vnf",
+                            "related-link": "/aai/v11/network/generic-vnfs/generic-vnf/9c925d7e-1a94-4784-a45b-408c8cc96fa8",
+                            "relationship-data": [
+                                {
+                                    "relationship-key": "generic-vnf.vnf-id",
+                                    "relationship-value": "9c925d7e-1a94-4784-a45b-408c8cc96fa8"
+                                }
+                            ],
+                            "related-to-property": [
+                                {
+                                    "property-key": "generic-vnf.vnf-name",
+                                    "property-value": "dfdsfds"
+                                }
+                            ]
+                        },
+                        {
+                            "related-to": "owning-entity",
+                            "related-link": "/aai/v11/business/owning-entities/owning-entity/589fe0db-26c4-45e5-9f4e-a246c74fce76",
+                            "relationship-data": [
+                                {
+                                    "relationship-key": "owning-entity.owning-entity-id",
+                                    "relationship-value": "589fe0db-26c4-45e5-9f4e-a246c74fce76"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            },
+            {
+                "service-instance-id": "service-instance-51",
+                "service-instance-name": "test765445g",
+                "model-invariant-id": "709d1be4-9a3f-4a29-8c4d-a20465e808a3",
+                "model-version-id": "240376de-870e-48df-915a-31f140eedd2c",
+                "resource-version": "1499868690949",
+                "orchestration-status": "Active",
+                "relationship-list": {
+                    "relationship": [
+                        {
+                            "related-to": "generic-vnf",
+                            "related-link": "/aai/v11/network/generic-vnfs/generic-vnf/fbb52a16-2c57-4212-802f-32dbba2204f2",
+                            "relationship-data": [
+                                {
+                                    "relationship-key": "generic-vnf.vnf-id",
+                                    "relationship-value": "fbb52a16-2c57-4212-802f-32dbba2204f2"
+                                }
+                            ],
+                            "related-to-property": [
+                                {
+                                    "property-key": "generic-vnf.vnf-name",
+                                    "property-value": "fdfdfdf"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        ]
+    },
+    "relationship-list": {
+        "relationship": [
+            {
+                "related-to": "tenant",
+                "related-link": "/aai/v11/cloud-infrastructure/cloud-regions/cloud-region/att-aic/mtn6/tenants/tenant/tenant-1",
+                "relationship-data": [
+                    {
+                        "relationship-key": "cloud-region.cloud-owner",
+                        "relationship-value": "att-aic"
+                    },
+                    {
+                        "relationship-key": "cloud-region.cloud-region-id",
+                        "relationship-value": "mtn6"
+                    },
+                    {
+                        "relationship-key": "tenant.tenant-id",
+                        "relationship-value": "tenant-1"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "tenant.tenant-name",
+                        "property-value": "AIN Web Tool-15-D-sspstMAIL"
+                    }
+                ]
+            },
+            {
+                "related-to": "tenant",
+                "related-link": "/aai/v11/cloud-infrastructure/cloud-regions/cloud-region/att-aic/mtn6/tenants/tenant/23cbbd1872864ea08aa53ade25d34172",
+                "relationship-data": [
+                    {
+                        "relationship-key": "cloud-region.cloud-owner",
+                        "relationship-value": "att-aic"
+                    },
+                    {
+                        "relationship-key": "cloud-region.cloud-region-id",
+                        "relationship-value": "mtn6"
+                    },
+                    {
+                        "relationship-key": "tenant.tenant-id",
+                        "relationship-value": "23cbbd1872864ea08aa53ade25d34172"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "tenant.tenant-name",
+                        "property-value": "AIN Web Tool-15-D-rtertet"
+                    }
+                ]
+            },
+            {
+                "related-to": "tenant",
+                "related-link": "/aai/v11/cloud-infrastructure/cloud-regions/cloud-region/att-aic/mtn6/tenants/tenant/ded2432abb5a4100801331d07787afc2",
+                "relationship-data": [
+                    {
+                        "relationship-key": "cloud-region.cloud-owner",
+                        "relationship-value": "att-aic"
+                    },
+                    {
+                        "relationship-key": "cloud-region.cloud-region-id",
+                        "relationship-value": "mtn6"
+                    },
+                    {
+                        "relationship-key": "tenant.tenant-id",
+                        "relationship-value": "ded2432abb5a4100801331d07787afc2"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "tenant.tenant-name",
+                        "property-value": "AIN/SMS-16-D-SSPecompFlvr2"
+                    }
+                ]
+            },
+            {
+                "related-to": "tenant",
+                "related-link": "/aai/v11/cloud-infrastructure/cloud-regions/cloud-region/att-aic/mtn6/tenants/tenant/ad5aab08f5f7435e9983311af543f311",
+                "relationship-data": [
+                    {
+                        "relationship-key": "cloud-region.cloud-owner",
+                        "relationship-value": "att-aic"
+                    },
+                    {
+                        "relationship-key": "cloud-region.cloud-region-id",
+                        "relationship-value": "mtn6"
+                    },
+                    {
+                        "relationship-key": "tenant.tenant-id",
+                        "relationship-value": "ad5aab08f5f7435e9983311af543f311"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "tenant.tenant-name",
+                        "property-value": "AINWebTool-15-X-PODECOMP"
+                    }
+                ]
+            },
+            {
+                "related-to": "tenant",
+                "related-link": "/aai/v11/cloud-infrastructure/cloud-regions/cloud-region/att-aic/mtn6/tenants/tenant/8071dc66981c4294b05483a1cddac801",
+                "relationship-data": [
+                    {
+                        "relationship-key": "cloud-region.cloud-owner",
+                        "relationship-value": "att-aic"
+                    },
+                    {
+                        "relationship-key": "cloud-region.cloud-region-id",
+                        "relationship-value": "mtn6"
+                    },
+                    {
+                        "relationship-key": "tenant.tenant-id",
+                        "relationship-value": "8071dc66981c4294b05483a1cddac801"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "tenant.tenant-name",
+                        "property-value": "CESAR-100-X-ecompPODprivate"
+                    }
+                ]
+            },
+            {
+                "related-to": "tenant",
+                "related-link": "/aai/v11/cloud-infrastructure/cloud-regions/cloud-region/att-aic/mtn6/tenants/tenant/036f769581904ca08ead1415c22b9ec0",
+                "relationship-data": [
+                    {
+                        "relationship-key": "cloud-region.cloud-owner",
+                        "relationship-value": "att-aic"
+                    },
+                    {
+                        "relationship-key": "cloud-region.cloud-region-id",
+                        "relationship-value": "mtn6"
+                    },
+                    {
+                        "relationship-key": "tenant.tenant-id",
+                        "relationship-value": "036f769581904ca08ead1415c22b9ec0"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "tenant.tenant-name",
+                        "property-value": "AINWebTool-15-X-PODECOMPCLONE"
+                    }
+                ]
+            },
+            {
+                "related-to": "tenant",
+                "related-link": "/aai/v11/cloud-infrastructure/cloud-regions/cloud-region/att-aic/mtn6/tenants/tenant/c2475a36c5e04f12a21593849ae83420",
+                "relationship-data": [
+                    {
+                        "relationship-key": "cloud-region.cloud-owner",
+                        "relationship-value": "att-aic"
+                    },
+                    {
+                        "relationship-key": "cloud-region.cloud-region-id",
+                        "relationship-value": "mtn6"
+                    },
+                    {
+                        "relationship-key": "tenant.tenant-id",
+                        "relationship-value": "c2475a36c5e04f12a21593849ae83420"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "tenant.tenant-name",
+                        "property-value": "AIN/SMS-16-X-hope"
+                    }
+                ]
+            }
+        ]
+    }
+}

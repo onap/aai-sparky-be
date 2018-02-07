@@ -1,0 +1,60 @@
+{
+    "global-customer-id": "customer-4",
+    "subscriber-name": "Gold",
+    "subscriber-type": "GoldType",
+    "resource-version": "1494001938080",
+    "service-subscriptions": {
+        "service-subscription": [
+            {
+                "service-type": "service-subscription-2",
+                "resource-version": "1494001891362",
+                "service-instances": {
+                    "service-instance": [
+                        {
+                            "service-instance-id": "service-instance-54",
+                            "service-instance-name": "si_failtest",
+                            "model-invariant-id": "732263bd-0655-428d-a347-d65676d1a949",
+                            "resource-version": "1494001997513"
+                        },
+                        {
+                            "service-instance-id": "service-instance-55",
+                            "service-instance-name": "test-343432",
+                            "model-invariant-id": "709d1be4-9a3f-4a29-8c4d-a20465e808a3",
+                            "model-version-id": "240376de-870e-48df-915a-31f140eedd2c",
+                            "resource-version": "1500370094198",
+                            "orchestration-status": "Active"
+                        }
+                    ]
+                },
+                "relationship-list": {
+                    "relationship": [
+                        {
+                            "related-to": "tenant",
+                            "related-link": "/aai/v11/cloud-infrastructure/cloud-regions/cloud-region/att-aic/mtn6/tenants/tenant/tenant-1",
+                            "relationship-data": [
+                                {
+                                    "relationship-key": "cloud-region.cloud-owner",
+                                    "relationship-value": "cotton-candy"
+                                },
+                                {
+                                    "relationship-key": "cloud-region.cloud-region-id",
+                                    "relationship-value": "fluffy-clouds"
+                                },
+                                {
+                                    "relationship-key": "tenant.tenant-id",
+                                    "relationship-value": "tenant-1"
+                                }
+                            ],
+                            "related-to-property": [
+                                {
+                                    "property-key": "tenant.tenant-name",
+                                    "property-value": "CandyMan"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            }
+        ]
+    }
+}

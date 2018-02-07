@@ -1,0 +1,12 @@
+{
+    "service-type": "service-subscription-3",
+    "resource-version": "1495736709052",
+    "service-instances": {
+        "service-instance": [
+            {
+                "service-instance-id": "service-subscription-3",
+                "resource-version": "1495736709053"
+            }
+        ]
+    }
+}

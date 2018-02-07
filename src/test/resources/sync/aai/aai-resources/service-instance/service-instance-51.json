@@ -1,0 +1,28 @@
+{
+    "service-instance-id": "service-instance-51",
+    "service-instance-name": "test765445g",
+    "model-invariant-id": "709d1be4-9a3f-4a29-8c4d-a20465e808a3",
+    "model-version-id": "240376de-870e-48df-915a-31f140eedd2c",
+    "resource-version": "1499868690949",
+    "orchestration-status": "Active",
+    "relationship-list": {
+        "relationship": [
+            {
+                "related-to": "generic-vnf",
+                "related-link": "/aai/v11/network/generic-vnfs/generic-vnf/fbb52a16-2c57-4212-802f-32dbba2204f2",
+                "relationship-data": [
+                    {
+                        "relationship-key": "generic-vnf.vnf-id",
+                        "relationship-value": "fbb52a16-2c57-4212-802f-32dbba2204f2"
+                    }
+                ],
+                "related-to-property": [
+                    {
+                        "property-key": "generic-vnf.vnf-name",
+                        "property-value": "fdfdfdf"
+                    }
+                ]
+            }
+        ]
+    }
+}

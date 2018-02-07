@@ -1,0 +1,23 @@
+{
+    "tenant-id": "tenant-1",
+    "tenant-name": "SuperDude",
+    "resource-version": "1494001855362",
+    "relationship-list": {
+        "relationship": [
+            {
+                "related-to": "service-subscription",
+                "related-link": "/aai/v11/business/customers/customer/customer-2/service-subscriptions/service-subscription/service-subscription-2",
+                "relationship-data": [
+                    {
+                        "relationship-key": "customer.global-customer-id",
+                        "relationship-value": "customer-4"
+                    },
+                    {
+                        "relationship-key": "service-subscription.service-type",
+                        "relationship-value": "service-subscription-2"
+                    }
+                ]
+            }
+        ]
+    }
+}

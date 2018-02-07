@@ -1,0 +1,16 @@
+{
+    "result-data": [
+        {
+            "resource-type": "generic-vnf",
+            "resource-link": "/aai/v11/network/generic-vnfs/generic-vnf/generic-vnf-1"
+        },
+        {
+            "resource-type": "generic-vnf",
+            "resource-link": "/aai/v11/network/generic-vnfs/generic-vnf/generic-vnf-2"
+        },
+        {
+            "resource-type": "generic-vnf",
+            "resource-link": "/aai/v11/network/generic-vnfs/generic-vnf/generic-vnf-3"
+        }
+    ]
+}
