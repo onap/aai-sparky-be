@@ -2,7 +2,7 @@
 
 ### _VNFs_ Overview
 
-_VNFs_ is an aggregation based view that provides aggregate counts of VNFs based off of provsioning status and orchestration status.
+_VNFs_ is an aggregation based view that provides aggregate counts of VNFs based off of provsioning status and orchestration status.  There is slide out filtering panel that will allow filtering on different values from the data set.  The filters can be selected and cleared, and will have an immediate impact on the charts and graphs in this view.
 
 ### Navigation to _VNFs_
 
