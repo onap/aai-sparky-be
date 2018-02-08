@@ -35,33 +35,36 @@ You will be mounting these as data volumes when you start the Docker container.
 #### Clone Configuration Repo
 
 Clone the "test-config" repo to a seperate directory.
-Navigate to <test-config repo location>/sparky/appconfig (will contain files such as aai.properties).
+Navigate to <test-config repo location>/sparky/appconfig (will contain files such as aaiui_filters.json and authentication files).
 Copy the entire contents of <test-config repo location>/sparky/appconfig into the /opt/app/sparky/appconfig directory you created in an above step.
+Copy the entire contents of <test-config repo location>/sparky/dynamic into the /opt/app/sparky/dynamic directory you created in an above step.
+
+The *dynamic* folder contains spring-beans and camel routes.  The spring-beans must be updated with environmental configuration, to enable correct operation. 
 
 #### Edits to property files in /opt/app/sparky/appconfig
 
 Listed below are the values that will need to be updated to make _Sparky_ operate properly. The config files contain comments on the contents not listed here.
 
-**search-service.properties**
+**sparky-core.xml**
 
-search-service.ipAddress=<ip address / hostname of the search-data-service that this instance will use>
-search-service.httpPort=<http port of the search-data-service that this instance will use>
+- searchServiceRestEndpointConfig
+	- endpointIpAddress ( ip address of the Search Data Service )
+	- endpointServerPort ( server port of Search Data Service ) 
 
-**aai.properties**
+**sparky-core-sync.xml**
+ 
+- elasticSearchRestEndpointConfig
+    - endpointIpAddress (ElasticSearch server ip address)
+    - endpointServerPort (ElasticSearch transport server port.  Default: 9200)
 
-aai.rest.host=<ip address / hostname of the aai that this instance will use>
-aai.rest.port=<rest port of the aai that this instance will use>
-
-**elasticsearch.properties**
-
-elasticsearch.ipAddress=<ip address / hostname of the elasticsearch that this instance will use>
-elasticsearch.httpPort=<http port of the elasticsearch that this instance will use>
-elasticsearch.javaApiPort=<java api port of the elasticsearch that this instance will use>
+- aaiRestEndpointConfig
+    - endpointIpAddress (AAI server ip address)
+    - endpointServerPort (AAI server port.  Default: 8443)
 
 **portal/portal.properties**
 **portal/portal-authentication.properties**
 
-If this instance of _Sparky_ will be served in an eCOMP Portal instance, use the two files above to configure against the proper Portal instance.
+If this instance of _Sparky_ will be served in an ONAP Portal instance, use the two files above to configure against the proper Portal instance.
 
 ### Dependencies
 
@@ -69,5 +72,5 @@ _Sparky_ requires:
 
 - AAI instance as the main driver behind data.
 - Elasticsearch instance for data storage.
-- search-data-service instance for search functionality.
-- eCOMP Portal instance for authentication.
+- Search-Data-Service instance for search functionality.
+- ONAP Portal instance for authentication.
