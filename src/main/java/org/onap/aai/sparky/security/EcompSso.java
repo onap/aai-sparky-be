@@ -106,16 +106,16 @@ public class EcompSso {
    *         cookies do not decode); else null.
    */
   private static String getLoginIdFromCookie(HttpServletRequest request) {
-    String attuid = null;
+    String uid = null;
     try {
       String[] cspFields = getCspData(request);
       if (cspFields != null && cspFields.length > 5)
-        attuid = cspFields[5];
+        uid = cspFields[5];
     } catch (Throwable t) {
       LOG.info(AaiUiMsgs.LOGIN_FILTER_INFO,
           "getLoginIdFromCookie failed " + t.getLocalizedMessage());
     }
-    return attuid;
+    return uid;
   }
 
   /**
@@ -139,18 +139,12 @@ public class EcompSso {
     }
     final String cspCookieEncrypted = csp.getValue();
 
-    String gateKeeperProdKey = PortalApiProperties.getProperty(CSP_GATE_KEEPER_PROD_KEY);
-    if (gateKeeperProdKey == null) {
-      LOG.debug(AaiUiMsgs.LOGIN_FILTER_DEBUG,
-          "getCspData: failed to get property " + CSP_GATE_KEEPER_PROD_KEY);
-    }
-
-    String cspCookieDecrypted = "";
-    try {
-      cspCookieDecrypted = CipherUtil.decrypt(cspCookieEncrypted, "");
-    } catch (Exception e) {
-      LOG.info(AaiUiMsgs.LOGIN_FILTER_INFO, "decrypting cookie failed " + e.getLocalizedMessage());
-    }
+     String cspCookieDecrypted = null;
+	try {
+		cspCookieDecrypted = PortalAuthenticationConfig.getInstance().getCookieDecryptor().decryptCookie(cspCookieEncrypted);
+	} catch (ClassNotFoundException e) {
+		e.printStackTrace();
+	}
 
     String[] cspData = cspCookieDecrypted.split("\\|");
     return cspData;

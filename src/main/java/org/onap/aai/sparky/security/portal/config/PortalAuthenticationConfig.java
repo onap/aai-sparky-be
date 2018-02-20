@@ -22,8 +22,10 @@
  */
 package org.onap.aai.sparky.security.portal.config;
 
+
 import java.util.Properties;
 
+import org.onap.aai.sparky.security.CookieDecryptor;
 import org.onap.aai.sparky.util.ConfigHelper;
 import org.onap.aai.sparky.util.Encryptor;
 import org.onap.aai.sparky.viewandinspect.config.SparkyConstants;
@@ -37,11 +39,14 @@ public class PortalAuthenticationConfig {
   private String username;
   private String password;
   private boolean isOnapEnabled;
+  private CookieDecryptor cookieDecryptor;
+  private String cookieDecryptorClassName;
 
   public static final String PROP_USERNAME = "username";
   public static final String PROP_PASSWORD = "password"; // NOSONAR
   public static final String PROP_IS_ONAP_ENABLED = "onap_enabled"; // NOSONAR
   private static final String AUTHENTICATION_CONFIG_FILE = SparkyConstants.PORTAL_AUTHENTICATION_FILE_LOCATION;
+  public static final String PROP_COOKIEDECRYPTORCLASSNAME = "cookie_decryptor_classname";
 
   private PortalAuthenticationConfig() {
     // Prevent instantiation
@@ -77,6 +82,9 @@ public class PortalAuthenticationConfig {
   public boolean getIsOnapEnabled() {
     return isOnapEnabled;
   }
+  public String getcookieDecryptorClassName() {
+	    return cookieDecryptorClassName;
+	  }
 
   /**
    * Reload the Portal authentication properties from the classpath.
@@ -93,5 +101,18 @@ public class PortalAuthenticationConfig {
     username = props.getProperty(PROP_USERNAME);
     password = props.getProperty(PROP_PASSWORD);
     isOnapEnabled = Boolean.parseBoolean(props.getProperty(PROP_IS_ONAP_ENABLED, "true"));
+    cookieDecryptorClassName= props.getProperty(PROP_COOKIEDECRYPTORCLASSNAME);
   }
+  
+  public CookieDecryptor getCookieDecryptor() throws ClassNotFoundException{
+	  
+	  Class cookieDecrypterClass = Class.forName(cookieDecryptorClassName);
+	  try {
+		cookieDecryptor = (CookieDecryptor) cookieDecrypterClass.newInstance();
+	} catch (InstantiationException | IllegalAccessException e) {
+		e.printStackTrace();
+	}
+	  return cookieDecryptor;
+  }
+  
 }
