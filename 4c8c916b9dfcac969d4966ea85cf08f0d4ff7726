@@ -1,0 +1,10 @@
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+1: Francis Paquette <Francis.Paquette@amdocs.com>
+Code-Review+1: Richard von Dadelszen <richard.vondadelszen@amdocs.com>
+Code-Review+1: Arul Nambi <arul.n.mohan@gmail.com>
+Code-Review+2: Steven Blimkie <Steven.Blimkie@amdocs.com>
+Submitted-by: Steven Blimkie <Steven.Blimkie@amdocs.com>
+Submitted-at: Wed, 21 Feb 2018 21:48:22 +0000
+Reviewed-on: https://gerrit.onap.org/r/32413
+Project: aai/sparky-be
+Branch: refs/heads/master
