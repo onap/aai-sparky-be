@@ -1,0 +1,73 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_054176a8",
+        "filename": "src/main/java/org/onap/aai/sparky/security/BaseCookieDecryptor.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 43,
+      "author": {
+        "id": 1157
+      },
+      "writtenOn": "2018-02-21T16:31:50Z",
+      "side": 1,
+      "message": "If we handle an exception, then probably should be an error log not an info log.",
+      "range": {
+        "startLine": 43,
+        "startChar": 9,
+        "endLine": 43,
+        "endChar": 27
+      },
+      "revId": "75a2a882dcb57c8a9f55a43ee38f16269d51899b",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_e51a4ac5",
+        "filename": "src/main/java/org/onap/aai/sparky/security/EcompSso.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 150,
+      "author": {
+        "id": 1157
+      },
+      "writtenOn": "2018-02-21T16:31:50Z",
+      "side": 1,
+      "message": "would these two lines be the same as \n\nreturn cspCookieDecrypted.split(..);\n\nAnd what happens if the cspCookieDescrypted is null as a result of an exception, then what happens?  Probably another NPE?   You should move the cspCookieDecrypted split logic into the try-catch block, as you don\u0027t want to do it if you are already handling the exception, but then you need to figure out what to return, just null?",
+      "range": {
+        "startLine": 149,
+        "startChar": 3,
+        "endLine": 150,
+        "endChar": 19
+      },
+      "revId": "75a2a882dcb57c8a9f55a43ee38f16269d51899b",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_8562663c",
+        "filename": "src/main/java/org/onap/aai/sparky/security/portal/config/PortalAuthenticationConfig.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 119,
+      "author": {
+        "id": 1157
+      },
+      "writtenOn": "2018-02-21T16:31:50Z",
+      "side": 1,
+      "message": "How does your code behave if the cookieDecryptor is null as a result of a construction failure?",
+      "range": {
+        "startLine": 119,
+        "startChar": 3,
+        "endLine": 119,
+        "endChar": 26
+      },
+      "revId": "75a2a882dcb57c8a9f55a43ee38f16269d51899b",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
