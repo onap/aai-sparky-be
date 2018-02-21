@@ -25,6 +25,9 @@ package org.onap.aai.sparky.security.portal.config;
 
 import java.util.Properties;
 
+import org.onap.aai.cl.api.Logger;
+import org.onap.aai.cl.eelf.LoggerFactory;
+import org.onap.aai.sparky.logging.AaiUiMsgs;
 import org.onap.aai.sparky.security.CookieDecryptor;
 import org.onap.aai.sparky.util.ConfigHelper;
 import org.onap.aai.sparky.util.Encryptor;
@@ -47,6 +50,7 @@ public class PortalAuthenticationConfig {
   public static final String PROP_IS_ONAP_ENABLED = "onap_enabled"; // NOSONAR
   private static final String AUTHENTICATION_CONFIG_FILE = SparkyConstants.PORTAL_AUTHENTICATION_FILE_LOCATION;
   public static final String PROP_COOKIEDECRYPTORCLASSNAME = "cookie_decryptor_classname";
+  private static final Logger LOG = LoggerFactory.getInstance().getLogger(PortalAuthenticationConfig.class);
 
   private PortalAuthenticationConfig() {
     // Prevent instantiation
@@ -78,7 +82,7 @@ public class PortalAuthenticationConfig {
     Encryptor encryptor = new Encryptor();
     return encryptor.decryptValue(password);
   }
-  
+
   public boolean getIsOnapEnabled() {
     return isOnapEnabled;
   }
@@ -110,7 +114,7 @@ public class PortalAuthenticationConfig {
 	  try {
 		cookieDecryptor = (CookieDecryptor) cookieDecrypterClass.newInstance();
 	} catch (InstantiationException | IllegalAccessException e) {
-		e.printStackTrace();
+		 LOG.error(AaiUiMsgs.DECRYPTION_ERROR,"Unable to instantiate Cookie Decryptor Class");
 	}
 	  return cookieDecryptor;
   }

@@ -139,14 +139,15 @@ public class EcompSso {
     }
     final String cspCookieEncrypted = csp.getValue();
 
-     String cspCookieDecrypted = null;
+    String cspCookieDecrypted = null;
 	try {
 		cspCookieDecrypted = PortalAuthenticationConfig.getInstance().getCookieDecryptor().decryptCookie(cspCookieEncrypted);
+		return cspCookieDecrypted.split("\\|");
+		
 	} catch (ClassNotFoundException e) {
-		e.printStackTrace();
+		LOG.error(AaiUiMsgs.DECRYPTION_ERROR,"Unable to find the Cookie Decryptor Class");
 	}
-
-    String[] cspData = cspCookieDecrypted.split("\\|");
-    return cspData;
+	
+    return null;
   }
 }

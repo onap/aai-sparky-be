@@ -23,7 +23,7 @@
 package org.onap.aai.sparky.security;
 
 public interface CookieDecryptor {
-	
+
 	String decryptCookie(String encryptedCookie);
 
 }

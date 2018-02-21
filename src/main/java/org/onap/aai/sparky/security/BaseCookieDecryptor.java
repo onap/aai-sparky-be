@@ -28,19 +28,19 @@ import org.onap.aai.sparky.logging.AaiUiMsgs;
 import org.openecomp.portalsdk.core.onboarding.util.CipherUtil;
 
 public class BaseCookieDecryptor implements CookieDecryptor {
-	
+
 	private static final Logger LOG = LoggerFactory.getInstance().getLogger(BaseCookieDecryptor.class);
 
-	
+
 	public BaseCookieDecryptor(){}
-	
+
 	public String decryptCookie(String encryptedCookie){
-		
+
 		 String decryptedCookie = "";
 		    try {
 		    	decryptedCookie = CipherUtil.decrypt(encryptedCookie, "");
 		    } catch (Exception e) {
-		      LOG.info(AaiUiMsgs.LOGIN_FILTER_INFO, "decrypting base cookie failed " + e.getLocalizedMessage());
+		      LOG.error(AaiUiMsgs.LOGIN_FILTER_INFO, "decrypting base cookie failed " + e.getLocalizedMessage());
 		    }
 		    return decryptedCookie; 
 
