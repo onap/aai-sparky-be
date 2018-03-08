@@ -66,6 +66,10 @@ public class ActiveInventoryNode {
   private boolean isRootNode;
   private ConcurrentLinkedDeque<String> inboundNeighbors;
   private ConcurrentLinkedDeque<String> outboundNeighbors;
+  
+  private ConcurrentLinkedDeque<String> inboundNeighborSelfLinks;
+  private ConcurrentLinkedDeque<String> outboundNeighborSelfLinks;
+  
   private List<JsonNode> complexGroups;
   private List<RelationshipList> relationshipLists;
   private int nodeDepth;
@@ -139,6 +143,10 @@ public class ActiveInventoryNode {
     isRootNode = false;
     inboundNeighbors = new ConcurrentLinkedDeque<String>();
     outboundNeighbors = new ConcurrentLinkedDeque<String>();
+    
+    inboundNeighborSelfLinks = new ConcurrentLinkedDeque<String>();
+    outboundNeighborSelfLinks = new ConcurrentLinkedDeque<String>();
+    
     complexGroups = new ArrayList<JsonNode>();
     relationshipLists = new ArrayList<RelationshipList>();
     nodeDepth = DEFAULT_INIT_NODE_DEPTH;
@@ -163,6 +171,38 @@ public class ActiveInventoryNode {
       }
     }
   }
+  
+	public void addInboundSelfLink(String link) {
+
+		if (link == null) {
+			return;
+		}
+
+		if (!inboundNeighborSelfLinks.contains(link)) {
+			inboundNeighborSelfLinks.add(link);
+		}
+
+	}
+
+	public void addOutboundSelfLink(String link) {
+
+		if (link == null) {
+			return;
+		}
+
+		if (!outboundNeighborSelfLinks.contains(link)) {
+			outboundNeighborSelfLinks.add(link);
+		}
+
+	}
+
+	public Collection<String> getInboundNeighborSelfLinks() {
+		return inboundNeighborSelfLinks;
+	}
+
+	public Collection<String> getOutboundNeighborSelfLinks() {
+		return outboundNeighborSelfLinks;
+	}
   
   public void addQueryParams(Collection<String> params) {
 

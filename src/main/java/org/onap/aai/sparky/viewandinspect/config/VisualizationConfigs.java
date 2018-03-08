@@ -46,11 +46,15 @@ public class VisualizationConfigs {
   private boolean makeAllNeighborsBidirectional;
   
   private ArrayList<String> shallowEntities;
+  
+  private boolean gizmoEnabled;
 
   /**
    * Instantiates a new visualization config.
    */
-  public VisualizationConfigs() {}
+  public VisualizationConfigs() {
+	  this.gizmoEnabled = false;
+  }
 
   public ArrayList<String> getShallowEntities() {
     return shallowEntities;
@@ -129,23 +133,28 @@ public class VisualizationConfigs {
     this.numOfThreadsToFetchNodeIntegrity = numOfThreadsToFetchNodeIntegrity;
   }
 
+	public boolean isGizmoEnabled() {
+		return gizmoEnabled;
+	}
 
+	public void setGizmoEnabled(boolean gizmoEnabled) {
+		this.gizmoEnabled = gizmoEnabled;
+	}
 
-  @Override
-  public String toString() {
-    return "VisualizationConfigs [maxSelfLinkTraversalDepth=" + maxSelfLinkTraversalDepth
-        + ", visualizationDebugEnabled=" + visualizationDebugEnabled + ", "
-        + (aaiEntityNodeDescriptors != null
-            ? "aaiEntityNodeDescriptors=" + aaiEntityNodeDescriptors + ", " : "")
-        + (generalNodeClassName != null ? "generalNodeClassName=" + generalNodeClassName + ", "
-            : "")
-        + (searchNodeClassName != null ? "searchNodeClassName=" + searchNodeClassName + ", " : "")
-        + (selectedSearchedNodeClassName != null
-            ? "selectedSearchedNodeClassName=" + selectedSearchedNodeClassName + ", " : "")
-        + "numOfThreadsToFetchNodeIntegrity=" + numOfThreadsToFetchNodeIntegrity
-        + ", makeAllNeighborsBidirectional=" + makeAllNeighborsBidirectional + "]";
-  }
-
-
+	@Override
+	public String toString() {
+		return "VisualizationConfigs [maxSelfLinkTraversalDepth=" + maxSelfLinkTraversalDepth
+				+ ", visualizationDebugEnabled=" + visualizationDebugEnabled + ", "
+				+ (aaiEntityNodeDescriptors != null ? "aaiEntityNodeDescriptors=" + aaiEntityNodeDescriptors + ", "
+						: "")
+				+ (generalNodeClassName != null ? "generalNodeClassName=" + generalNodeClassName + ", " : "")
+				+ (searchNodeClassName != null ? "searchNodeClassName=" + searchNodeClassName + ", " : "")
+				+ (selectedSearchedNodeClassName != null
+						? "selectedSearchedNodeClassName=" + selectedSearchedNodeClassName + ", " : "")
+				+ "numOfThreadsToFetchNodeIntegrity=" + numOfThreadsToFetchNodeIntegrity
+				+ ", makeAllNeighborsBidirectional=" + makeAllNeighborsBidirectional + ", "
+				+ (shallowEntities != null ? "shallowEntities=" + shallowEntities + ", " : "") + "gizmoEnabled="
+				+ gizmoEnabled + "]";
+	}
 
 }

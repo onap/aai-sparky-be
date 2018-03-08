@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.onap.aai.sparky.config.oxm.CrossEntityReferenceLookup;
 import org.onap.aai.sparky.config.oxm.GeoEntityLookup;
+import org.onap.aai.sparky.config.oxm.OxmEntityContainerLookup;
 import org.onap.aai.sparky.config.oxm.OxmEntityLookup;
 import org.onap.aai.sparky.config.oxm.OxmModelLoader;
 import org.onap.aai.sparky.config.oxm.OxmModelProcessor;
@@ -13,109 +14,123 @@ import org.onap.aai.sparky.config.oxm.SuggestionEntityLookup;
 import org.onap.aai.sparky.search.filters.config.FiltersConfig;
 
 public class OxmModelAndProcessorHelper {
-  
-  private static final int API_VERSION_OVERRIDE = -1;
 
-  private OxmModelLoader modelLoader;
-  private Set<OxmModelProcessor> processors;
-  
-  private CrossEntityReferenceLookup crossEntityReferenceLookup;
-  private GeoEntityLookup geoEntityLookup;
-  private OxmEntityLookup oxmEntityLookup;
-  private SearchableEntityLookup searchableEntityLookup;
-  private SuggestionEntityLookup suggestionEntityLookup;
-  private FiltersConfig filtersConfig;
+	public static int API_VERSION_OVERRIDE = -1;
 
-  private static OxmModelAndProcessorHelper instance = null;
-  private OxmModelAndProcessorHelper() {
+	private OxmModelLoader modelLoader;
+	private Set<OxmModelProcessor> processors;
 
-    this.filtersConfig = new FiltersConfig(SparkyTestConstants.FILTERS_JSON_FILE, SparkyTestConstants.VIEWS_JSON_FILE);
-    
-    this.crossEntityReferenceLookup = new CrossEntityReferenceLookup();
-    this.geoEntityLookup = new GeoEntityLookup();
-    this.oxmEntityLookup = new OxmEntityLookup();
-    this.searchableEntityLookup = new SearchableEntityLookup();
-    this.suggestionEntityLookup = new SuggestionEntityLookup(filtersConfig);
-    
-    this.processors = new HashSet<OxmModelProcessor>();
-    processors.add(crossEntityReferenceLookup);
-    processors.add(geoEntityLookup);
-    processors.add(oxmEntityLookup);
-    processors.add(searchableEntityLookup);
-    processors.add(suggestionEntityLookup);
-    
-    this.modelLoader = new OxmModelLoader(API_VERSION_OVERRIDE, processors);
-    modelLoader.loadLatestOxmModel();
-  }
-  
-  public static OxmModelAndProcessorHelper getInstance() {
-    if (instance == null) {
-      instance = new OxmModelAndProcessorHelper();
-    }
-    return instance;
-  }
+	private CrossEntityReferenceLookup crossEntityReferenceLookup;
+	private GeoEntityLookup geoEntityLookup;
+	private OxmEntityLookup oxmEntityLookup;
+	private SearchableEntityLookup searchableEntityLookup;
+	private SuggestionEntityLookup suggestionEntityLookup;
+	private OxmEntityContainerLookup oxmEntityContainerLookup;
+	private FiltersConfig filtersConfig;
 
-  public OxmModelLoader getModelLoader() {
-    return modelLoader;
-  }
+	private static OxmModelAndProcessorHelper instance = null;
 
-  public void setModelLoader(OxmModelLoader modelLoader) {
-    this.modelLoader = modelLoader;
-  }
+	private OxmModelAndProcessorHelper() {
 
-  public Set<OxmModelProcessor> getProcessors() {
-    return processors;
-  }
+		this.filtersConfig = new FiltersConfig(SparkyTestConstants.FILTERS_JSON_FILE,
+				SparkyTestConstants.VIEWS_JSON_FILE);
 
-  public void setProcessors(Set<OxmModelProcessor> processors) {
-    this.processors = processors;
-  }
+		this.crossEntityReferenceLookup = new CrossEntityReferenceLookup();
+		this.geoEntityLookup = new GeoEntityLookup();
+		this.oxmEntityLookup = new OxmEntityLookup();
+		this.searchableEntityLookup = new SearchableEntityLookup();
+		this.suggestionEntityLookup = new SuggestionEntityLookup(filtersConfig);
+		this.oxmEntityContainerLookup = new OxmEntityContainerLookup();
 
-  public CrossEntityReferenceLookup getCrossEntityReferenceLookup() {
-    return crossEntityReferenceLookup;
-  }
+		this.processors = new HashSet<OxmModelProcessor>();
+		processors.add(crossEntityReferenceLookup);
+		processors.add(geoEntityLookup);
+		processors.add(oxmEntityLookup);
+		processors.add(searchableEntityLookup);
+		processors.add(suggestionEntityLookup);
+		processors.add(oxmEntityContainerLookup);
 
-  public void setCrossEntityReferenceLookup(CrossEntityReferenceLookup crossEntityReferenceLookup) {
-    this.crossEntityReferenceLookup = crossEntityReferenceLookup;
-  }
+		this.modelLoader = new OxmModelLoader(API_VERSION_OVERRIDE, processors);
+		modelLoader.loadLatestOxmModel();
+	}
 
-  public GeoEntityLookup getGeoEntityLookup() {
-    return geoEntityLookup;
-  }
+	public static OxmModelAndProcessorHelper getInstance() {
+		if (instance == null) {
+			instance = new OxmModelAndProcessorHelper();
+		}
+		return instance;
+	}
 
-  public void setGeoEntityLookup(GeoEntityLookup geoEntityLookup) {
-    this.geoEntityLookup = geoEntityLookup;
-  }
+	public OxmModelLoader getModelLoader() {
+		return modelLoader;
+	}
 
-  public OxmEntityLookup getOxmEntityLookup() {
-    return oxmEntityLookup;
-  }
+	public void setModelLoader(OxmModelLoader modelLoader) {
+		this.modelLoader = modelLoader;
+	}
 
-  public void setOxmEntityLookup(OxmEntityLookup oxmEntityLookup) {
-    this.oxmEntityLookup = oxmEntityLookup;
-  }
+	public Set<OxmModelProcessor> getProcessors() {
+		return processors;
+	}
 
-  public SearchableEntityLookup getSearchableEntityLookup() {
-    return searchableEntityLookup;
-  }
+	public void setProcessors(Set<OxmModelProcessor> processors) {
+		this.processors = processors;
+	}
 
-  public void setSearchableEntityLookup(SearchableEntityLookup searchableEntityLookup) {
-    this.searchableEntityLookup = searchableEntityLookup;
-  }
+	public CrossEntityReferenceLookup getCrossEntityReferenceLookup() {
+		return crossEntityReferenceLookup;
+	}
 
-  public SuggestionEntityLookup getSuggestionEntityLookup() {
-    return suggestionEntityLookup;
-  }
+	public void setCrossEntityReferenceLookup(CrossEntityReferenceLookup crossEntityReferenceLookup) {
+		this.crossEntityReferenceLookup = crossEntityReferenceLookup;
+	}
 
-  public void setSuggestionEntityLookup(SuggestionEntityLookup suggestionEntityLookup) {
-    this.suggestionEntityLookup = suggestionEntityLookup;
-  }
+	public GeoEntityLookup getGeoEntityLookup() {
+		return geoEntityLookup;
+	}
 
-  public FiltersConfig getFiltersConfig() {
-    return filtersConfig;
-  }
+	public void setGeoEntityLookup(GeoEntityLookup geoEntityLookup) {
+		this.geoEntityLookup = geoEntityLookup;
+	}
 
-  public void setFiltersConfig(FiltersConfig filtersConfig) {
-    this.filtersConfig = filtersConfig;
-  }
+	public OxmEntityLookup getOxmEntityLookup() {
+		return oxmEntityLookup;
+	}
+
+	public void setOxmEntityLookup(OxmEntityLookup oxmEntityLookup) {
+		this.oxmEntityLookup = oxmEntityLookup;
+	}
+
+	public SearchableEntityLookup getSearchableEntityLookup() {
+		return searchableEntityLookup;
+	}
+
+	public void setSearchableEntityLookup(SearchableEntityLookup searchableEntityLookup) {
+		this.searchableEntityLookup = searchableEntityLookup;
+	}
+
+	public SuggestionEntityLookup getSuggestionEntityLookup() {
+		return suggestionEntityLookup;
+	}
+
+	public void setSuggestionEntityLookup(SuggestionEntityLookup suggestionEntityLookup) {
+		this.suggestionEntityLookup = suggestionEntityLookup;
+	}
+
+	public FiltersConfig getFiltersConfig() {
+		return filtersConfig;
+	}
+
+	public void setFiltersConfig(FiltersConfig filtersConfig) {
+		this.filtersConfig = filtersConfig;
+	}
+
+	public OxmEntityContainerLookup getOxmEntityContainerLookup() {
+		return oxmEntityContainerLookup;
+	}
+
+	public void setOxmEntityContainerLookup(OxmEntityContainerLookup oxmEntityContainerLookup) {
+		this.oxmEntityContainerLookup = oxmEntityContainerLookup;
+	}
+
 }

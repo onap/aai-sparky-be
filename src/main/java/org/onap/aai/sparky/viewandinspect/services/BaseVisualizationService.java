@@ -37,6 +37,7 @@ import org.onap.aai.sparky.config.oxm.OxmEntityLookup;
 import org.onap.aai.sparky.config.oxm.OxmModelLoader;
 import org.onap.aai.sparky.dal.ActiveInventoryAdapter;
 import org.onap.aai.sparky.dal.ElasticSearchAdapter;
+import org.onap.aai.sparky.dal.GizmoAdapter;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
 import org.onap.aai.sparky.subscription.config.SubscriptionConfig;
 import org.onap.aai.sparky.sync.config.ElasticSearchEndpointConfig;
@@ -64,6 +65,7 @@ public class BaseVisualizationService implements VisualizationService {
   private ObjectMapper mapper = new ObjectMapper();
 
   private final ActiveInventoryAdapter aaiAdapter;
+  private final GizmoAdapter gizmoAdapter;
   private final ElasticSearchAdapter esAdapter;
   private final ExecutorService aaiExecutorService;
   
@@ -76,16 +78,18 @@ public class BaseVisualizationService implements VisualizationService {
   private ElasticSearchSchemaConfig schemaEConfig;
   private OxmEntityLookup oxmEntityLookup;
   
-  public BaseVisualizationService(OxmModelLoader loader, VisualizationConfigs visualizationConfigs,
-		  ActiveInventoryAdapter aaiAdapter,ElasticSearchAdapter esAdapter,
-		  ElasticSearchEndpointConfig endpointConfig, ElasticSearchSchemaConfig schemaConfig, int numActiveInventoryWorkers, 
-		  OxmEntityLookup oxmEntityLookup, SubscriptionConfig subscriptionConfig) throws Exception {
+	public BaseVisualizationService(OxmModelLoader loader, VisualizationConfigs visualizationConfigs,
+			ActiveInventoryAdapter aaiAdapter, GizmoAdapter gizmoAdapter, ElasticSearchAdapter esAdapter,
+			ElasticSearchEndpointConfig endpointConfig, ElasticSearchSchemaConfig schemaConfig,
+			int numActiveInventoryWorkers, OxmEntityLookup oxmEntityLookup, SubscriptionConfig subscriptionConfig)
+			throws Exception {
    
     this.visualizationConfigs = visualizationConfigs;
     this.endpointEConfig = endpointConfig; 
     this.schemaEConfig = schemaConfig; 
     this.oxmEntityLookup = oxmEntityLookup;
     this.subConfig = subscriptionConfig;
+    
 
     secureRandom = new SecureRandom();
     
@@ -94,6 +98,7 @@ public class BaseVisualizationService implements VisualizationService {
      */
  
     this.aaiAdapter = aaiAdapter;
+    this.gizmoAdapter = gizmoAdapter;
     this.esAdapter = esAdapter; 
 
     this.mapper = new ObjectMapper();
@@ -276,8 +281,14 @@ public class BaseVisualizationService implements VisualizationService {
     VisualizationContext visContext = null;
     long contextId = secureRandom.nextLong();
     try {
-      visContext = new BaseVisualizationContext(contextId, this.aaiAdapter, aaiExecutorService,
-          this.visualizationConfigs, oxmEntityLookup);
+    	if ( visualizationConfigs.isGizmoEnabled()) {
+    	      visContext = new BaseGizmoVisualizationContext(contextId, this.gizmoAdapter, aaiExecutorService,
+    	              this.visualizationConfigs, oxmEntityLookup);
+    	} else {
+    	      visContext = new BaseVisualizationContext(contextId, this.aaiAdapter, aaiExecutorService,
+    	              this.visualizationConfigs, oxmEntityLookup);
+    	}
+    	
       contextMap.putIfAbsent(contextId, visContext);
     } catch (Exception e1) {
       LOG.error(AaiUiMsgs.EXCEPTION_CAUGHT,

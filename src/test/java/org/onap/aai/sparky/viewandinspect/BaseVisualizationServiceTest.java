@@ -1,6 +1,6 @@
 package org.onap.aai.sparky.viewandinspect;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -9,6 +9,7 @@ import org.onap.aai.sparky.config.oxm.OxmEntityLookup;
 import org.onap.aai.sparky.config.oxm.OxmModelLoader;
 import org.onap.aai.sparky.dal.ActiveInventoryAdapter;
 import org.onap.aai.sparky.dal.ElasticSearchAdapter;
+import org.onap.aai.sparky.dal.GizmoAdapter;
 import org.onap.aai.sparky.subscription.config.SubscriptionConfig;
 import org.onap.aai.sparky.sync.config.ElasticSearchEndpointConfig;
 import org.onap.aai.sparky.sync.config.ElasticSearchSchemaConfig;
@@ -26,13 +27,16 @@ public class BaseVisualizationServiceTest {
   private ElasticSearchEndpointConfig endpointEConfig;
   private ElasticSearchSchemaConfig schemaEConfig;
   private OxmEntityLookup oxmEntityLookup;
+  private GizmoAdapter mockGizmoAdapter;
   
   private BaseVisualizationService baseVisService;
   
   @Before
   public void init() throws Exception {
     this.mockAaiAdapter = Mockito.mock(ActiveInventoryAdapter.class);
+    this.mockAaiAdapter = Mockito.mock(ActiveInventoryAdapter.class);
     this.mockEsAdapter = Mockito.mock(ElasticSearchAdapter.class);
+    this.mockGizmoAdapter = Mockito.mock(GizmoAdapter.class);
     this.visualizationConfigs = new VisualizationConfigs();
     this.subConfig = new SubscriptionConfig();
     this.endpointEConfig = new ElasticSearchEndpointConfig();
@@ -41,8 +45,9 @@ public class BaseVisualizationServiceTest {
     
     OxmModelLoader modelLoader = OxmModelAndProcessorHelper.getInstance().getModelLoader();
     
-    this.baseVisService = new BaseVisualizationService(modelLoader, visualizationConfigs, mockAaiAdapter,
-        mockEsAdapter, endpointEConfig, schemaEConfig, 1, oxmEntityLookup, subConfig);
+    this.baseVisService = new BaseVisualizationService(modelLoader, visualizationConfigs,
+        mockAaiAdapter, mockGizmoAdapter, mockEsAdapter, endpointEConfig, schemaEConfig, 1,
+        oxmEntityLookup, subConfig);
   }
   
   @Test

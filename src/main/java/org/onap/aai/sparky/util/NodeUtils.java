@@ -73,7 +73,9 @@ public class NodeUtils {
   private static SecureRandom sRandom = new SecureRandom();
   
   private static final Pattern AAI_VERSION_PREFIX = Pattern.compile("/aai/v[0-9]+/(.*)");
-
+  private static final Pattern GIZMO_VERSION_PREFIX = Pattern.compile("[/]*services/inventory/v[0-9]+/(.*)");
+  private static final Pattern GIZMO_RELATIONSHIP_VERSION_PREFIX = Pattern.compile("services/inventory/relationships/v[0-9]+/(.*)");
+                                                                                    
   
   public static synchronized String getRandomTxnId(){
       byte bytes[] = new byte[6];
@@ -119,6 +121,53 @@ public class NodeUtils {
     return null;
     
   }
+  
+  public static String extractRawGizmoPathWithoutVersion(String resourceLink) {
+
+    try {
+
+      String rawPath = new URI(resourceLink).getRawPath();
+      
+      Matcher m = GIZMO_VERSION_PREFIX.matcher(rawPath);
+
+      if (m.matches()) {
+
+        if ( m.groupCount() >= 1) {
+          return m.group(1);
+        }
+          
+      }
+    } catch (Exception e) {
+    }
+    
+    return null;
+    
+  }
+  
+  public static String extractRawGizmoRelationshipPathWithoutVersion(String resourceLink) {
+
+    try {
+
+      String rawPath = new URI(resourceLink).getRawPath();
+      
+      Matcher m = GIZMO_RELATIONSHIP_VERSION_PREFIX.matcher(rawPath);
+
+      if (m.matches()) {
+
+        if ( m.groupCount() >= 1) {
+          return m.group(1);
+        }
+          
+      }
+    } catch (Exception e) {
+    }
+    
+    return null;
+    
+  }  
+  
+  
+
 
   /**
    * Checks if is numeric.
@@ -163,12 +212,7 @@ public class NodeUtils {
     return Executors.newScheduledThreadPool(numWorkers + 1, namedThreadFactory);
   }
 
-  /**
-   * Calculate edit attribute uri.
-   *
-   * @param link the link
-   * @return the string
-   */
+
   public static String calculateEditAttributeUri(String link) {
     String uri = null;
 
@@ -183,6 +227,7 @@ public class NodeUtils {
     return uri;
   }
 
+  
   /**
    * Generate unique sha digest.
    *
@@ -612,6 +657,51 @@ public class NodeUtils {
       }
 
     }
+  }
+    
+  public static String extractObjectValueByKey(JsonNode node, String searchKey) {
+
+    if (node == null) {
+      return null;
+    }
+
+    if (node.isObject()) {
+      Iterator<Map.Entry<String, JsonNode>> nodeIterator = node.fields();
+
+      while (nodeIterator.hasNext()) {
+        Map.Entry<String, JsonNode> entry = nodeIterator.next();
+        if (!entry.getValue().isValueNode()) {
+          return extractObjectValueByKey(entry.getValue(), searchKey);
+        }
+
+        String name = entry.getKey();
+        if (name.equalsIgnoreCase(searchKey)) {
+
+          JsonNode entryNode = entry.getValue();
+
+          if (entryNode.isArray()) {
+
+            Iterator<JsonNode> arrayItemsIterator = entryNode.elements();
+            while (arrayItemsIterator.hasNext()) {
+              return arrayItemsIterator.next().asText();
+            }
+
+          } else {
+            return entry.getValue().asText();
+          }
+
+
+        }
+      }
+    } else if (node.isArray()) {
+      Iterator<JsonNode> arrayItemsIterator = node.elements();
+      while (arrayItemsIterator.hasNext()) {
+        return extractObjectValueByKey(arrayItemsIterator.next(), searchKey);
+      }
+
+    }
+
+    return null;
 
   }
 
