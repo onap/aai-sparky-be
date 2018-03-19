@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_06692025",
+        "filename": "src/main/java/org/onap/aai/sparky/aggregatevnf/search/AggregateVnfSearchProvider.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 57,
+      "author": {
+        "id": 651
+      },
+      "writtenOn": "2018-03-19T15:19:53Z",
+      "side": 1,
+      "message": "We are not using tabs in code.\nDid you forget to reformat?",
+      "revId": "58d6a65b79b9d543764dc9c99168cd1f75148931",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
