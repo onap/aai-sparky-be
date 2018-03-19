@@ -22,42 +22,51 @@
  */
 package org.onap.aai.sparky.aggregatevnf.search;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
-import javax.json.JsonObject;
-import javax.ws.rs.core.MediaType;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
 import org.onap.aai.restclient.client.OperationResult;
 import org.onap.aai.sparky.common.search.CommonSearchSuggestion;
-import org.onap.aai.sparky.dal.ElasticSearchAdapter;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
+import org.onap.aai.sparky.search.SearchServiceAdapter;
 import org.onap.aai.sparky.search.api.SearchProvider;
 import org.onap.aai.sparky.search.entity.QuerySearchEntity;
 import org.onap.aai.sparky.search.entity.SearchSuggestion;
 import org.onap.aai.sparky.search.filters.entity.UiFilterValueEntity;
 import org.onap.aai.sparky.util.NodeUtils;
-import org.onap.aai.sparky.viewandinspect.config.SparkyConstants;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 
 public class AggregateVnfSearchProvider implements SearchProvider {
   
   private static final Logger LOG = LoggerFactory.getInstance().getLogger(AggregateVnfSearchProvider.class);
 
   private ObjectMapper mapper;
-  private ElasticSearchAdapter elasticSearchAdapter = null;
+  private SearchServiceAdapter searchServiceAdapter = null;
   private String autoSuggestIndexName;
   private String vnfSearchSuggestionRoute;
+  
+  private static final String AUTO_SUGGEST_TEMPLATE =
+		    "{ " + "\"results-size\": %d," + "\"suggest-text\": \"%s\"," + "\"suggest-field\": \"%s\"" + "}";
+	  
+  private static final String KEY_SEARCH_RESULT = "searchResult";
+  private static final String KEY_HITS = "hits";
+  private static final String KEY_DOCUMENT = "document";
+  private static final String KEY_CONTENT = "content";
+  private static final String KEY_TEXT= "text";
+  private static final String KEY_FILTER_LIST = "filterList";
 
-  public AggregateVnfSearchProvider(ElasticSearchAdapter elasticSearchAdapter,
+  public AggregateVnfSearchProvider(SearchServiceAdapter searchServiceAdapter,
       String autoSuggestIndexName, String vnfSearchSuggestionRoute) {
     mapper = new ObjectMapper();
-    this.elasticSearchAdapter = elasticSearchAdapter;
+    this.searchServiceAdapter = searchServiceAdapter;
     this.autoSuggestIndexName = autoSuggestIndexName;
     this.vnfSearchSuggestionRoute = vnfSearchSuggestionRoute;
   }
@@ -69,59 +78,94 @@ public class AggregateVnfSearchProvider implements SearchProvider {
   @Override
   public List<SearchSuggestion> search(QuerySearchEntity queryRequest) {
 
-    List<SearchSuggestion> returnList = new ArrayList<SearchSuggestion>();
+	  List<SearchSuggestion> returnList = new ArrayList<SearchSuggestion>();
+	   try {
+		  
+	    	final String fullUrlStr = searchServiceAdapter.buildSuggestServiceQueryUrl(autoSuggestIndexName); 
+	    	String postBody = String.format(AUTO_SUGGEST_TEMPLATE, Integer.parseInt(queryRequest.getMaxResults()),
+	    	   		queryRequest.getQueryStr(),"entity_suggest");
+	    	OperationResult opResult = searchServiceAdapter.doPost(fullUrlStr, postBody, "application/json");
+	    	if (opResult.getResultCode() == 200) {
+	    		returnList = generateSuggestionsForSearchResponse(opResult.getResult());
+	          }
+	    	else{
+	    		LOG.error(AaiUiMsgs.ERROR_PARSING_JSON_PAYLOAD_VERBOSE, opResult.getResult());
+	    		return returnList;
+	    	}
+	   } catch (Exception exc) {
+	      LOG.error(AaiUiMsgs.ERROR_GENERIC, "Search failed due to error = " + exc.getMessage());
+	    }
 
-    try {
-
-      /* Create suggestions query */
-      JsonObject vnfSearch = VnfSearchQueryBuilder.createSuggestionsQuery(String.valueOf(queryRequest.getMaxResults()), queryRequest.getQueryStr());
-
-      /* Parse suggestions response */
-      OperationResult opResult = elasticSearchAdapter.doPost(
-          elasticSearchAdapter.buildElasticSearchUrlForApi(autoSuggestIndexName,
-              SparkyConstants.ES_SUGGEST_API),
-          vnfSearch.toString(), MediaType.APPLICATION_JSON_TYPE);
-
-      String result = opResult.getResult();
-
-      if (!opResult.wasSuccessful()) {
-        LOG.error(AaiUiMsgs.ERROR_PARSING_JSON_PAYLOAD_VERBOSE, result);
-        return returnList;
-      }
-
-      JSONObject responseJson = new JSONObject(result);
-      String suggestionsKey = "vnfs";
-      JSONArray suggestionsArray = new JSONArray();
-      JSONArray suggestions = responseJson.getJSONArray(suggestionsKey);
-      if (suggestions.length() > 0) {
-        suggestionsArray = suggestions.getJSONObject(0).getJSONArray("options");
-        for (int i = 0; i < suggestionsArray.length(); i++) {
-          JSONObject querySuggestion = suggestionsArray.getJSONObject(i);
-          if (querySuggestion != null) {
-            CommonSearchSuggestion responseSuggestion = new CommonSearchSuggestion();
-            responseSuggestion.setText(querySuggestion.getString("text"));
-            responseSuggestion.setRoute(vnfSearchSuggestionRoute);
-            responseSuggestion.setHashId(NodeUtils.generateUniqueShaDigest(querySuggestion.getString("text")));
-
-            // Extract filter list from JSON and add to response suggestion
-            JSONObject payload = querySuggestion.getJSONObject("payload");
-            if (payload.length() > 0) {
-              JSONArray filterList = payload.getJSONArray("filterList");
-              for (int filter = 0; filter < filterList.length(); filter++) {
-                String filterValueString = filterList.getJSONObject(filter).toString();
-                UiFilterValueEntity filterValue = mapper.readValue(filterValueString, UiFilterValueEntity.class);
-                responseSuggestion.getFilterValues().add(filterValue);
-              }
-            }
-            returnList.add(responseSuggestion);
-          }
-        }
-      }
-    } catch (Exception exc) {
-      LOG.error(AaiUiMsgs.ERROR_GENERIC, "Search failed due to error = " + exc.getMessage());
-    }
-
-    return returnList;
+	    return returnList;
   }
+  
+  private List<SearchSuggestion> generateSuggestionsForSearchResponse(String operationResult) {
+	  
+	    if (operationResult == null || operationResult.length() == 0) {
+	      return null;
+	    }
+
+	    ObjectMapper mapper = new ObjectMapper();
+	    JsonNode rootNode = null;
+	    List<SearchSuggestion> suggestionEntityList = new ArrayList<SearchSuggestion>();
+	    
+	    try {
+	      rootNode = mapper.readTree(operationResult);
+	      JsonNode hitsNode = rootNode.get(KEY_SEARCH_RESULT);
+	      // Check if there are hits that are coming back
+	      if (hitsNode.has(KEY_HITS)) {
+	        ArrayNode hitsArray = (ArrayNode) hitsNode.get(KEY_HITS);
+
+	        /*
+	         * next we iterate over the values in the hit array elements
+	         */
+	        Iterator<JsonNode> nodeIterator = hitsArray.elements();
+	        JsonNode entityNode = null;
+	        CommonSearchSuggestion responseSuggestion = null;
+	        JsonNode sourceNode = null;
+	        
+	        while (nodeIterator.hasNext()) {
+	          entityNode = nodeIterator.next();
+	          String responseText = getValueFromNode(entityNode,KEY_TEXT);
+	          // do the point transformation as we build the response?   
+	          responseSuggestion = new CommonSearchSuggestion();
+	          responseSuggestion.setRoute(vnfSearchSuggestionRoute);
+	          responseSuggestion.setText(responseText);
+	          responseSuggestion.setHashId(NodeUtils.generateUniqueShaDigest(responseText));
+	          
+	          sourceNode = entityNode.get(KEY_DOCUMENT).get(KEY_CONTENT);
+	          if (sourceNode.has(KEY_FILTER_LIST)) {
+	  	        ArrayNode filtersArray = (ArrayNode) sourceNode.get(KEY_FILTER_LIST);
+	  	        for(int i =0; i< filtersArray.size(); i++)
+	  	        {
+	  	        	String filterValueString  = filtersArray.get(i).toString();
+		  	    	UiFilterValueEntity filterValue = mapper.readValue(filterValueString, UiFilterValueEntity.class);
+		  	    	responseSuggestion.getFilterValues().add(filterValue);
+	  	        }
+	        }
+	          suggestionEntityList.add(responseSuggestion);
+	      }
+	      }
+	    } catch (IOException exc) {
+	      LOG.warn(AaiUiMsgs.SEARCH_RESPONSE_BUILDING_EXCEPTION, exc.getLocalizedMessage());
+	    }
+	    return suggestionEntityList;
+	 
+  }
+  private String getValueFromNode(JsonNode node, String fieldName) {
+
+	    if (node == null || fieldName == null) {
+	      return null;
+	    }
+
+	    JsonNode valueNode = node.get(fieldName);
+
+	    if (valueNode != null) {
+	      return valueNode.asText();
+	    }
+
+	    return null;
+
+	  }
   
 }
