@@ -48,159 +48,162 @@ import org.restlet.data.Status;
 
 public class AggregateSummaryProcessor {
 
-  private static final Logger LOG = LoggerFactory.getInstance().getLogger(AggregateSummaryProcessor.class);
+	private static final Logger LOG = LoggerFactory.getInstance().getLogger(AggregateSummaryProcessor.class);
 
-  private static final String KEY_FILTERS = "filters";
+	private static final String KEY_FILTERS = "filters";
 
-  private ElasticSearchAdapter elasticSearchAdapter = null;
-  
-  private String vnfAggregationIndexName;
-  private FiltersConfig filtersConfig;
-  
-  public AggregateSummaryProcessor(ElasticSearchAdapter elasticSearchAdapter, FiltersConfig filtersConfig) {
-    this.elasticSearchAdapter = elasticSearchAdapter;
-    this.filtersConfig = filtersConfig;
-  }
-  
-  public void setVnfAggregationIndexName(String vnfAggregationIndexName) {
-    this.vnfAggregationIndexName = vnfAggregationIndexName;
-  }
-  
-  public void getFilteredAggregation(Exchange exchange) {
-    
-    Response response = exchange.getIn().getHeader(RestletConstants.RESTLET_RESPONSE, Response.class);
+	private ElasticSearchAdapter elasticSearchAdapter = null;
 
-    Request request = exchange.getIn().getHeader(RestletConstants.RESTLET_REQUEST, Request.class);
+	private String vnfAggregationIndexName;
+	private FiltersConfig filtersConfig;
 
-    /* Disables automatic Apache Camel Restlet component logging which prints out an undesirable log entry
-       which includes client (e.g. browser) information */
-    request.setLoggable(false);
+	public AggregateSummaryProcessor(ElasticSearchAdapter elasticSearchAdapter, FiltersConfig filtersConfig) {
+		this.elasticSearchAdapter = elasticSearchAdapter;
+		this.filtersConfig = filtersConfig;
+	}
 
-    try {
-      String payload = exchange.getIn().getBody(String.class);
+	public void setVnfAggregationIndexName(String vnfAggregationIndexName) {
+		this.vnfAggregationIndexName = vnfAggregationIndexName;
+	}
 
-      if (payload == null || payload.isEmpty()) {
+	public void getFilteredAggregation(Exchange exchange) {
 
-        LOG.error(AaiUiMsgs.SEARCH_SERVLET_ERROR, "Request Payload is empty");
+		Response response = exchange.getIn().getHeader(RestletConstants.RESTLET_RESPONSE, Response.class);
 
-        /*
-         * Don't throw back an error, just return an empty set
-         */
+		Request request = exchange.getIn().getHeader(RestletConstants.RESTLET_REQUEST, Request.class);
 
-      } else {
+		/*
+		 * Disables automatic Apache Camel Restlet component logging which
+		 * prints out an undesirable log entry which includes client (e.g.
+		 * browser) information
+		 */
+		request.setLoggable(false);
 
-        JSONObject parameters = new JSONObject(payload);
+		try {
+			String payload = exchange.getIn().getBody(String.class);
 
-        JSONArray requestFilters = null;
-        if (parameters.has(KEY_FILTERS)) {
-          requestFilters = parameters.getJSONArray(KEY_FILTERS);
-        } else {
-          
-          JSONObject zeroResponsePayload = new JSONObject();
-          zeroResponsePayload.put("count", 0);
-          response.setStatus(Status.SUCCESS_OK);
-          response.setEntity(zeroResponsePayload.toString(), MediaType.APPLICATION_JSON);
-          exchange.getOut().setBody(response);
-          
-          LOG.error(AaiUiMsgs.ERROR_FILTERS_NOT_FOUND);
-          return;
-        }
-      
-        if (requestFilters != null && requestFilters.length() > 0) {
-          List<JSONObject> filtersToQuery = new ArrayList<JSONObject>();
-          for(int i = 0; i < requestFilters.length(); i++) {
-            JSONObject filterEntry = requestFilters.getJSONObject(i);
-            filtersToQuery.add(filterEntry);
-          }
-          
-          String jsonResponsePayload = getVnfFilterAggregations(filtersToQuery);
-          response.setStatus(Status.SUCCESS_OK);
-          response.setEntity(jsonResponsePayload, MediaType.APPLICATION_JSON);
-          exchange.getOut().setBody(response);
-          
-        } else {
-          String emptyResponse = getEmptyAggResponse();
-          response.setStatus(Status.SUCCESS_OK);
-          response.setEntity(emptyResponse, MediaType.APPLICATION_JSON);
-          exchange.getOut().setBody(response);
-          LOG.error(AaiUiMsgs.ERROR_FILTERS_NOT_FOUND);
-        }
-      }
-    } catch (Exception exc) {
-      LOG.error(AaiUiMsgs.ERROR_GENERIC, "FilterProcessor failed to get filter list due to error = " + exc.getMessage());
-    }
-  }
-  
-  private String getEmptyAggResponse() {
-    JSONObject aggPayload = new JSONObject();
-    aggPayload.put("totalChartHits", 0);
-    aggPayload.put("buckets", new JSONArray());
-    JSONObject payload = new JSONObject();
-    payload.append("groupby_aggregation", aggPayload);
+			if (payload == null || payload.isEmpty()) {
 
-    return payload.toString();
-  }  
-  
-  private static final String FILTER_ID_KEY = "filterId";
-  private static final String FILTER_VALUE_KEY = "filterValue";
-  private static final int DEFAULT_SHOULD_MATCH_SCORE = 1;
-  private static final String VNF_FILTER_AGGREGATION = "vnfFilterAggregation";
+				LOG.error(AaiUiMsgs.SEARCH_SERVLET_ERROR, "Request Payload is empty");
 
-  
-  private String getVnfFilterAggregations(List<JSONObject> filtersToQuery) throws IOException {
-    
-    List<SearchFilter> searchFilters = new ArrayList<SearchFilter>();
-    for(JSONObject filterEntry : filtersToQuery) {
-      
-      String filterId = filterEntry.getString(FILTER_ID_KEY);
-      if(filterId != null) {
-        SearchFilter filter = new SearchFilter();
-        filter.setFilterId(filterId);
-        
-        if(filterEntry.has(FILTER_VALUE_KEY)) {
-          String filterValue = filterEntry.getString(FILTER_VALUE_KEY);
-          filter.addValue(filterValue);
-        }
-        
-        searchFilters.add(filter);
-      }
-    }
-    
-    // Create query for summary by entity type
-    JsonObject vnfSearch = FilterQueryBuilder.createCombinedBoolAndAggQuery(filtersConfig, searchFilters, DEFAULT_SHOULD_MATCH_SCORE);
+				/*
+				 * Don't throw back an error, just return an empty set
+				 */
 
-    // Parse response for summary by entity type query
-    OperationResult opResult = elasticSearchAdapter.doPost(
-        elasticSearchAdapter.buildElasticSearchUrlForApi(vnfAggregationIndexName,
-            SparkyConstants.ES_SEARCH_API),
-        vnfSearch.toString(), javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE);
-    
-    return buildAggregateVnfResponseJson(opResult.getResult());
-    
-  }
-  
-  private String buildAggregateVnfResponseJson(String responseJsonStr) {
-    
-    JSONObject finalOutputToFe = new JSONObject();
-    JSONObject responseJson = new JSONObject(responseJsonStr);
-    
-    
-    JSONObject hits = responseJson.getJSONObject("hits");
-    int totalHits = hits.getInt("total");
-    finalOutputToFe.put("total", totalHits);
-    
-    JSONObject aggregations = responseJson.getJSONObject("aggregations");
-    String[] aggKeys = JSONObject.getNames(aggregations);
-    JSONObject aggregationsList = new JSONObject();
-    
-    for(String aggName : aggKeys) {
-      JSONObject aggregation = aggregations.getJSONObject(aggName);
-      JSONArray buckets = aggregation.getJSONArray("buckets");
-      aggregationsList.put(aggName, buckets);
-    }
-    
-    finalOutputToFe.put("aggregations", aggregationsList);
+			} else {
 
-    return finalOutputToFe.toString();
-  }
+				JSONObject parameters = new JSONObject(payload);
+
+				JSONArray requestFilters = null;
+				if (parameters.has(KEY_FILTERS)) {
+					requestFilters = parameters.getJSONArray(KEY_FILTERS);
+				} else {
+
+					JSONObject zeroResponsePayload = new JSONObject();
+					zeroResponsePayload.put("count", 0);
+					response.setStatus(Status.SUCCESS_OK);
+					response.setEntity(zeroResponsePayload.toString(), MediaType.APPLICATION_JSON);
+					exchange.getOut().setBody(response);
+
+					LOG.error(AaiUiMsgs.ERROR_FILTERS_NOT_FOUND);
+					return;
+				}
+
+				if (requestFilters != null && requestFilters.length() > 0) {
+					List<JSONObject> filtersToQuery = new ArrayList<JSONObject>();
+					for (int i = 0; i < requestFilters.length(); i++) {
+						JSONObject filterEntry = requestFilters.getJSONObject(i);
+						filtersToQuery.add(filterEntry);
+					}
+
+					String jsonResponsePayload = getVnfFilterAggregations(filtersToQuery);
+					response.setStatus(Status.SUCCESS_OK);
+					response.setEntity(jsonResponsePayload, MediaType.APPLICATION_JSON);
+					exchange.getOut().setBody(response);
+
+				} else {
+					String emptyResponse = getEmptyAggResponse();
+					response.setStatus(Status.SUCCESS_OK);
+					response.setEntity(emptyResponse, MediaType.APPLICATION_JSON);
+					exchange.getOut().setBody(response);
+					LOG.error(AaiUiMsgs.ERROR_FILTERS_NOT_FOUND);
+				}
+			}
+		} catch (Exception exc) {
+			LOG.error(AaiUiMsgs.ERROR_GENERIC,
+					"FilterProcessor failed to get filter list due to error = " + exc.getMessage());
+		}
+	}
+
+	private String getEmptyAggResponse() {
+		JSONObject aggPayload = new JSONObject();
+		aggPayload.put("totalChartHits", 0);
+		aggPayload.put("buckets", new JSONArray());
+		JSONObject payload = new JSONObject();
+		payload.append("groupby_aggregation", aggPayload);
+
+		return payload.toString();
+	}
+
+	private static final String FILTER_ID_KEY = "filterId";
+	private static final String FILTER_VALUE_KEY = "filterValue";
+	private static final int DEFAULT_SHOULD_MATCH_SCORE = 1;
+	private static final String VNF_FILTER_AGGREGATION = "vnfFilterAggregation";
+
+	private String getVnfFilterAggregations(List<JSONObject> filtersToQuery) throws IOException {
+
+		List<SearchFilter> searchFilters = new ArrayList<SearchFilter>();
+		for (JSONObject filterEntry : filtersToQuery) {
+
+			String filterId = filterEntry.getString(FILTER_ID_KEY);
+			if (filterId != null) {
+				SearchFilter filter = new SearchFilter();
+				filter.setFilterId(filterId);
+
+				if (filterEntry.has(FILTER_VALUE_KEY)) {
+					String filterValue = filterEntry.getString(FILTER_VALUE_KEY);
+					filter.addValue(filterValue);
+				}
+
+				searchFilters.add(filter);
+			}
+		}
+
+		// Create query for summary by entity type
+		JsonObject vnfSearch = FilterQueryBuilder.createCombinedBoolAndAggQuery(filtersConfig, searchFilters,
+				DEFAULT_SHOULD_MATCH_SCORE);
+
+		// Parse response for summary by entity type query
+		OperationResult opResult = elasticSearchAdapter.doPost(
+				elasticSearchAdapter.buildElasticSearchUrlForApi(vnfAggregationIndexName,
+						SparkyConstants.ES_SEARCH_API),
+				vnfSearch.toString(), javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE);
+
+		return buildAggregateVnfResponseJson(opResult.getResult());
+
+	}
+
+	private String buildAggregateVnfResponseJson(String responseJsonStr) {
+
+		JSONObject finalOutputToFe = new JSONObject();
+		JSONObject responseJson = new JSONObject(responseJsonStr);
+
+		JSONObject hits = responseJson.getJSONObject("hits");
+		int totalHits = hits.getInt("total");
+		finalOutputToFe.put("total", totalHits);
+
+		JSONObject aggregations = responseJson.getJSONObject("aggregations");
+		String[] aggKeys = JSONObject.getNames(aggregations);
+		JSONObject aggregationsList = new JSONObject();
+
+		for (String aggName : aggKeys) {
+			JSONObject aggregation = aggregations.getJSONObject(aggName);
+			JSONArray buckets = aggregation.getJSONArray("buckets");
+			aggregationsList.put(aggName, buckets);
+		}
+
+		finalOutputToFe.put("aggregations", aggregationsList);
+
+		return finalOutputToFe.toString();
+	}
 }
