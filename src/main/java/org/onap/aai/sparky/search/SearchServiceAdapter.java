@@ -44,6 +44,7 @@ import org.slf4j.MDC;
 public class SearchServiceAdapter {
 
   private static final String VALUE_QUERY = "query";
+  private static final String SUGGEST_QUERY = "suggest";
   
   private RestClient client;
   private RestEndpointConfig endpointConfig;
@@ -125,6 +126,17 @@ public class SearchServiceAdapter {
    */
   public String buildSearchServiceQueryUrl(String indexName) {
     return buildSearchServiceUrlForApi(indexName, VALUE_QUERY);
+  }
+  
+  /**
+   * Get Full URL for search
+   *
+   * @param api the api
+   * @param indexName
+   * @return the full url
+   */
+  public String buildSuggestServiceQueryUrl(String indexName) {
+    return buildSearchServiceUrlForApi(indexName, SUGGEST_QUERY);
   }
 
   public String buildSearchServiceUrlForApi(String indexName, String api) {
