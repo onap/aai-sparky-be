@@ -40,6 +40,7 @@ public class SearchServiceAdapterTest {
 		assertNotNull(searchServiceAdapter.getTxnHeader());
 		assertNotNull(searchServiceAdapter.buildSearchServiceQueryUrl("searchentity-localhost"));
 		assertNotNull(searchServiceAdapter.buildSearchServiceUrlForApi("searchentity-localhost","2.0"));
+		assertNotNull(searchServiceAdapter.buildSuggestServiceQueryUrl("searchentity-localhost"));
 		
 		
 	}

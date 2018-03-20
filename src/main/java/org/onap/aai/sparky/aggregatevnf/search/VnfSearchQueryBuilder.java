@@ -28,13 +28,11 @@ import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 
-
 /**
  * Build a JSON payload to send to elastic search to get vnf search data.
  */
 
 public class VnfSearchQueryBuilder {
-	
 
   /**
    * Creates the suggestions query.
@@ -133,8 +131,6 @@ public class VnfSearchQueryBuilder {
     jsonBuilder.add("query", Json.createObjectBuilder().add("bool",
         Json.createObjectBuilder().add("must", mustBlobBuilder)));
   }
-
-
 
   public static JsonObject createSummaryByEntityTypeQuery(Map<String, String> attributes,
       String groupByKey) {
