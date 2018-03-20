@@ -9,6 +9,26 @@ At this time, _Sparky_ has two views available for use:
 
 [VNFs](./VNFS.md) - Aggregation based view of VNFs within AAI.
 
+## Interfaces
+
+User/Browser -> _Sparky_ port 9517 (HTTP) (can be configured as port 8000 HTTPS) 
+Purposes: 
+ - Suggestions requests
+ - data retrieval
+
+_Sparky_ -> AAI HA proxy port 8443 (REST)
+Purposes: 
+ - data retrieval
+ - Index synchronization
+   
+_Sparky_ -> Elastic Search port 9200 (REST) 
+Purpose: 
+ - data retrieval (VNFs queries) 
+
+_Sparky_ -> Search data Service port 9509 (REST) 
+Purpose: 
+ - Data retrieval for search bar
+
 ## Getting Started
 
 ### Building _Sparky_
