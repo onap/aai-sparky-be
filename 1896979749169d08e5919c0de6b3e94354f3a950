@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "5a93c517_aa87b8d6",
+        "filename": "sparkybe-onap-application/LICENSE",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157
+      },
+      "writtenOn": "2018-03-22T13:24:20Z",
+      "side": 1,
+      "message": "Ok.  I\u0027ll grab the latest one and merge it in.",
+      "parentUuid": "5a93c517_cab9e4ed",
+      "revId": "1896979749169d08e5919c0de6b3e94354f3a950",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a93c517_6aca1070",
         "filename": "sparkybe-onap-application/src/main/config/ajsc-override-web.xml",
         "patchSetId": 3
@@ -36,6 +54,24 @@
     },
     {
       "key": {
+        "uuid": "5a93c517_ca11e4b0",
+        "filename": "sparkybe-onap-application/src/main/config/ajsc-override-web.xml",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157
+      },
+      "writtenOn": "2018-03-22T13:24:20Z",
+      "side": 1,
+      "message": "It should be removed.  All the content in this submission is basically a draft of the final version of a spring-boot sparky.  The goal of the initial submission is to get enough of the solution in place to enable execution of the Nexus QI scan.\n\nThere is more cleanup that we need to do for sure.  For example, within the application module there are a bunch of files that are still ajsc-y that should be removed.  I\u0027ll make a change and remove them.\n\nI was keeping this particular file around until I figured out how to covert the PortalRestAPIProxy into a spring-boot construct.  Most likely it will be a Camel-Rest like the other ones, I just haven\u0027t finished that conversion yet.",
+      "parentUuid": "5a93c517_6aca1070",
+      "revId": "1896979749169d08e5919c0de6b3e94354f3a950",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a93c517_caa004a8",
         "filename": "sparkybe-onap-application/src/main/scripts/start.sh",
         "patchSetId": 3
@@ -47,6 +83,24 @@
       "writtenOn": "2018-03-22T12:45:32Z",
       "side": 1,
       "message": "Better to simply remove these commented lines",
+      "revId": "1896979749169d08e5919c0de6b3e94354f3a950",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_ca5fa474",
+        "filename": "sparkybe-onap-application/src/main/scripts/start.sh",
+        "patchSetId": 3
+      },
+      "lineNbr": 22,
+      "author": {
+        "id": 1157
+      },
+      "writtenOn": "2018-03-22T13:24:20Z",
+      "side": 1,
+      "message": "Yes-and-No.  :-)\n\nI have made changes to this script based on how I think it should work, but I haven\u0027t tested the script within a dockerized application yet.  I wanted to leave the original content in place until I finished testing the start.sh.  But I agree with you, it will be removed during the next few submissions while we perform additional cleanup.",
+      "parentUuid": "5a93c517_caa004a8",
       "revId": "1896979749169d08e5919c0de6b3e94354f3a950",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false

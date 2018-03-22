@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "5a93c517_ea7dc0e8",
+        "filename": "docs/index.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157
+      },
+      "writtenOn": "2018-03-22T13:24:20Z",
+      "side": 0,
+      "message": "Ooops.   I thought it was a legacy file we didn\u0027t need any more.  I\u0027ll bring them back.",
+      "parentUuid": "5a93c517_2a1648f2",
+      "revId": "ef7f255958e541ffaec0fd2a977440dd7b6fd6b8",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "5a93c517_cad24434",
         "filename": "docs/view_inspect.rst",
         "patchSetId": 3
@@ -64,6 +82,24 @@
       "writtenOn": "2018-03-22T12:45:32Z",
       "side": 0,
       "message": "The CI would have been easier to follow if all the moved files were not treated as add and delete.",
+      "revId": "ef7f255958e541ffaec0fd2a977440dd7b6fd6b8",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_6a3bf038",
+        "filename": "sparkybe-onap-service/src/main/java/org/onap/aai/sparky/aggregatevnf/search/AggregateSummaryProcessor.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1157
+      },
+      "writtenOn": "2018-03-22T13:24:20Z",
+      "side": 0,
+      "message": "I completely agree, but due to the massive restructuring of the files it was an easier approach to get everything in place.",
+      "parentUuid": "5a93c517_4a94f443",
       "revId": "ef7f255958e541ffaec0fd2a977440dd7b6fd6b8",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
