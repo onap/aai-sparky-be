@@ -1,0 +1,72 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_2a1648f2",
+        "filename": "docs/index.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 651
+      },
+      "writtenOn": "2018-03-22T12:45:32Z",
+      "side": 0,
+      "message": "Keep this file!  It is the used to produce documentation in ONAP\n\nIf the content is wrong, we will adjust it.",
+      "revId": "ef7f255958e541ffaec0fd2a977440dd7b6fd6b8",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_cad24434",
+        "filename": "docs/view_inspect.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 651
+      },
+      "writtenOn": "2018-03-22T12:45:32Z",
+      "side": 0,
+      "message": "Keep this file!  It is the used to produce documentation in ONAP\n\nIf the content is wrong, we will adjust it.",
+      "revId": "ef7f255958e541ffaec0fd2a977440dd7b6fd6b8",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_ead70022",
+        "filename": "docs/vnfs.rst",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 651
+      },
+      "writtenOn": "2018-03-22T12:45:32Z",
+      "side": 0,
+      "message": "Keep this file!  It is the used to produce documentation in ONAP\n\nIf the content is wrong, we will adjust it.",
+      "revId": "ef7f255958e541ffaec0fd2a977440dd7b6fd6b8",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_4a94f443",
+        "filename": "sparkybe-onap-service/src/main/java/org/onap/aai/sparky/aggregatevnf/search/AggregateSummaryProcessor.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 651
+      },
+      "writtenOn": "2018-03-22T12:45:32Z",
+      "side": 0,
+      "message": "The CI would have been easier to follow if all the moved files were not treated as add and delete.",
+      "revId": "ef7f255958e541ffaec0fd2a977440dd7b6fd6b8",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
