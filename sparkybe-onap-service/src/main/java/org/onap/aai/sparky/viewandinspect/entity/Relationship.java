@@ -1,0 +1,96 @@
+/**
+ * ============LICENSE_START===================================================
+ * SPARKY (AAI UI service)
+ * ============================================================================
+ * Copyright © 2017 AT&T Intellectual Property.
+ * Copyright © 2017 Amdocs
+ * All rights reserved.
+ * ============================================================================
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * ============LICENSE_END=====================================================
+ *
+ * ECOMP and OpenECOMP are trademarks
+ * and service marks of AT&T Intellectual Property.
+ */
+package org.onap.aai.sparky.viewandinspect.entity;
+
+import java.util.Arrays;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+/**
+ * The Class Relationship.
+ */
+public class Relationship {
+
+  protected String relatedTo;
+  protected String relationshipLabel;
+  protected String relatedLink;
+  protected RelationshipData[] relationshipData;
+  protected RelatedToProperty[] relatedToProperty;
+
+  public String getRelatedTo() {
+    return relatedTo;
+  }
+
+  @JsonProperty("related-to")
+  public void setRelatedTo(String relatedTo) {
+    this.relatedTo = relatedTo;
+  }
+
+  public String getRelationshipLabel() {
+    return relationshipLabel;
+  }
+
+  @JsonProperty("relationship-label")
+  public void setRelationshipLabel(String relationshipLabel) {
+    this.relationshipLabel = relationshipLabel;
+  }
+  
+  public String getRelatedLink() {
+    return relatedLink;
+  }
+
+  @JsonProperty("related-link")
+  public void setRelatedLink(String relatedLink) {
+    this.relatedLink = relatedLink;
+  }
+
+  public RelationshipData[] getRelationshipData() {
+    return relationshipData;
+  }
+
+  @JsonProperty("relationship-data")
+  public void setRelationshipData(RelationshipData[] relationshipData) {
+    this.relationshipData = relationshipData;
+  }
+
+  public RelatedToProperty[] getRelatedToProperty() {
+    return relatedToProperty;
+  }
+
+  @JsonProperty("related-to-property")
+  public void setRelatedToProperty(RelatedToProperty[] relatedToProperty) {
+    this.relatedToProperty = relatedToProperty;
+  }
+
+  /* (non-Javadoc)
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString() {
+    return "Relationship [relatedTo=" + relatedTo + ", relationshipLabel=" + relationshipLabel
+        + ", relatedLink=" + relatedLink + ", relationshipData=" + Arrays.toString(relationshipData)
+        + ", relatedToProperty=" + Arrays.toString(relatedToProperty) + "]";
+  }
+}
