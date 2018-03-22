@@ -5,5 +5,5 @@ aaiOffline/
 target/
 logs/
 debug-logs/
-appconfig-local/
+*/appconfig-local/
 
