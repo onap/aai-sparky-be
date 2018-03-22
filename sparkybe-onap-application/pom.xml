@@ -39,6 +39,12 @@
 			<type>pom</type>
 			<scope>import</scope>
 		</dependency>
+		
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.2.1</version>
+		</dependency>
 
 	</dependencies>
 
@@ -64,6 +70,17 @@
 				<exclusion>
 					<groupId>commons-logging</groupId>
 					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-logging</artifactId>
+			<exclusions>
+				<exclusion>
+   	 	 	        <groupId>ch.qos.logback</groupId>
+			        <artifactId>logback-classic</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
@@ -517,7 +534,7 @@
 				</configuration>
 			</plugin>
 			<!-- license plugin -->
-			<plugin>
+<!-- 			<plugin>
 				<groupId>com.mycila</groupId>
 				<artifactId>license-maven-plugin</artifactId>
 				<version>3.0</version>
@@ -536,7 +553,7 @@
 					</execution>
 				</executions>
 			</plugin>
-
+ -->
 		</plugins>
 	</build>
 		<distributionManagement>
