@@ -32,9 +32,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.onap.aai.sparky.util.LogValidator;
-
-import ch.qos.logback.classic.Level;
 
 
 /**
@@ -43,9 +40,6 @@ import ch.qos.logback.classic.Level;
 @RunWith(MockitoJUnitRunner.class)
 public class IndexDocumentTest {
 
-  private LogValidator logValidator;
-  
-
   /**
    * Inits the.
    *
@@ -53,8 +47,6 @@ public class IndexDocumentTest {
    */
   @Before
   public void init() throws Exception {
-    logValidator = new LogValidator();
-    logValidator.initializeLogger(Level.WARN);
   }
 
   /**

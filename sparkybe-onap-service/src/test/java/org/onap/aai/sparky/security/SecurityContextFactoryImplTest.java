@@ -35,18 +35,12 @@ import javax.net.ssl.SSLContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.onap.aai.sparky.security.SecurityContextFactory;
-import org.onap.aai.sparky.security.SecurityContextFactoryImpl;
-import org.onap.aai.sparky.util.LogValidator;
-
-import ch.qos.logback.classic.Level;
 
 /**
  * The Class SecurityContextFactoryImplTest.
  */
 public class SecurityContextFactoryImplTest {
-
-  private LogValidator logValidator;
+  
 
   /**
    * Inits the.
@@ -55,8 +49,6 @@ public class SecurityContextFactoryImplTest {
    */
   @Before
   public void init() throws Exception {
-    logValidator = new LogValidator();
-    logValidator.initializeLogger(Level.WARN);
   }
 
   /**
