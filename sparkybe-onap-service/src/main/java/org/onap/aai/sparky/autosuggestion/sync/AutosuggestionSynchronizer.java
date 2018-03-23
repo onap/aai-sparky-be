@@ -399,7 +399,7 @@ public class AutosuggestionSynchronizer extends AbstractEntitySynchronizer
       }
     }
 
-    return new ArrayList<String>();
+    return new ArrayList<>();
   }
 
   /**
