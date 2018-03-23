@@ -1,0 +1,9 @@
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+1: Francis Paquette <Francis.Paquette@amdocs.com>
+Code-Review+1: Adam Krysiak <adam.krysiak@nokia.com>
+Code-Review+2: James Forsyth <jf2512@att.com>
+Submitted-by: James Forsyth <jf2512@att.com>
+Submitted-at: Fri, 23 Mar 2018 12:36:47 +0000
+Reviewed-on: https://gerrit.onap.org/r/37925
+Project: aai/sparky-be
+Branch: refs/heads/master
