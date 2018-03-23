@@ -12,4 +12,17 @@
 		<module>sparkybe-onap-service/pom.xml</module>
 		<module>sparkybe-onap-application/pom.xml</module>
 	</modules>
+
+    <!-- we don't need to deploy the top level pom project -->
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<configuration>
+					<skip>true</skip>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	
 </project>
