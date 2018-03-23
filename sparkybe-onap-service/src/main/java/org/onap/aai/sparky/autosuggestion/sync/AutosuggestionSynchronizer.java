@@ -389,7 +389,7 @@ public class AutosuggestionSynchronizer extends AbstractEntitySynchronizer
 
       if (attr != null) {
         suggestableAttr = Arrays.asList(attr.split(","));
-        List<String> suggestableValue = new ArrayList<String>();
+        List<String> suggestableValue = new ArrayList<>();
         for (String attribute : suggestableAttr) {
           if (node.get(attribute) != null && node.get(attribute).asText().length() > 0) {
             suggestableValue.add(attribute);
