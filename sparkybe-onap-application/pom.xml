@@ -186,7 +186,7 @@
 		<dependency>
 			<groupId>org.onap.aai.logging-service</groupId>
 			<artifactId>common-logging</artifactId>
-			<version>1.2.1</version>
+			<version>1.2.2</version>
 		</dependency>
 
 		<dependency>
@@ -216,7 +216,7 @@
 		<dependency>
 			<groupId>org.onap.aai.aai-common</groupId>
 			<artifactId>aai-schema</artifactId>
-			<version>1.2.0</version>
+			<version>1.2.2-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
