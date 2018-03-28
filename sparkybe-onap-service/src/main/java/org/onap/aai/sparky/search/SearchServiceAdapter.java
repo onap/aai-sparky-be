@@ -42,7 +42,8 @@ import org.slf4j.MDC;
 public class SearchServiceAdapter {
 
   private static final String VALUE_QUERY = "query";
-  
+  private static final String SUGGEST_QUERY = "suggest";
+
   private RestClient client;
   private RestEndpointConfig endpointConfig;
   private String serviceApiVersion;
@@ -51,20 +52,22 @@ public class SearchServiceAdapter {
 
   /**
    * Instantiates a new search adapter.
-   * @throws Exception 
+   * 
+   * @throws Exception
    */
-  public SearchServiceAdapter(RestEndpointConfig endpointConfig, String serviceApiVersion) throws Exception {
+  public SearchServiceAdapter(RestEndpointConfig endpointConfig, String serviceApiVersion)
+      throws Exception {
 
     client = RestClientFactory.buildClient(endpointConfig);
 
     commonHeaders = new HashMap<String, List<String>>();
     commonHeaders.put("Accept", Arrays.asList("application/json"));
     commonHeaders.put(Headers.FROM_APP_ID, Arrays.asList("AAI-UI"));
-    
+
     this.serviceApiVersion = serviceApiVersion;
     this.endpointConfig = endpointConfig;
   }
-  
+
   public String getServiceApiVersion() {
     return serviceApiVersion;
   }
@@ -88,21 +91,19 @@ public class SearchServiceAdapter {
   }
 
   public OperationResult doGet(String url, String acceptContentType) {
-    OperationResult or =
-        client.get(url, getTxnHeader(), MediaType.APPLICATION_JSON_TYPE);
+    OperationResult or = client.get(url, getTxnHeader(), MediaType.APPLICATION_JSON_TYPE);
     return new OperationResult(or.getResultCode(), or.getResult());
   }
 
   public OperationResult doPut(String url, String payload, String acceptContentType) {
-    OperationResult or = client.put(url, payload, getTxnHeader(),
-        MediaType.APPLICATION_JSON_TYPE, MediaType.APPLICATION_JSON_TYPE);
+    OperationResult or = client.put(url, payload, getTxnHeader(), MediaType.APPLICATION_JSON_TYPE,
+        MediaType.APPLICATION_JSON_TYPE);
     return new OperationResult(or.getResultCode(), or.getResult());
   }
 
   public OperationResult doDelete(String url, String acceptContentType) {
 
-    OperationResult or =
-        client.delete(url, getTxnHeader(), MediaType.APPLICATION_JSON_TYPE);
+    OperationResult or = client.delete(url, getTxnHeader(), MediaType.APPLICATION_JSON_TYPE);
     return new OperationResult(or.getResultCode(), or.getResult());
   }
 
@@ -123,6 +124,17 @@ public class SearchServiceAdapter {
    */
   public String buildSearchServiceQueryUrl(String indexName) {
     return buildSearchServiceUrlForApi(indexName, VALUE_QUERY);
+  }
+
+  /**
+   * Get Full URL for search
+   *
+   * @param api the api
+   * @param indexName
+   * @return the full url
+   */
+  public String buildSuggestServiceQueryUrl(String indexName) {
+    return buildSearchServiceUrlForApi(indexName, SUGGEST_QUERY);
   }
 
   public String buildSearchServiceUrlForApi(String indexName, String api) {
