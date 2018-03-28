@@ -75,7 +75,7 @@ public class OxmModelLoader {
     try {
       resources = resolver.getResources("classpath*:/oxm/aai_oxm*.xml");
     } catch (IOException ex) {
-      LOG.error(AaiUiMsgs.OXM_LOADING_ERROR, ex.getMessage());
+      LOG.error(AaiUiMsgs.OXM_LOADING_ERROR, ex, ex.getMessage());
     }
 
     if (resources == null) {
