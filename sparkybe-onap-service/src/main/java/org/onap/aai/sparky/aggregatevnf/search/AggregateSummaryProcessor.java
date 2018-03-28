@@ -43,29 +43,31 @@ import org.onap.aai.sparky.viewandinspect.config.SparkyConstants;
 
 public class AggregateSummaryProcessor {
 
-  private static final Logger LOG = LoggerFactory.getInstance().getLogger(AggregateSummaryProcessor.class);
+  private static final Logger LOG =
+      LoggerFactory.getInstance().getLogger(AggregateSummaryProcessor.class);
 
   private static final String KEY_FILTERS = "filters";
 
   private ElasticSearchAdapter elasticSearchAdapter = null;
-  
+
   private String vnfAggregationIndexName;
   private FiltersConfig filtersConfig;
-  
-  public AggregateSummaryProcessor(ElasticSearchAdapter elasticSearchAdapter, FiltersConfig filtersConfig) {
+
+  public AggregateSummaryProcessor(ElasticSearchAdapter elasticSearchAdapter,
+      FiltersConfig filtersConfig) {
     this.elasticSearchAdapter = elasticSearchAdapter;
     this.filtersConfig = filtersConfig;
   }
-  
+
   public void setVnfAggregationIndexName(String vnfAggregationIndexName) {
     this.vnfAggregationIndexName = vnfAggregationIndexName;
   }
-  
+
   public void getFilteredAggregation(Exchange exchange) {
 
     HttpServletRequest request = exchange.getIn().getBody(HttpServletRequest.class);
     ServletUtils.setUpMdcContext(exchange, request);
-    
+
 
     try {
       String payload = exchange.getIn().getBody(String.class);
@@ -86,29 +88,29 @@ public class AggregateSummaryProcessor {
         if (parameters.has(KEY_FILTERS)) {
           requestFilters = parameters.getJSONArray(KEY_FILTERS);
         } else {
-          
+
           JSONObject zeroResponsePayload = new JSONObject();
           zeroResponsePayload.put("count", 0);
-          //response.setStatus(Status.SUCCESS_OK);
-          //response.setEntity(zeroResponsePayload.toString(), MediaType.APPLICATION_JSON);
+          // response.setStatus(Status.SUCCESS_OK);
+          // response.setEntity(zeroResponsePayload.toString(), MediaType.APPLICATION_JSON);
           exchange.getOut().setBody(zeroResponsePayload.toString());
-          
+
           LOG.error(AaiUiMsgs.ERROR_FILTERS_NOT_FOUND);
           return;
         }
-      
+
         if (requestFilters != null && requestFilters.length() > 0) {
           List<JSONObject> filtersToQuery = new ArrayList<JSONObject>();
-          for(int i = 0; i < requestFilters.length(); i++) {
+          for (int i = 0; i < requestFilters.length(); i++) {
             JSONObject filterEntry = requestFilters.getJSONObject(i);
             filtersToQuery.add(filterEntry);
           }
-          
+
           String jsonResponsePayload = getVnfFilterAggregations(filtersToQuery);
           exchange.getOut().setHeader(Exchange.HTTP_RESPONSE_CODE, 200);
           exchange.getOut().setHeader(Exchange.CONTENT_TYPE, "application/json");
           exchange.getOut().setBody(jsonResponsePayload);
-          
+
         } else {
           String emptyResponse = getEmptyAggResponse();
           exchange.getOut().setHeader(Exchange.HTTP_RESPONSE_CODE, 200);
@@ -118,10 +120,11 @@ public class AggregateSummaryProcessor {
         }
       }
     } catch (Exception exc) {
-      LOG.error(AaiUiMsgs.ERROR_GENERIC, "FilterProcessor failed to get filter list due to error = " + exc.getMessage());
+      LOG.error(AaiUiMsgs.ERROR_GENERIC,
+          "FilterProcessor failed to get filter list due to error = " + exc.getMessage());
     }
   }
-  
+
   private String getEmptyAggResponse() {
     JSONObject aggPayload = new JSONObject();
     aggPayload.put("totalChartHits", 0);
@@ -130,44 +133,45 @@ public class AggregateSummaryProcessor {
     payload.append("groupby_aggregation", aggPayload);
 
     return payload.toString();
-  }  
-  
+  }
+
   private static final String FILTER_ID_KEY = "filterId";
   private static final String FILTER_VALUE_KEY = "filterValue";
   private static final int DEFAULT_SHOULD_MATCH_SCORE = 1;
   private static final String VNF_FILTER_AGGREGATION = "vnfFilterAggregation";
 
-  
+
   private String getVnfFilterAggregations(List<JSONObject> filtersToQuery) throws IOException {
-    
+
     List<SearchFilter> searchFilters = new ArrayList<SearchFilter>();
-    for(JSONObject filterEntry : filtersToQuery) {
-      
+    for (JSONObject filterEntry : filtersToQuery) {
+
       String filterId = filterEntry.getString(FILTER_ID_KEY);
-      if(filterId != null) {
+      if (filterId != null) {
         SearchFilter filter = new SearchFilter();
         filter.setFilterId(filterId);
-        
-        if(filterEntry.has(FILTER_VALUE_KEY)) {
+
+        if (filterEntry.has(FILTER_VALUE_KEY)) {
           String filterValue = filterEntry.getString(FILTER_VALUE_KEY);
           filter.addValue(filterValue);
         }
-        
+
         searchFilters.add(filter);
       }
     }
-    
+
     // Create query for summary by entity type
-    JsonObject vnfSearch = FilterQueryBuilder.createCombinedBoolAndAggQuery(filtersConfig, searchFilters, DEFAULT_SHOULD_MATCH_SCORE);
+    JsonObject vnfSearch = FilterQueryBuilder.createCombinedBoolAndAggQuery(filtersConfig,
+        searchFilters, DEFAULT_SHOULD_MATCH_SCORE);
 
     // Parse response for summary by entity type query
     OperationResult opResult = elasticSearchAdapter.doPost(
         elasticSearchAdapter.buildElasticSearchUrlForApi(vnfAggregationIndexName,
             SparkyConstants.ES_SEARCH_API),
         vnfSearch.toString(), javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE);
-    
-    if ( opResult.wasSuccessful()) {
-      return buildAggregateVnfResponseJson(opResult.getResult());  
+
+    if (opResult.wasSuccessful()) {
+      return buildAggregateVnfResponseJson(opResult.getResult());
     } else {
       return buildEmptyAggregateVnfResponseJson();
     }
@@ -178,27 +182,27 @@ public class AggregateSummaryProcessor {
     finalOutputToFe.put("total", 0);
     return finalOutputToFe.toString();
   }
-  
+
   private String buildAggregateVnfResponseJson(String responseJsonStr) {
-    
+
     JSONObject finalOutputToFe = new JSONObject();
     JSONObject responseJson = new JSONObject(responseJsonStr);
-    
-    
+
+
     JSONObject hits = responseJson.getJSONObject("hits");
     int totalHits = hits.getInt("total");
     finalOutputToFe.put("total", totalHits);
-    
+
     JSONObject aggregations = responseJson.getJSONObject("aggregations");
     String[] aggKeys = JSONObject.getNames(aggregations);
     JSONObject aggregationsList = new JSONObject();
-    
-    for(String aggName : aggKeys) {
+
+    for (String aggName : aggKeys) {
       JSONObject aggregation = aggregations.getJSONObject(aggName);
       JSONArray buckets = aggregation.getJSONArray("buckets");
       aggregationsList.put(aggName, buckets);
     }
-    
+
     finalOutputToFe.put("aggregations", aggregationsList);
 
     return finalOutputToFe.toString();

@@ -34,7 +34,7 @@ import javax.json.JsonObjectBuilder;
  */
 
 public class VnfSearchQueryBuilder {
-	
+
 
   /**
    * Creates the suggestions query.
