@@ -1,4 +1,3 @@
-package org.onap.aai.sparky.editattributes;
 /**
  * ============LICENSE_START===================================================
  * SPARKY (AAI UI service)
@@ -23,8 +22,8 @@ package org.onap.aai.sparky.editattributes;
  * ECOMP and OpenECOMP are trademarks
  * and service marks of AT&T Intellectual Property.
  */
-/*
-package org.openecomp.sparky.editattributes;
+
+package org.onap.aai.sparky.editattributes;
 
 import static org.junit.Assert.assertEquals;
 
@@ -33,46 +32,53 @@ import java.util.Map;
 
 import javax.ws.rs.core.Response.Status;
 
+import org.eclipse.persistence.dynamic.DynamicType;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.onap.aai.restclient.client.OperationResult;
 import org.onap.aai.sparky.config.oxm.OxmEntityDescriptor;
 import org.onap.aai.sparky.config.oxm.OxmEntityLookup;
 import org.onap.aai.sparky.config.oxm.OxmModelLoader;
-import org.onap.aai.sparky.dal.aai.config.ActiveInventoryConfig;
+import org.onap.aai.sparky.dal.ActiveInventoryAdapter;
 import org.onap.aai.sparky.editattributes.AttributeUpdater;
-import org.openecomp.sparky.dal.aai.config.ActiveInventoryConfigUtil;
+import org.onap.aai.sparky.editattributes.AttributeUpdater.AaiEditObject;
+
 
 
 /**
  * The Class AttributeUpdaterTest.
- *
+ */
 public class AttributeUpdaterTest {
+
+  private ActiveInventoryAdapter aaiAdapter;
 
   /**
    * Sets the up.
    *
    * @throws Exception the exception
-   *
+   */
   @Before
-  public void setUp() throws Exception {}
+  public void setUp() throws Exception {
+
+    aaiAdapter = Mockito.mock(ActiveInventoryAdapter.class);
+  }
 
   /**
-   * @throws Exception 
+   * @throws Exception
    */
-  /*
+
   @Test
   public void testUpdateObjectAttribute() throws Exception {
-    
+
     OxmEntityDescriptor desc = new OxmEntityDescriptor();
     desc.addPrimaryKeyName("hostname");
     desc.setEntityName("pserver");
-    
-    OxmEntityLookup entityLookup = OxmEntityLookup.getInstance();
+
+    OxmEntityLookup entityLookup = new OxmEntityLookup();
     entityLookup.addEntityDescriptor("pserver", desc);
-    
-    AttributeUpdater updater = new AttributeUpdater(new OxmModelLoader(), entityLookup,
-        new ActiveInventoryConfig(ActiveInventoryConfigUtil.getValidTestProperties()));
+
+    AttributeUpdater updater = new AttributeUpdater(new OxmModelLoader(), entityLookup, aaiAdapter);
     Map<String, Object> attributes = new HashMap<>();
     attributes.put("prov-status", "PREPROV");
     attributes.put("in-maint", "true");
@@ -80,7 +86,7 @@ public class AttributeUpdaterTest {
         "cloud-infrastructure/pservers/pserver/something", attributes, "someid");
     assertEquals(Status.FORBIDDEN.getStatusCode(), result.getResultCode());
   }
-  */
+
 
   // This needs the OXM file in place to work.
   /**
@@ -88,62 +94,58 @@ public class AttributeUpdaterTest {
    *
    * @throws Exception the exception
    */
-  //@Test
-  /*public void testGetEditObjectFromUri() throws Exception {
-    
+  @Test(expected = NullPointerException.class)
+  public void testGetEditObjectFromUri() throws Exception {
+
     OxmModelLoader loader = new OxmModelLoader();
     loader.setLatestVersionNum(11);
-    
+
     OxmEntityDescriptor desc = new OxmEntityDescriptor();
     desc.addPrimaryKeyName("hostname");
     desc.setEntityName("pserver");
-    
-    OxmEntityLookup entityLookup = OxmEntityLookup.getInstance();
+
+    OxmEntityLookup entityLookup = new OxmEntityLookup();
     entityLookup.addEntityDescriptor("pserver", desc);
-    
 
-    DynamicType mockType = Mockito.mock(DynamicType.class);
-    Class<? extends DynamicEntity> mockDynamicEntity = Mockito.mock(DynamicEntity.class);
 
-    Mockito.when(mockType.getJavaClass()).thenReturn(mockDynamicEntity);
+    // DynamicType mockType = Mockito.mock(DynamicType.class);
+    // Class<? extends DynamicEntity> mockDynamicEntity = Mockito.mock(DynamicEntity.class);
 
-    
-    
-    
-    HashMap<String, DynamicType> typeLookup = new HashMap<String,DynamicType>();
-    typeLookup.put("pserver", mockType);
+    // Mockito.when(mockType.getJavaClass()).thenReturn(mockDynamicEntity);
+
+
+
+    HashMap<String, DynamicType> typeLookup = new HashMap<String, DynamicType>();
+    // typeLookup.put("pserver", mockType);
 
     entityLookup.setEntityTypeLookup(typeLookup);
-    
-    
-    AttributeUpdater updater = new AttributeUpdater(new OxmModelLoader(), entityLookup, 
-        new ActiveInventoryConfig(ActiveInventoryConfigUtil.getValidTestProperties()));
-    AaiEditObject result =
-        updater.getEditObjectFromUri("cloud-infrastructure/pservers/pserver/mtznjtax101");
+
+
+    AttributeUpdater updater = new AttributeUpdater(new OxmModelLoader(), entityLookup, aaiAdapter);
+    AaiEditObject result = updater.getEditObjectFromUri(null);
     assertEquals("Pserver", result.getObjectType());
     assertEquals("pserver", result.getRootElement());
     assertEquals("hostname", result.getKeyName());
     assertEquals("mtznjtax101", result.getKeyValue());
-  }*/
+  }
 
   /**
    * Test get relative uri.
    *
    * @throws Exception the exception
    */
-  /*
+
   @Test
   public void testGetRelativeUri() throws Exception {
-    
+
     OxmEntityDescriptor desc = new OxmEntityDescriptor();
     desc.addPrimaryKeyName("hostname");
     desc.setEntityName("pserver");
-    
-    OxmEntityLookup entityLookup = OxmEntityLookup.getInstance();
+
+    OxmEntityLookup entityLookup = new OxmEntityLookup();
     entityLookup.addEntityDescriptor("pserver", desc);
-    
-    AttributeUpdater updater = new AttributeUpdater(new OxmModelLoader(), entityLookup,
-        new ActiveInventoryConfig(ActiveInventoryConfigUtil.getValidTestProperties()));
+
+    AttributeUpdater updater = new AttributeUpdater(new OxmModelLoader(), entityLookup, aaiAdapter);
     // Test entity uri without "/aai/version/"
     String result = updater.getRelativeUri("cloud-infrastructure/pservers/pserver/mtznjtax101");
     assertEquals("/cloud-infrastructure/pservers/pserver/mtznjtax101", result);
@@ -159,6 +161,5 @@ public class AttributeUpdaterTest {
     result = updater.getRelativeUri("/cloud-infrastructure/pservers/pserver/mtznjtax101");
     assertEquals("/cloud-infrastructure/pservers/pserver/mtznjtax101", result);
   }
-  
+
 }
-*/
