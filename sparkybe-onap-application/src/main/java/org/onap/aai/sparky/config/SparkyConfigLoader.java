@@ -18,12 +18,14 @@
  * limitations under the License.
  * ============LICENSE_END=========================================================
  */
-
 package org.onap.aai.sparky.config;
 
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
+import org.springframework.context.annotation.PropertySource;
 
 @Configuration
-@ImportResource({"file:${CONFIG_HOME}/spring-beans/*.xml"})
-public class SparkySpringXmlConfiguration {}
+@PropertySource("file:${CONFIG_HOME}/sparky-application.properties")
+public class SparkyConfigLoader {
+  
+  
+}

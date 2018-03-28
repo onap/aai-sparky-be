@@ -20,11 +20,13 @@
  */
 package org.onap.aai.sparky.config;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 @Configuration
-@PropertySource("file:${CONFIG_HOME}/config/sparky-application.properties")
-public class PropertyConfigLoader {
+@ConditionalOnProperty(value="sparky.ssl.enabled", havingValue = "true")
+@PropertySource("file:${CONFIG_HOME}/sparky-ssl-config.properties")
+public class SparkyHttpConfigLoader {
 
 }
