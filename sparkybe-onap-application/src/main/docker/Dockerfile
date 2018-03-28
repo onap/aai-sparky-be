@@ -16,15 +16,22 @@ RUN export JAVA_HOME
 # Build up the deployment folder structure
 RUN mkdir -p $MICRO_HOME
 RUN mkdir -p $BIN_HOME
+RUN mkdir -p $MICRO_HOME/lib/
+RUN mkdir -p $MICRO_HOME/static/services/aai/webapp/
 
-# copy swm/package/nix/dist_files/appl/sparky-be/${project.version}/ $MICRO_HOME/
-RUN ls -la $BIN_HOME/
+ADD *.jar $MICRO_HOME/lib/
+ADD scripts/* $MICRO_HOME/bin/
+COPY static/ $MICRO_HOME/static/services/aai/webapp/
 
-#RUN chmod 755 $BIN_HOME/*
+RUN chmod 755 $MICRO_HOME/bin/*
+RUN chmod 755 $MICRO_HOME/lib/*
+RUN chmod 755 $MICRO_HOME/static/*
+
+#RUN ls -la $BIN_HOME/
+
 RUN ln -s /logs $MICRO_HOME/logs
 
 EXPOSE 8000 8000
-
-CMD tail -F -n0 /etc/hosts
-#CMD /opt/app/sparky/bin/start.sh
-#CMD top
+EXPOSE 9517 9517
+    
+CMD ["/opt/app/sparky/bin/start.sh"]

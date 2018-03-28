@@ -18,12 +18,15 @@
  * limitations under the License.
  * ============LICENSE_END=========================================================
  */
-
 package org.onap.aai.sparky.config;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.ImportResource;
+import org.springframework.context.annotation.PropertySource;
 
 @Configuration
-@ImportResource({"file:${CONFIG_HOME}/spring-beans/*.xml"})
-public class SparkySpringXmlConfiguration {}
+@ConditionalOnProperty(value="sparky.ssl.enabled", havingValue = "false")
+@PropertySource("file:${CONFIG_HOME}/sparky-http-config.properties")
+public class SparkySslConfigLoader {
+
+}
