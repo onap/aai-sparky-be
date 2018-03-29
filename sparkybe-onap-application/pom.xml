@@ -389,12 +389,14 @@
 					</folders>
 				</configuration>
 			</plugin>
+			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.7</version>
 				<executions>
 					<execution>
-						<id>copy-docker-file</id>
+						<id>copy-docker-file-to-target</id>
 						<phase>package</phase>
 						<goals>
 							<goal>copy-resources</goal>
@@ -410,9 +412,6 @@
 										<include>**/*</include>
 									</includes>
 								</resource>
-								<resource>
-									<directory>${basedir}/src/main/bin/</directory>
-								</resource>
 							</resources>
 						</configuration>
 					</execution>
@@ -421,13 +420,42 @@
 
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.7</version>
 				<executions>
 					<execution>
-						<id>copy-installed</id>
+						<id>copy-scripts-to-target</id>
+						<phase>package</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>target/scripts</outputDirectory>
+							<overwrite>true</overwrite>
+							<resources>
+								<resource>
+									<directory>${basedir}/src/main/scripts</directory>
+									<filtering>true</filtering>
+									<includes>
+										<include>**/*</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+ 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<version>3.0.0</version>
+				<executions>
+					<execution>
+						<id>copy-war-to-target</id>
 						<phase>install</phase>
 						<goals>
-							<goal>copy</goal>
+							<goal>unpack</goal>
 						</goals>
 						<configuration>
 							<artifactItems>
@@ -436,15 +464,14 @@
 									<artifactId>${frontEndArtifactId}</artifactId>
 									<version>${frontEndVersion}</version>
 									<type>war</type>
-									<outputDirectory>${basedir}/target/</outputDirectory>
-									<destFileName>aai.war</destFileName>
+									<outputDirectory>${basedir}/target/static/</outputDirectory>
 								</artifactItem>
 							</artifactItems>
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
-
+			</plugin>			
+			
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
