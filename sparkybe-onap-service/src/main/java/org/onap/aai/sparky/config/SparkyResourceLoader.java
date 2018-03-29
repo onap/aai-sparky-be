@@ -30,8 +30,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
 public class SparkyResourceLoader implements ResourceLoaderAware {
-  
-  
+
+
   private static final String FILE_URI = "file:";
   private ResourceLoader resourceLoader;
   private String configHomeEnvVar;
@@ -42,7 +42,7 @@ public class SparkyResourceLoader implements ResourceLoaderAware {
   public void setResourceLoader(ResourceLoader resourceLoader) {
     this.resourceLoader = resourceLoader;
   }
-  
+
   public String getFullFileUri(String uriFilePath) {
     return FILE_URI + System.getProperty(configHomeEnvVar) + uriFilePath;
   }
@@ -50,38 +50,40 @@ public class SparkyResourceLoader implements ResourceLoaderAware {
   public String getAbsolutePath(String uriFilePath) {
     return System.getProperty(configHomeEnvVar) + uriFilePath;
   }
-  
+
   protected Resource getResource(String uriFilePath, boolean isRelative) {
 
     String fileUri = uriFilePath;
 
-    if (!uriFilePath.startsWith("file:")) {
-      fileUri = "file:" + uriFilePath;
+    if (!uriFilePath.startsWith(FILE_URI)) {
+
+      if (isRelative) {
+        fileUri = getFullFileUri(fileUri);
+      } else {
+        fileUri = FILE_URI + uriFilePath;
+      }
+
     }
 
-    if (isRelative) {
-      return resourceLoader.getResource(getFullFileUri(fileUri));
-    } else {
-      return resourceLoader.getResource(fileUri);
-    }
+    return resourceLoader.getResource(fileUri);
 
   }
 
   public File getResourceAsFile(String uriFilePath, boolean isRelativePath) throws IOException {
-    
-    Resource resource = getResource(uriFilePath, isRelativePath); 
+
+    Resource resource = getResource(uriFilePath, isRelativePath);
 
     if (resource.exists()) {
       return resource.getFile();
     }
 
     return null;
-    
+
   }
 
   public byte[] getResourceAsBytes(String uriFilePath, boolean isRelativePath) throws IOException {
 
-    Resource resource = getResource(uriFilePath, isRelativePath); 
+    Resource resource = getResource(uriFilePath, isRelativePath);
 
     if (resource.exists()) {
       return getResourceAsBytes(resource);
@@ -89,10 +91,10 @@ public class SparkyResourceLoader implements ResourceLoaderAware {
 
     return null;
   }
-  
+
   public byte[] getResourceAsBytes(Resource resource) throws IOException {
 
-    if ( resource != null && resource.exists()) {
+    if (resource != null && resource.exists()) {
       return Files.readAllBytes(Paths.get(resource.getFile().getAbsolutePath()));
     }
 

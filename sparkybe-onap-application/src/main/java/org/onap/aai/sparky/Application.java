@@ -20,25 +20,30 @@
  */
 package org.onap.aai.sparky;
 
+import javax.servlet.Filter;
+
+import org.onap.aai.sparky.security.filter.LoginFilter;
+
 import org.apache.camel.component.servlet.CamelHttpTransportServlet;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
+import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 public class Application {
-  
+
+  private Filter loginFilter = new LoginFilter();
+
   public static void main(String[] args) {
-
     SpringApplication.run(Application.class, args);
-
   }
-     
+
   /*
    * This initialization code enabled access to aai-ui-proxy-processor
    */
-  
   @Bean
   ServletRegistrationBean servletRegistrationBean() {
     final ServletRegistrationBean servlet =
@@ -48,20 +53,19 @@ public class Application {
   }
 
   /**
-   * bind LoginFilter 
+   * bind LoginFilter
    */
-  
-  /*@Bean
-  public FilterRegistrationBean myFilter() {
-      FilterRegistrationBean registration = new FilterRegistrationBean();
-      Filter myFilter = new LoginFilter();
-      beanFactory.autowireBean(myFilter);
-      registration.setFilter(myFilter);
-      registration.addUrlPatterns("/*");
-      return registration;
-  }*/
-  
-      
-  
-  
+  @Bean
+  @ConditionalOnProperty(value = "sparky.portal.enabled", havingValue = "true")
+  public FilterRegistrationBean loginFilterRegistrationBean() {
+    FilterRegistrationBean registration = new FilterRegistrationBean();
+    
+    registration.setFilter(loginFilter);
+    registration.addUrlPatterns("/*");
+    
+    return registration;
+  }
+
+
+
 }
