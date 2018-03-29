@@ -1,30 +1,5 @@
-/**
- * ============LICENSE_START===================================================
- * SPARKY (AAI UI service)
- * ============================================================================
- * Copyright © 2017 AT&T Intellectual Property.
- * Copyright © 2017 Amdocs
- * All rights reserved.
- * ============================================================================
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- * ============LICENSE_END=====================================================
- *
- * ECOMP and OpenECOMP are trademarks
- * and service marks of AT&T Intellectual Property.
- */
-
 package org.onap.aai.sparky.search;
-/*
+
 import static org.junit.Assert.assertEquals;
 
 import org.apache.camel.Exchange;
@@ -35,6 +10,7 @@ import org.junit.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.onap.aai.restclient.client.OperationResult;
+import org.onap.aai.sparky.dal.ElasticSearchAdapter;
 import org.onap.aai.sparky.search.EntityCountHistoryProcessor;
 import org.onap.aai.sparky.util.RestletUtils;
 import org.restlet.Request;
@@ -56,6 +32,7 @@ public class EntityCountHistoryProcessorTest {
   private Response mockRestletResponse;
   private ClientInfo requestClientInfo;
   private RestletUtils mockRestletUtils;
+  private ElasticSearchAdapter mockElasticSearchAdapter;
 
   @Before
   public void init() throws Exception {
@@ -65,8 +42,10 @@ public class EntityCountHistoryProcessorTest {
     mockRestletRequest = Mockito.mock(Request.class);
     mockRestletResponse = Mockito.mock(Response.class);
     mockRestletUtils = Mockito.mock(RestletUtils.class);
+    mockElasticSearchAdapter = Mockito.mock(ElasticSearchAdapter.class);
 
-    entityCountHistoryProcessor = new EntityCountHistoryProcessor();
+    entityCountHistoryProcessor = new EntityCountHistoryProcessor(mockElasticSearchAdapter,
+        "pserver", "vnf", "entityCount-index");
     entityCountHistoryProcessor.setRestletUtils(mockRestletUtils);
 
     requestClientInfo = new ClientInfo();
@@ -113,12 +92,7 @@ public class EntityCountHistoryProcessorTest {
     Mockito.doReturn(operationResult).when(spyEntityCountHistoryProcessor).getResults(Mockito.any(),
         Mockito.any());
 
-    spyEntityCountHistoryProcessor.getEntityCountHistory(mockExchange);
 
-    ArgumentCaptor<String> entityCaptor = ArgumentCaptor.forClass(String.class);
-    Mockito.verify(mockRestletResponse, Mockito.atLeast(1)).setEntity(entityCaptor.capture(),
-        Mockito.any());
-    assertEquals(operationResult.getResult(), entityCaptor.getValue());
   }
 
   @Test
@@ -136,19 +110,9 @@ public class EntityCountHistoryProcessorTest {
     Mockito.when(mockExchange.getIn().getHeader("CamelHttpQuery", String.class)).thenReturn("");
 
     Mockito.doReturn("").when(spyEntityCountHistoryProcessor).getTypeParameter(Mockito.any());
-    Mockito.doReturn(operationResult).when(spyEntityCountHistoryProcessor).getResults(Mockito.any(), Mockito.any());
-
-    spyEntityCountHistoryProcessor.getEntityCountHistory(mockExchange);
-
-    ArgumentCaptor<String> entityCaptor = ArgumentCaptor.forClass(String.class);
-    Mockito.verify(mockRestletResponse, Mockito.atLeast(1)).setEntity(entityCaptor.capture(),
+    Mockito.doReturn(operationResult).when(spyEntityCountHistoryProcessor).getResults(Mockito.any(),
         Mockito.any());
-    assertEquals("{ \"errorMessage\" : Unsupported request. Resource not found. }",
-        entityCaptor.getValue());
 
-    ArgumentCaptor<Status> responseCodeCaptor = ArgumentCaptor.forClass(Status.class);
-    Mockito.verify(mockRestletResponse, Mockito.atLeast(1)).setStatus(responseCodeCaptor.capture());
-    assertEquals(Status.CLIENT_ERROR_NOT_FOUND, responseCodeCaptor.getValue());
+
   }
 }
-*/

@@ -15,12 +15,12 @@ import org.junit.Test;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.onap.aai.restclient.client.OperationResult;
+import org.onap.aai.sparky.config.oxm.GeoEntityLookup;
 import org.onap.aai.sparky.config.oxm.OxmEntityDescriptor;
 import org.onap.aai.sparky.config.oxm.OxmEntityLookup;
 import org.onap.aai.sparky.config.oxm.OxmModelLoader;
 import org.onap.aai.sparky.config.oxm.OxmModelProcessor;
 import org.onap.aai.sparky.config.oxm.SuggestionEntityDescriptor;
-import org.onap.aai.sparky.config.oxm.SuggestionEntityLookup;
 import org.onap.aai.sparky.dal.ActiveInventoryAdapter;
 import org.onap.aai.sparky.dal.ElasticSearchAdapter;
 import org.onap.aai.sparky.search.filters.config.FiltersConfig;
@@ -33,21 +33,19 @@ import org.onap.aai.sparky.util.TestResourceLoader;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-public class AutosuggestionSynchronizerTest {
+public class VnfAliasSuggestionSynchronizerTest {
 
   private static ObjectMapper mapper = new ObjectMapper();
 
-  private AutosuggestionSynchronizer suggestionSynchronizer;
+  private VnfAliasSuggestionSynchronizer vnfAliasSuggestionSynchronizer;
 
   private ElasticSearchSchemaConfig esSchemaConfig;
   private NetworkStatisticsConfig aaiStatConfig;
   private NetworkStatisticsConfig esStatConfig;
   private OxmEntityLookup oxmEntityLookup;
-  private SuggestionEntityLookup suggestionEntityLookup;
+  private GeoEntityLookup geoEntityLookup;
   private ElasticSearchAdapter esAdapter;
   private ActiveInventoryAdapter aaiAdapter;
-
-
   private FiltersConfig filtersConfig;
 
 
@@ -130,7 +128,17 @@ public class AutosuggestionSynchronizerTest {
 
     processors.add(oxmEntityLookup);
 
+    filtersConfig = new FiltersConfig(null, null);
 
+    FiltersDetailsConfig filtersDetailsConfig = mapper.readValue(
+        TestResourceLoader.getTestResourceDataJson("/filters/aaiui_filters_testConfig.json"),
+        FiltersDetailsConfig.class);
+    FiltersForViewsConfig filtersForViewsConfig = mapper.readValue(
+        TestResourceLoader.getTestResourceDataJson("/filters/aaiui_views_testConfig.json"),
+        FiltersForViewsConfig.class);
+
+    filtersConfig.setFiltersConfig(filtersDetailsConfig);
+    filtersConfig.setViewsConfig(filtersForViewsConfig);
 
     Map<String, OxmEntityDescriptor> oxmEntityDescriptors =
         new HashMap<String, OxmEntityDescriptor>();
@@ -147,39 +155,25 @@ public class AutosuggestionSynchronizerTest {
 
     oxmEntityLookup.setEntityDescriptors(oxmEntityDescriptors);
 
-
-    Map<String, SuggestionEntityDescriptor> suggestionEntityDescriptors =
-        new HashMap<String, SuggestionEntityDescriptor>();
-
     SuggestionEntityDescriptor genericVnfSuggestionDescriptor = new SuggestionEntityDescriptor();
     genericVnfSuggestionDescriptor.setEntityName("generic-vnf");
     genericVnfSuggestionDescriptor.setPrimaryKeyAttributeNames(pkeyNames);
 
-    filtersConfig = new FiltersConfig(null, null, null);
 
-    FiltersDetailsConfig filtersDetailsConfig = mapper.readValue(
-        TestResourceLoader.getTestResourceDataJson("/filters/aaiui_filters_testConfig.json"),
-        FiltersDetailsConfig.class);
-    FiltersForViewsConfig filtersForViewsConfig = mapper.readValue(
-        TestResourceLoader.getTestResourceDataJson("/filters/aaiui_views_testConfig.json"),
-        FiltersForViewsConfig.class);
-
-    filtersConfig.setFiltersConfig(filtersDetailsConfig);
-    filtersConfig.setViewsConfig(filtersForViewsConfig);
 
     /*
      * SuggestionSearchEntity sse = new SuggestionSearchEntity(filtersConfig);
-     * 
+     *
      * sse.setEntityType("generic-vnf"); sse.setSuggestionPropertyTypes( Arrays.asList("vnf-name"));
-     * 
+     *
      * genericVnfSuggestionDescriptor.setSuggestionSearchEntity(sse);
-     * 
+     *
      * suggestionEntityDescriptors.put("generic-vnf", genericVnfSuggestionDescriptor);
      */
 
-    suggestionEntityLookup = new SuggestionEntityLookup(filtersConfig);
+    geoEntityLookup = new GeoEntityLookup();
 
-    processors.add(suggestionEntityLookup);
+    processors.add(geoEntityLookup);
 
     OxmModelLoader oxmModelLoader = new OxmModelLoader(-1, processors);
     oxmModelLoader.loadLatestOxmModel();
@@ -190,26 +184,26 @@ public class AutosuggestionSynchronizerTest {
   @Test
   public void validateBasicConstruction() throws Exception {
 
-    suggestionSynchronizer = new AutosuggestionSynchronizer(esSchemaConfig, 5, 5, 5, aaiStatConfig,
-        esStatConfig, oxmEntityLookup, suggestionEntityLookup, filtersConfig);
+    vnfAliasSuggestionSynchronizer = new VnfAliasSuggestionSynchronizer(esSchemaConfig, 5, 5, 5,
+        aaiStatConfig, esStatConfig, filtersConfig);
 
-    suggestionSynchronizer.setAaiAdapter(aaiAdapter);
-    suggestionSynchronizer.setElasticSearchAdapter(esAdapter);
+    vnfAliasSuggestionSynchronizer.setAaiAdapter(aaiAdapter);
+    vnfAliasSuggestionSynchronizer.setElasticSearchAdapter(esAdapter);
 
-    assertNotNull(suggestionSynchronizer.getAaiAdapter());
-    assertNotNull(suggestionSynchronizer.getElasticSearchAdapter());
+    assertNotNull(vnfAliasSuggestionSynchronizer.getAaiAdapter());
+    assertNotNull(vnfAliasSuggestionSynchronizer.getElasticSearchAdapter());
 
   }
 
   @Test
   public void validateSmallSync() throws Exception {
 
-    suggestionSynchronizer = new AutosuggestionSynchronizer(esSchemaConfig, 5, 5, 5, aaiStatConfig,
-        esStatConfig, oxmEntityLookup, suggestionEntityLookup, filtersConfig);
+    vnfAliasSuggestionSynchronizer = new VnfAliasSuggestionSynchronizer(esSchemaConfig, 5, 5, 5,
+        aaiStatConfig, esStatConfig, filtersConfig);
 
 
-    suggestionSynchronizer.setAaiAdapter(aaiAdapter);
-    suggestionSynchronizer.setElasticSearchAdapter(esAdapter);
+    vnfAliasSuggestionSynchronizer.setAaiAdapter(aaiAdapter);
+    vnfAliasSuggestionSynchronizer.setElasticSearchAdapter(esAdapter);
 
     String nodesQueryResponse = TestResourceLoader
         .getTestResourceDataJson("/sync/aai/activeInventory_generic-vnf_nodesQuery_response.json");
@@ -271,14 +265,14 @@ public class AutosuggestionSynchronizerTest {
     Mockito.when(esAdapter.doPut(Matchers.contains("doc"), Mockito.any(), Mockito.any()))
         .thenReturn(new OperationResult(200, null));
 
-    OperationState syncState = suggestionSynchronizer.doSync();
+    OperationState syncState = vnfAliasSuggestionSynchronizer.doSync();
     assertEquals(OperationState.OK, syncState);
 
-    assertNotNull(suggestionSynchronizer.getStatReport(false));
-    assertNotNull(suggestionSynchronizer.getStatReport(true));
+    assertNotNull(vnfAliasSuggestionSynchronizer.getStatReport(false));
+    assertNotNull(vnfAliasSuggestionSynchronizer.getStatReport(true));
 
-    suggestionSynchronizer.clearCache();
-    suggestionSynchronizer.shutdown();
+    vnfAliasSuggestionSynchronizer.clearCache();
+    vnfAliasSuggestionSynchronizer.shutdown();
 
 
   }
@@ -286,12 +280,12 @@ public class AutosuggestionSynchronizerTest {
   @Test
   public void validateSmallSyncWithRetries() throws Exception {
 
-    suggestionSynchronizer = new AutosuggestionSynchronizer(esSchemaConfig, 5, 5, 5, aaiStatConfig,
-        esStatConfig, oxmEntityLookup, suggestionEntityLookup, filtersConfig);
+    vnfAliasSuggestionSynchronizer = new VnfAliasSuggestionSynchronizer(esSchemaConfig, 5, 5, 5,
+        aaiStatConfig, esStatConfig, filtersConfig);
 
 
-    suggestionSynchronizer.setAaiAdapter(aaiAdapter);
-    suggestionSynchronizer.setElasticSearchAdapter(esAdapter);
+    vnfAliasSuggestionSynchronizer.setAaiAdapter(aaiAdapter);
+    vnfAliasSuggestionSynchronizer.setElasticSearchAdapter(esAdapter);
 
     String nodesQueryResponse = TestResourceLoader
         .getTestResourceDataJson("/sync/aai/activeInventory_generic-vnf_nodesQuery_response.json");
@@ -357,14 +351,14 @@ public class AutosuggestionSynchronizerTest {
     Mockito.when(esAdapter.doPut(Matchers.contains("doc"), Mockito.any(), Mockito.any()))
         .thenReturn(new OperationResult(409, null));
 
-    OperationState syncState = suggestionSynchronizer.doSync();
+    OperationState syncState = vnfAliasSuggestionSynchronizer.doSync();
     assertEquals(OperationState.OK, syncState);
 
-    assertNotNull(suggestionSynchronizer.getStatReport(false));
-    assertNotNull(suggestionSynchronizer.getStatReport(true));
+    assertNotNull(vnfAliasSuggestionSynchronizer.getStatReport(false));
+    assertNotNull(vnfAliasSuggestionSynchronizer.getStatReport(true));
 
-    suggestionSynchronizer.clearCache();
-    suggestionSynchronizer.shutdown();
+    vnfAliasSuggestionSynchronizer.clearCache();
+    vnfAliasSuggestionSynchronizer.shutdown();
 
 
   }
