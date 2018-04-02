@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_c0dae516",
+        "filename": "sparkybe-onap-service/src/main/java/org/onap/aai/sparky/dal/rest/RestClientFactory.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 51,
+      "author": {
+        "id": 1157
+      },
+      "writtenOn": "2018-04-02T04:05:05Z",
+      "side": 1,
+      "message": "oops...that shouldn\u0027t be there.",
+      "revId": "e5ab647c1e7743f9078fa8f0c2f57297a917a64e",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
