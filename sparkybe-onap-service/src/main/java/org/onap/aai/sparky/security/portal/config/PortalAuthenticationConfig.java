@@ -28,7 +28,6 @@ import org.onap.aai.cl.eelf.LoggerFactory;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
 import org.onap.aai.sparky.security.CookieDecryptor;
 import org.onap.aai.sparky.util.ConfigHelper;
-import org.onap.aai.sparky.util.Encryptor;
 import org.onap.aai.sparky.viewandinspect.config.SparkyConstants;
 
 
@@ -77,8 +76,7 @@ public class PortalAuthenticationConfig {
   }
 
   public String getPassword() {
-    Encryptor encryptor = new Encryptor();
-    return encryptor.decryptValue(password);
+    return password;
   }
 
   public boolean getIsOnapEnabled() {

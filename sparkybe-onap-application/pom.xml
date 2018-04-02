@@ -56,6 +56,13 @@
 	<dependencies>
 
 		<!-- Spring dependencies -->
+		
+<dependency>
+	<groupId>com.github.ulisesbocchio</groupId>
+	<artifactId>jasypt-spring-boot-starter</artifactId>
+	<version>1.18</version>
+</dependency>		
+		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -128,13 +135,6 @@
 		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-util -->
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-util</artifactId>
-			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
@@ -547,11 +547,26 @@
 				</configuration>
 			</plugin>
 			<!-- license plugin -->
-			<!-- <plugin> <groupId>com.mycila</groupId> <artifactId>license-maven-plugin</artifactId> 
-				<version>3.0</version> <configuration> <header>LICENSE</header> <includes> 
-				<include>src/main/java/**</include> </includes> </configuration> <executions> 
-				<execution> <goals> <goal>format</goal> </goals> <phase>process-sources</phase> 
-				</execution> </executions> </plugin> -->
+ 			<!-- <plugin>
+				<groupId>com.mycila</groupId>
+				<artifactId>license-maven-plugin</artifactId>
+				<version>3.0</version>
+				<configuration>
+					<header>LICENSE</header>
+					<includes>
+						<include>src/main/java/**</include>
+					</includes>
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>format</goal>
+						</goals>
+						<phase>process-sources</phase>
+					</execution>
+				</executions>
+			</plugin> -->
+
 		</plugins>
 	</build>
 	<distributionManagement>

@@ -18,25 +18,33 @@
  * limitations under the License.
  * ============LICENSE_END=========================================================
  */
+
 package org.onap.aai.sparky.config;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.onap.aai.cl.api.Logger;
+import org.onap.aai.cl.eelf.LoggerFactory;
+import org.onap.aai.sparky.logging.AaiUiMsgs;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 
 public class SparkyResourceLoader implements ResourceLoaderAware {
 
-
   private static final String FILE_URI = "file:";
+  
+  private final static Pattern JASPYT_ENCRYPTED_PROPERTY = Pattern.compile("ENC[(]+(.*)[)]+");
   private ResourceLoader resourceLoader;
   private String configHomeEnvVar;
+  private StringPropertyDecryptor decryptor;
 
-  // private static Logger LOG = LoggerFactory.getInstance().getLogger(SparkyResourceLoader.class);
+  private static Logger LOG = LoggerFactory.getInstance().getLogger(SparkyResourceLoader.class);
 
   @Override
   public void setResourceLoader(ResourceLoader resourceLoader) {
@@ -120,4 +128,32 @@ public class SparkyResourceLoader implements ResourceLoaderAware {
     this.configHomeEnvVar = configHomeEnvVar;
   }
 
+  public StringPropertyDecryptor getDecryptor() {
+    return decryptor;
+  }
+
+  public void setDecryptor(StringPropertyDecryptor decryptor) {
+    this.decryptor = decryptor;
+  }
+  
+  public String decrypt(String encrypted) {
+
+    if (encrypted != null ) {
+      
+      Matcher m = JASPYT_ENCRYPTED_PROPERTY.matcher(encrypted);
+      if (m.matches() && m.groupCount() >= 1) {
+        return this.decryptor.decrypt(m.group(1));
+      }
+
+      LOG.error(AaiUiMsgs.ERROR_GENERIC, "Failed to decode encrypted property text = " + encrypted);
+      
+      return encrypted;
+      
+    }
+
+    LOG.error(AaiUiMsgs.ERROR_GENERIC, "Failed to decode encrypted property text = " + encrypted);
+
+    return encrypted;
+  }
+  
 }

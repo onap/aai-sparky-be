@@ -23,10 +23,9 @@ package org.onap.aai.sparky.dal.rest;
 import org.onap.aai.restclient.client.RestClient;
 import org.onap.aai.sparky.config.SparkyResourceLoader;
 import org.onap.aai.sparky.dal.rest.config.RestEndpointConfig;
-import org.onap.aai.sparky.util.Encryptor;
-
+ 
 public class RestClientFactory {
-
+  
   public static RestClient buildClient(RestEndpointConfig restEndpointConfig)
       throws RestClientConstructionException {
 
@@ -45,10 +44,12 @@ public class RestClientFactory {
     switch (restEndpointConfig.getRestAuthenticationMode()) {
 
       case SSL_CERT: {
-
-        Encryptor enc = new Encryptor();
+        
         String certFileNameFullPath = resourceLoader.getAbsolutePath(restEndpointConfig.getCertFileName());
-        String decryptedCertPassword = enc.decryptValue(restEndpointConfig.getCertPassword());
+        String decryptedCertPassword = resourceLoader.decrypt(restEndpointConfig.getCertPassword());
+        
+        System.out.println("decrytpred password = " + decryptedCertPassword);
+        
         String truststoreFileNameFullPath =
             resourceLoader.getAbsolutePath(restEndpointConfig.getTruststoreFileName());
 

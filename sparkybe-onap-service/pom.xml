@@ -59,6 +59,12 @@ some of the depedencies should probably have a scope of provided so they don't a
 	<dependencies>
 
 		<!-- Spring dependencies -->
+		
+	<dependency>
+	<groupId>com.github.ulisesbocchio</groupId>
+	<artifactId>jasypt-spring-boot-starter</artifactId>
+	<version>1.18</version>
+</dependency>		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
@@ -133,13 +139,6 @@ some of the depedencies should probably have a scope of provided so they don't a
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 			</dependency>
-
-		<!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-util -->
-		<dependency>
-			<groupId>org.eclipse.jetty</groupId>
-			<artifactId>jetty-util</artifactId>
-			<scope>provided</scope>
-		</dependency>
 
 		<dependency>
 			<groupId>org.apache.camel</groupId>
@@ -536,7 +535,7 @@ some of the depedencies should probably have a scope of provided so they don't a
 				</configuration>
 			</plugin> -->
 			<!-- license plugin -->
-<!-- 			<plugin>
+<!--  			<plugin>
 				<groupId>com.mycila</groupId>
 				<artifactId>license-maven-plugin</artifactId>
 				<version>3.0</version>
@@ -555,7 +554,7 @@ some of the depedencies should probably have a scope of provided so they don't a
 					</execution>
 				</executions>
 			</plugin>
- -->
+ --> 
 		</plugins>
 	</build>
 	
