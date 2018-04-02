@@ -10,14 +10,14 @@
 	<groupId>org.onap.aai.sparky-be</groupId>
 	<artifactId>sparkybe-onap-service</artifactId>
 	<version>1.2.0-SNAPSHOT</version>
-	<packaging>jar</packaging> 
+	<packaging>jar</packaging>
 
 	<properties>
 		<java.version>1.8</java.version>
 		<version.jacoco.maven.plugin>0.7.9</version.jacoco.maven.plugin>
 		<frontEndGroupdId>org.onap.aai</frontEndGroupdId>
 		<frontEndArtifactId>sparky-fe</frontEndArtifactId>
-		<frontEndVersion>1.1.0-SNAPSHOT</frontEndVersion>
+		<frontEndVersion>1.2.0</frontEndVersion>
 		<serverPort>9517</serverPort>
 		<sslport>8000</sslport>
 		<nexusproxy>https://nexus.onap.org</nexusproxy>
@@ -39,18 +39,18 @@
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
-			
+
 		<dependency>
 			<groupId>ch.qos.logback</groupId>
 			<artifactId>logback-classic</artifactId>
 			<version>1.2.1</version>
 		</dependency>
-			
-			
+
+
 		</dependencies>
 	</dependencyManagement>
 
-<!-- 
+<!--
 
 some of the depedencies should probably have a scope of provided so they don't automatically become part of the final jar
 
@@ -90,7 +90,7 @@ some of the depedencies should probably have a scope of provided so they don't a
 				</exclusion>
 			</exclusions>
 		</dependency>
-		
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-logging</artifactId>
@@ -101,7 +101,7 @@ some of the depedencies should probably have a scope of provided so they don't a
 				</exclusion>
 			</exclusions>
 		</dependency>
-		
+
 
 		<!-- Camel BOM -->
 		<dependency>
@@ -113,8 +113,8 @@ some of the depedencies should probably have a scope of provided so they don't a
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/com.sun.xml.bind/jaxb-impl -->
-		<!-- <dependency> <groupId>com.sun.xml.bind</groupId> <artifactId>jaxb-impl</artifactId> 
-			</dependency> <dependency> <groupId>com.sun.xml.bind</groupId> <artifactId>jaxb-core</artifactId> 
+		<!-- <dependency> <groupId>com.sun.xml.bind</groupId> <artifactId>jaxb-impl</artifactId>
+			</dependency> <dependency> <groupId>com.sun.xml.bind</groupId> <artifactId>jaxb-core</artifactId>
 			</dependency> -->
 
 		<!-- Camel -->
@@ -158,17 +158,17 @@ some of the depedencies should probably have a scope of provided so they don't a
 			<version>1.2</version>
 		</dependency>
 
-		<!-- <dependency> <groupId>org.apache.tomcat.embed</groupId> <artifactId>tomcat-embed-jasper</artifactId> 
+		<!-- <dependency> <groupId>org.apache.tomcat.embed</groupId> <artifactId>tomcat-embed-jasper</artifactId>
 			</dependency> -->
 
 
 		<!-- https://mvnrepository.com/artifact/org.apache.camel/camel-http-common -->
-		<!-- <dependency> <groupId>org.apache.camel</groupId> <artifactId>camel-http</artifactId> 
-			<version>2.15.5</version> </dependency> <dependency> <groupId>abc.def</groupId> 
-			<artifactId>att-camel-dme2-servlet</artifactId> <version>2.15.5</version> 
-			<scope>system</scope> <systemPath>x:/222/att-camel-dme2-servlet-2.15.5.jar</systemPath> 
-			</dependency> <dependency> <groupId>abc.def</groupId> <artifactId>att-camel-static-content</artifactId> 
-			<version>2.11.2.1</version> <scope>system</scope> <systemPath>x:/222/att-camel-static-content-2.11.2.1.jar</systemPath> 
+		<!-- <dependency> <groupId>org.apache.camel</groupId> <artifactId>camel-http</artifactId>
+			<version>2.15.5</version> </dependency> <dependency> <groupId>abc.def</groupId>
+			<artifactId>att-camel-dme2-servlet</artifactId> <version>2.15.5</version>
+			<scope>system</scope> <systemPath>x:/222/att-camel-dme2-servlet-2.15.5.jar</systemPath>
+			</dependency> <dependency> <groupId>abc.def</groupId> <artifactId>att-camel-static-content</artifactId>
+			<version>2.11.2.1</version> <scope>system</scope> <systemPath>x:/222/att-camel-static-content-2.11.2.1.jar</systemPath>
 			</dependency> -->
 
 		<!-- Utility dependencies -->
@@ -377,8 +377,8 @@ some of the depedencies should probably have a scope of provided so they don't a
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
- -->			
-			
+ -->
+
 	<!-- 		<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
@@ -488,7 +488,7 @@ some of the depedencies should probably have a scope of provided so they don't a
 					</reportPlugins>
 				</configuration>
 			</plugin>
-			
+
 		<!-- 	<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
@@ -558,7 +558,7 @@ some of the depedencies should probably have a scope of provided so they don't a
  -->
 		</plugins>
 	</build>
-	
+
 		<distributionManagement>
         <repository>
             <id>ecomp-releases</id>
@@ -571,8 +571,5 @@ some of the depedencies should probably have a scope of provided so they don't a
             <url>${nexusproxy}/content/repositories/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
-	
+
 </project>
-  
-  
-  
