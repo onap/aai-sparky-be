@@ -130,9 +130,8 @@ public class FilterProcessor {
     
     // In the case of an error we want to respond with a valid empty response
     if(wasErrorDuringFilterDiscovery || wasErrorDuringValueSearch) {
-      //response.setStatus(Status.SUCCESS_OK);
-      //response.setEntity(UiFiltersEntityConverter.generateEmptyResponse().toString(), MediaType.APPLICATION_JSON);
       exchange.getOut().setHeader(Exchange.HTTP_RESPONSE_CODE, 404);
+      exchange.getOut().setHeader(Exchange.CONTENT_TYPE, "application/json");
       exchange.getOut().setBody(UiFiltersEntityConverter.generateEmptyResponse().toString());
     }
   }

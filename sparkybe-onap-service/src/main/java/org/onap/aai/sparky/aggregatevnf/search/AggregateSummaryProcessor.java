@@ -68,7 +68,6 @@ public class AggregateSummaryProcessor {
     HttpServletRequest request = exchange.getIn().getBody(HttpServletRequest.class);
     ServletUtils.setUpMdcContext(exchange, request);
 
-
     try {
       String payload = exchange.getIn().getBody(String.class);
 
@@ -91,8 +90,8 @@ public class AggregateSummaryProcessor {
 
           JSONObject zeroResponsePayload = new JSONObject();
           zeroResponsePayload.put("count", 0);
-          // response.setStatus(Status.SUCCESS_OK);
-          // response.setEntity(zeroResponsePayload.toString(), MediaType.APPLICATION_JSON);
+          exchange.getOut().setHeader(Exchange.HTTP_RESPONSE_CODE, 200);
+          exchange.getOut().setHeader(Exchange.CONTENT_TYPE, "application/json");
           exchange.getOut().setBody(zeroResponsePayload.toString());
 
           LOG.error(AaiUiMsgs.ERROR_FILTERS_NOT_FOUND);
@@ -121,7 +120,9 @@ public class AggregateSummaryProcessor {
       }
     } catch (Exception exc) {
       LOG.error(AaiUiMsgs.ERROR_GENERIC,
-          "FilterProcessor failed to get filter list due to error = " + exc.getMessage());
+          "AggregateSummaryProcessor failed to process request due to error = " + exc.getMessage());
+      
+      
     }
   }
 
