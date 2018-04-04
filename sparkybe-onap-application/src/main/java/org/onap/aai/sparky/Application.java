@@ -22,23 +22,59 @@ package org.onap.aai.sparky;
 
 import javax.servlet.Filter;
 
-import org.onap.aai.sparky.security.filter.LoginFilter;
-
 import org.apache.camel.component.servlet.CamelHttpTransportServlet;
+import org.onap.aai.sparky.config.PropertyPasswordConfiguration;
+import org.onap.aai.sparky.security.filter.LoginFilter;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.servlet.ServletRegistrationBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 public class Application {
-
+  
+  private static final String SPARKY_SSL_ENABLED = "sparky.ssl.enabled";
+  private static final String SPARKY_PORTAL_ENABLED = "sparky.portal.enabled";
+  
   private Filter loginFilter = new LoginFilter();
-
+   
   public static void main(String[] args) {
-    SpringApplication.run(Application.class, args);
+
+    setDefaultProperties();
+    SpringApplication app = new SpringApplication(Application.class);
+    app.addInitializers(new PropertyPasswordConfiguration());
+    app.run(args);
+    
+  }
+  
+  protected static void setDefaultProperties() {
+
+    /*
+     * By default we want ssl and portal integration, however it is possible to turn these off with
+     * properties for local development and interop in some situations.
+     */
+
+    if (System.getenv(SPARKY_SSL_ENABLED) == null) {
+      System.setProperty(SPARKY_SSL_ENABLED, "true");
+    } else {
+      System.setProperty(SPARKY_SSL_ENABLED, System.getenv(SPARKY_SSL_ENABLED));
+    }
+
+    boolean sslEnabled = Boolean.parseBoolean(System.getProperty(SPARKY_SSL_ENABLED));
+
+    if (sslEnabled) {
+      System.setProperty("server.ssl.key-store-password", System.getenv("KEYSTORE_PASSWORD"));
+      System.setProperty("server.ssl.key-password", System.getenv("KEYSTORE_ALIAS_PASSWORD"));
+    }
+
+    if (System.getenv(SPARKY_PORTAL_ENABLED) == null) {
+      System.setProperty(SPARKY_PORTAL_ENABLED, "true");
+    } else {
+      System.setProperty(SPARKY_PORTAL_ENABLED, System.getenv(SPARKY_PORTAL_ENABLED));
+    }
+
   }
 
   /*
@@ -65,7 +101,6 @@ public class Application {
     
     return registration;
   }
-
 
 
 }

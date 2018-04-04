@@ -25,8 +25,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
 @Configuration
-@ConditionalOnProperty(value="sparky.ssl.enabled", havingValue = "true")
-@PropertySource("file:${CONFIG_HOME}/sparky-ssl-config.properties")
+@ConditionalOnProperty(value="sparky.ssl.enabled", havingValue = "false")
+@PropertySource("file:${CONFIG_HOME}/sparky-http-config.properties")
 public class SparkyHttpConfigLoader {
 
 }

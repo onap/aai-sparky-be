@@ -17,17 +17,15 @@ RUN export JAVA_HOME
 RUN mkdir -p $MICRO_HOME
 RUN mkdir -p $BIN_HOME
 RUN mkdir -p $MICRO_HOME/lib/
-RUN mkdir -p $MICRO_HOME/static/services/aai/webapp/
+RUN mkdir -p $MICRO_HOME/static/
 
 ADD *.jar $MICRO_HOME/lib/
 ADD scripts/* $MICRO_HOME/bin/
-COPY static/ $MICRO_HOME/static/services/aai/webapp/
+COPY static/ $MICRO_HOME/static/
 
 RUN chmod 755 $MICRO_HOME/bin/*
 RUN chmod 755 $MICRO_HOME/lib/*
 RUN chmod 755 $MICRO_HOME/static/*
-
-#RUN ls -la $BIN_HOME/
 
 RUN ln -s /logs $MICRO_HOME/logs
 
