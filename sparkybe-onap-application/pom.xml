@@ -28,9 +28,6 @@
 		<docker.image.name>sparky-be</docker.image.name>
 	</properties>
 
-
-
-
 	<dependencyManagement>
 		<dependencies>
 
@@ -109,8 +106,8 @@
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/com.sun.xml.bind/jaxb-impl -->
-		<!-- <dependency> <groupId>com.sun.xml.bind</groupId> <artifactId>jaxb-impl</artifactId>
-			</dependency> <dependency> <groupId>com.sun.xml.bind</groupId> <artifactId>jaxb-core</artifactId>
+		<!-- <dependency> <groupId>com.sun.xml.bind</groupId> <artifactId>jaxb-impl</artifactId> 
+			</dependency> <dependency> <groupId>com.sun.xml.bind</groupId> <artifactId>jaxb-core</artifactId> 
 			</dependency> -->
 
 		<!-- Camel -->
@@ -165,17 +162,17 @@
 			<version>1.2</version>
 		</dependency>
 
-		<!-- <dependency> <groupId>org.apache.tomcat.embed</groupId> <artifactId>tomcat-embed-jasper</artifactId>
+		<!-- <dependency> <groupId>org.apache.tomcat.embed</groupId> <artifactId>tomcat-embed-jasper</artifactId> 
 			</dependency> -->
 
 
 		<!-- https://mvnrepository.com/artifact/org.apache.camel/camel-http-common -->
-		<!-- <dependency> <groupId>org.apache.camel</groupId> <artifactId>camel-http</artifactId>
-			<version>2.15.5</version> </dependency> <dependency> <groupId>abc.def</groupId>
-			<artifactId>att-camel-dme2-servlet</artifactId> <version>2.15.5</version>
-			<scope>system</scope> <systemPath>x:/222/att-camel-dme2-servlet-2.15.5.jar</systemPath>
-			</dependency> <dependency> <groupId>abc.def</groupId> <artifactId>att-camel-static-content</artifactId>
-			<version>2.11.2.1</version> <scope>system</scope> <systemPath>x:/222/att-camel-static-content-2.11.2.1.jar</systemPath>
+		<!-- <dependency> <groupId>org.apache.camel</groupId> <artifactId>camel-http</artifactId> 
+			<version>2.15.5</version> </dependency> <dependency> <groupId>abc.def</groupId> 
+			<artifactId>att-camel-dme2-servlet</artifactId> <version>2.15.5</version> 
+			<scope>system</scope> <systemPath>x:/222/att-camel-dme2-servlet-2.15.5.jar</systemPath> 
+			</dependency> <dependency> <groupId>abc.def</groupId> <artifactId>att-camel-static-content</artifactId> 
+			<version>2.11.2.1</version> <scope>system</scope> <systemPath>x:/222/att-camel-static-content-2.11.2.1.jar</systemPath> 
 			</dependency> -->
 
 		<!-- Utility dependencies -->
@@ -389,7 +386,7 @@
 					</folders>
 				</configuration>
 			</plugin>
-
+			
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-resources-plugin</artifactId>
@@ -464,14 +461,14 @@
 									<artifactId>${frontEndArtifactId}</artifactId>
 									<version>${frontEndVersion}</version>
 									<type>war</type>
-									<outputDirectory>${basedir}/target/static/</outputDirectory>
+									<outputDirectory>${basedir}/target/static/services/aai/webapp/</outputDirectory>
 								</artifactItem>
 							</artifactItems>
 						</configuration>
 					</execution>
 				</executions>
-			</plugin>
-
+			</plugin>			
+			
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
@@ -524,12 +521,12 @@
 				</configuration>
 			</plugin>
 
-			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-resources-plugin</artifactId>
-				<version>2.7</version> <executions> <execution> <id>copy-docker-file</id>
-				<phase>package</phase> <goals> <goal>copy-resources</goal> </goals> <configuration>
-				<outputDirectory>target</outputDirectory> <overwrite>true</overwrite> <resources>
-				<resource> <directory>${basedir}/src/main/docker</directory> <filtering>true</filtering>
-				<includes> <include>**/*</include> </includes> </resource> <resource> <directory>${basedir}/src/main/scripts/</directory>
+			<!-- <plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-resources-plugin</artifactId> 
+				<version>2.7</version> <executions> <execution> <id>copy-docker-file</id> 
+				<phase>package</phase> <goals> <goal>copy-resources</goal> </goals> <configuration> 
+				<outputDirectory>target</outputDirectory> <overwrite>true</overwrite> <resources> 
+				<resource> <directory>${basedir}/src/main/docker</directory> <filtering>true</filtering> 
+				<includes> <include>**/*</include> </includes> </resource> <resource> <directory>${basedir}/src/main/scripts/</directory> 
 				</resource> </resources> </configuration> </execution> </executions> </plugin> -->
 			<plugin>
 				<groupId>com.spotify</groupId>
@@ -547,10 +544,10 @@
 				</configuration>
 			</plugin>
 			<!-- license plugin -->
-			<!-- <plugin> <groupId>com.mycila</groupId> <artifactId>license-maven-plugin</artifactId>
-				<version>3.0</version> <configuration> <header>LICENSE</header> <includes>
-				<include>src/main/java/**</include> </includes> </configuration> <executions>
-				<execution> <goals> <goal>format</goal> </goals> <phase>process-sources</phase>
+			<!-- <plugin> <groupId>com.mycila</groupId> <artifactId>license-maven-plugin</artifactId> 
+				<version>3.0</version> <configuration> <header>LICENSE</header> <includes> 
+				<include>src/main/java/**</include> </includes> </configuration> <executions> 
+				<execution> <goals> <goal>format</goal> </goals> <phase>process-sources</phase> 
 				</execution> </executions> </plugin> -->
 		</plugins>
 	</build>
@@ -568,3 +565,6 @@
 	</distributionManagement>
 
 </project>
+
+
+
