@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "5a93c517_ce252bc3",
+        "filename": "sparkybe-onap-application/src/main/docker/Dockerfile",
+        "patchSetId": 1
+      },
+      "lineNbr": 20,
+      "author": {
+        "id": 651
+      },
+      "writtenOn": "2018-04-04T12:13:39Z",
+      "side": 1,
+      "message": "Why did we keep the line as a comment?  Will it be useful for someone to read that?",
+      "revId": "ae4afad536f8893139a371699bce62170a2bf651",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "5a93c517_0e131367",
+        "filename": "sparkybe-onap-application/src/main/java/org/onap/aai/sparky/Application.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 26,
+      "author": {
+        "id": 651
+      },
+      "writtenOn": "2018-04-04T12:13:39Z",
+      "side": 1,
+      "message": "Same comment as in the pom.  Let\u0027s not move imports as it is more complicated for the CI reviewers",
+      "revId": "ae4afad536f8893139a371699bce62170a2bf651",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
