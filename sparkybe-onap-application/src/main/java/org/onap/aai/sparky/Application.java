@@ -35,8 +35,10 @@ import org.springframework.context.annotation.Bean;
 @SpringBootApplication
 public class Application {
   
-  private static final String SPARKY_SSL_ENABLED = "sparky.ssl.enabled";
-  private static final String SPARKY_PORTAL_ENABLED = "sparky.portal.enabled";
+  private static final String SPARKY_SSL_ENABLED_PROPERTY = "sparky.ssl.enabled";
+  private static final String SPARKY_PORTAL_ENABLED_PROPERTY = "sparky.portal.enabled";
+  private static final String SPARKY_SSL_ENABLED_ENV = "SPARKY_SSL_ENABLED";
+  private static final String SPARKY_PORTAL_ENABLED_ENV = "SPARKY_PORTAL_ENABLED";
   
   private Filter loginFilter = new LoginFilter();
    
@@ -56,25 +58,24 @@ public class Application {
      * properties for local development and interop in some situations.
      */
 
-    if (System.getenv(SPARKY_SSL_ENABLED) == null) {
-      System.setProperty(SPARKY_SSL_ENABLED, "true");
+    if (System.getenv(SPARKY_SSL_ENABLED_ENV) == null) {
+      System.setProperty(SPARKY_SSL_ENABLED_PROPERTY, "true");
     } else {
-      System.setProperty(SPARKY_SSL_ENABLED, System.getenv(SPARKY_SSL_ENABLED));
+      System.setProperty(SPARKY_SSL_ENABLED_PROPERTY, System.getenv(SPARKY_SSL_ENABLED_ENV));
     }
 
-    boolean sslEnabled = Boolean.parseBoolean(System.getProperty(SPARKY_SSL_ENABLED));
+    boolean sslEnabled = Boolean.parseBoolean(System.getProperty(SPARKY_SSL_ENABLED_PROPERTY));
 
     if (sslEnabled) {
       System.setProperty("server.ssl.key-store-password", System.getenv("KEYSTORE_PASSWORD"));
       System.setProperty("server.ssl.key-password", System.getenv("KEYSTORE_ALIAS_PASSWORD"));
     }
 
-    if (System.getenv(SPARKY_PORTAL_ENABLED) == null) {
-      System.setProperty(SPARKY_PORTAL_ENABLED, "true");
+    if (System.getenv(SPARKY_PORTAL_ENABLED_ENV) == null) {
+      System.setProperty(SPARKY_PORTAL_ENABLED_PROPERTY, "true");
     } else {
-      System.setProperty(SPARKY_PORTAL_ENABLED, System.getenv(SPARKY_PORTAL_ENABLED));
+      System.setProperty(SPARKY_PORTAL_ENABLED_PROPERTY, System.getenv(SPARKY_PORTAL_ENABLED_ENV));
     }
-
   }
 
   /*
