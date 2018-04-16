@@ -542,7 +542,7 @@
 				<configuration>
 					<verbose>true</verbose>
 					<serverId>docker-hub</serverId>
-					<imageName>${docker.push.registry}/onap/${docker.image.name}</imageName>
+					<imageName>onap/${docker.image.name}</imageName>
 					<dockerDirectory>${docker.location}</dockerDirectory>
 					<imageTags>
 						<imageTag>latest</imageTag>
