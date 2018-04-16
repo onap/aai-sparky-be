@@ -25,6 +25,7 @@ import javax.servlet.Filter;
 import org.apache.camel.component.servlet.CamelHttpTransportServlet;
 import org.onap.aai.sparky.config.PropertyPasswordConfiguration;
 import org.onap.aai.sparky.security.filter.LoginFilter;
+import org.openecomp.portalsdk.core.onboarding.crossapi.PortalRestAPIProxy;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -103,5 +104,17 @@ public class Application {
     return registration;
   }
 
+    /**
+   * Bind the Portal API Proxy
+   */
+  @Bean
+  @ConditionalOnProperty(value = "sparky.portal.enabled", havingValue = "true")
+  public ServletRegistrationBean portalApiProxy() {
+    
+    final ServletRegistrationBean servlet =
+        new ServletRegistrationBean(new PortalRestAPIProxy(), "/api/v2/*");
+    servlet.setName("PortalRestApiProxy");
+    return servlet;
+  }
 
 }
