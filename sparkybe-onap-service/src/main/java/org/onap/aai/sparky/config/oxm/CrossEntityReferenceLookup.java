@@ -33,13 +33,16 @@ import org.eclipse.persistence.jaxb.dynamic.DynamicJAXBContext;
 
 public class CrossEntityReferenceLookup implements OxmModelProcessor {
 
+  private static final String ENTITY_NAME  = "entityName";
+  private static final String CROSS_ENTITY_REFERENCE  = "crossEntityReference";
   private Map<String, HashMap<String, String>> crossReferenceEntityOxmModel;
   private Map<String, CrossEntityReferenceDescriptor> crossReferenceEntityDescriptors;
 
 
+
   public CrossEntityReferenceLookup() {
-    crossReferenceEntityOxmModel = new LinkedHashMap<String, HashMap<String, String>>();
-    crossReferenceEntityDescriptors = new HashMap<String, CrossEntityReferenceDescriptor>();
+    crossReferenceEntityOxmModel = new LinkedHashMap<>();
+    crossReferenceEntityDescriptors = new HashMap<>();
   }
 
   @Override
@@ -53,7 +56,7 @@ public class CrossEntityReferenceLookup implements OxmModelProcessor {
 
       DynamicType entity = jaxbContext.getDynamicType(desc.getAlias());
 
-      LinkedHashMap<String, String> oxmProperties = new LinkedHashMap<String, String>();
+      LinkedHashMap<String, String> oxmProperties = new LinkedHashMap<>();
 
       // Not all fields have key attributes
       if (desc.getPrimaryKeyFields() != null) {
@@ -64,19 +67,19 @@ public class CrossEntityReferenceLookup implements OxmModelProcessor {
       String entityName = desc.getDefaultRootElement();
       
       // add entityName
-      oxmProperties.put("entityName", entityName);
+      oxmProperties.put(ENTITY_NAME, entityName);
 
       Map<String, String> properties = entity.getDescriptor().getProperties();
       if (properties != null) {
         for (Map.Entry<String, String> entry : properties.entrySet()) {
 
-          if (entry.getKey().equalsIgnoreCase("crossEntityReference")) {
-            oxmProperties.put("crossEntityReference", entry.getValue());
+          if (CROSS_ENTITY_REFERENCE.equalsIgnoreCase(entry.getKey())) {
+            oxmProperties.put(CROSS_ENTITY_REFERENCE, entry.getValue());
           }
         }
       }
 
-      if (oxmProperties.containsKey("crossEntityReference")) {
+      if (oxmProperties.containsKey(CROSS_ENTITY_REFERENCE)) {
         crossReferenceEntityOxmModel.put(entityName, oxmProperties);
       }
 
@@ -86,12 +89,12 @@ public class CrossEntityReferenceLookup implements OxmModelProcessor {
         .entrySet()) {
       HashMap<String, String> attribute = crossRefModel.getValue();
       CrossEntityReferenceDescriptor entity = new CrossEntityReferenceDescriptor();
-      entity.setEntityName(attribute.get("entityName"));
+      entity.setEntityName(attribute.get(ENTITY_NAME));
       entity.setPrimaryKeyAttributeNames(
           Arrays.asList(attribute.get("primaryKeyAttributeNames").replace(" ", "").split(",")));
 
       List<String> crossEntityRefTokens =
-          Arrays.asList(attribute.get("crossEntityReference").split(","));
+          Arrays.asList(attribute.get(CROSS_ENTITY_REFERENCE).split(","));
 
       if (crossEntityRefTokens.size() >= 2) {
         CrossEntityReference entityRef = new CrossEntityReference();
@@ -103,7 +106,7 @@ public class CrossEntityReferenceLookup implements OxmModelProcessor {
 
         entity.setCrossEntityReference(entityRef);
       }
-      crossReferenceEntityDescriptors.put(attribute.get("entityName"), entity);
+      crossReferenceEntityDescriptors.put(attribute.get(ENTITY_NAME), entity);
     }
 
   }
