@@ -47,6 +47,10 @@ public class AggregateSummaryProcessor {
       LoggerFactory.getInstance().getLogger(AggregateSummaryProcessor.class);
 
   private static final String KEY_FILTERS = "filters";
+  private static final String FILTER_ID_KEY = "filterId";
+  private static final String FILTER_VALUE_KEY = "filterValue";
+  private static final String TOTAL = "total";
+  private static final int DEFAULT_SHOULD_MATCH_SCORE = 1;
 
   private ElasticSearchAdapter elasticSearchAdapter = null;
 
@@ -99,7 +103,7 @@ public class AggregateSummaryProcessor {
         }
 
         if (requestFilters != null && requestFilters.length() > 0) {
-          List<JSONObject> filtersToQuery = new ArrayList<JSONObject>();
+          List<JSONObject> filtersToQuery = new ArrayList<>();
           for (int i = 0; i < requestFilters.length(); i++) {
             JSONObject filterEntry = requestFilters.getJSONObject(i);
             filtersToQuery.add(filterEntry);
@@ -122,7 +126,6 @@ public class AggregateSummaryProcessor {
       LOG.error(AaiUiMsgs.ERROR_GENERIC,
           "AggregateSummaryProcessor failed to process request due to error = " + exc.getMessage());
       
-      
     }
   }
 
@@ -136,15 +139,9 @@ public class AggregateSummaryProcessor {
     return payload.toString();
   }
 
-  private static final String FILTER_ID_KEY = "filterId";
-  private static final String FILTER_VALUE_KEY = "filterValue";
-  private static final int DEFAULT_SHOULD_MATCH_SCORE = 1;
-  private static final String VNF_FILTER_AGGREGATION = "vnfFilterAggregation";
+  private String getVnfFilterAggregations(List<JSONObject> filtersToQuery) {
 
-
-  private String getVnfFilterAggregations(List<JSONObject> filtersToQuery) throws IOException {
-
-    List<SearchFilter> searchFilters = new ArrayList<SearchFilter>();
+    List<SearchFilter> searchFilters = new ArrayList<>();
     for (JSONObject filterEntry : filtersToQuery) {
 
       String filterId = filterEntry.getString(FILTER_ID_KEY);
@@ -180,7 +177,7 @@ public class AggregateSummaryProcessor {
 
   private String buildEmptyAggregateVnfResponseJson() {
     JSONObject finalOutputToFe = new JSONObject();
-    finalOutputToFe.put("total", 0);
+    finalOutputToFe.put(TOTAL, 0);
     return finalOutputToFe.toString();
   }
 
@@ -191,8 +188,8 @@ public class AggregateSummaryProcessor {
 
 
     JSONObject hits = responseJson.getJSONObject("hits");
-    int totalHits = hits.getInt("total");
-    finalOutputToFe.put("total", totalHits);
+    int totalHits = hits.getInt(TOTAL);
+    finalOutputToFe.put(TOTAL, totalHits);
 
     JSONObject aggregations = responseJson.getJSONObject("aggregations");
     String[] aggKeys = JSONObject.getNames(aggregations);
