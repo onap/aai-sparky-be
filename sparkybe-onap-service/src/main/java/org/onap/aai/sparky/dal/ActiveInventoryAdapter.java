@@ -20,25 +20,44 @@
  */
 package org.onap.aai.sparky.dal;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URLEncoder;
+import java.security.KeyManagementException;
+import java.security.KeyStore;
+import java.security.KeyStoreException;
+import java.security.NoSuchAlgorithmException;
+import java.security.UnrecoverableKeyException;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Map.Entry;
 
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.UriBuilder;
 
 import org.apache.http.client.utils.URIBuilder;
 import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
+import org.onap.aai.restclient.client.Headers;
 import org.onap.aai.restclient.client.OperationResult;
 import org.onap.aai.restclient.client.RestClient;
 import org.onap.aai.restclient.enums.RestAuthenticationMode;
+import org.onap.aai.sparky.config.SparkyResourceLoader;
 import org.onap.aai.sparky.config.oxm.OxmEntityDescriptor;
 import org.onap.aai.sparky.config.oxm.OxmEntityLookup;
 import org.onap.aai.sparky.config.oxm.OxmModelLoader;
@@ -47,7 +66,16 @@ import org.onap.aai.sparky.dal.rest.RestClientConstructionException;
 import org.onap.aai.sparky.dal.rest.RestClientFactory;
 import org.onap.aai.sparky.dal.rest.config.RestEndpointConfig;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
+import org.onap.aai.sparky.util.Encryptor;
 import org.onap.aai.sparky.util.NodeUtils;
+
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.ClientResponse;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.WebResource.Builder;
+import com.sun.jersey.api.client.config.ClientConfig;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
+import com.sun.jersey.client.urlconnection.HTTPSProperties;
 
 /**
  * The Class ActiveInventoryAdapter.
@@ -103,8 +131,12 @@ public class ActiveInventoryAdapter {
 
     if (endpointConfig.getRestAuthenticationMode() == RestAuthenticationMode.SSL_BASIC) {
 
-      headers.putIfAbsent(HEADER_AUTHORIZATION, new ArrayList<String>());
-      headers.get(HEADER_AUTHORIZATION).add(getBasicAuthenticationCredentials());
+			// Commenting the code to fix the issue :
+			// AAI-1097 - For AAI calls when Rest authentication mode is selected as SSL_BASIC getting 403 error
+			// This is duplicate since RestClient.getClientBuilder also adds Authorization header.
+    	
+      //headers.putIfAbsent(HEADER_AUTHORIZATION, new ArrayList<String>());
+      //headers.get(HEADER_AUTHORIZATION).add(getBasicAuthenticationCredentials());
 
     }
 
@@ -293,7 +325,6 @@ public class ActiveInventoryAdapter {
    */
   // package protected for test classes instead of private
   OperationResult queryActiveInventory(String url, String acceptContentType) {
-
     return restClient.get(url, getMessageHeaders(), MediaType.APPLICATION_JSON_TYPE);
 
   }
@@ -396,5 +427,5 @@ public class ActiveInventoryAdapter {
        characters such as '?', '&', etc. remain intact as needed by the synchronizer */
     return (builder.build().toString() + (includeQueryParams ? queryParams : ""));
   }
-
+  
 }
