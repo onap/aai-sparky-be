@@ -41,6 +41,7 @@ public class SyncControllerConfig {
   private boolean enabled;
   private int syncTaskDelayInMs;
   private int syncTaskFrequencyInDays;
+  private int syncTaskFrequencyInMinutes;
   
   private int numSyncControllerWorkers;
   private boolean runOnceSyncEnabled;
@@ -67,6 +68,7 @@ public class SyncControllerConfig {
     enabled = false;
     syncTaskDelayInMs = 0;
     syncTaskFrequencyInDays = 365;
+    syncTaskFrequencyInMinutes = 0;
     numSyncControllerWorkers = 1;
     runOnceSyncEnabled = false;
     periodicSyncEnabled = false;
@@ -184,6 +186,14 @@ public class SyncControllerConfig {
   public void setSyncTaskFrequencyInDays(int syncTaskFrequencyInDays) {
     this.syncTaskFrequencyInDays = syncTaskFrequencyInDays;
   }
+  
+	public int getSyncTaskFrequencyInMinutes() {
+		return syncTaskFrequencyInDays;
+	}
+	
+	public void setSyncTaskFrequencyInMinutes(int syncTaskFrequencyInMinutes) {
+		this.syncTaskFrequencyInMinutes = syncTaskFrequencyInMinutes;
+	}
 
   public int getNumSyncControllerWorkers() {
     return numSyncControllerWorkers;
@@ -211,7 +221,12 @@ public class SyncControllerConfig {
 
   public long getSyncFrequencyInMs() {
 
-    return (syncTaskFrequencyInDays * SynchronizerConstants.MILLISEC_IN_A_DAY);
+	  if(syncTaskFrequencyInMinutes > 0 ) {
+		  return (syncTaskFrequencyInMinutes * SynchronizerConstants.MILLISEC_IN_A_MIN);
+	  } else {
+		  return (syncTaskFrequencyInDays * SynchronizerConstants.MILLISEC_IN_A_DAY);
+	  }
+   
 
   }
 

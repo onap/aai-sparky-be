@@ -105,8 +105,8 @@ public class SyncControllerImpl implements SyncController {
 
     this.syncControllerConfig = syncControllerConfig;
 
-    this.delayInMs = 0L;
-    this.syncFrequencyInMs = 86400000L;
+    this.delayInMs = syncControllerConfig.getSyncTaskDelayInMs();
+    this.syncFrequencyInMs = syncControllerConfig.getSyncFrequencyInMs();
     this.syncStartTime = null;
     this.lastExecutionDate = null;
     this.runCount = new AtomicInteger(0);
