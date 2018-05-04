@@ -214,7 +214,7 @@ some of the depedencies should probably have a scope of provided so they don't a
 		<dependency>
 			<groupId>org.onap.aai.aai-common</groupId>
 			<artifactId>aai-schema</artifactId>
-			<version>1.2.3</version>
+			<version>1.2.4</version>
 		</dependency>
 
 		<dependency>
