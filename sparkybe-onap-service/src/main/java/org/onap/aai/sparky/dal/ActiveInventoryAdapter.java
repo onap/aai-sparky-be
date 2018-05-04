@@ -103,8 +103,12 @@ public class ActiveInventoryAdapter {
 
     if (endpointConfig.getRestAuthenticationMode() == RestAuthenticationMode.SSL_BASIC) {
 
-      headers.putIfAbsent(HEADER_AUTHORIZATION, new ArrayList<String>());
-      headers.get(HEADER_AUTHORIZATION).add(getBasicAuthenticationCredentials());
+			// Commenting the code to fix the issue :
+			// AAI-1097 - For AAI calls when Rest authentication mode is selected as SSL_BASIC getting 403 error
+			// This is duplicate since RestClient.getClientBuilder also adds Authorization header.
+    	
+      //headers.putIfAbsent(HEADER_AUTHORIZATION, new ArrayList<String>());
+      //headers.get(HEADER_AUTHORIZATION).add(getBasicAuthenticationCredentials());
 
     }
 
@@ -293,7 +297,6 @@ public class ActiveInventoryAdapter {
    */
   // package protected for test classes instead of private
   OperationResult queryActiveInventory(String url, String acceptContentType) {
-
     return restClient.get(url, getMessageHeaders(), MediaType.APPLICATION_JSON_TYPE);
 
   }
@@ -396,5 +399,5 @@ public class ActiveInventoryAdapter {
        characters such as '?', '&', etc. remain intact as needed by the synchronizer */
     return (builder.build().toString() + (includeQueryParams ? queryParams : ""));
   }
-
+  
 }
