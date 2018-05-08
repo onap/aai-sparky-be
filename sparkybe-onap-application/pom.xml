@@ -543,12 +543,27 @@
 					<forceTags>true</forceTags>
 				</configuration>
 			</plugin>
+
+			<plugin>
+			  <!-- explicitly define maven-deploy-plugin after other to force exec order -->
+			  <groupId>org.apache.maven.plugins</groupId>
+			  <artifactId>maven-deploy-plugin</artifactId>
+			</plugin>
+			<plugin>
+			  <groupId>org.sonatype.plugins</groupId>
+			  <artifactId>nexus-staging-maven-plugin</artifactId>
+			</plugin>
+			<plugin>
+			  <groupId>org.apache.maven.plugins</groupId>
+			  <artifactId>maven-site-plugin</artifactId>
+			</plugin>
 			<!-- license plugin -->
 			<!-- <plugin> <groupId>com.mycila</groupId> <artifactId>license-maven-plugin</artifactId>
 				<version>3.0</version> <configuration> <header>LICENSE</header> <includes>
 				<include>src/main/java/**</include> </includes> </configuration> <executions>
 				<execution> <goals> <goal>format</goal> </goals> <phase>process-sources</phase>
 				</execution> </executions> </plugin> -->
+			
 		</plugins>
 	</build>
 	<distributionManagement>

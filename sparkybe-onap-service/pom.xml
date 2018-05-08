@@ -556,20 +556,19 @@ some of the depedencies should probably have a scope of provided so they don't a
 				</executions>
 			</plugin>
  -->
-		</plugins>
+            <plugin>
+                <!-- explicitly define maven-deploy-plugin after other to force exec order -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+            </plugin>
+	  </plugins>
 	</build>
-
-		<distributionManagement>
-        <repository>
-            <id>ecomp-releases</id>
-            <name>ECOMP Release Repository</name>
-            <url>${nexusproxy}/content/repositories/releases/</url>
-        </repository>
-        <snapshotRepository>
-            <id>ecomp-snapshots</id>
-            <name>ECOMP Snapshot Repository</name>
-            <url>${nexusproxy}/content/repositories/snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
-
 </project>
