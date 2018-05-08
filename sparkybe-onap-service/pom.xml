@@ -23,10 +23,9 @@
 		<nexusproxy>https://nexus.onap.org</nexusproxy>
 		<camel-spring-boot.version>2.20.0</camel-spring-boot.version>
 		<config-home>${basedir}/</config-home>
+		<sitePath>/content/sites/site/org/onap/aai/sparky-be/${project.artifactId}/${project.version}</sitePath>
+		<onap.nexus.url>https://nexus.onap.org</onap.nexus.url>
 	</properties>
-
-
-
 
 	<dependencyManagement>
 		<dependencies>
@@ -556,20 +555,72 @@ some of the depedencies should probably have a scope of provided so they don't a
 				</executions>
 			</plugin>
  -->
-		</plugins>
-	</build>
+<plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>2.8.2</version>
+                    <executions>
+                        <execution>
+                            <id>default-deploy</id>
+                            <phase>none</phase>
+                        </execution>
+                    </executions>
+                </plugin>
+                <plugin>
+                    <groupId>org.sonatype.plugins</groupId>
+                    <artifactId>nexus-staging-maven-plugin</artifactId>
+                    <version>1.6.7</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <nexusUrl>${onap.nexus.url}</nexusUrl>
+                        <stagingProfileId>176c31dfe190a</stagingProfileId>
+                        <serverId>ecomp-staging</serverId>
+                    </configuration>
+                </plugin>
+	      </plugins>
+</build>
 
-		<distributionManagement>
+	
+    <distributionManagement>
+       <repository>
+          <id>ecomp-releases</id>
+          <name>ECOMP Release Repository</name>
+          <url>${onap.nexus.url}/content/repositories/releases/</url>
+       </repository>
+       <snapshotRepository>
+          <id>ecomp-snapshots</id>
+          <name>ECOMP Snapshot Repository</name>
+          <url>${onap.nexus.url}/content/repositories/snapshots/</url>
+      </snapshotRepository>
+      <site>
+        <id>ecomp-site</id>
+        <url>dav:${onap.nexus.url}${sitePath}</url>
+      </site>
+   </distributionManagement>
+
+    <repositories>
+        <repository>
+            <id>central</id>
+            <name>Maven 2 repository 2</name>
+            <url>http://repo2.maven.org/maven2/</url>
+        </repository>
         <repository>
             <id>ecomp-releases</id>
             <name>ECOMP Release Repository</name>
-            <url>${nexusproxy}/content/repositories/releases/</url>
+            <url>${onap.nexus.url}/content/repositories/releases/</url>
         </repository>
-        <snapshotRepository>
+        <repository>
+            <id>ecomp-staging</id>
+            <name>ECOMP Staging Repository</name>
+            <url>${onap.nexus.url}/content/repositories/staging/</url>
+        </repository>
+        <repository>
             <id>ecomp-snapshots</id>
             <name>ECOMP Snapshot Repository</name>
-            <url>${nexusproxy}/content/repositories/snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
+            <url>${onap.nexus.url}/content/repositories/snapshots/</url>
+        </repository>
+    </repositories>
+
+
 
 </project>

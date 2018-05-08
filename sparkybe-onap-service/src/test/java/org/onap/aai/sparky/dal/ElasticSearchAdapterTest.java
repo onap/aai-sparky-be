@@ -6,10 +6,12 @@ import javax.ws.rs.core.MediaType;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.Ignore;
 import org.onap.aai.restclient.enums.RestAuthenticationMode;
 import org.onap.aai.sparky.dal.rest.config.RestEndpointConfig;
 import org.onap.aai.sparky.dal.ElasticSearchAdapter;
 
+@Ignore
 public class ElasticSearchAdapterTest {
 	
 
