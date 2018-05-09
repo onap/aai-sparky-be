@@ -27,7 +27,7 @@
 		<docker.location>${basedir}/target</docker.location>
 		<docker.image.name>sparky-be</docker.image.name>
 		<sitePath>/content/sites/site/org/onap/aai/sparky-be/${project.artifactId}/${project.version}</sitePath>
-		<onap.nexus.url>https://nexus.onap.org</onap.nexus.url>
+		<nexusproxy>https://nexus.onap.org</nexusproxy>
 	</properties>
 
 	<dependencyManagement>
@@ -563,7 +563,7 @@
 			  <version>1.6.7</version>
 			  <extensions>true</extensions>
 			  <configuration>
-                            <nexusUrl>${onap.nexus.url}</nexusUrl>
+                            <nexusUrl>${nexusproxy}</nexusUrl>
                             <stagingProfileId>176c31dfe190a</stagingProfileId>
                             <serverId>ecomp-staging</serverId>
 			  </configuration>
@@ -580,20 +580,16 @@
 	</build>
 
     <distributionManagement>
-       <repository>
-          <id>ecomp-releases</id>
-          <name>ECOMP Release Repository</name>
-          <url>${onap.nexus.url}/content/repositories/releases/</url>
-       </repository>
-       <snapshotRepository>
-          <id>ecomp-snapshots</id>
-          <name>ECOMP Snapshot Repository</name>
-          <url>${onap.nexus.url}/content/repositories/snapshots/</url>
+      <repository>
+         <id>ecomp-releases</id>
+         <name>ECOMP Release Repository</name>
+         <url>${nexusproxy}/content/repositories/releases/</url>
+      </repository>
+      <snapshotRepository>
+         <id>ecomp-snapshots</id>
+         <name>ECOMP Snapshot Repository</name>
+         <url>${nexusproxy}/content/repositories/snapshots/</url>
       </snapshotRepository>
-      <site>
-        <id>ecomp-site</id>
-        <url>dav:${onap.nexus.url}${sitePath}</url>
-      </site>
    </distributionManagement>
 
     <repositories>
@@ -605,17 +601,17 @@
         <repository>
             <id>ecomp-releases</id>
             <name>ECOMP Release Repository</name>
-            <url>${onap.nexus.url}/content/repositories/releases/</url>
+            <url>${nexusproxy}/content/repositories/releases/</url>
         </repository>
         <repository>
             <id>ecomp-staging</id>
             <name>ECOMP Staging Repository</name>
-            <url>${onap.nexus.url}/content/repositories/staging/</url>
+            <url>${nexusproxy}/content/repositories/staging/</url>
         </repository>
         <repository>
             <id>ecomp-snapshots</id>
             <name>ECOMP Snapshot Repository</name>
-            <url>${onap.nexus.url}/content/repositories/snapshots/</url>
+            <url>${nexusproxy}/content/repositories/snapshots/</url>
         </repository>
     </repositories>
 
