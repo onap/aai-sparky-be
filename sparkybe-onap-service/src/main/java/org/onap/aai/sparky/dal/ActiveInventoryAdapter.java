@@ -47,7 +47,9 @@ import org.onap.aai.sparky.dal.rest.RestClientConstructionException;
 import org.onap.aai.sparky.dal.rest.RestClientFactory;
 import org.onap.aai.sparky.dal.rest.config.RestEndpointConfig;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
+import org.onap.aai.sparky.util.Encryptor;
 import org.onap.aai.sparky.util.NodeUtils;
+import org.onap.aai.sparky.viewandinspect.config.SparkyConstants;
 
 /**
  * The Class ActiveInventoryAdapter.
@@ -87,6 +89,21 @@ public class ActiveInventoryAdapter {
     this.oxmModelLoader = oxmModelLoader;
     this.oxmEntityLookup = oxmEntityLookup;
     this.endpointConfig = endpointConfig;
+    
+    /*
+     * Add support for de-obfuscating basic auth password (if obfuscated)
+     */
+
+    if (endpointConfig.getRestAuthenticationMode() == RestAuthenticationMode.SSL_BASIC) {
+      String basicAuthPassword = endpointConfig.getBasicAuthPassword();
+
+      if (basicAuthPassword != null
+          && basicAuthPassword.startsWith(SparkyConstants.OBFUSCATION_PREFIX)) {
+        Encryptor enc = new Encryptor();
+        endpointConfig.setBasicAuthPassword(enc.decryptValue(basicAuthPassword));
+      }
+    }
+
     this.restClient = RestClientFactory.buildClient(endpointConfig);
 
   }
@@ -102,16 +119,15 @@ public class ActiveInventoryAdapter {
     headers.get(HEADER_TRANS_ID).add(TRANSACTION_ID_PREFIX + NodeUtils.getRandomTxnId());
 
     if (endpointConfig.getRestAuthenticationMode() == RestAuthenticationMode.SSL_BASIC) {
-
       headers.putIfAbsent(HEADER_AUTHORIZATION, new ArrayList<String>());
       headers.get(HEADER_AUTHORIZATION).add(getBasicAuthenticationCredentials());
-
     }
 
     return headers;
   }
 
   protected String getBasicAuthenticationCredentials() {
+
     String usernameAndPassword = String.join(":", endpointConfig.getBasicAuthUserName(),
         endpointConfig.getBasicAuthPassword());
     return "Basic " + java.util.Base64.getEncoder().encodeToString(usernameAndPassword.getBytes());
