@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.onap.aai.setup.Version;
 import org.onap.aai.sparky.config.SparkyResourceLoader;
 import org.onap.aai.sparky.config.oxm.CrossEntityReferenceLookup;
 import org.onap.aai.sparky.config.oxm.GeoEntityLookup;
@@ -18,7 +19,7 @@ import org.springframework.core.io.DefaultResourceLoader;
 
 public class OxmModelAndProcessorHelper {
 
-	public static int API_VERSION_OVERRIDE = -1;
+	public static Version API_VERSION_OVERRIDE = Version.V11;
 
 	private OxmModelLoader modelLoader;
 	private Set<OxmModelProcessor> processors;
@@ -56,9 +57,8 @@ public class OxmModelAndProcessorHelper {
 		processors.add(searchableEntityLookup);
 		processors.add(suggestionEntityLookup);
 		processors.add(oxmEntityContainerLookup);
-
-		this.modelLoader = new OxmModelLoader(API_VERSION_OVERRIDE, processors);
-		modelLoader.loadLatestOxmModel();
+		this.modelLoader = new OxmModelLoader(API_VERSION_OVERRIDE, processors, null);
+		
 	}
 
 	public static OxmModelAndProcessorHelper getInstance() throws IOException {

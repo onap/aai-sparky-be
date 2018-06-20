@@ -5,16 +5,20 @@ import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.inject.Inject;
+
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
+import org.onap.aai.nodes.NodeIngestor;
 import org.onap.aai.restclient.client.OperationResult;
+import org.onap.aai.setup.Version;
 import org.onap.aai.sparky.config.oxm.OxmEntityDescriptor;
 import org.onap.aai.sparky.config.oxm.OxmEntityLookup;
 import org.onap.aai.sparky.config.oxm.OxmModelLoader;
@@ -30,11 +34,21 @@ import org.onap.aai.sparky.sync.config.ElasticSearchSchemaConfig;
 import org.onap.aai.sparky.sync.config.NetworkStatisticsConfig;
 import org.onap.aai.sparky.sync.enumeration.OperationState;
 import org.onap.aai.sparky.util.TestResourceLoader;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+@RunWith(SpringJUnit4ClassRunner.class)
+@TestPropertySource(properties = {
+"schemaIngestPropLoc = src/test/resources/oxm-reader/schema-ingest-single-oxm.properties" })
+@ContextConfiguration(locations = { "classpath:oxm-reader/oxm-reader-bean.xml" })
+
+
 public class AutosuggestionSynchronizerTest {
 
+  
   private static ObjectMapper mapper = new ObjectMapper();
 
   private AutosuggestionSynchronizer suggestionSynchronizer;
@@ -42,16 +56,33 @@ public class AutosuggestionSynchronizerTest {
   private ElasticSearchSchemaConfig esSchemaConfig;
   private NetworkStatisticsConfig aaiStatConfig;
   private NetworkStatisticsConfig esStatConfig;
-  private OxmEntityLookup oxmEntityLookup;
-  private SuggestionEntityLookup suggestionEntityLookup;
+
+ 
   private ElasticSearchAdapter esAdapter;
   private ActiveInventoryAdapter aaiAdapter;
 
-
+  @Inject
   private FiltersConfig filtersConfig;
+  
+
+   private OxmModelLoader oxmModelLoader;
+  
+   @Inject 
+   private NodeIngestor nodeInjest;
+   
+  @Inject
+  private Set<OxmModelProcessor> processors;
+  
+  @Inject
+  private OxmEntityLookup oxmEntityLookup;
+  
+  
 
 
 
+  private SuggestionEntityLookup suggestionEntityLookup;
+  
+ 
   @Before
   public void init() throws Exception {
 
@@ -120,17 +151,32 @@ public class AutosuggestionSynchronizerTest {
     esStatConfig.setTpsHistogramNumBins(20);
     esStatConfig.setTpsHistogramNumDecimalPoints(2);
 
-    oxmEntityLookup = new OxmEntityLookup();
+    
 
     esAdapter = Mockito.mock(ElasticSearchAdapter.class);
     aaiAdapter = Mockito.mock(ActiveInventoryAdapter.class);
 
 
-    Set<OxmModelProcessor> processors = new HashSet<OxmModelProcessor>();
 
-    processors.add(oxmEntityLookup);
+    
+    FiltersDetailsConfig filtersDetailsConfig = mapper.readValue(
+        TestResourceLoader.getTestResourceDataJson("/filters/aaiui_filters_testConfig.json"),
+        FiltersDetailsConfig.class);
+    FiltersForViewsConfig filtersForViewsConfig = mapper.readValue(
+        TestResourceLoader.getTestResourceDataJson("/filters/aaiui_views_testConfig.json"),
+        FiltersForViewsConfig.class);
 
+    filtersConfig.setFiltersConfig(filtersDetailsConfig);
+    filtersConfig.setViewsConfig(filtersForViewsConfig);
+    
+    suggestionEntityLookup = new SuggestionEntityLookup(filtersConfig);
 
+    processors.add(suggestionEntityLookup);
+    Version v = Version.V11;
+    OxmModelLoader oxmModelLoader = new OxmModelLoader(v, processors,nodeInjest);
+    oxmModelLoader.loadModel();
+    
+    
 
     Map<String, OxmEntityDescriptor> oxmEntityDescriptors =
         new HashMap<String, OxmEntityDescriptor>();
@@ -145,27 +191,15 @@ public class AutosuggestionSynchronizerTest {
     oxmEntityDescriptors.put("generic-vnf", genericVnfDescriptor);
 
 
-    oxmEntityLookup.setEntityDescriptors(oxmEntityDescriptors);
+   
 
 
-    Map<String, SuggestionEntityDescriptor> suggestionEntityDescriptors =
-        new HashMap<String, SuggestionEntityDescriptor>();
-
+  
     SuggestionEntityDescriptor genericVnfSuggestionDescriptor = new SuggestionEntityDescriptor();
     genericVnfSuggestionDescriptor.setEntityName("generic-vnf");
     genericVnfSuggestionDescriptor.setPrimaryKeyAttributeNames(pkeyNames);
 
-    filtersConfig = new FiltersConfig(null, null, null);
 
-    FiltersDetailsConfig filtersDetailsConfig = mapper.readValue(
-        TestResourceLoader.getTestResourceDataJson("/filters/aaiui_filters_testConfig.json"),
-        FiltersDetailsConfig.class);
-    FiltersForViewsConfig filtersForViewsConfig = mapper.readValue(
-        TestResourceLoader.getTestResourceDataJson("/filters/aaiui_views_testConfig.json"),
-        FiltersForViewsConfig.class);
-
-    filtersConfig.setFiltersConfig(filtersDetailsConfig);
-    filtersConfig.setViewsConfig(filtersForViewsConfig);
 
     /*
      * SuggestionSearchEntity sse = new SuggestionSearchEntity(filtersConfig);
@@ -177,14 +211,7 @@ public class AutosuggestionSynchronizerTest {
      * suggestionEntityDescriptors.put("generic-vnf", genericVnfSuggestionDescriptor);
      */
 
-    suggestionEntityLookup = new SuggestionEntityLookup(filtersConfig);
-
-    processors.add(suggestionEntityLookup);
-
-    OxmModelLoader oxmModelLoader = new OxmModelLoader(-1, processors);
-    oxmModelLoader.loadLatestOxmModel();
-
-    // suggestionEntityLookup.setSuggestionSearchEntityDescriptors(suggestionEntityDescriptors);
+  
   }
 
   @Test
@@ -222,29 +249,37 @@ public class AutosuggestionSynchronizerTest {
     Mockito.when(aaiAdapter.getSelfLinksByEntityType("generic-vnf"))
         .thenReturn(genericVnfSelfLinks);
 
-    Mockito.when(aaiAdapter.repairSelfLink(Matchers.contains("generic-vnf-1"), Mockito.anyString()))
+    Mockito
+        .when(aaiAdapter.repairSelfLink(Matchers.contains("generic-vnf-1"),
+            Mockito.anyString()))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/network/generic-vnfs/generic-vnf/generic-vnf-1");
 
-    Mockito.when(aaiAdapter.repairSelfLink(Matchers.contains("generic-vnf-2"), Mockito.anyString()))
+    Mockito
+        .when(aaiAdapter.repairSelfLink(Matchers.contains("generic-vnf-2"),
+            Mockito.anyString()))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/network/generic-vnfs/generic-vnf/generic-vnf-2");
 
-    Mockito.when(aaiAdapter.repairSelfLink(Matchers.contains("generic-vnf-3"), Mockito.anyString()))
+    Mockito
+        .when(
+            aaiAdapter.repairSelfLink(Matchers.contains("generic-vnf-3"), Mockito.anyString()))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/network/generic-vnfs/generic-vnf/generic-vnf-3");
 
     Mockito
-        .when(aaiAdapter.queryActiveInventoryWithRetries(Matchers.contains("generic-vnf-1"),
-            Mockito.anyString(), Mockito.anyInt()))
-        .thenReturn(new OperationResult(200, TestResourceLoader
-            .getTestResourceDataJson("/sync/aai/generic-vnf-generic-vnf-1_full_depth.json")));
+        .when(aaiAdapter.queryActiveInventoryWithRetries(
+            Matchers.contains("generic-vnf-1"), Mockito.anyString(),
+            Mockito.anyInt()))
+        .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
+            "/sync/aai/generic-vnf-generic-vnf-1_full_depth.json")));
 
     Mockito
-        .when(aaiAdapter.queryActiveInventoryWithRetries(Matchers.contains("generic-vnf-2"),
-            Mockito.anyString(), Mockito.anyInt()))
-        .thenReturn(new OperationResult(200, TestResourceLoader
-            .getTestResourceDataJson("/sync/aai/generic-vnf-generic-vnf-2_full_depth.json")));
+        .when(aaiAdapter.queryActiveInventoryWithRetries(
+            Matchers.contains("generic-vnf-2"), Mockito.anyString(),
+            Mockito.anyInt()))
+        .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
+            "/sync/aai/generic-vnf-generic-vnf-2_full_depth.json")));
 
     Mockito
         .when(aaiAdapter.queryActiveInventoryWithRetries(Matchers.contains("generic-vnf-3"),
@@ -253,9 +288,9 @@ public class AutosuggestionSynchronizerTest {
             .getTestResourceDataJson("/sync/aai/generic-vnf-generic-vnf-3_full_depth.json")));
 
     Mockito.when(esAdapter.buildElasticSearchGetDocUrl(Mockito.anyString(), Mockito.anyString()))
-        .thenReturn("http://localhost:9200/myindex/mytype/doc1",
-            "http://localhost:9200/myindex/mytype/doc2",
-            "http://localhost:9200/myindex/mytype/doc3");
+        .thenReturn("http://server.proxy:9200/myindex/mytype/doc1",
+            "http://server.proxy:9200/myindex/mytype/doc2",
+            "http://server.proxy:9200/myindex/mytype/doc3");
 
     /*
      * Our initial gets from elastic search should be record-not-found
@@ -304,29 +339,37 @@ public class AutosuggestionSynchronizerTest {
     Mockito.when(aaiAdapter.getSelfLinksByEntityType("generic-vnf"))
         .thenReturn(genericVnfSelfLinks);
 
-    Mockito.when(aaiAdapter.repairSelfLink(Matchers.contains("generic-vnf-1"), Mockito.anyString()))
+    Mockito
+        .when(aaiAdapter.repairSelfLink(Matchers.contains("generic-vnf-1"),
+            Mockito.anyString()))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/network/generic-vnfs/generic-vnf/generic-vnf-1");
 
-    Mockito.when(aaiAdapter.repairSelfLink(Matchers.contains("generic-vnf-2"), Mockito.anyString()))
+    Mockito
+        .when(aaiAdapter.repairSelfLink(Matchers.contains("generic-vnf-2"),
+            Mockito.anyString()))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/network/generic-vnfs/generic-vnf/generic-vnf-2");
 
-    Mockito.when(aaiAdapter.repairSelfLink(Matchers.contains("generic-vnf-3"), Mockito.anyString()))
+    Mockito
+        .when(
+            aaiAdapter.repairSelfLink(Matchers.contains("generic-vnf-3"), Mockito.anyString()))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/network/generic-vnfs/generic-vnf/generic-vnf-3");
 
     Mockito
-        .when(aaiAdapter.queryActiveInventoryWithRetries(Matchers.contains("generic-vnf-1"),
-            Mockito.anyString(), Mockito.anyInt()))
-        .thenReturn(new OperationResult(200, TestResourceLoader
-            .getTestResourceDataJson("/sync/aai/generic-vnf-generic-vnf-1_full_depth.json")));
+        .when(aaiAdapter.queryActiveInventoryWithRetries(
+            Matchers.contains("generic-vnf-1"), Mockito.anyString(),
+            Mockito.anyInt()))
+        .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
+            "/sync/aai/generic-vnf-generic-vnf-1_full_depth.json")));
 
     Mockito
-        .when(aaiAdapter.queryActiveInventoryWithRetries(Matchers.contains("generic-vnf-2"),
-            Mockito.anyString(), Mockito.anyInt()))
-        .thenReturn(new OperationResult(200, TestResourceLoader
-            .getTestResourceDataJson("/sync/aai/generic-vnf-generic-vnf-2_full_depth.json")));
+        .when(aaiAdapter.queryActiveInventoryWithRetries(
+            Matchers.contains("generic-vnf-2"), Mockito.anyString(),
+            Mockito.anyInt()))
+        .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
+            "/sync/aai/generic-vnf-generic-vnf-2_full_depth.json")));
 
     Mockito
         .when(aaiAdapter.queryActiveInventoryWithRetries(Matchers.contains("generic-vnf-3"),
@@ -335,9 +378,9 @@ public class AutosuggestionSynchronizerTest {
             .getTestResourceDataJson("/sync/aai/generic-vnf-generic-vnf-3_full_depth.json")));
 
     Mockito.when(esAdapter.buildElasticSearchGetDocUrl(Mockito.anyString(), Mockito.anyString()))
-        .thenReturn("http://localhost:9200/myindex/mytype/doc1",
-            "http://localhost:9200/myindex/mytype/doc2",
-            "http://localhost:9200/myindex/mytype/doc3");
+        .thenReturn("http://server.proxy:9200/myindex/mytype/doc1",
+            "http://server.proxy:9200/myindex/mytype/doc2",
+            "http://server.proxy:9200/myindex/mytype/doc3");
 
     /*
      * Our initial gets from elastic search should be record-not-found

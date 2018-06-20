@@ -32,7 +32,6 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 import java.nio.file.Paths;
 
-import org.apache.log4j.BasicConfigurator;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -64,7 +63,6 @@ public class TestUserValidator {
    */
   @BeforeClass
   public static void setUpBeforeClass() throws Exception {
-    BasicConfigurator.configure();
     userAuthFile = Paths.get(TestData.USER_AUTH_FILE.getFilename()).toFile();
     missingUserAuthFile = Paths.get(TestData.MISSING_USER_AUTH_FILE.getFilename()).toFile();
   }

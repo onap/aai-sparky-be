@@ -71,6 +71,7 @@ public class NodeUtils {
   private static SecureRandom sRandom = new SecureRandom();
   
   private static final Pattern AAI_VERSION_PREFIX = Pattern.compile("/aai/v[0-9]+/(.*)");
+  private static final Pattern OXM_VERSION_PREFIX = Pattern.compile(".*_v([0-9]+).*");
   private static final Pattern GIZMO_VERSION_PREFIX = Pattern.compile("[/]*services/inventory/v[0-9]+/(.*)");
   private static final Pattern GIZMO_RELATIONSHIP_VERSION_PREFIX = Pattern.compile("services/inventory/relationships/v[0-9]+/(.*)");
                                                                                     
@@ -96,6 +97,26 @@ public class NodeUtils {
 
     return sb.toString();
   }
+  
+  public static String extractOxmVersionFromPath(String filePath) {
+
+    try {
+      
+      Matcher m = OXM_VERSION_PREFIX.matcher(filePath);
+
+      if (m.matches()) {
+
+        if ( m.groupCount() >= 1) {
+          return m.group(1);
+        }
+          
+      }
+    } catch (Exception e) {
+    }
+    
+    return null;
+    
+  }  
   
   
   public static String extractRawPathWithoutVersion(String selfLinkUri) {

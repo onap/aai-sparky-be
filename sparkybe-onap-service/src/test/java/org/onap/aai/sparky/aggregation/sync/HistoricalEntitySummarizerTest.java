@@ -12,9 +12,12 @@ import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
+import org.onap.aai.nodes.NodeIngestor;
 import org.onap.aai.restclient.client.OperationResult;
+import org.onap.aai.setup.Version;
 import org.onap.aai.sparky.config.oxm.OxmEntityDescriptor;
 import org.onap.aai.sparky.config.oxm.OxmEntityLookup;
 import org.onap.aai.sparky.config.oxm.OxmModelLoader;
@@ -27,9 +30,18 @@ import org.onap.aai.sparky.sync.config.ElasticSearchSchemaConfig;
 import org.onap.aai.sparky.sync.config.NetworkStatisticsConfig;
 import org.onap.aai.sparky.sync.enumeration.OperationState;
 import org.onap.aai.sparky.util.TestResourceLoader;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.inject.Inject;
 
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@TestPropertySource(properties = {
+"schemaIngestPropLoc = src/test/resources/oxm-reader/schema-ingest-single-oxm.properties" })
+@ContextConfiguration(locations = { "classpath:oxm-reader/oxm-reader-bean.xml" })
 public class HistoricalEntitySummarizerTest {
 
   private static ObjectMapper mapper = new ObjectMapper();
@@ -39,12 +51,21 @@ public class HistoricalEntitySummarizerTest {
   private ElasticSearchSchemaConfig esSchemaConfig;
   private NetworkStatisticsConfig aaiStatConfig;
   private NetworkStatisticsConfig esStatConfig;
-  private OxmEntityLookup oxmEntityLookup;
+
   private SearchableEntityLookup searchableEntityLookup;
   private ElasticSearchAdapter esAdapter;
   private ActiveInventoryAdapter aaiAdapter;
 
 
+  
+   @Inject 
+   private NodeIngestor nodeInjest;
+
+  
+  @Inject
+  private OxmEntityLookup oxmEntityLookup;
+  
+  
 
   @Before
   public void init() throws Exception {
@@ -160,11 +181,11 @@ public class HistoricalEntitySummarizerTest {
     searchableEntityLookup = new SearchableEntityLookup();
 
     processors.add(searchableEntityLookup);
+    Version v = Version.V11;
+    OxmModelLoader oxmModelLoader = new OxmModelLoader(v, processors,nodeInjest);
+    oxmModelLoader.loadModel();
 
-    OxmModelLoader oxmModelLoader = new OxmModelLoader(-1, processors);
-    oxmModelLoader.loadLatestOxmModel();
-
-    // suggestionEntityLookup.setSuggestionSearchEntityDescriptors(suggestionEntityDescriptors);
+    
   }
 
   @Test
@@ -233,9 +254,9 @@ public class HistoricalEntitySummarizerTest {
             .getTestResourceDataJson("/sync/aai/generic-vnf-generic-vnf-3_full_depth.json")));
 
     Mockito.when(esAdapter.buildElasticSearchGetDocUrl(Mockito.anyString(), Mockito.anyString()))
-        .thenReturn("http://localhost:9200/myindex/mytype/doc1",
-            "http://localhost:9200/myindex/mytype/doc2",
-            "http://localhost:9200/myindex/mytype/doc3");
+        .thenReturn("http://server.proxy:9200/myindex/mytype/doc1",
+            "http://server.proxy:9200/myindex/mytype/doc2",
+            "http://server.proxy:9200/myindex/mytype/doc3");
 
     /*
      * Our initial gets from elastic search should be record-not-found
@@ -315,9 +336,9 @@ public class HistoricalEntitySummarizerTest {
             .getTestResourceDataJson("/sync/aai/generic-vnf-generic-vnf-3_full_depth.json")));
 
     Mockito.when(esAdapter.buildElasticSearchGetDocUrl(Mockito.anyString(), Mockito.anyString()))
-        .thenReturn("http://localhost:9200/myindex/mytype/doc1",
-            "http://localhost:9200/myindex/mytype/doc2",
-            "http://localhost:9200/myindex/mytype/doc3");
+        .thenReturn("http://server.proxy:9200/myindex/mytype/doc1",
+            "http://server.proxy:9200/myindex/mytype/doc2",
+            "http://server.proxy:9200/myindex/mytype/doc3");
 
     /*
      * Our initial gets from elastic search should be record-not-found

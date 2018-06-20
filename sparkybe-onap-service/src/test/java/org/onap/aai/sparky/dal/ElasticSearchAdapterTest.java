@@ -6,12 +6,10 @@ import javax.ws.rs.core.MediaType;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.Ignore;
 import org.onap.aai.restclient.enums.RestAuthenticationMode;
 import org.onap.aai.sparky.dal.rest.config.RestEndpointConfig;
 import org.onap.aai.sparky.dal.ElasticSearchAdapter;
 
-@Ignore
 public class ElasticSearchAdapterTest {
 	
 
@@ -30,13 +28,13 @@ public class ElasticSearchAdapterTest {
 	@Test 
 	public void updateValues() {
 		
-		assertNotNull(elasticSearchAdapter.doPost("https://10.247.40.25:8000","{maxResults:10, queryStr: f}",MediaType.APPLICATION_JSON_TYPE));
-		assertNotNull(elasticSearchAdapter.doGet("https://10.247.40.25:8000",MediaType.APPLICATION_JSON_TYPE));
-		assertNotNull(elasticSearchAdapter.doHead("https://10.247.40.25:8000",MediaType.APPLICATION_JSON_TYPE));
-		assertNotNull(elasticSearchAdapter.doPut("https://10.247.40.25:8000","{maxResults:10, queryStr: f}",MediaType.APPLICATION_JSON_TYPE));
-		assertNotNull(elasticSearchAdapter.doPatch("https://10.247.40.25:8000","{maxResults:10, queryStr: f}",MediaType.APPLICATION_JSON_TYPE));
-		assertNotNull(elasticSearchAdapter.doDelete("https://10.247.40.25:8000",MediaType.APPLICATION_JSON_TYPE));
-		assertNotNull(elasticSearchAdapter.doBulkOperation("https://10.247.40.25:8000","{maxResults:10, queryStr: f}"));
+		assertNotNull(elasticSearchAdapter.doPost("https://es.onap.server:9200","{maxResults:10, queryStr: f}",MediaType.APPLICATION_JSON_TYPE));
+		assertNotNull(elasticSearchAdapter.doGet("https://es.onap.server:9200",MediaType.APPLICATION_JSON_TYPE));
+		assertNotNull(elasticSearchAdapter.doHead("https://es.onap.server:9200",MediaType.APPLICATION_JSON_TYPE));
+		assertNotNull(elasticSearchAdapter.doPut("https://es.onap.server:9200","{maxResults:10, queryStr: f}",MediaType.APPLICATION_JSON_TYPE));
+		assertNotNull(elasticSearchAdapter.doPatch("https://es.onap.server:9200","{maxResults:10, queryStr: f}",MediaType.APPLICATION_JSON_TYPE));
+		assertNotNull(elasticSearchAdapter.doDelete("https://es.onap.server:9200",MediaType.APPLICATION_JSON_TYPE));
+		assertNotNull(elasticSearchAdapter.doBulkOperation("https://es.onap.server:9200","{maxResults:10, queryStr: f}"));
 		assertNotNull(elasticSearchAdapter.buildBulkImportOperationRequest("","","","",""));
 		assertNotNull(elasticSearchAdapter.retrieveEntityById("","","","",""));
 		assertNotNull(elasticSearchAdapter.buildElasticSearchUrlForApi("",""));

@@ -1,41 +1,25 @@
 package org.onap.aai.sparky.viewandinspect.services;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 
-import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
 import org.onap.aai.cl.mdc.MdcContext;
-import org.onap.aai.restclient.client.OperationResult;
 import org.onap.aai.sparky.config.oxm.OxmEntityLookup;
-import org.onap.aai.sparky.config.oxm.OxmModelLoader;
 import org.onap.aai.sparky.config.oxm.OxmModelProcessor;
-import org.onap.aai.sparky.dal.ActiveInventoryAdapter;
 import org.onap.aai.sparky.dal.GizmoAdapter;
 import org.onap.aai.sparky.dal.rest.config.RestEndpointConfig;
-import org.onap.aai.sparky.sync.entity.SearchableEntity;
 import org.onap.aai.sparky.util.NodeUtils;
-import org.onap.aai.sparky.util.StringCollectionContainsMatcher;
-import org.onap.aai.sparky.util.TestResourceLoader;
 import org.onap.aai.sparky.viewandinspect.config.VisualizationConfigs;
-import org.onap.aai.sparky.viewandinspect.entity.ActiveInventoryNode;
-import org.onap.aai.sparky.viewandinspect.entity.QueryParams;
-import org.onap.aai.sparky.viewandinspect.enumeration.NodeProcessingState;
 
 public class BaseGizmoVisualizationContextTest {
 
@@ -79,8 +63,6 @@ public class BaseGizmoVisualizationContextTest {
     processors.add(oxmEntityLookup);
 
 
-    OxmModelLoader oxmModelLoader = new OxmModelLoader(-1, processors);
-    oxmModelLoader.loadLatestOxmModel();
 
     gizmoRestEndPointConfig = new RestEndpointConfig();
     gizmoRestEndPointConfig.setNumRequestRetries(5);
@@ -88,7 +70,7 @@ public class BaseGizmoVisualizationContextTest {
     Mockito.when(gizmoAdapter.getEndpointConfig()).thenReturn(gizmoRestEndPointConfig);
 
     MdcContext.initialize("" + secureRandom.nextLong(), "AAI-UI", "", "partner-name",
-        "localhost:4242");
+        "server.proxy:4242");
 
 
   }
