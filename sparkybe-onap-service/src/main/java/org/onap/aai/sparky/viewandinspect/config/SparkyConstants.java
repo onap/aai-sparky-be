@@ -26,6 +26,7 @@ package org.onap.aai.sparky.viewandinspect.config;
 public class SparkyConstants {
 
   public static String APP_NAME = "AAIUI";
+  public static final String OBFUSCATION_PREFIX = "OBF:";
 
   /** Default to unix file separator if system property file.separator is null */
   public static final String FILESEP =

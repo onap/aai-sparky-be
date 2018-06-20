@@ -24,6 +24,7 @@ import org.onap.aai.restclient.client.RestClient;
 import org.onap.aai.sparky.config.SparkyResourceLoader;
 import org.onap.aai.sparky.dal.rest.config.RestEndpointConfig;
 import org.onap.aai.sparky.util.Encryptor;
+import org.onap.aai.sparky.viewandinspect.config.SparkyConstants;
 
 public class RestClientFactory {
 
@@ -41,12 +42,12 @@ public class RestClientFactory {
     }
 
     SparkyResourceLoader resourceLoader = restEndpointConfig.getResourceLoader();
+    Encryptor enc = new Encryptor();
     
     switch (restEndpointConfig.getRestAuthenticationMode()) {
 
       case SSL_CERT: {
-
-        Encryptor enc = new Encryptor();
+        
         String certFileNameFullPath = resourceLoader.getAbsolutePath(restEndpointConfig.getCertFileName());
         String decryptedCertPassword = enc.decryptValue(restEndpointConfig.getCertPassword());
         String truststoreFileNameFullPath =
@@ -64,7 +65,7 @@ public class RestClientFactory {
       }
 
       case SSL_BASIC: {
-
+    	  
         return new RestClient() //
             .authenticationMode(restEndpointConfig.getRestAuthenticationMode()) //
             .basicAuthUsername(restEndpointConfig.getBasicAuthUserName()) //
