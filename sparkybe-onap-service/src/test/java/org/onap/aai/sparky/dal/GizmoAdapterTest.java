@@ -5,20 +5,31 @@ import static org.junit.Assert.assertNull;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.onap.aai.nodes.NodeIngestor;
 import org.onap.aai.restclient.enums.RestAuthenticationMode;
+import org.onap.aai.setup.Version;
 import org.onap.aai.sparky.config.oxm.OxmModelLoader;
 import org.onap.aai.sparky.dal.rest.config.RestEndpointConfig;
+import org.springframework.test.context.ContextConfiguration;
 
+
+
+@ContextConfiguration(locations = { "classpath:oxm-reader/test-service-beans.xml" })
 public class GizmoAdapterTest {
 
   private OxmModelLoader oxmModelLoader;
   private RestEndpointConfig endpointConfig;
   private GizmoAdapter gizmoAdapter;
 
+  private Version version;
+  
   @Before
   public void init() throws Exception {
 
-    oxmModelLoader = new OxmModelLoader();
+    
+    
+    version = Version.V11;
+    oxmModelLoader = new OxmModelLoader(version,null,null);
     endpointConfig = new RestEndpointConfig();
     endpointConfig.setRestAuthenticationMode(RestAuthenticationMode.SSL_BASIC);
     endpointConfig.setEndpointIpAddress("10.147.110.199");

@@ -175,9 +175,7 @@ public class VnfAliasSuggestionSynchronizerTest {
 
     processors.add(geoEntityLookup);
 
-    OxmModelLoader oxmModelLoader = new OxmModelLoader(-1, processors);
-    oxmModelLoader.loadLatestOxmModel();
-
+  
     // suggestionEntityLookup.setSuggestionSearchEntityDescriptors(suggestionEntityDescriptors);
   }
 
@@ -247,9 +245,9 @@ public class VnfAliasSuggestionSynchronizerTest {
             .getTestResourceDataJson("/sync/aai/generic-vnf-generic-vnf-3_full_depth.json")));
 
     Mockito.when(esAdapter.buildElasticSearchGetDocUrl(Mockito.anyString(), Mockito.anyString()))
-        .thenReturn("http://localhost:9200/myindex/mytype/doc1",
-            "http://localhost:9200/myindex/mytype/doc2",
-            "http://localhost:9200/myindex/mytype/doc3");
+        .thenReturn("http://server.proxy:9200/myindex/mytype/doc1",
+            "http://server.proxy:9200/myindex/mytype/doc2",
+            "http://server.proxy:9200/myindex/mytype/doc3");
 
     /*
      * Our initial gets from elastic search should be record-not-found
@@ -329,9 +327,9 @@ public class VnfAliasSuggestionSynchronizerTest {
             .getTestResourceDataJson("/sync/aai/generic-vnf-generic-vnf-3_full_depth.json")));
 
     Mockito.when(esAdapter.buildElasticSearchGetDocUrl(Mockito.anyString(), Mockito.anyString()))
-        .thenReturn("http://localhost:9200/myindex/mytype/doc1",
-            "http://localhost:9200/myindex/mytype/doc2",
-            "http://localhost:9200/myindex/mytype/doc3");
+        .thenReturn("http://server.proxy:9200/myindex/mytype/doc1",
+            "http://server.proxy:9200/myindex/mytype/doc2",
+            "http://server.proxy:9200/myindex/mytype/doc3");
 
     /*
      * Our initial gets from elastic search should be record-not-found

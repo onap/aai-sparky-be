@@ -24,7 +24,7 @@ public class ElasticSearchEndpointConfigTest {
 	@Test 
 	public void updateValues() {
 		
-		elasticSearchEndpointConfig.setEsIpAddress("10.247.25.26");
+		elasticSearchEndpointConfig.setEsIpAddress("aai.es.service");
 		assertNotNull(elasticSearchEndpointConfig.getEsIpAddress());
 		elasticSearchEndpointConfig.setEsServerPort("6585");
 		assertNotNull(elasticSearchEndpointConfig.getEsServerPort());

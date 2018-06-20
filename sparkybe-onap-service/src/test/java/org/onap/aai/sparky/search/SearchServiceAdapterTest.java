@@ -8,12 +8,10 @@ import static org.junit.Assert.assertTrue;
 import java.util.ArrayList;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.onap.aai.restclient.enums.RestAuthenticationMode;
 import org.onap.aai.sparky.dal.rest.config.RestEndpointConfig;
 
-@Ignore
 public class SearchServiceAdapterTest {
 
   private SearchServiceAdapter searchServiceAdapter;
@@ -35,12 +33,12 @@ public class SearchServiceAdapterTest {
     assertNotNull(searchServiceAdapter.getServiceApiVersion());
     searchServiceAdapter.setEndpointConfig(endpointConfig);
     assertNotNull(searchServiceAdapter.getEndpointConfig());
-    assertNotNull(searchServiceAdapter.doPost("https://10.247.40.25:8000",
+    assertNotNull(searchServiceAdapter.doPost("https://aai.search.service:8000",
         "{maxResults:10, queryStr: f}", "application/json"));
-    assertNotNull(searchServiceAdapter.doGet("https://10.247.40.25:8000", "application/json"));
-    assertNotNull(searchServiceAdapter.doPut("https://10.247.40.25:8000",
+    assertNotNull(searchServiceAdapter.doGet("https://aai.search.service:8000", "application/json"));
+    assertNotNull(searchServiceAdapter.doPut("https://aai.search.service:8000",
         "{maxResults:10, queryStr: f}", "application/json"));
-    assertNotNull(searchServiceAdapter.doDelete("https://10.247.40.25:8000", "application/json"));
+    assertNotNull(searchServiceAdapter.doDelete("https://aai.search.service:8000", "application/json"));
     assertNotNull(searchServiceAdapter.getTxnHeader());
     assertNotNull(searchServiceAdapter.buildSearchServiceQueryUrl("searchentity-localhost"));
     assertNotNull(

@@ -2,8 +2,8 @@
  * ============LICENSE_START===================================================
  * SPARKY (AAI UI service)
  * ============================================================================
- * Copyright © 2017 AT&T Intellectual Property.
- * Copyright © 2017 Amdocs
+ * Copyright Â© 2017 AT&T Intellectual Property.
+ * Copyright Â© 2017 Amdocs
  * All rights reserved.
  * ============================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -37,11 +37,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.onap.aai.restclient.client.OperationResult;
+import org.onap.aai.setup.Version;
 import org.onap.aai.sparky.config.oxm.OxmEntityDescriptor;
 import org.onap.aai.sparky.config.oxm.OxmEntityLookup;
 import org.onap.aai.sparky.config.oxm.OxmModelLoader;
 import org.onap.aai.sparky.dal.ActiveInventoryAdapter;
-import org.onap.aai.sparky.editattributes.AttributeUpdater;
 import org.onap.aai.sparky.editattributes.AttributeUpdater.AaiEditObject;
 
 
@@ -74,11 +74,12 @@ public class AttributeUpdaterTest {
     OxmEntityDescriptor desc = new OxmEntityDescriptor();
     desc.addPrimaryKeyName("hostname");
     desc.setEntityName("pserver");
-
+    Version version = Version.V11;
     OxmEntityLookup entityLookup = new OxmEntityLookup();
     entityLookup.addEntityDescriptor("pserver", desc);
 
-    AttributeUpdater updater = new AttributeUpdater(new OxmModelLoader(), entityLookup, aaiAdapter);
+    AttributeUpdater updater =
+        new AttributeUpdater(new OxmModelLoader(version, null, null), entityLookup, aaiAdapter);
     Map<String, Object> attributes = new HashMap<>();
     attributes.put("prov-status", "PREPROV");
     attributes.put("in-maint", "true");
@@ -96,9 +97,9 @@ public class AttributeUpdaterTest {
    */
   @Test(expected = NullPointerException.class)
   public void testGetEditObjectFromUri() throws Exception {
+    Version version = Version.V11;
+    OxmModelLoader loader = new OxmModelLoader(version, null, null);
 
-    OxmModelLoader loader = new OxmModelLoader();
-    loader.setLatestVersionNum(11);
 
     OxmEntityDescriptor desc = new OxmEntityDescriptor();
     desc.addPrimaryKeyName("hostname");
@@ -121,7 +122,8 @@ public class AttributeUpdaterTest {
     entityLookup.setEntityTypeLookup(typeLookup);
 
 
-    AttributeUpdater updater = new AttributeUpdater(new OxmModelLoader(), entityLookup, aaiAdapter);
+    AttributeUpdater updater =
+        new AttributeUpdater(new OxmModelLoader(version, null, null), entityLookup, aaiAdapter);
     AaiEditObject result = updater.getEditObjectFromUri(null);
     assertEquals("Pserver", result.getObjectType());
     assertEquals("pserver", result.getRootElement());
@@ -145,7 +147,7 @@ public class AttributeUpdaterTest {
     OxmEntityLookup entityLookup = new OxmEntityLookup();
     entityLookup.addEntityDescriptor("pserver", desc);
 
-    AttributeUpdater updater = new AttributeUpdater(new OxmModelLoader(), entityLookup, aaiAdapter);
+    AttributeUpdater updater = new AttributeUpdater(new OxmModelLoader(null,null), entityLookup, aaiAdapter);
     // Test entity uri without "/aai/version/"
     String result = updater.getRelativeUri("cloud-infrastructure/pservers/pserver/mtznjtax101");
     assertEquals("/cloud-infrastructure/pservers/pserver/mtznjtax101", result);

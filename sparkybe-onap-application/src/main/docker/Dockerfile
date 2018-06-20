@@ -23,6 +23,8 @@ ADD *.jar $MICRO_HOME/lib/
 ADD scripts/* $MICRO_HOME/bin/
 COPY static/ $MICRO_HOME/static/
 
+COPY oxm $MICRO_HOME/oxm/
+
 RUN chmod 755 $MICRO_HOME/bin/*
 RUN chmod 755 $MICRO_HOME/lib/*
 RUN chmod 755 $MICRO_HOME/static/*

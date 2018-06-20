@@ -148,7 +148,7 @@ public class ActiveInventoryAdapter {
       versionStr = String.valueOf(oxmModelLoader.getLatestVersionNum());
     }
 
-    return "/aai/v" + versionStr;
+    return "/aai/" + versionStr.toLowerCase();
 
   }
   

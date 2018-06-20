@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+  <context:property-placeholder location="file:${schemaIngestPropLoc}" ignore-unresolvable="true" />
+
+    <bean id="filtersConfig" class="org.onap.aai.sparky.search.filters.config.FiltersConfig">
+			 
+	</bean>
+
+	<bean id="sparkyResourceLoader" class="org.onap.aai.sparky.config.SparkyResourceLoader">
+			 	   <property name="configHomeEnvVar" value="CONFIG_HOME" />
+			 	</bean>
+			 	
+	<bean id="crossEntityReferenceLookup"
+		class="org.onap.aai.sparky.config.oxm.CrossEntityReferenceLookup" />
+	
+	<bean id="oxmEntityLookup" class="org.onap.aai.sparky.config.oxm.OxmEntityLookup" />
+
+	
+
+	<bean id="suggestionEntityLookup" class="org.onap.aai.sparky.config.oxm.SuggestionEntityLookup">
+		<constructor-arg ref="filtersConfig" />
+	</bean>	
+	<bean id="oxmModelProcessorSet" class="org.springframework.beans.factory.config.SetFactoryBean">
+		<property name="targetSetClass" value="java.util.HashSet" />
+		<property name="sourceSet">
+			<set>
+				<ref bean="oxmEntityLookup" />			</set>
+		</property>
+	</bean>
+    <bean id="schemaLocationsBean" class="org.onap.aai.setup.SchemaLocationsBean">
+        <!-- When running with AJSC these properties must be injected directly. The reason for this is unknown. -->
+        <property name="nodeDirectory" value="${nodeDir}" />
+        <property name="edgeDirectory" value="${edgeDir}" />
+    </bean>
+
+    <bean id="configTranslator" class="org.onap.aai.sparky.config.oxm.OxmConfigTranslator">
+        <constructor-arg ref="schemaLocationsBean" />
+    </bean>
+
+    <bean id="nodeIngestor" class="org.onap.aai.nodes.NodeIngestor">
+        <constructor-arg ref="configTranslator" />
+    </bean>
+
+	<bean id="oxmModelLoader" class="org.onap.aai.sparky.config.oxm.OxmModelLoader"
+		init-method="loadModel">
+		<!-- <constructor-arg name="apiVersionOverride" value="V11" /> -->
+		<constructor-arg ref="oxmModelProcessorSet" />
+		<constructor-arg ref="nodeIngestor" />
+	</bean>
+
+</beans>

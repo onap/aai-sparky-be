@@ -18,7 +18,6 @@ import org.onap.aai.restclient.client.OperationResult;
 import org.onap.aai.sparky.config.oxm.GeoEntityLookup;
 import org.onap.aai.sparky.config.oxm.OxmEntityDescriptor;
 import org.onap.aai.sparky.config.oxm.OxmEntityLookup;
-import org.onap.aai.sparky.config.oxm.OxmModelLoader;
 import org.onap.aai.sparky.config.oxm.OxmModelProcessor;
 import org.onap.aai.sparky.config.oxm.SuggestionEntityDescriptor;
 import org.onap.aai.sparky.dal.ActiveInventoryAdapter;
@@ -160,10 +159,7 @@ public class GeoSynchronizerTest {
     geoEntityLookup = new GeoEntityLookup();
 
     processors.add(geoEntityLookup);
-
-    OxmModelLoader oxmModelLoader = new OxmModelLoader(-1, processors);
-    oxmModelLoader.loadLatestOxmModel();
-
+ 
     // suggestionEntityLookup.setSuggestionSearchEntityDescriptors(suggestionEntityDescriptors);
   }
 
@@ -234,8 +230,8 @@ public class GeoSynchronizerTest {
 
     Mockito.when(esAdapter.buildElasticSearchGetDocUrl(Mockito.anyString(), Mockito.anyString()))
         .thenReturn("http://localhost:9200/myindex/mytype/doc1",
-            "http://localhost:9200/myindex/mytype/doc2",
-            "http://localhost:9200/myindex/mytype/doc3");
+            "http://server.proxy:9200/myindex/mytype/doc2",
+            "http://server.proxy:9200/myindex/mytype/doc3");
 
     /*
      * Our initial gets from elastic search should be record-not-found
@@ -315,9 +311,9 @@ public class GeoSynchronizerTest {
             .getTestResourceDataJson("/sync/aai/generic-vnf-generic-vnf-3_full_depth.json")));
 
     Mockito.when(esAdapter.buildElasticSearchGetDocUrl(Mockito.anyString(), Mockito.anyString()))
-        .thenReturn("http://localhost:9200/myindex/mytype/doc1",
-            "http://localhost:9200/myindex/mytype/doc2",
-            "http://localhost:9200/myindex/mytype/doc3");
+        .thenReturn("http://server.proxy:9200/myindex/mytype/doc1",
+            "http://server.proxy:9200/myindex/mytype/doc2",
+            "http://server.proxy:9200/myindex/mytype/doc3");
 
     /*
      * Our initial gets from elastic search should be record-not-found

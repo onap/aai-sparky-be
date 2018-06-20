@@ -26,7 +26,8 @@
 		<config-home>${basedir}/</config-home>
 		<docker.location>${basedir}/target</docker.location>
 		<docker.image.name>sparky-be</docker.image.name>
-		<sitePath>/content/sites/site/org/onap/aai/sparky-be/${project.artifactId}/${project.version}</sitePath>
+		<version.aai-schema>1.2.4</version.aai-schema>
+        <sitePath>/content/sites/site/org/onap/aai/sparky-be/${project.artifactId}/${project.version}</sitePath>
 		<nexusproxy>https://nexus.onap.org</nexusproxy>
 	</properties>
 
@@ -42,12 +43,14 @@
 				<scope>import</scope>
 			</dependency>
 
-			<dependency>
+ 			<dependency>
 				<groupId>ch.qos.logback</groupId>
 				<artifactId>logback-classic</artifactId>
 				<version>1.2.1</version>
 			</dependency>
 
+ 
+ 
 		</dependencies>
 
 	</dependencyManagement>
@@ -83,6 +86,10 @@
 				<exclusion>
 					<groupId>ch.qos.logback</groupId>
 					<artifactId>logback-classic</artifactId>
+				</exclusion>
+				<exclusion>
+   	 	 	        <groupId>org.slf4j</groupId>
+			        <artifactId>log4j-over-slf4j</artifactId>
 				</exclusion>
 			</exclusions>
 		</dependency>
@@ -552,7 +559,6 @@
 					<forceTags>true</forceTags>
 				</configuration>
 			</plugin>
-
 			<plugin>
 			  <groupId>org.apache.maven.plugins</groupId>
 			  <artifactId>maven-deploy-plugin</artifactId>
@@ -582,7 +588,33 @@
 				<include>src/main/java/**</include> </includes> </configuration> <executions>
 				<execution> <goals> <goal>format</goal> </goals> <phase>process-sources</phase>
 				</execution> </executions> </plugin> -->
-			
+				
+              <plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-dependency-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>unpack</id>
+						<phase>prepare-package</phase>
+						<goals>
+							<goal>unpack</goal>
+						</goals>
+						<configuration>
+							<artifactItems>
+								<artifactItem>
+									<groupId>org.onap.aai.aai-common</groupId>
+									<artifactId>aai-schema</artifactId>
+									<version>${version.aai-schema}</version>
+									<type>jar</type>
+									<includes>oxm/</includes>
+									<outputDirectory>${project.build.directory}/</outputDirectory>
+								</artifactItem>
+							</artifactItems>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>				
+				
 		</plugins>
 	</build>
 
@@ -621,5 +653,4 @@
             <url>${nexusproxy}/content/repositories/snapshots/</url>
         </repository>
     </repositories>
-
 </project>
