@@ -18,31 +18,39 @@
  * limitations under the License.
  * ============LICENSE_END=========================================================
  */
-package org.onap.aai.sparky.aggregatevnf.search;
+package org.onap.aai.sparky.search.filters.entity;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.json.Json;
 import javax.json.JsonObjectBuilder;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.onap.aai.sparky.search.filters.FilterQueryBuilder;
+import org.onap.aai.sparky.search.filters.config.FiltersConfig;
 
-public class VnfSearchQueryBuilderTest {
+public class FilterQueryBuilderTest {
 
-  private VnfSearchQueryBuilder vnfSearchQueryBuilder;
-  private Map<String, String> attritbutes;
+  private FilterQueryBuilder filterQueryBuilder;
+  private FiltersConfig filterConfig;
+  private List<SearchFilter> searchFilter;
+  private List<String> fields;
   private JsonObjectBuilder jsonBuilder;
 
   @Before
   public void init() throws Exception {
 
-    vnfSearchQueryBuilder = new VnfSearchQueryBuilder();
-    attritbutes = new HashMap<String, String>();
+    filterQueryBuilder = new FilterQueryBuilder();
+    filterConfig = new FiltersConfig();
+    searchFilter = new ArrayList<SearchFilter>();
+    fields = new ArrayList<String>();
     jsonBuilder = Json.createObjectBuilder();
+
 
   }
 
@@ -51,16 +59,17 @@ public class VnfSearchQueryBuilderTest {
   public void updateValues() {
 
 
-    assertNotNull(vnfSearchQueryBuilder.createSuggestionsQuery("10", "queryString"));
-    assertNotNull(vnfSearchQueryBuilder.getTermBlob("suggest-vnf", "firewall"));
-    assertNotNull(vnfSearchQueryBuilder.getSortCriteria("term", "ascending"));
-    assertNotNull(vnfSearchQueryBuilder.createEntityCountsQuery(attritbutes));
-    assertNotNull(vnfSearchQueryBuilder.createSummaryByEntityTypeQuery(attritbutes, ""));
-    vnfSearchQueryBuilder.buildMultiTermCountQuery(jsonBuilder, attritbutes);
-    vnfSearchQueryBuilder.buildZeroTermSummaryQuery(jsonBuilder, "");
-    vnfSearchQueryBuilder.buildMultiTermSummaryQuery(jsonBuilder, attritbutes, "");
-    vnfSearchQueryBuilder.buildSingleTermSummaryQuery(jsonBuilder, "", "", "");
-    vnfSearchQueryBuilder.buildSingleTermCountQuery(jsonBuilder, "", "");
+    assertNull(
+        filterQueryBuilder.createFilteredBoolQueryObject(filterConfig, searchFilter, 4, fields));
+    assertNull(filterQueryBuilder.createAggregationQueryArray(filterConfig, searchFilter));
+    assertNotNull(filterQueryBuilder.createCombinedBoolAndAggQuery(filterConfig, searchFilter, 5));
+    assertNotNull(filterQueryBuilder.createFilterValueQueryObject(""));
+    assertNotNull(filterQueryBuilder.createNestedFilterValueQueryObject("", ""));
+    filterQueryBuilder.buildZeroTermSummaryQuery(jsonBuilder, "");
+    filterQueryBuilder.getSummaryAggsBlob(jsonBuilder, "", 5);
+    filterQueryBuilder.addNestedSummaryAggsBlob(jsonBuilder, "", "", 6);
+    filterQueryBuilder.generateNestedAggregations(jsonBuilder, "", "");
 
   }
+
 }
