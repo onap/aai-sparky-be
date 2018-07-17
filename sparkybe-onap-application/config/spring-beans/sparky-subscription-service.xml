@@ -1,0 +1,38 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+	       http://www.springframework.org/schema/beans
+	       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+	<bean id="subscriptionConfig"
+		class="org.onap.aai.sparky.subscription.config.SubscriptionConfig">
+		<property name="subscriptionTarget" value="" />
+		<property name="subscriptionOrigin" value="" />
+		<property name="subscriptionMessageType" value="" />
+		<property name="subscriptionTopic" value="" />
+		<property name="launchOITarget" value="" />
+		<property name="launchOIOrigin" value="" />
+		<property name="launchOIMessageType" value="" />
+		<property name="launchOITopic" value="" />
+		<property name="annEntitiyTypes">
+			<list value-type="java.lang.String">
+				<value>pserver</value>
+				<value>pnf</value>
+			</list>
+		</property>
+		<property name="isLaunchOIEnabled" value="false" />
+	</bean>
+
+	<bean id="subscriptionService"
+		class="org.onap.aai.sparky.subscription.services.SubscriptionService">
+		<constructor-arg ref="subscriptionConfig" />
+	</bean>
+
+	<bean id="subscriptionServiceProcessor"
+		class="org.onap.aai.sparky.subscription.SubscriptionServiceProcessor">
+		<constructor-arg ref="subscriptionService" />
+	</bean>
+
+</beans>
+	

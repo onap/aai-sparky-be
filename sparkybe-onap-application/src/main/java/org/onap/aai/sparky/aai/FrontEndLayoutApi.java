@@ -31,9 +31,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @RestController
 public class FrontEndLayoutApi {
 
-
   public FrontEndLayoutApi() {
-
   }
 
   @RequestMapping(value = "/layouts", method = {RequestMethod.GET})

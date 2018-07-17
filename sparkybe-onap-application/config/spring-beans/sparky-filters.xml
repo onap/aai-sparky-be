@@ -1,0 +1,27 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+	       http://www.springframework.org/schema/beans
+	       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="filtersConfig" class="org.onap.aai.sparky.search.filters.config.FiltersConfig">
+		<constructor-arg name="filtersFileName" value="/filters/aaiui_filters.json" />
+		<constructor-arg name="viewsFileName" value="/filters/aaiui_views.json" />
+		<constructor-arg name="resourceLoader" ref="sparkyResourceLoader" />
+	</bean>
+
+	<bean id="filterElasticSearchAdapter"
+		class="org.onap.aai.sparky.search.filters.FilterElasticSearchAdapter">
+		<constructor-arg ref="elasticSearchAdapter" />
+	</bean>
+
+	<bean id="filteredSearchHelper" class="org.onap.aai.sparky.search.filters.FilteredSearchHelper">
+		<constructor-arg ref="filtersConfig" />
+		<constructor-arg ref="filterElasticSearchAdapter" />
+	</bean>
+
+	<bean id="filterProcessor" class="org.onap.aai.sparky.search.filters.FilterProcessor">
+		<property name="filteredSearchHelper" ref="filteredSearchHelper" />
+	</bean>
+
+</beans>

@@ -1,0 +1,13 @@
+<beans profile="oxm-default" xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+	       http://www.springframework.org/schema/beans
+	       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="oxmModelLoader" class="org.onap.aai.sparky.config.oxm.OxmModelLoader"
+		init-method="loadModel">
+		<constructor-arg ref="oxmModelProcessorSet" />
+		<constructor-arg ref="nodeIngestor" />
+	</bean>
+
+</beans>

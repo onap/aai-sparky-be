@@ -1,6 +1,6 @@
 /**
  * ============LICENSE_START=======================================================
- * org.onap.aai
+ * SPARKY (AAI UI service)
  * ================================================================================
  * Copyright © 2017-2018 AT&T Intellectual Property. All rights reserved.
  * Copyright © 2017-2018 Amdocs
@@ -18,21 +18,20 @@
  * limitations under the License.
  * ============LICENSE_END=========================================================
  */
-package org.onap.aai.sparky;
+package org.onap.aai.sparky.camel;
 
-import org.onap.aai.sparky.config.PropertyPasswordConfiguration;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.apache.camel.spring.SpringRouteBuilder;
+import org.springframework.stereotype.Component;
 
-@SpringBootApplication
-public class Application {
-  
-  public static void main(String[] args) {
+@Component
+public class ViewInspectRouter extends SpringRouteBuilder {
 
-    SpringApplication app = new SpringApplication(Application.class);
-    app.addInitializers(new PropertyPasswordConfiguration());
-    app.run(args);
-    
+  @Override
+  public void configure() throws Exception {
+
+    rest().post("/visualization/prepareVisualization").route()
+        .to("bean:schemaVisualizationProcessor?method=processVisualizationRequest");
+
   }
- 
+
 }

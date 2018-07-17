@@ -1,6 +1,6 @@
 /**
  * ============LICENSE_START=======================================================
- * org.onap.aai
+ * SPARKY (AAI UI service)
  * ================================================================================
  * Copyright © 2017-2018 AT&T Intellectual Property. All rights reserved.
  * Copyright © 2017-2018 Amdocs
@@ -18,15 +18,20 @@
  * limitations under the License.
  * ============LICENSE_END=========================================================
  */
-package org.onap.aai.sparky.config;
+package org.onap.aai.sparky.camel;
 
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.apache.camel.spring.SpringRouteBuilder;
+import org.springframework.stereotype.Component;
 
-@Configuration
-@ConditionalOnProperty(value="sparky.ssl.enabled", havingValue = "false")
-@PropertySource("file:${CONFIG_HOME}/sparky-http-config.properties")
-public class SparkyHttpConfigLoader {
+@Component
+public class FilterRequestRouter extends SpringRouteBuilder {
+
+  @Override
+  public void configure() throws Exception {
+
+    rest().post("/search/unifiedFilterRequest")
+        .to("bean:filterProcessor?method=getFiltersWithValues");
+
+  }
 
 }

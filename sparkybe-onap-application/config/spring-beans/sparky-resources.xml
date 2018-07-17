@@ -1,0 +1,30 @@
+<beans profile="resources" xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+	       http://www.springframework.org/schema/beans
+	       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="aaiRestEndpointConfig" class="org.onap.aai.sparky.dal.rest.config.RestEndpointConfig">
+		<property name="endpointIpAddress" value="${resources.hostname:127.0.0.1}" />
+		<property name="endpointServerPort" value="${resources.port:8443}" />
+		<property name="numRequestRetries" value="5" />
+		<property name="restAuthenticationMode" value="${resources.authType:SSL_BASIC}" />
+		<property name="connectTimeoutInMs" value="60000" />
+		<property name="readTimeoutInMs" value="30000" />
+		<property name="basicAuthUserName" value="${resources.basicAuthUserName:}" />
+		<property name="basicAuthPassword" value="${resources.basicAuthPassword:}" />
+		<property name="certFileName" value="/auth/${resources.client-cert}" />
+		<property name="certPassword" value="OBF:${resources.client-cert-password}" />
+		<property name="truststoreFileName" value="/auth/${resources.trust-store}" />
+		<property name="validateServerCertChain" value="false" />
+		<property name="validateServerHostname" value="false" />
+		<property name="resourceLoader" ref="sparkyResourceLoader" />
+	</bean>
+
+	<bean id="activeInventoryAdapter" class="org.onap.aai.sparky.dal.ActiveInventoryAdapter">
+		<constructor-arg ref="oxmModelLoader" />
+		<constructor-arg ref="oxmEntityLookup" />
+		<constructor-arg ref="aaiRestEndpointConfig" />
+	</bean>
+
+</beans>

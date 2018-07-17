@@ -1,0 +1,26 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+	       http://www.springframework.org/schema/beans
+	       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="searchServiceRestEndpointConfig" class="org.onap.aai.sparky.dal.rest.config.RestEndpointConfig">
+		<property name="endpointIpAddress" value="${searchservice.hostname:127.0.0.1}" />
+		<property name="endpointServerPort" value="${searchservice.port:9509}" />
+		<property name="numRequestRetries" value="5" />
+		<property name="restAuthenticationMode" value="SSL_CERT" />
+		<property name="connectTimeoutInMs" value="60000" />
+		<property name="readTimeoutInMs" value="30000" />
+		<property name="certFileName" value="/auth/${searchservice.client-cert}" />
+		<property name="certPassword" value="${searchservice.client-cert-password}" />
+		<property name="truststoreFileName" value="/auth/${searchservice.truststore}" />
+		<property name="validateServerCertChain" value="false" />
+		<property name="validateServerHostname" value="false" />
+		<property name="resourceLoader" ref="sparkyResourceLoader" />
+	</bean>
+
+	<bean id="searchServiceAdapter" class="org.onap.aai.sparky.search.SearchServiceAdapter">
+		<constructor-arg ref="searchServiceRestEndpointConfig" />
+		<constructor-arg name="serviceApiVersion" value="v1" />
+	</bean>
+</beans>

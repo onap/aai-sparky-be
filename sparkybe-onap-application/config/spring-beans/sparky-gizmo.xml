@@ -1,0 +1,30 @@
+<beans profile="gizmo" xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+	       http://www.springframework.org/schema/beans
+	       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="gizmoRestEndpointConfig" class="org.onap.aai.sparky.dal.rest.config.RestEndpointConfig">
+		<property name="endpointIpAddress" value="${gizmo.hostname:127.0.0.1}" />
+		<property name="endpointServerPort" value="${gizmo.port:9520}" />
+		<property name="numRequestRetries" value="5" />
+		<property name="restAuthenticationMode" value="${gizmo.authType:SSL_CERT}" />
+		<property name="connectTimeoutInMs" value="60000" />
+		<property name="readTimeoutInMs" value="30000" />
+		<property name="certFileName" value="/auth/${gizmo.client-cert}" />
+		<property name="certPassword" value="OBF:${gizmo.client-cert-password}" />
+		<property name="truststoreFileName" value="/auth/${gizmo.trust-store}" />
+		<property name="validateServerCertChain" value="false" />
+		<property name="validateServerHostname" value="false" />
+		<property name="resourceLoader" ref="sparkyResourceLoader" />
+	</bean>
+
+	<bean id="gizmoAdapter" class="org.onap.aai.sparky.dal.GizmoAdapter">
+		<constructor-arg ref="oxmModelLoader" />
+		<constructor-arg ref="gizmoRestEndpointConfig" />
+		<property name="relationshipsBasePath"
+			value="/services/inventory/relationships/${gizmo.apiVersion:v12}/" />
+		<property name="inventoryBasePath" value="/services/inventory/${gizmo.apiVersion:v12}/" />
+	</bean>
+
+</beans>

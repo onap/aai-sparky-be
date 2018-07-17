@@ -1,0 +1,17 @@
+{
+	"views": [{
+		"viewName": "vnfSearch",
+		"filters": [{
+			"filterId": "2"
+		},
+		{
+			"filterId": "1"
+		},
+		{
+			"filterId": "7"
+		},
+		{
+			"filterId": "8"
+		}]
+	}]
+}
