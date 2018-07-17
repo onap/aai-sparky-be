@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a9dcd25_7a5e70eb",
+        "filename": "sparkybe-onap-application/config/spring-beans/sparky-gizmo.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 8,
+      "author": {
+        "id": 2325
+      },
+      "writtenOn": "2018-07-17T19:36:25Z",
+      "side": 1,
+      "message": "I\u0027m assuming that this value is taken from the properties file if it exists? But how does spring know which .properties file to read from?",
+      "range": {
+        "startLine": 8,
+        "startChar": 44,
+        "endLine": 8,
+        "endChar": 60
+      },
+      "revId": "f42670da77dabfb638c6b180ac7133ec869ecc69",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
