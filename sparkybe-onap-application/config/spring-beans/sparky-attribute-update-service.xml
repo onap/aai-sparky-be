@@ -1,0 +1,19 @@
+<beans profile="resources" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://www.springframework.org/schema/beans" xmlns:context="http://www.springframework.org/schema/context"
+        xmlns:task="http://www.springframework.org/schema/task"
+        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.2.xsd
+                http://www.springframework.org/schema/task http://www.springframework.org/schema/task/spring-task.xsd">
+
+        <bean id="attributeUpdater" class="org.onap.aai.sparky.editattributes.AttributeUpdater">
+                <constructor-arg ref="oxmModelLoader" />
+                <constructor-arg ref="oxmEntityLookup" />
+                <constructor-arg ref="activeInventoryAdapter" />
+        </bean>
+
+        <bean id="attributeEditProcessor"
+                class="org.onap.aai.sparky.editattributes.AttributeEditProcessor">
+                <constructor-arg ref="attributeUpdater" />
+        </bean>
+
+</beans>

@@ -70,17 +70,6 @@
 			value="entitycounthistoryindex" />
 	</bean>
 
-	<bean id="attributeUpdater" class="org.onap.aai.sparky.editattributes.AttributeUpdater">
-		<constructor-arg ref="oxmModelLoader" />
-		<constructor-arg ref="oxmEntityLookup" />
-		<constructor-arg ref="activeInventoryAdapter" />
-	</bean>
-
-	<bean id="attributeEditProcessor"
-		class="org.onap.aai.sparky.editattributes.AttributeEditProcessor">
-		<constructor-arg ref="attributeUpdater" />
-	</bean>
-
 	<bean id="geoVisualizationProcessor" class="org.onap.aai.sparky.inventory.GeoVisualizationProcessor">
 		<constructor-arg ref="elasticSearchAdapter" />
 		<constructor-arg name="topographicalSearchIndexName"
