@@ -23,8 +23,8 @@
 		<constructor-arg ref="oxmModelLoader" />
 		<constructor-arg ref="gizmoRestEndpointConfig" />
 		<property name="relationshipsBasePath"
-			value="/services/inventory/relationships/${gizmo.apiVersion:v12}/" />
-		<property name="inventoryBasePath" value="/services/inventory/${gizmo.apiVersion:v12}/" />
+			value="/services/inventory/relationships/${gizmo.apiVersion:v12}" />
+		<property name="inventoryBasePath" value="/services/inventory/${gizmo.apiVersion:v12}" />
 	</bean>
 
 </beans>
