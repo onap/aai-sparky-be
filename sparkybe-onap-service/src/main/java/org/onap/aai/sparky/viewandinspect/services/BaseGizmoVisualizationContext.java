@@ -798,6 +798,7 @@ public class BaseGizmoVisualizationContext implements VisualizationContext {
         Thread.sleep(10);
       } catch (InterruptedException exc) {
         LOG.error(AaiUiMsgs.PROCESSING_LOOP_INTERUPTED, exc.getMessage());
+        Thread.currentThread().interrupt();
         return;
       }
 

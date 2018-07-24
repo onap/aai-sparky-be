@@ -360,6 +360,7 @@ public class ActiveInventoryAdapter {
         Thread.sleep(50);
       } catch (InterruptedException exc) {
         LOG.error(AaiUiMsgs.QUERY_AAI_WAIT_INTERRUPTION, exc.getLocalizedMessage());
+        Thread.currentThread().interrupt();
         break;
       }
       LOG.error(AaiUiMsgs.QUERY_AAI_RETRY_FAILURE_WITH_SEQ, url, String.valueOf(retryCount + 1));

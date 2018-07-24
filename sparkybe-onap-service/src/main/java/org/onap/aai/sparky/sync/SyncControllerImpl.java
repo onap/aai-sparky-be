@@ -626,6 +626,7 @@ public class SyncControllerImpl implements SyncController {
       } catch (InterruptedException exc) {
         LOG.error(AaiUiMsgs.ERROR_GENERIC,
             "An error occurred while waiting for sync to complete. Error = " + exc.getMessage());
+        Thread.currentThread().interrupt();
       }
 
     }

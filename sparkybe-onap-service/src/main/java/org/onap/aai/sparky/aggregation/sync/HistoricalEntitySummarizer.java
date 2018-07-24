@@ -76,7 +76,6 @@ public class HistoricalEntitySummarizer extends AbstractEntitySynchronizer
   /**
    * Instantiates a new historical entity summarizer.
    *
-   * @param indexName the index name
    * @throws Exception the exception
    */
   public HistoricalEntitySummarizer(ElasticSearchSchemaConfig schemaConfig, int internalSyncWorkers,
@@ -304,6 +303,7 @@ public class HistoricalEntitySummarizer extends AbstractEntitySynchronizer
         Thread.sleep(500);
       } catch (InterruptedException exc) {
         LOG.error(AaiUiMsgs.INTERRUPTED, "historical Entities", exc.getMessage());
+        Thread.currentThread().interrupt();
       }
     }
 

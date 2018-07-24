@@ -41,6 +41,7 @@ public class SyncControllerTask implements Runnable {
       try {
         Thread.sleep(1000);
       } catch (InterruptedException e) {
+        Thread.currentThread().interrupt();
         // exit out of the sync-wait-loop
         break;
       }
