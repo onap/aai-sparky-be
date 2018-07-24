@@ -123,7 +123,6 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
   /**
    * Instantiates a new cross entity reference synchronizer.
    *
-   * @param indexName the index name
    * @throws Exception the exception
    */
   public CrossEntityReferenceSynchronizer(ElasticSearchSchemaConfig schemaConfig,
@@ -349,49 +348,42 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
    */
   private void processEntityTypeSelfLinks(OperationResult operationResult) {
 
-    JsonNode rootNode = null;
-
     final String jsonResult = operationResult.getResult();
 
     if (jsonResult != null && jsonResult.length() > 0) {
 
       try {
-        rootNode = mapper.readTree(jsonResult);
-      } catch (IOException exc) {
-        // TODO // TODO -> LOG, waht should be logged here?
-      }
+        JsonNode rootNode = mapper.readTree(jsonResult);
+        JsonNode resultData = rootNode.get("result-data");
 
-      JsonNode resultData = rootNode.get("result-data");
-      ArrayNode resultDataArrayNode = null;
+        if (resultData.isArray()) {
+          ArrayNode resultDataArrayNode = (ArrayNode) resultData;
 
-      if (resultData.isArray()) {
-        resultDataArrayNode = (ArrayNode) resultData;
+          Iterator<JsonNode> elementIterator = resultDataArrayNode.elements();
 
-        Iterator<JsonNode> elementIterator = resultDataArrayNode.elements();
-        JsonNode element = null;
+          while (elementIterator.hasNext()) {
+            JsonNode element = elementIterator.next();
 
-        while (elementIterator.hasNext()) {
-          element = elementIterator.next();
+            final String resourceType = NodeUtils.getNodeFieldAsText(element, "resource-type");
+            final String resourceLink = NodeUtils.getNodeFieldAsText(element, "resource-link");
 
-          final String resourceType = NodeUtils.getNodeFieldAsText(element, "resource-type");
-          final String resourceLink = NodeUtils.getNodeFieldAsText(element, "resource-link");
+            if (resourceType != null && resourceLink != null) {
+              CrossEntityReferenceDescriptor descriptor = crossEntityReferenceLookup.getCrossReferenceEntityDescriptors().get(resourceType);
 
-          CrossEntityReferenceDescriptor descriptor = null;
-
-          if (resourceType != null && resourceLink != null) {
-            descriptor = crossEntityReferenceLookup.getCrossReferenceEntityDescriptors().get(resourceType);
-
-            if (descriptor == null) {
-              LOG.error(AaiUiMsgs.MISSING_ENTITY_DESCRIPTOR, resourceType);
-              // go to next element in iterator
-              continue;
-            }
-            if (descriptor.hasCrossEntityReferences()) {
-              selflinks.add(new SelfLinkDescriptor(
-                  resourceLink,SynchronizerConstants.DEPTH_ALL_MODIFIER, resourceType));
+              if (descriptor == null) {
+                LOG.error(AaiUiMsgs.MISSING_ENTITY_DESCRIPTOR, resourceType);
+                // go to next element in iterator
+                continue;
+              }
+              if (descriptor.hasCrossEntityReferences()) {
+                selflinks.add(new SelfLinkDescriptor(
+                        resourceLink, SynchronizerConstants.DEPTH_ALL_MODIFIER, resourceType));
+              }
             }
           }
         }
+      } catch (IOException exc) {
+        // TODO // TODO -> LOG, waht should be logged here?
       }
     }
   }
@@ -625,7 +617,8 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
                         }
                         
                       } else {
-                        String message = "Entity sync failed because AAI query failed with error " + aaiQueryResult.getResult(); 
+                        String result = aaiQueryResult != null ? aaiQueryResult.getResult() : "unknown";
+                        String message = "Entity sync failed because AAI query failed with error " + result;
                         LOG.error(AaiUiMsgs.ENTITY_SYNC_FAILED_QUERY_ERROR, message);
                       }
                       

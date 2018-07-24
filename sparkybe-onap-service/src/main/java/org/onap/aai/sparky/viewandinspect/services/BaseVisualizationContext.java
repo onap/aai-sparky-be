@@ -538,38 +538,15 @@ public class BaseVisualizationContext implements VisualizationContext {
 
         JsonNode nodeValue = field.getValue();
 
-        if (nodeValue != null && nodeValue.isValueNode()) {
-
-          if (oxmEntityLookup.getEntityDescriptors().get(fieldName) == null) {
-
-            /*
-             * entity property name is not an entity, thus we can add this property name and value
-             * to our property set
-             */
-
-            ain.addProperty(fieldName, nodeValue.asText());
-
-          }
-
-        } else {
-
-          if (nodeValue.isArray()) {
-
-            if (oxmEntityLookup.getEntityDescriptors().get(fieldName) == null) {
-
-              /*
-               * entity property name is not an entity, thus we can add this property name and value
-               * to our property set
-               */
-
-              ain.addProperty(field.getKey(), nodeValue.toString());
-
-            }
-
+        if(nodeValue!=null) {
+          if (nodeValue.isValueNode()) {
+            String key = fieldName;
+            handleNodeValue(ain, fieldName, key, nodeValue.asText());
+          } else if (nodeValue.isArray()) {
+            String key = field.getKey();
+            handleNodeValue(ain, fieldName, key, nodeValue.toString());
           } else {
-
-            ain.addComplexGroup(nodeValue);
-
+              ain.addComplexGroup(nodeValue);
           }
 
         }
@@ -626,6 +603,19 @@ public class BaseVisualizationContext implements VisualizationContext {
           NodeProcessingAction.SELF_LINK_RESPONSE_PARSE_OK);
     
 
+  }
+
+  private void handleNodeValue(ActiveInventoryNode ain, String fieldName, String key, String value) {
+    if (oxmEntityLookup.getEntityDescriptors().get(fieldName) == null) {
+
+      /*
+       * entity property name is not an entity, thus we can add this property name and value
+       * to our property set
+       */
+
+      ain.addProperty(key, value);
+
+    }
   }
 
   /**
@@ -826,7 +816,6 @@ public class BaseVisualizationContext implements VisualizationContext {
   /**
    * Process current node states.
    *
-   * @param rootNodeDiscovered the root node discovered
    */
   private void processCurrentNodeStates(QueryParams queryParams) {
     /*

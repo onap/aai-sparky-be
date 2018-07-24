@@ -667,28 +667,19 @@ public class ActiveInventoryNode {
         } else {
           JsonNode nodeValue = field.getValue();
 
-          if (nodeValue != null && nodeValue.isValueNode()) {
+          if (nodeValue != null) {
+            if (nodeValue.isValueNode()) {
 
-            /*
-             * before we blindly add the fieldName and value to our property set, let's do one more
-             * check to see if the field name is an entity type. If it is, then our complex
-             * attribute processing code will pick it up and process it instead, but this is
-             * probably more likely just for array node types, but we'll see.
-             */
-
-            if (oxmEntityLookup.getEntityDescriptors().get(fieldName) == null) {
               /*
-               * this is no an entity type as far as we can tell, so we can add it to our property
-               * set.
+               * before we blindly add the fieldName and value to our property set, let's do one more
+               * check to see if the field name is an entity type. If it is, then our complex
+               * attribute processing code will pick it up and process it instead, but this is
+               * probably more likely just for array node types, but we'll see.
                */
 
-              addProperty(fieldName, nodeValue.asText());
+              handleNodeValue(fieldName, nodeValue.asText());
 
-            }
-
-          } else {
-
-            if (nodeValue.isArray()) {
+            } else if (nodeValue.isArray()) {
 
               /*
                * make sure array entity-type collection is not an entityType before adding it to the
@@ -696,26 +687,13 @@ public class ActiveInventoryNode {
                * complex group or relationship.
                */
 
-              if (oxmEntityLookup.getEntityDescriptors().get(field.getKey()) == null) {
-                /*
-                 * this is no an entity type as far as we can tell, so we can add it to our property
-                 * set.
-                 */
-
-                addProperty(field.getKey(), nodeValue.toString());
-
-              }
-
+              handleNodeValue(field.getKey(), nodeValue.toString());
             } else {
-
               complexGroups.add(nodeValue);
-
             }
 
           }
-
         }
-
       }
 
     } catch (IOException exc) {
@@ -725,6 +703,18 @@ public class ActiveInventoryNode {
           "An error occurred while converting JSON into POJO = " + exc.getLocalizedMessage());
     }
 
+  }
+
+  private void handleNodeValue(String fieldName, String fieldValue) {
+    if (oxmEntityLookup.getEntityDescriptors().get(fieldName) == null) {
+      /*
+       * this is no an entity type as far as we can tell, so we can add it to our property
+       * set.
+       */
+
+      addProperty(fieldName, fieldValue);
+
+    }
   }
 
   public void setSelfLink(String selfLink) {

@@ -193,7 +193,7 @@ public class BaseVisualizationService implements VisualizationService {
   public OperationResult buildVisualizationUsingGenericQuery(QueryRequest queryRequest) {
 
     OperationResult returnValue = new OperationResult();
-    OperationResult dataCollectionResult = null;
+    OperationResult dataCollectionResult = new OperationResult();
     QueryParams queryParams = null;
     SearchableEntity sourceEntity = null;
 
@@ -294,8 +294,6 @@ public class BaseVisualizationService implements VisualizationService {
       throw new ServletException(e1);
     }
 
-    String jsonResponse = null;
-
     long startTimeInMs = System.currentTimeMillis();
 
     visContext.processSelfLinks(searchtargetEntity, queryParams);
@@ -338,28 +336,24 @@ public class BaseVisualizationService implements VisualizationService {
     
     GraphMeta graphMeta = new GraphMeta();
 
-    D3VisualizationOutput output = null;
-    try {
-      output = transformer
-          .generateVisualizationOutput((System.currentTimeMillis() - opStartTimeInMs), graphMeta);
-    } catch (JsonProcessingException exc) {
-      throw new ServletException("Caught an exception while generation visualization output", exc);
-    } catch (IOException exc) {
-      LOG.error(AaiUiMsgs.FAILURE_TO_PROCESS_REQUEST, exc.getLocalizedMessage());
-    }
+    D3VisualizationOutput output = getD3VisualizationOutput(opStartTimeInMs, transformer, graphMeta);
 
-    output.setInlineMessage(visContext.getInlineMessage());
-    output.getGraphMeta().setNumLinkResolveFailed(visContext.getNumFailedLinkResolve());
-    output.getGraphMeta().setNumLinksResolvedSuccessfullyFromCache(
-        visContext.getNumSuccessfulLinkResolveFromCache());
-    output.getGraphMeta().setNumLinksResolvedSuccessfullyFromServer(
-        visContext.getNumSuccessfulLinkResolveFromFromServer());
+    String jsonResponse = null;
 
-    try {
-      jsonResponse = transformer.convertVisualizationOutputToJson(output);
-    } catch (JsonProcessingException jpe) {
-      throw new ServletException(
-          "Caught an exception while converting visualization output to json", jpe);
+    if (output != null) {
+      output.setInlineMessage(visContext.getInlineMessage());
+      output.getGraphMeta().setNumLinkResolveFailed(visContext.getNumFailedLinkResolve());
+      output.getGraphMeta().setNumLinksResolvedSuccessfullyFromCache(
+              visContext.getNumSuccessfulLinkResolveFromCache());
+      output.getGraphMeta().setNumLinksResolvedSuccessfullyFromServer(
+              visContext.getNumSuccessfulLinkResolveFromFromServer());
+
+      try {
+        jsonResponse = transformer.convertVisualizationOutputToJson(output);
+      } catch (JsonProcessingException jpe) {
+        throw new ServletException(
+                "Caught an exception while converting visualization output to json", jpe);
+      }
     }
 
     logOptime("[build flat node array, add relationship data, search target,"
@@ -370,7 +364,20 @@ public class BaseVisualizationService implements VisualizationService {
     return jsonResponse;
 
   }
-  
+
+  private D3VisualizationOutput getD3VisualizationOutput(long opStartTimeInMs, VisualizationTransformer transformer, GraphMeta graphMeta) throws ServletException {
+    D3VisualizationOutput output = null;
+    try {
+      output = transformer
+          .generateVisualizationOutput((System.currentTimeMillis() - opStartTimeInMs), graphMeta);
+    } catch (JsonProcessingException exc) {
+      throw new ServletException("Caught an exception while generation visualization output", exc);
+    } catch (IOException exc) {
+      LOG.error(AaiUiMsgs.FAILURE_TO_PROCESS_REQUEST, exc.getLocalizedMessage());
+    }
+    return output;
+  }
+
   public void shutdown() {
     aaiExecutorService.shutdown();
   }
