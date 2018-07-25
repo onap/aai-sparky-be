@@ -1,0 +1,8 @@
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+1: Dave Adams <Dave.Adams@amdocs.com>
+Code-Review+2: Steven Blimkie <Steven.Blimkie@amdocs.com>
+Submitted-by: Steven Blimkie <Steven.Blimkie@amdocs.com>
+Submitted-at: Wed, 25 Jul 2018 14:51:11 +0000
+Reviewed-on: https://gerrit.onap.org/r/57267
+Project: aai/sparky-be
+Branch: refs/heads/master
