@@ -106,11 +106,10 @@ public class AggregateVnfSearchProvider implements SearchProvider {
     }
 
     ObjectMapper mapper = new ObjectMapper();
-    JsonNode rootNode = null;
     List<SearchSuggestion> suggestionEntityList = new ArrayList<SearchSuggestion>();
 
     try {
-      rootNode = mapper.readTree(operationResult);
+      JsonNode rootNode = mapper.readTree(operationResult);
       JsonNode hitsNode = rootNode.get(KEY_SEARCH_RESULT);
       // Check if there are hits that are coming back
       if (hitsNode.has(KEY_HITS)) {
@@ -120,30 +119,14 @@ public class AggregateVnfSearchProvider implements SearchProvider {
          * next we iterate over the values in the hit array elements
          */
         Iterator<JsonNode> nodeIterator = hitsArray.elements();
-        JsonNode entityNode = null;
-        CommonSearchSuggestion responseSuggestion = null;
-        JsonNode sourceNode = null;
-
         while (nodeIterator.hasNext()) {
-          entityNode = nodeIterator.next();
-          String responseText = getValueFromNode(entityNode, KEY_TEXT);
-          // do the point transformation as we build the response?
-          responseSuggestion = new CommonSearchSuggestion();
-          responseSuggestion.setRoute(vnfSearchSuggestionRoute);
-          responseSuggestion.setText(responseText);
-          responseSuggestion.setHashId(NodeUtils.generateUniqueShaDigest(responseText));
+          JsonNode entityNode = nodeIterator.next();
+          if(entityNode != null) {
+            String responseText = getValueFromNode(entityNode, KEY_TEXT);
 
-          sourceNode = entityNode.get(KEY_DOCUMENT).get(KEY_CONTENT);
-          if (sourceNode.has(KEY_FILTER_LIST)) {
-            ArrayNode filtersArray = (ArrayNode) sourceNode.get(KEY_FILTER_LIST);
-            for (int i = 0; i < filtersArray.size(); i++) {
-              String filterValueString = filtersArray.get(i).toString();
-              UiFilterValueEntity filterValue =
-                  mapper.readValue(filterValueString, UiFilterValueEntity.class);
-              responseSuggestion.getFilterValues().add(filterValue);
-            }
+            CommonSearchSuggestion responseSuggestion = createCommonSearchSuggestion(mapper, entityNode, responseText);
+            suggestionEntityList.add(responseSuggestion);
           }
-          suggestionEntityList.add(responseSuggestion);
         }
       }
     } catch (IOException exc) {
@@ -153,9 +136,30 @@ public class AggregateVnfSearchProvider implements SearchProvider {
 
   }
 
+  private CommonSearchSuggestion createCommonSearchSuggestion(ObjectMapper mapper, JsonNode entityNode, String responseText) throws IOException {
+    // do the point transformation as we build the response?
+    CommonSearchSuggestion responseSuggestion = new CommonSearchSuggestion();
+    responseSuggestion.setRoute(vnfSearchSuggestionRoute);
+    responseSuggestion.setText(responseText);
+    responseSuggestion.setHashId(NodeUtils.generateUniqueShaDigest(responseText));
+
+    JsonNode keyDocument = entityNode.get(KEY_DOCUMENT);
+    JsonNode sourceNode = keyDocument.get(KEY_CONTENT);
+    if (sourceNode.has(KEY_FILTER_LIST)) {
+      ArrayNode filtersArray = (ArrayNode) sourceNode.get(KEY_FILTER_LIST);
+      for (int i = 0; i < filtersArray.size(); i++) {
+        String filterValueString = filtersArray.get(i).toString();
+        UiFilterValueEntity filterValue =
+            mapper.readValue(filterValueString, UiFilterValueEntity.class);
+        responseSuggestion.getFilterValues().add(filterValue);
+      }
+    }
+    return responseSuggestion;
+  }
+
   private String getValueFromNode(JsonNode node, String fieldName) {
 
-    if (node == null || fieldName == null) {
+    if (fieldName == null) {
       return null;
     }
 

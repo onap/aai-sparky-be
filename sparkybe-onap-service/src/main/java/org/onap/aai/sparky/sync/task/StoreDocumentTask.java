@@ -48,7 +48,7 @@ public class StoreDocumentTask implements Supplier<NetworkTransaction> {
    *
    * @param doc the doc
    * @param txn the txn
-   * @param esDataProvider the es data provider
+   * @param esAdapter the es adapter
    */
   public StoreDocumentTask(IndexDocument doc, NetworkTransaction txn,
       ElasticSearchAdapter esAdapter) {
@@ -67,7 +67,7 @@ public class StoreDocumentTask implements Supplier<NetworkTransaction> {
 
     long startTimeInMs = System.currentTimeMillis();
     MDC.setContextMap(contextMap);
-    OperationResult operationResult = null;
+    OperationResult operationResult = new OperationResult();
 
     try {
 

@@ -109,7 +109,7 @@ public class EcompSso {
       String[] cspFields = getCspData(request);
       if (cspFields != null && cspFields.length > 5)
         uid = cspFields[5];
-    } catch (Throwable t) {
+    } catch (Exception t) {
       LOG.info(AaiUiMsgs.LOGIN_FILTER_INFO,
           "getLoginIdFromCookie failed " + t.getLocalizedMessage());
     }

@@ -194,7 +194,8 @@ public class ViewInspectSearchProvider implements SearchProvider {
             suggestionEntity
                 .setText(annotateSearchTags(searchTags, searchTagIds, entityType, queryStr));
           } catch (Exception exc) {
-            LOG.error(AaiUiMsgs.SEARCH_TAG_ANNOTATION_ERROR, searchTags.toString(),
+            String searchTagsAsText = searchTags != null ? searchTags.toString() : "n/a";
+            LOG.error(AaiUiMsgs.SEARCH_TAG_ANNOTATION_ERROR, searchTagsAsText,
                 exc.getLocalizedMessage());
             // at least send back the un-annotated search tags
             suggestionEntity.setText(searchTags);

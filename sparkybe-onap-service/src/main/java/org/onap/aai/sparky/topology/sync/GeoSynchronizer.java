@@ -78,7 +78,6 @@ public class GeoSynchronizer extends AbstractEntitySynchronizer implements Index
   /**
    * Instantiates a new geo synchronizer.
    *
-   * @param indexName the index name
    * @throws Exception the exception
    */
   public GeoSynchronizer(ElasticSearchSchemaConfig schemaConfig, int internalSyncWorkers,
@@ -245,45 +244,40 @@ public class GeoSynchronizer extends AbstractEntitySynchronizer implements Index
    */
   private void processEntityTypeSelfLinks(OperationResult operationResult) {
 
-    JsonNode rootNode = null;
-
     final String jsonResult = operationResult.getResult();
 
     if (jsonResult != null && jsonResult.length() > 0 && operationResult.wasSuccessful()) {
 
       try {
-        rootNode = mapper.readTree(jsonResult);
-      } catch (IOException exc) {
-        LOG.error(AaiUiMsgs.ERROR_GENERIC, exc);
-      }
+        JsonNode rootNode = mapper.readTree(jsonResult);
+        JsonNode resultData = rootNode.get("result-data");
 
-      JsonNode resultData = rootNode.get("result-data");
-      ArrayNode resultDataArrayNode = null;
+        if (resultData.isArray()) {
+          ArrayNode resultDataArrayNode = (ArrayNode) resultData;
 
-      if (resultData.isArray()) {
-        resultDataArrayNode = (ArrayNode) resultData;
+          Iterator<JsonNode> elementIterator = resultDataArrayNode.elements();
 
-        Iterator<JsonNode> elementIterator = resultDataArrayNode.elements();
-        JsonNode element = null;
+          while (elementIterator.hasNext()) {
+            JsonNode element = elementIterator.next();
 
-        while (elementIterator.hasNext()) {
-          element = elementIterator.next();
+            final String resourceType = NodeUtils.getNodeFieldAsText(element, "resource-type");
+            final String resourceLink = NodeUtils.getNodeFieldAsText(element, "resource-link");
 
-          final String resourceType = NodeUtils.getNodeFieldAsText(element, "resource-type");
-          final String resourceLink = NodeUtils.getNodeFieldAsText(element, "resource-link");
+            if (resourceType != null && resourceLink != null) {
 
-          if (resourceType != null && resourceLink != null) {
+              if (geoDescriptorMap.containsKey(resourceType)) {
+                selflinks.add(new SelfLinkDescriptor(resourceLink + "?nodes-only", resourceType));
+              } else {
+                LOG.error(AaiUiMsgs.MISSING_ENTITY_DESCRIPTOR, resourceType);
+                // go to next element in iterator
+                continue;
+              }
 
-            if (geoDescriptorMap.containsKey(resourceType)) {
-              selflinks.add(new SelfLinkDescriptor(resourceLink + "?nodes-only", resourceType));
-            } else {
-              LOG.error(AaiUiMsgs.MISSING_ENTITY_DESCRIPTOR, resourceType);
-              // go to next element in iterator
-              continue;
             }
-
           }
         }
+      } catch (IOException exc) {
+        LOG.error(AaiUiMsgs.ERROR_GENERIC, exc);
       }
     }
 

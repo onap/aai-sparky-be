@@ -115,7 +115,6 @@ public class ViewInspectEntitySynchronizer extends AbstractEntitySynchronizer
   /**
    * Instantiates a new searchable entity synchronizer.
    *
-   * @param indexName the index name
    * @throws Exception the exception
    */
   public ViewInspectEntitySynchronizer(ElasticSearchSchemaConfig schemaConfig,
@@ -255,54 +254,49 @@ public class ViewInspectEntitySynchronizer extends AbstractEntitySynchronizer
    */
   private void processEntityTypeSelfLinks(OperationResult operationResult) {
 
-    JsonNode rootNode = null;
-
     final String jsonResult = operationResult.getResult();
 
     if (jsonResult != null && jsonResult.length() > 0 && operationResult.wasSuccessful()) {
 
       try {
-        rootNode = mapper.readTree(jsonResult);
+        JsonNode rootNode = mapper.readTree(jsonResult);
+        JsonNode resultData = rootNode.get("result-data");
+
+        if (resultData.isArray()) {
+          ArrayNode resultDataArrayNode = (ArrayNode) resultData;
+
+          Iterator<JsonNode> elementIterator = resultDataArrayNode.elements();
+
+          while (elementIterator.hasNext()) {
+            JsonNode element = elementIterator.next();
+
+            final String resourceType = NodeUtils.getNodeFieldAsText(element, "resource-type");
+            final String resourceLink = NodeUtils.getNodeFieldAsText(element, "resource-link");
+
+            SearchableOxmEntityDescriptor descriptor = null;
+
+            if (resourceType != null && resourceLink != null) {
+
+              descriptor = searchableEntityLookup.getSearchableEntityDescriptors().get(resourceType);
+
+              if (descriptor == null) {
+                LOG.error(AaiUiMsgs.MISSING_ENTITY_DESCRIPTOR, resourceType);
+                // go to next element in iterator
+                continue;
+              }
+
+              if (descriptor.hasSearchableAttributes()) {
+                selflinks.add(new SelfLinkDescriptor(resourceLink, SynchronizerConstants.NODES_ONLY_MODIFIER, resourceType));
+              }
+
+            }
+          }
+        }
       } catch (IOException exc) {
         String message =
             "Could not deserialize JSON (representing operation result) as node tree. " +
             "Operation result = " + jsonResult + ". " + exc.getLocalizedMessage();
         LOG.error(AaiUiMsgs.JSON_PROCESSING_ERROR, message);
-      }
-
-      JsonNode resultData = rootNode.get("result-data");
-      ArrayNode resultDataArrayNode = null;
-
-      if (resultData.isArray()) {
-        resultDataArrayNode = (ArrayNode) resultData;
-
-        Iterator<JsonNode> elementIterator = resultDataArrayNode.elements();
-        JsonNode element = null;
-
-        while (elementIterator.hasNext()) {
-          element = elementIterator.next();
-
-          final String resourceType = NodeUtils.getNodeFieldAsText(element, "resource-type");
-          final String resourceLink = NodeUtils.getNodeFieldAsText(element, "resource-link");
-
-          SearchableOxmEntityDescriptor descriptor = null;
-
-          if (resourceType != null && resourceLink != null) {
-
-            descriptor = searchableEntityLookup.getSearchableEntityDescriptors().get(resourceType);
-
-            if (descriptor == null) {
-              LOG.error(AaiUiMsgs.MISSING_ENTITY_DESCRIPTOR, resourceType);
-              // go to next element in iterator
-              continue;
-            }
-
-            if (descriptor.hasSearchableAttributes()) {
-              selflinks.add(new SelfLinkDescriptor(resourceLink, SynchronizerConstants.NODES_ONLY_MODIFIER, resourceType));
-            }
-
-          }
-        }
       }
     }
 
