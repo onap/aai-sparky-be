@@ -193,7 +193,7 @@ public class BaseVisualizationService implements VisualizationService {
   public OperationResult buildVisualizationUsingGenericQuery(QueryRequest queryRequest) {
 
     OperationResult returnValue = new OperationResult();
-    OperationResult dataCollectionResult = null;
+    OperationResult dataCollectionResult = new OperationResult();
     QueryParams queryParams = null;
     SearchableEntity sourceEntity = null;
 

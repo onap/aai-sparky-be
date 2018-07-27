@@ -20,8 +20,8 @@
  */
 package org.onap.aai.sparky.sync;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
  * The Class SynchronizerConstants.
@@ -30,8 +30,6 @@ public final class SynchronizerConstants {
   // Error values for invalid user input
   public static final int DEFAULT_CONFIG_ERROR_INT_VALUE = Integer.MAX_VALUE;
   public static final Date DEFAULT_CONFIG_ERROR_DATE_VALUE = new Date(Long.MAX_VALUE);
-  public static final SimpleDateFormat SIMPLE_DATE_FORMAT =
-      new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
 
   public static final String DEPTH_MODIFIER = "?depth=0";
   public static final String DEPTH_ALL_MODIFIER = "?depth=all";
@@ -48,7 +46,7 @@ public final class SynchronizerConstants {
   public static final int IDX_TIME_IN_TIMESTAMP = 0;
   public static final int IDX_TIMEZONE_IN_TIMESTAMP = 1;
   public static final long MILLISEC_IN_A_MIN = 60000;
-  public static final long MILLISEC_IN_A_DAY = 24 * 60 * 60 * 1000;
+  public static final long MILLISEC_IN_A_DAY = TimeUnit.HOURS.toMillis(24);
   public static final String TIME_STD = "GMT";
   public static final String TIME_CONFIG_STD = "UTC";
   public static final String TIMESTAMP24HOURS_PATTERN =

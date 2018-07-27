@@ -143,9 +143,11 @@ public class ActiveInventoryAdapter {
 
   protected String getResourceBasePath() {
 
-    String versionStr = null;
+    String versionStr;
     if (oxmModelLoader != null) {
       versionStr = String.valueOf(oxmModelLoader.getLatestVersionNum());
+    } else {
+      throw new RuntimeException("Unable to resolve aai version.");
     }
 
     return "/aai/" + versionStr.toLowerCase();

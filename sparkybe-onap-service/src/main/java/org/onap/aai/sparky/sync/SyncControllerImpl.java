@@ -22,6 +22,7 @@ package org.onap.aai.sparky.sync;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Date;
@@ -58,6 +59,8 @@ public class SyncControllerImpl implements SyncController {
     TEST_INDEX_INTEGRITY, GENERATE_FINAL_REPORT
   }
 
+  private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
+
   /**
    * The Enum SyncActions.
    */
@@ -93,7 +96,6 @@ public class SyncControllerImpl implements SyncController {
   /**
    * Instantiates a new sync controller.
    *
-   * @param name the name
    * @throws Exception the exception
    */
   public SyncControllerImpl(SyncControllerConfig syncControllerConfig) throws Exception {
@@ -251,7 +253,7 @@ public class SyncControllerImpl implements SyncController {
 
                 LOG.info(AaiUiMsgs.INFO_GENERIC,
                     getControllerName() + " started synchronization at "
-                        + SynchronizerConstants.SIMPLE_DATE_FORMAT.format(opStartTime).replaceAll(
+                        + this.simpleDateFormat.format(opStartTime).replaceAll(
                             SynchronizerConstants.TIME_STD, SynchronizerConstants.TIME_CONFIG_STD));
 
                 runCount.incrementAndGet();

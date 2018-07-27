@@ -880,11 +880,7 @@ public class NodeUtils {
       throw ex;
     } finally {
       if (bufferedReader != null) {
-        try {
           bufferedReader.close();
-        } catch (IOException ex) {
-          throw ex;
-        }
       }
     }
 

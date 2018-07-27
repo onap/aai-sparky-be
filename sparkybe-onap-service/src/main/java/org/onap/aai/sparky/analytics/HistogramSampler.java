@@ -173,7 +173,7 @@ public final class HistogramSampler {
     this.minValue = -1;
     this.maxValue = 0;
     initializeHistogramBins(numBins);
-    this.stepSize = (maxValue / numBins);
+    this.stepSize = ((double) maxValue / (double) numBins);
     clear();
   }
 
