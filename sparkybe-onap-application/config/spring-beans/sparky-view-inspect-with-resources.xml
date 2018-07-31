@@ -6,7 +6,7 @@
 
 	<bean id="visualizationConfigurations"
 		class="org.onap.aai.sparky.viewandinspect.config.VisualizationConfigs">
-		<property name="maxSelfLinkTraversalDepth" value="2" />
+		<property name="maxSelfLinkTraversalDepth" value="${resources.maxSelfLinkTraversalDepth:2}" />
 		<property name="visualizationDebugEnabled" value="false" />
 		<property name="aaiEntityNodeDescriptors" value="/descriptors/aaiEntityNodeDescriptors.json" />
 		<property name="generalNodeClassName" value="generalNodeClass" />
