@@ -60,7 +60,7 @@ public class TransactionRateMonitor {
 
   public double getCurrentTps() {
     if (numTransactions.get() > 0) {
-      double timeDelta = System.currentTimeMillis() - startTimeInMs;
+      long timeDelta = System.currentTimeMillis() - startTimeInMs;
       double numTxns = numTransactions.get();
       return (numTxns / timeDelta) * 1000.0;
     }

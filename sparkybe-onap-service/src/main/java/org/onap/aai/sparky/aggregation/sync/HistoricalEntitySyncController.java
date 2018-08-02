@@ -33,6 +33,8 @@ import org.onap.aai.sparky.sync.config.ElasticSearchSchemaConfig;
 import org.onap.aai.sparky.sync.config.NetworkStatisticsConfig;
 import org.onap.aai.sparky.sync.config.SyncControllerConfig;
 
+import java.util.concurrent.TimeUnit;
+
 public class HistoricalEntitySyncController extends SyncControllerImpl
     implements SyncControllerRegistrar {
 
@@ -48,7 +50,7 @@ public class HistoricalEntitySyncController extends SyncControllerImpl
 
     // final String controllerName = "Historical Entity Count Synchronizer";
 
-    long taskFrequencyInMs = syncFrequencyInMinutes * 60 * 1000;
+    long taskFrequencyInMs = getTaskFrequencyInMs(syncFrequencyInMinutes);
 
     setDelayInMs(taskFrequencyInMs);
     setSyncFrequencyInMs(taskFrequencyInMs);
@@ -68,6 +70,10 @@ public class HistoricalEntitySyncController extends SyncControllerImpl
 
     registerEntitySynchronizer(historicalSummarizer);
 
+  }
+
+  static long getTaskFrequencyInMs(int syncFrequencyInMinutes) {
+    return TimeUnit.MINUTES.toMillis(Integer.toUnsignedLong(syncFrequencyInMinutes));
   }
 
   public SyncControllerRegistry getSyncControllerRegistry() {

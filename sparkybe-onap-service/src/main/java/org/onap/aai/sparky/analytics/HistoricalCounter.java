@@ -75,7 +75,7 @@ public class HistoricalCounter {
 
     } else {
 
-      if (min == -1) {
+      if (Double.valueOf(min).equals(-1.0)) {
         min = value;
       }
 

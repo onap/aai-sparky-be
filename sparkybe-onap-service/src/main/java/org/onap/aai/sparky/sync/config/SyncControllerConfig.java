@@ -36,6 +36,7 @@ import org.onap.aai.sparky.sync.SynchronizerConstants;
 public class SyncControllerConfig {
 
   private static final String UNKNOWN_CONTROLLER_NAME = "UnknownControllerName";
+  private final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
 
   private String controllerName;
   private boolean enabled;
@@ -242,12 +243,12 @@ public class SyncControllerConfig {
       Calendar targetSyncTime = Calendar.getInstance(tz);
       targetSyncTime.add(Calendar.SECOND, taskFrequencyInSeconds);
 
-      return SynchronizerConstants.SIMPLE_DATE_FORMAT.format(targetSyncTime.getTimeInMillis())
+      return this.simpleDateFormat.format(targetSyncTime.getTimeInMillis())
           .replaceAll(SynchronizerConstants.TIME_STD, SynchronizerConstants.TIME_CONFIG_STD);
 
     } else {
 
-      return SynchronizerConstants.SIMPLE_DATE_FORMAT
+      return this.simpleDateFormat
           .format(getNextSyncTime(getTargetSyncTime(), taskFrequencyInSeconds))
           .replaceAll(SynchronizerConstants.TIME_STD, SynchronizerConstants.TIME_CONFIG_STD);
 
