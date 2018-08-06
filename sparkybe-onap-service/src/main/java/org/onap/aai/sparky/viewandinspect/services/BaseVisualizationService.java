@@ -193,7 +193,7 @@ public class BaseVisualizationService implements VisualizationService {
   public OperationResult buildVisualizationUsingGenericQuery(QueryRequest queryRequest) {
 
     OperationResult returnValue = new OperationResult();
-    OperationResult dataCollectionResult = new OperationResult();
+    OperationResult dataCollectionResult;
     QueryParams queryParams = null;
     SearchableEntity sourceEntity = null;
 
@@ -220,7 +220,7 @@ public class BaseVisualizationService implements VisualizationService {
       dataCollectionResult = new OperationResult(500, "Failed to get nodes-query result from AAI");
     }
 
-    if (dataCollectionResult.getResultCode() == 200) {
+    if (dataCollectionResult == null || dataCollectionResult.getResultCode() == 200) {
 
       String d3OutputJsonOutput = null;
 
