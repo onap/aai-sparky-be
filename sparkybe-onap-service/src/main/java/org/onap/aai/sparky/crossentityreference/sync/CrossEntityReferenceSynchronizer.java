@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ExecutorService;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import org.onap.aai.cl.api.Logger;
@@ -44,7 +45,6 @@ import org.onap.aai.sparky.config.oxm.CrossEntityReferenceLookup;
 import org.onap.aai.sparky.config.oxm.OxmEntityDescriptor;
 import org.onap.aai.sparky.config.oxm.OxmEntityLookup;
 import org.onap.aai.sparky.config.oxm.SearchableEntityLookup;
-import org.onap.aai.sparky.config.oxm.SearchableOxmEntityDescriptor;
 import org.onap.aai.sparky.dal.ActiveInventoryAdapter;
 import org.onap.aai.sparky.dal.NetworkTransaction;
 import org.onap.aai.sparky.dal.rest.HttpMethod;
@@ -824,40 +824,8 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
         IndexableCrossEntityReference icer = rsc.getIndexableCrossEntityReference();
         NetworkTransaction txn = rsc.getNetworkTransaction();
 
-        String link = null;
-        try {
-          // In this retry flow the icer object has already
-          // derived its fields
-          link = elasticSearchAdapter.buildElasticSearchGetDocUrl(getIndexName(), icer.getId());
-        } catch (Exception exc) {
-          LOG.error(AaiUiMsgs.ES_FAILED_TO_CONSTRUCT_URI, exc.getLocalizedMessage());
-        }
-
-        if (link != null) {
-          NetworkTransaction retryTransaction = new NetworkTransaction();
-          retryTransaction.setLink(link);
-          retryTransaction.setEntityType(txn.getEntityType());
-          retryTransaction.setDescriptor(txn.getDescriptor());
-          retryTransaction.setOperationType(HttpMethod.GET);
-
-          /*
-           * IMPORTANT - DO NOT incrementAndGet the esWorkOnHand as this is a retry flow and we did
-           * that for this request already when queuing the failed PUT!
-           */
-
-          supplyAsync(new PerformElasticSearchRetrieval(retryTransaction, elasticSearchAdapter),
-              esExecutor).whenComplete((result, error) -> {
-
-                esWorkOnHand.decrementAndGet();
-
-                if (error != null) {
-                  LOG.error(AaiUiMsgs.ES_RETRIEVAL_FAILED_RESYNC, error.getLocalizedMessage());
-                } else {
-                  updateElasticSearchCounters(result);
-                  performDocumentUpsert(result, icer);
-                }
-              });
-        }
+        final Consumer<NetworkTransaction> networkTransactionConsumer = (result) -> performDocumentUpsert(result,icer);
+        performRetrySync(icer.getId(), networkTransactionConsumer, txn);
 
       }
     }
