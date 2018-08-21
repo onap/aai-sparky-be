@@ -126,7 +126,7 @@ public class FilterQueryBuilder {
       List<String> fields = new ArrayList<String>();
       JsonObject boolQuery = createFilteredBoolQueryObject(filtersConfig,searchFilters, minShouldMatch, fields);
       JsonObject aggQuery = createAggregationQueryArray(filtersConfig, searchFilters);
-
+      
       if (boolQuery != null) {
         wrappedQueryBuilder.add("size", 0);
         

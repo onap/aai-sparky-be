@@ -1,38 +1,17 @@
 {
-    "views": [
-    {
-        "viewName" : "vnfSearch",
-        "filters" : [
-          {
-             "filterId": "1"
-          },
-          {
-             "filterId": "2"
-          },
-          {
-             "filterId": "7"
-          },
-          {
-             "filterId": "8"
-          }
-         ]
-    },
-    {
-        "viewName" : "dataIntegrity",
-        "filters" : [
-          {
-             "filterId": "3"
-          },
-          {
-             "filterId": "4"
-          },
-          {
-             "filterId": "5"
-          },
-          {
-             "filterId": "6"
-          }
-        ]
-    }
-   ]
+	"views": [{
+		"viewName": "vnfSearch",
+		"filters": [{
+			"filterId": "1"
+		},
+		{
+			"filterId": "2"
+		},
+		{
+			"filterId": "7"
+		},
+		{
+			"filterId": "8"
+		}]
+	}]
 }

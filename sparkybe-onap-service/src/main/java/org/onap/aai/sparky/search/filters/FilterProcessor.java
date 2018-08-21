@@ -20,10 +20,6 @@
  */
 package org.onap.aai.sparky.search.filters;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.json.JsonObject;
 import javax.servlet.http.HttpServletRequest;
 
 import org.apache.camel.Exchange;
@@ -31,12 +27,13 @@ import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
 import org.onap.aai.sparky.logging.util.ServletUtils;
-import org.onap.aai.sparky.search.filters.entity.UiFilterEntity;
-import org.onap.aai.sparky.search.filters.entity.UiFiltersEntity;
 import org.onap.aai.sparky.viewandinspect.config.SparkyConstants;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 public class FilterProcessor {
   
@@ -44,9 +41,11 @@ public class FilterProcessor {
   
   private ObjectMapper mapper;
   private FilteredSearchHelper filteredSearchHelper;
+  private Gson converter;
   
   public FilterProcessor() {
     this.mapper = new ObjectMapper();
+    this.converter = new Gson();
   }
   
   public ObjectMapper getMapper() {
@@ -66,7 +65,7 @@ public class FilterProcessor {
     HttpServletRequest request = exchange.getIn().getBody(HttpServletRequest.class);
     ServletUtils.setUpMdcContext(exchange, request);
     
-    UiFiltersEntity viewFiltersList = null;
+    JsonArray viewFiltersQueries = null;
     boolean wasErrorDuringFilterDiscovery = false;
     
     try {
@@ -77,12 +76,20 @@ public class FilterProcessor {
         LOG.error(AaiUiMsgs.SEARCH_SERVLET_ERROR, "Request Payload is empty");
         wasErrorDuringFilterDiscovery = true;
       } else {
-        String viewName = mapper.readValue(payload, JsonNode.class).get(SparkyConstants.UI_FILTER_VIEW_NAME_PARAMETER).asText();
-
+        JsonObject payloadObj = converter.fromJson(payload, JsonObject.class);
+        String viewName = null;
+        
+        if(payloadObj.has(SparkyConstants.UI_FILTER_VIEW_NAME_PARAMETER)) {
+          JsonElement viewNameElement = payloadObj.get(SparkyConstants.UI_FILTER_VIEW_NAME_PARAMETER);
+          if(!viewNameElement.isJsonNull()) {
+            viewName = viewNameElement.getAsString();
+          }
+        }
+        
         if (viewName == null || viewName.isEmpty()) {
           wasErrorDuringFilterDiscovery = true;
         } else {
-          viewFiltersList = filteredSearchHelper.doFilterDiscovery(viewName);
+          viewFiltersQueries = filteredSearchHelper.createFilterValueQueries(payload);
         }
       }
     } catch(Exception exc) {
@@ -100,18 +107,11 @@ public class FilterProcessor {
     boolean wasErrorDuringValueSearch = false;
     if(!wasErrorDuringFilterDiscovery) {
       try {
-        if(!viewFiltersList.getFilters().isEmpty()) {
-          List<String> filterIds = new ArrayList<String>();
-          
-          for(UiFilterEntity filterEntity : viewFiltersList.getFilters()) {
-            filterIds.add(filterEntity.getFilterId());
-          }
-          
-          UiFiltersEntity responseFiltersList = filteredSearchHelper.doFilterEnumeration(filterIds);
-          
-          JsonObject finalResponse = UiFiltersEntityConverter.convertUiFiltersEntityToUnifiedFilterResponse(responseFiltersList);
+        if(viewFiltersQueries != null && viewFiltersQueries.size() > 0) {
+          String populatedFiltersList = filteredSearchHelper.doFilterEnumeration(viewFiltersQueries);
+
           exchange.getOut().setHeader(Exchange.HTTP_RESPONSE_CODE, 200);
-          exchange.getOut().setBody(finalResponse.toString());
+          exchange.getOut().setBody(populatedFiltersList);
         } else {
           wasErrorDuringValueSearch = true;
         }

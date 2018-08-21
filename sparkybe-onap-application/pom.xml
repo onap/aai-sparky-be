@@ -225,7 +225,7 @@
 		<dependency>
 			<groupId>org.onap.aai.aai-common</groupId>
 			<artifactId>aai-schema</artifactId>
-			<version>1.3.0-SNAPSHOT</version>
+			<version>${version.aai-schema}</version>
 		</dependency>
 
 		<dependency>

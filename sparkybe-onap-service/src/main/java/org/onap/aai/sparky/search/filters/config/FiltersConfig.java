@@ -21,6 +21,7 @@
 package org.onap.aai.sparky.search.filters.config;
 
 import java.io.File;
+import java.io.IOException;
 
 import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
@@ -109,7 +110,7 @@ public class FiltersConfig {
     ObjectMapper mapper = new ObjectMapper();
     FiltersDetailsConfig filtersConfig = null;
     try{ 
-      filtersConfig = mapper.readValue(resourceLoader.getResourceAsFile(this.getFiltersFileName(),true), FiltersDetailsConfig.class);
+      filtersConfig = mapper.readValue(resourceLoader.getResourceAsFile(this.getFiltersFileName(), true), FiltersDetailsConfig.class);
     } catch (Exception e){
       LOG.error(AaiUiMsgs.ERROR_READING_JSON_SCHEMA, this.getFiltersFileName());
     }
@@ -122,7 +123,7 @@ public class FiltersConfig {
     FiltersForViewsConfig viewsConfig = null;
     
     try {
-      viewsConfig = mapper.readValue(resourceLoader.getResourceAsFile(this.getViewsFileName(),true), FiltersForViewsConfig.class);
+      viewsConfig = mapper.readValue(resourceLoader.getResourceAsFile(this.getViewsFileName(), true), FiltersForViewsConfig.class);
     } catch (Exception e){
       LOG.error(AaiUiMsgs.ERROR_READING_JSON_SCHEMA, this.getViewsFileName());
     }
@@ -147,8 +148,28 @@ public class FiltersConfig {
     } catch (Exception e){
       LOG.error(AaiUiMsgs.ERROR_READING_JSON_SCHEMA, viewsFile.getAbsolutePath());
     }
-    
   }
-
+  
+  public File getFiltersFile() {
+    File toReturn = null;
+    try {
+      toReturn = resourceLoader.getResourceAsFile(this.getFiltersFileName(), true);
+    } catch (IOException e) {
+      LOG.error(AaiUiMsgs.ERROR_READING_JSON_SCHEMA, this.getFiltersFileName());
+    }
+    return toReturn;
+  }
+  
+  public File getViewsFile() {
+    File toReturn = null;
+    
+    try {
+      toReturn = resourceLoader.getResourceAsFile(this.getViewsFileName(), true);
+    } catch (IOException e) {
+      LOG.error(AaiUiMsgs.ERROR_READING_JSON_SCHEMA, this.getViewsFileName());
+    }
+    
+    return toReturn;
+  }
 }
 

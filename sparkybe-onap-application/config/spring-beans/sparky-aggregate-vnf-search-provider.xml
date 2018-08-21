@@ -14,7 +14,7 @@
 
 	<bean id="aggregateSummaryProcessor"
 		class="org.onap.aai.sparky.aggregatevnf.search.AggregateSummaryProcessor">
-		<constructor-arg ref="elasticSearchAdapter" />
+		<constructor-arg ref="searchServiceAdapter" />
 		<constructor-arg ref="filtersConfig" />
 		<property name="vnfAggregationIndexName" value="aggregate_generic-vnf_index" />
 	</bean>

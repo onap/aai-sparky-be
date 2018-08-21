@@ -54,7 +54,7 @@ public class RestletUtils {
   public OperationResult executePostQuery(Logger logger, SearchServiceAdapter search,
       Response response, String requestUrl, String requestJsonPayload) {
 
-    OperationResult opResult = search.doPost(requestUrl, requestJsonPayload, "application/json");
+    OperationResult opResult = search.doPost(requestUrl, requestJsonPayload);
 
     if (opResult.getResultCode() > 300) {
       setRestletResponse(logger, true, opResult.getResultCode(), response, opResult.getResult());

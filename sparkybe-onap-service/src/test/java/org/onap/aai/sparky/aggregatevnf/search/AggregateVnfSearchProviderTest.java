@@ -50,8 +50,7 @@ public class AggregateVnfSearchProviderTest {
 
   @Test
   public void testProxyMessage_Success() {
-    Mockito.when(searchserviceAdapter.doPost(Mockito.eq(goodDrTargetUrl), Mockito.anyString(),
-        Mockito.eq(MediaType.APPLICATION_JSON_TYPE.toString()))).thenReturn(successResult);
+    Mockito.when(searchserviceAdapter.doPost(Mockito.eq(goodDrTargetUrl), Mockito.anyString())).thenReturn(successResult);
     Mockito.when(resultValue.getResultCode()).thenReturn(200);
     aggregateVnfSearchProvider.search(querySearchEntity);
 

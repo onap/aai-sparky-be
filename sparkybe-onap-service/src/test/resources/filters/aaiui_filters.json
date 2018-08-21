@@ -1,10 +1,12 @@
 {
-	"filters": [
-	{
+	"filters": [{
 		"filterId": "1",
 		"filterName": "Orchestration-Status",
 		"displayName": "Orchestration Status",
-		"dataType": "list",
+		"dataType": "dropDown",
+		"multiSelect": "false",
+		"watermark": "Any Orchestration Status",
+		"optionsType": "options",
 		"dataSource": {
 			"indexName": "aggregate_generic-vnf_index",
 			"docType": "default",
@@ -15,7 +17,10 @@
 		"filterId": "2",
 		"filterName": "Prov-Status",
 		"displayName": "Provisioning Status",
-		"dataType": "list",
+		"dataType": "dropDown",
+		"multiSelect": "false",
+		"watermark": "Any Provisioning Status",
+		"optionsType": "options",
 		"dataSource": {
 			"indexName": "aggregate_generic-vnf_index",
 			"docType": "default",
@@ -23,66 +28,68 @@
 		}
 	},
 	{
-		"filterId": "3",
-		"filterName": "Severity",
-		"displayName": "Severity",
-		"dataType": "list",
-		"dataSource": {
-			"indexName": "di-violations",
-			"docType": "default",
-			"fieldName": "severity"
-		}
-	},
-	{
-		"filterId": "4",
-		"filterName": "Category",
-		"displayName": "Category",
-		"dataType": "list",
-		"dataSource": {
-			"indexName": "di-violations",
-			"docType": "default",
-			"fieldName": "category"
-		}
-	},
-	{
 		"filterId": "5",
 		"filterName": "Date",
 		"displayName": "Date",
-		"dataType": "date"
+		"dataType": "date",
+		"multiSelect": "false",
+		"watermark": "Choose Date Range",
+		"defaultValue": {
+			"decode": "Today",
+			"code": "last_0_hours"
+		},
+		"optionsType": "dynamicOptions",
+		"optionsValues": [{
+			"decode": "Today",
+			"code": "last_0_hours"
+		},
+		{
+			"decode": "Since Yesterday",
+			"code": "last_1_days"
+		},
+		{
+			"decode": "Since Last Week",
+			"code": "last_1_weeks"
+		},
+		{
+			"decode": "Since Last Month",
+			"code": "last_1_months"
+		},
+		{
+			"decode": "Since Last Year",
+			"code": "last_1_years"
+		},
+		{
+			"decode": "Custom Range",
+			"code": "custom_range"
+		}]
 	},
 	{
-		"filterId": "6",
-		"filterName": "EntityType",
-		"displayName": "Object Type",
-		"dataType": "list",
-		"dataSource": {
-			"indexName": "di-violations",
-			"docType": "default",
-			"fieldName": "entityType"
-		}
-	},
-    {
-        "filterId": "7",
-		"filterName": "NF-Type",
+		"filterId": "7",
+		"filterName": "nf-type",
 		"displayName": "Network Function Type",
-		"dataType": "list",
+		"dataType": "dropDown",
+		"multiSelect": "false",
+		"watermark": "Any Network Function Type",
+		"optionsType": "options",
 		"dataSource": {
 			"indexName": "aggregate_generic-vnf_index",
 			"docType": "default",
 			"fieldName": "nf-type"
-		}    
+		}
 	},
-    {
-        "filterId": "8",
-		"filterName": "NF-Role",
+	{
+		"filterId": "8",
+		"filterName": "nf-role",
 		"displayName": "Network Function Role",
-		"dataType": "list",
+		"dataType": "dropDown",
+		"multiSelect": "false",
+		"watermark": "Any Network Function Role",
+		"optionsType": "options",
 		"dataSource": {
 			"indexName": "aggregate_generic-vnf_index",
 			"docType": "default",
 			"fieldName": "nf-role"
-		}    
-	}	
-	
-  ]
+		}
+	}]
 }

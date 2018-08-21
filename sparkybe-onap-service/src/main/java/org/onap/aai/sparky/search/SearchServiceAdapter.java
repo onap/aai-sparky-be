@@ -84,6 +84,13 @@ public class SearchServiceAdapter {
     this.endpointConfig = endpointConfig;
   }
 
+  public OperationResult doPost(String url, String jsonPayload) {
+    OperationResult or = client.post(url, jsonPayload, getTxnHeader(),
+        MediaType.APPLICATION_JSON_TYPE, MediaType.APPLICATION_JSON_TYPE);
+    return new OperationResult(or.getResultCode(), or.getResult());
+  }
+  
+  @Deprecated
   public OperationResult doPost(String url, String jsonPayload, String acceptContentType) {
     OperationResult or = client.post(url, jsonPayload, getTxnHeader(),
         MediaType.APPLICATION_JSON_TYPE, MediaType.APPLICATION_JSON_TYPE);
