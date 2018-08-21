@@ -33,8 +33,7 @@ public class SearchServiceAdapterTest {
     assertNotNull(searchServiceAdapter.getServiceApiVersion());
     searchServiceAdapter.setEndpointConfig(endpointConfig);
     assertNotNull(searchServiceAdapter.getEndpointConfig());
-    assertNotNull(searchServiceAdapter.doPost("https://aai.search.service:8000",
-        "{maxResults:10, queryStr: f}", "application/json"));
+    assertNotNull(searchServiceAdapter.doPost("https://aai.search.service:8000", "{maxResults:10, queryStr: f}"));
     assertNotNull(searchServiceAdapter.doGet("https://aai.search.service:8000", "application/json"));
     assertNotNull(searchServiceAdapter.doPut("https://aai.search.service:8000",
         "{maxResults:10, queryStr: f}", "application/json"));

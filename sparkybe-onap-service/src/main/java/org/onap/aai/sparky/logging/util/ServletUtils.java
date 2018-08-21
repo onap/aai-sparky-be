@@ -84,7 +84,7 @@ public class ServletUtils {
   public static OperationResult executePostQuery(Logger logger, SearchServiceAdapter search,
       HttpServletResponse response, String requestUrl, String requestJsonPayload) throws Exception {
 
-    OperationResult opResult = search.doPost(requestUrl, requestJsonPayload, "application/json");
+    OperationResult opResult = search.doPost(requestUrl, requestJsonPayload);
 
     if (opResult.getResultCode() > 300) {
       setServletResponse(logger, true, opResult.getResultCode(), response, opResult.getResult());
