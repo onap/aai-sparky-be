@@ -65,6 +65,7 @@ public class SparkyConstants {
   public static final String ES_SUGGEST_API = "_suggest";
   public static final String ES_COUNT_API = "_count";
   public static final String ES_SEARCH_API = "_search";
+  public static final String SS_QUERY_API = "query";
   
   public static final String UI_FILTER_VIEW_NAME_PARAMETER = "viewName";
   public static final String UI_FILTER_ID_LIST_PARAMETER = "filterIdList";

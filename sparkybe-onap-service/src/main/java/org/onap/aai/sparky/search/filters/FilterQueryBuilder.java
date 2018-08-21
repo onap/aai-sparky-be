@@ -126,6 +126,9 @@ public class FilterQueryBuilder {
       List<String> fields = new ArrayList<String>();
       JsonObject boolQuery = createFilteredBoolQueryObject(filtersConfig,searchFilters, minShouldMatch, fields);
       JsonObject aggQuery = createAggregationQueryArray(filtersConfig, searchFilters);
+      
+      System.out.println("boolQuery: \r\n" + String.valueOf(boolQuery));
+      System.out.println("aggQuery: \r\n" + String.valueOf(aggQuery));
 
       if (boolQuery != null) {
         wrappedQueryBuilder.add("size", 0);

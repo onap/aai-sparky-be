@@ -85,7 +85,7 @@ public class AggregateVnfSearchProvider implements SearchProvider {
           String.format(AUTO_SUGGEST_TEMPLATE, Integer.parseInt(queryRequest.getMaxResults()),
               queryRequest.getQueryStr(), "entity_suggest");
       OperationResult opResult =
-          searchServiceAdapter.doPost(fullUrlStr, postBody, "application/json");
+          searchServiceAdapter.doPost(fullUrlStr, postBody);
       if (opResult.getResultCode() == 200) {
         returnList = generateSuggestionsForSearchResponse(opResult.getResult());
       } else {

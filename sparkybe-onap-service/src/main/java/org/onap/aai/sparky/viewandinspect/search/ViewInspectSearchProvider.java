@@ -106,7 +106,7 @@ public class ViewInspectSearchProvider implements SearchProvider {
       String postBody = String.format(VIUI_SEARCH_TEMPLATE, Integer.parseInt(queryRequest.getMaxResults()),
           queryStringWithoutStopWords);
 
-      OperationResult opResult = searchServiceAdapter.doPost(fullUrlStr, postBody, "application/json");
+      OperationResult opResult = searchServiceAdapter.doPost(fullUrlStr, postBody);
       if (opResult.getResultCode() == 200) {
         suggestionEntityList =
             generateSuggestionsForSearchResponse(opResult.getResult(), queryRequest.getQueryStr());

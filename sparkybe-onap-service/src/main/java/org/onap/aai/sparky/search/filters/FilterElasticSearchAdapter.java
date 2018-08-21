@@ -76,6 +76,8 @@ public class FilterElasticSearchAdapter {
         filterValueQuery = FilterQueryBuilder.createFilterValueQueryObject(dataSourceConfig.getFieldName());
       }
       
+      System.out.println("Filter value query: \r\n" + filterValueQuery);
+      
       OperationResult opResult = elasticSearchAdapter.doPost(
           elasticSearchAdapter.buildElasticSearchUrlForApi(dataSourceConfig.getIndexName(),
               SparkyConstants.ES_SEARCH_API),

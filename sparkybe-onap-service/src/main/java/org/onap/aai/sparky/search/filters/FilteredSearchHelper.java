@@ -20,135 +20,78 @@
  */
 package org.onap.aai.sparky.search.filters;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
+import org.onap.aai.restclient.client.OperationResult;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
+import org.onap.aai.sparky.search.SearchServiceAdapter;
 import org.onap.aai.sparky.search.filters.config.FiltersConfig;
-import org.onap.aai.sparky.search.filters.config.FiltersDetailsConfig;
-import org.onap.aai.sparky.search.filters.config.UiFilterConfig;
-import org.onap.aai.sparky.search.filters.config.UiFilterDataSourceConfig;
-import org.onap.aai.sparky.search.filters.config.UiFilterListItemConfig;
-import org.onap.aai.sparky.search.filters.config.UiViewListItemConfig;
-import org.onap.aai.sparky.search.filters.entity.UiFilterEntity;
-import org.onap.aai.sparky.search.filters.entity.UiFilterValueEntity;
-import org.onap.aai.sparky.search.filters.entity.UiFiltersEntity;
+import org.onap.aai.sparky.search.filters.searchservice.FilterQueryAndResponseBuilder;
+import org.onap.aai.sparky.search.filters.searchservice.FilterQueryAndResponseBuilder.FileBasedFiltersConstants;
+import org.onap.aai.sparky.viewandinspect.config.SparkyConstants;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 
 public class FilteredSearchHelper {
   private static final Logger LOG = LoggerFactory.getInstance().getLogger(FilteredSearchHelper.class);
 
-  private FiltersConfig filtersConfig;
-  private Map<String, UiFilterConfig> filtersMap = null;
-  private FilterElasticSearchAdapter filterSearchAdapter = null;
+  private SearchServiceAdapter searchServiceAdapter;
+  private FilterQueryAndResponseBuilder filterQueryAndResponseBuilder;
+  private Gson responseFormatter;
   
-  public FilteredSearchHelper(FiltersConfig filterConfig,FilterElasticSearchAdapter filterElasticSearchAdapter) {
-    this.filtersConfig = filterConfig;
-    this.filterSearchAdapter = filterElasticSearchAdapter;
+  public FilteredSearchHelper(FiltersConfig filterConfig, SearchServiceAdapter searchServiceAdapter) {
+    this.filterQueryAndResponseBuilder = new FilterQueryAndResponseBuilder(filterConfig);
+    this.searchServiceAdapter = searchServiceAdapter;
+    this.responseFormatter = new GsonBuilder().disableHtmlEscaping().create();
+  }
+  
+  public void setFiltersConfig(FiltersConfig filtersConfig) {
+    this.filterQueryAndResponseBuilder.setFiltersConfig(filtersConfig);
+  }
 
-    if (filtersMap == null) {
-      filtersMap = new HashMap<>();
-
-      final FiltersDetailsConfig uiFiltersConfig = filterConfig.getFiltersConfig();
-      
-      if (uiFiltersConfig != null) {
-        for (UiFilterConfig filter : uiFiltersConfig.getFilters()) {
-          filtersMap.put(filter.getFilterId(), filter);
-        }
-      }
-    }
+  public JsonArray createFilterValueQueries(String fePayload) {
+    return filterQueryAndResponseBuilder.createFileBasedFilterValueQueries(fePayload);
+  }
+  
+  public String doFilterEnumeration(JsonArray filterQueries) {
+    String formattedResult = "";
+    JsonObject populatedFilters = new JsonObject();
     
-  }
+    for(JsonElement queryElement : filterQueries) {
+      JsonObject queryObj = queryElement.getAsJsonObject();
+      String filterId = queryObj.get(FileBasedFiltersConstants.FILTER_ID).getAsString();
 
-  public FiltersConfig getFiltersConfig() {
-    return filtersConfig;
-  }
+      if(queryObj.has(FileBasedFiltersConstants.FILTER_VALUE_QUERY)) {
 
-  public void setFiltersConfig(FiltersConfig filterConfig) {
-    this.filtersConfig = filterConfig;
-  }
+        JsonObject filterQuery = queryObj.get(FileBasedFiltersConstants.FILTER_VALUE_QUERY).getAsJsonObject();
+        String query = responseFormatter.toJson(filterQuery);
+        
+        String index = queryObj.get(FileBasedFiltersConstants.INDEX).getAsString();
+        String searchUrl = searchServiceAdapter.buildSearchServiceUrlForApi(index, SparkyConstants.SS_QUERY_API);
 
-  public UiFiltersEntity doFilterDiscovery(String viewName) {
-    List<UiViewListItemConfig> views = filtersConfig.getViewsConfig().getViews();
-    List<UiFilterListItemConfig> filters = null;
-    UiFiltersEntity viewFiltersList = new UiFiltersEntity();
-   
-    if(viewName != null) {
-      for (UiViewListItemConfig view: views) {
-        if (viewName.equalsIgnoreCase(view.getViewName())) {
-          filters = view.getFilters();
-          break;
+        OperationResult opResult = searchServiceAdapter.doPost(searchUrl, query);
+        if(opResult.wasSuccessful()) {
+          String result = opResult.getResult();
+          populatedFilters = filterQueryAndResponseBuilder.formatSingleFilterValueQueryResult(result, filterId, populatedFilters);
+        } else {
+          LOG.warn(AaiUiMsgs.WARN_GENERIC, "Filter values query failed with code " + opResult.getResultCode() + " for filter with ID " + filterId);
+          populatedFilters = filterQueryAndResponseBuilder.formatSingleFilterValueQueryResult(null, filterId, populatedFilters);
         }
-      }
-  
-      if (filters == null) {
-        LOG.error(AaiUiMsgs.VIEW_NAME_NOT_SUPPORTED, viewName);
       } else {
-        for (UiFilterListItemConfig filter : filters) {
-          FiltersDetailsConfig filtersDetailsConfig = filtersConfig.getFiltersConfig();
-          
-          for (UiFilterConfig filterConfig: filtersDetailsConfig.getFilters()) {
-            if (filterConfig.getFilterId().equals(filter.getFilterId())) {
-              UiFilterEntity filterEntity = new UiFilterEntity(filterConfig);
-              if(filter.getDefaultValue() != null) {
-                filterEntity.setDefaultValue(filter.getDefaultValue());
-              }
-              viewFiltersList.addFilter(filterEntity);
-            }
-          }
-        }
+        // If there is no query, then populate filter with data from file
+        populatedFilters = filterQueryAndResponseBuilder.formatSingleFilterValueQueryResult(null, filterId, populatedFilters);
       }
     }
-    return viewFiltersList;
-  }
-  
-  public UiFiltersEntity doFilterEnumeration(List<String> requestedFilterIds) {
-    UiFiltersEntity viewFiltersList = new UiFiltersEntity();
-
-    for (String requestedFilterId : requestedFilterIds) {
-      if (null == filtersMap.get(requestedFilterId)) {
-        String errorMessage = "Requested filter ID '" + requestedFilterId + "' does not exist.";
-        LOG.error(AaiUiMsgs.SEARCH_SERVLET_ERROR, errorMessage);
-      } else {
-        UiFilterConfig sourceData = filtersMap.get(requestedFilterId);
-        UiFilterEntity filterEntity = new UiFilterEntity(sourceData);
-        this.getFilterEnumeration(filterEntity, sourceData);
-        viewFiltersList.addFilter(filterEntity);        
-      }
-    }
-
-    return viewFiltersList;
-  }
-  
-  public void getFilterEnumeration(UiFilterEntity filter, UiFilterConfig sourceData) {
-   List<String> filterValues = filterSearchAdapter.fetchValuesForFilter(filter, sourceData.getDataSource());
-   
-   for(String value : filterValues) {
-     UiFilterValueEntity valueEntity = new UiFilterValueEntity();
-     valueEntity.setDisplayName(value);
-     valueEntity.setFilterValue(value);
-     filter.addFilterValue(valueEntity);
-   }
-  }
-
-  public Map<String, UiFilterConfig> getFiltersMap() {
-    return filtersMap;
-  }
-
-  public void setFiltersMap(Map<String, UiFilterConfig> filtersMap) {
-    this.filtersMap = filtersMap;
-  }
-  
-  public UiFilterDataSourceConfig getFilterDataSource(String filterId) {
-    UiFilterConfig filterConfig = filtersMap.get(filterId);
-    UiFilterDataSourceConfig returnValue = null;
     
-    if(filterConfig != null) {
-      returnValue = filterConfig.getDataSource();
-    }
+    JsonObject finalResponse = new JsonObject();
+    finalResponse.add(FileBasedFiltersConstants.FILTERS, populatedFilters);
+    formattedResult = responseFormatter.toJson(finalResponse);
     
-    return returnValue;
+    
+    return formattedResult;
   }
 }

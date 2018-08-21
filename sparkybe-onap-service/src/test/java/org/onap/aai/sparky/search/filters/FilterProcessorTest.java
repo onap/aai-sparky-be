@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.json.Json;
-import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
 import javax.json.stream.JsonParsingException;
@@ -44,25 +43,22 @@ import javax.servlet.http.HttpServletRequest;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
-import org.apache.camel.component.restlet.RestletConstants;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.impl.DefaultExchange;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
 import org.onap.aai.restclient.enums.RestAuthenticationMode;
 import org.onap.aai.sparky.config.SparkyResourceLoader;
-import org.onap.aai.sparky.dal.ElasticSearchAdapter;
 import org.onap.aai.sparky.dal.rest.RestClientConstructionException;
 import org.onap.aai.sparky.dal.rest.config.RestEndpointConfig;
-import org.onap.aai.sparky.search.filters.FilterProcessor;
-import org.onap.aai.sparky.search.filters.FilteredSearchHelper;
+import org.onap.aai.sparky.search.SearchServiceAdapter;
+import org.onap.aai.sparky.search.filters.config.FiltersConfig;
+import org.onap.aai.sparky.search.filters.config.FiltersDetailsConfig;
+import org.onap.aai.sparky.search.filters.config.FiltersForViewsConfig;
 import org.onap.aai.sparky.search.filters.config.UiFilterConfig;
 import org.onap.aai.sparky.search.filters.config.UiFilterListItemConfig;
 import org.onap.aai.sparky.search.filters.config.UiFilterOptionsValuesConfig;
-import org.onap.aai.sparky.search.filters.config.FiltersDetailsConfig;
-import org.onap.aai.sparky.search.filters.config.FiltersConfig;
 import org.onap.aai.sparky.search.filters.config.UiViewListItemConfig;
 import org.onap.aai.sparky.search.filters.entity.DiscoverFiltersRequest;
 import org.onap.aai.sparky.search.filters.entity.ViewConfiguration;
@@ -70,10 +66,6 @@ import org.onap.aai.sparky.search.filters.entity.ViewFilter;
 import org.onap.aai.sparky.util.HttpServletHelper;
 import org.onap.aai.sparky.util.NodeUtils;
 import org.onap.aai.sparky.util.SparkyTestConstants;
-import org.onap.aai.sparky.search.filters.config.FiltersForViewsConfig;
-import org.restlet.Request;
-import org.restlet.Response;
-import org.restlet.data.MediaType;
 import org.restlet.data.Status;
 import org.springframework.core.io.DefaultResourceLoader;
 
@@ -171,7 +163,7 @@ public class FilterProcessorTest {
   }
 
   @Before
-  public void init()throws RestClientConstructionException {
+  public void init() throws Exception {
     
     camelContext = new DefaultCamelContext();
     exchange = new DefaultExchange(camelContext);
@@ -183,8 +175,12 @@ public class FilterProcessorTest {
     //TODO-> edit the following:FilteredSearchHelper & FilterProcessor  to pass in the correct parameters 
     restEndpointConfig = new RestEndpointConfig();
     restEndpointConfig.setRestAuthenticationMode(RestAuthenticationMode.SSL_BASIC);
-    filteredSearchHelper = new FilteredSearchHelper(new FiltersConfig(), 
-    		new FilterElasticSearchAdapter(new ElasticSearchAdapter(restEndpointConfig)));
+    
+    SparkyResourceLoader resourceLoader = new SparkyResourceLoader();
+    resourceLoader.setResourceLoader(new DefaultResourceLoader());
+    FiltersConfig filtersConfig = new FiltersConfig(SparkyTestConstants.FILTERS_JSON_FILE, SparkyTestConstants.VIEWS_JSON_FILE, resourceLoader);
+    
+    filteredSearchHelper = new FilteredSearchHelper(filtersConfig, new SearchServiceAdapter(restEndpointConfig, "1.0"));
     filterProcessor = new FilterProcessor();
 
     mapper = new ObjectMapper();
@@ -227,14 +223,9 @@ public class FilterProcessorTest {
     SparkyResourceLoader resourceLoader = new SparkyResourceLoader();
     resourceLoader.setResourceLoader(new DefaultResourceLoader());
 
-    filterProcessor.setFilteredSearchHelper(filteredSearchHelper);
-    
-    FiltersConfig filtersConfig = new FiltersConfig();
-    filtersConfig.initializeFiltersDetailsConfig(resourceLoader.getResourceAsFile(SparkyTestConstants.FILTERS_JSON_FILE, false));
-    filtersConfig.initializeFiltersForViewsConfig(resourceLoader.getResourceAsFile(SparkyTestConstants.VIEWS_JSON_FILE, false));
-   
+    FiltersConfig filtersConfig = new FiltersConfig(SparkyTestConstants.FILTERS_JSON_FILE, SparkyTestConstants.VIEWS_JSON_FILE, resourceLoader);
     filteredSearchHelper.setFiltersConfig(filtersConfig);
-    
+    filterProcessor.setFilteredSearchHelper(filteredSearchHelper);
   }
 
 
@@ -260,7 +251,7 @@ public class FilterProcessorTest {
 
     JsonObject vnfFilters = vnfResponsePayload.getJsonObject("filters");
     assertNotNull(vnfFilters);
-    assertEquals(0, vnfFilters.size());
+    assertEquals(4, vnfFilters.size());
     
     //JsonObject filterOne = vnfFilters.getJsonObject("1");
     //assertNotNull(filterOne);

@@ -14,6 +14,6 @@ public class SparkyTestConstants {
       + FILESEP + "src" + FILESEP + "test" + FILESEP + "resources";
   
   public static final String PATH_TO_FILTERS_CONFIG = PATH_TO_TEST_RESOURCES + FILESEP + "filters";
-  public static final String FILTERS_JSON_FILE = PATH_TO_FILTERS_CONFIG + FILESEP + "aaiui_filters.json";
-  public static final String VIEWS_JSON_FILE = PATH_TO_FILTERS_CONFIG + FILESEP + "aaiui_views.json";
+  public static final String FILTERS_JSON_FILE = "file:" + PATH_TO_FILTERS_CONFIG + FILESEP + "aaiui_filters.json";
+  public static final String VIEWS_JSON_FILE = "file:" + PATH_TO_FILTERS_CONFIG + FILESEP + "aaiui_views.json";
 }
