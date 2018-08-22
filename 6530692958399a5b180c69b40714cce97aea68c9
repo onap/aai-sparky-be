@@ -1,0 +1,27 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a76adc5_8575d799",
+        "filename": "sparkybe-onap-application/config/application.properties",
+        "patchSetId": 3
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1157
+      },
+      "writtenOn": "2018-08-22T15:32:28Z",
+      "side": 1,
+      "message": "Here\u0027s a funny part.  Technically we don\u0027t actually need the elastic search parameters any more.  :-)",
+      "range": {
+        "startLine": 10,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 23
+      },
+      "revId": "6530692958399a5b180c69b40714cce97aea68c9",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
