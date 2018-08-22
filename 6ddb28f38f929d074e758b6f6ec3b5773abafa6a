@@ -25,6 +25,30 @@
     },
     {
       "key": {
+        "uuid": "1a76adc5_aa93004e",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1061
+      },
+      "writtenOn": "2018-08-22T13:47:00Z",
+      "side": 1,
+      "message": "I did not. I didn\u0027t want to go completely out of scope with this change. With the ES 6.x.x distraction I ran out of time to dig into these. I\u0027d feel safer making a task that can be tracked and completed on the board.",
+      "parentUuid": "1a76adc5_0a731481",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 2,
+        "endChar": 42
+      },
+      "revId": "6ddb28f38f929d074e758b6f6ec3b5773abafa6a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a76adc5_ef44aab8",
         "filename": "sparkybe-onap-service/src/main/java/org/onap/aai/sparky/search/filters/FilterElasticSearchAdapter.java",
         "patchSetId": 2
@@ -42,6 +66,24 @@
     },
     {
       "key": {
+        "uuid": "1a76adc5_4a9a6c64",
+        "filename": "sparkybe-onap-service/src/main/java/org/onap/aai/sparky/search/filters/FilterElasticSearchAdapter.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 79,
+      "author": {
+        "id": 1061
+      },
+      "writtenOn": "2018-08-22T13:47:00Z",
+      "side": 1,
+      "message": "Oops, nope. I thought I caught all of these. Thanks! Will update CI.",
+      "parentUuid": "1a76adc5_ef44aab8",
+      "revId": "6ddb28f38f929d074e758b6f6ec3b5773abafa6a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a76adc5_af16b2a5",
         "filename": "sparkybe-onap-service/src/main/java/org/onap/aai/sparky/search/filters/FilterQueryBuilder.java",
         "patchSetId": 2
@@ -53,6 +95,24 @@
       "writtenOn": "2018-08-22T12:04:47Z",
       "side": 1,
       "message": "more system.out",
+      "revId": "6ddb28f38f929d074e758b6f6ec3b5773abafa6a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_8ab724d8",
+        "filename": "sparkybe-onap-service/src/main/java/org/onap/aai/sparky/search/filters/FilterQueryBuilder.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 130,
+      "author": {
+        "id": 1061
+      },
+      "writtenOn": "2018-08-22T13:47:00Z",
+      "side": 1,
+      "message": "Will remove.",
+      "parentUuid": "1a76adc5_af16b2a5",
       "revId": "6ddb28f38f929d074e758b6f6ec3b5773abafa6a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
@@ -82,6 +142,30 @@
     },
     {
       "key": {
+        "uuid": "1a76adc5_2a9ff051",
+        "filename": "sparkybe-onap-service/src/test/resources/filters/aaiui_filters.json",
+        "patchSetId": 2
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1061
+      },
+      "writtenOn": "2018-08-22T13:47:00Z",
+      "side": 1,
+      "message": "What if we want a date range associated with VNF?",
+      "parentUuid": "1a76adc5_aa09c0de",
+      "range": {
+        "startLine": 31,
+        "startChar": 1,
+        "endLine": 66,
+        "endChar": 3
+      },
+      "revId": "6ddb28f38f929d074e758b6f6ec3b5773abafa6a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a76adc5_8a0644cd",
         "filename": "sparkybe-onap-service/src/test/resources/filters/aaiui_views.json",
         "patchSetId": 2
@@ -93,6 +177,30 @@
       "writtenOn": "2018-08-22T13:24:47Z",
       "side": 1,
       "message": "This shouldn\u0027t be here, as there isn\u0027t any data-integrity in ONAP.",
+      "range": {
+        "startLine": 17,
+        "startChar": 1,
+        "endLine": 31,
+        "endChar": 3
+      },
+      "revId": "6ddb28f38f929d074e758b6f6ec3b5773abafa6a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_eaa81879",
+        "filename": "sparkybe-onap-service/src/test/resources/filters/aaiui_views.json",
+        "patchSetId": 2
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1061
+      },
+      "writtenOn": "2018-08-22T13:47:00Z",
+      "side": 1,
+      "message": "Will remove",
+      "parentUuid": "1a76adc5_8a0644cd",
       "range": {
         "startLine": 17,
         "startChar": 1,
