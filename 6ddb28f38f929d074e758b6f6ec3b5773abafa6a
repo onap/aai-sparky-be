@@ -49,6 +49,30 @@
     },
     {
       "key": {
+        "uuid": "1a76adc5_0a40f4a3",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1157
+      },
+      "writtenOn": "2018-08-22T14:23:32Z",
+      "side": 1,
+      "message": "Completely agree.  I just didn\u0027t want to lose the momentum to destroy those classes.  Doing it afterwards as a focused task works for me.",
+      "parentUuid": "1a76adc5_aa93004e",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 2,
+        "endChar": 42
+      },
+      "revId": "6ddb28f38f929d074e758b6f6ec3b5773abafa6a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a76adc5_ef44aab8",
         "filename": "sparkybe-onap-service/src/main/java/org/onap/aai/sparky/search/filters/FilterElasticSearchAdapter.java",
         "patchSetId": 2
@@ -154,6 +178,30 @@
       "side": 1,
       "message": "What if we want a date range associated with VNF?",
       "parentUuid": "1a76adc5_aa09c0de",
+      "range": {
+        "startLine": 31,
+        "startChar": 1,
+        "endLine": 66,
+        "endChar": 3
+      },
+      "revId": "6ddb28f38f929d074e758b6f6ec3b5773abafa6a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_2a3b7039",
+        "filename": "sparkybe-onap-service/src/test/resources/filters/aaiui_filters.json",
+        "patchSetId": 2
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1157
+      },
+      "writtenOn": "2018-08-22T14:23:32Z",
+      "side": 1,
+      "message": "True enough.  You can leave that one in, it doesn\u0027t hurt anything.",
+      "parentUuid": "1a76adc5_2a9ff051",
       "range": {
         "startLine": 31,
         "startChar": 1,
