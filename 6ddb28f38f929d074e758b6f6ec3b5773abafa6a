@@ -2,6 +2,29 @@
   "comments": [
     {
       "key": {
+        "uuid": "1a76adc5_0a731481",
+        "filename": "/COMMIT_MSG",
+        "patchSetId": 2
+      },
+      "lineNbr": 2,
+      "author": {
+        "id": 1157
+      },
+      "writtenOn": "2018-08-22T13:24:47Z",
+      "side": 1,
+      "message": "General Comment:\n\nAs a result of doing the changes, did you also remove the filter entity classes, as they don\u0027t appear in this change set?\n\norg.onap.aai.sparky.search.filters.config.UiFilterConfig\norg.onap.aai.sparky.search.filters.config.UiFilterDataSourceConfig\norg.onap.aai.sparky.search.filters.config.UiFilterListItemConfig\norg.onap.aai.sparky.search.filters.config.UiViewListItemConfig\norg.onap.aai.sparky.search.filters.entity.UiFilterEntity\norg.onap.aai.sparky.search.filters.entity.UiFilterValueEntity\norg.onap.aai.sparky.search.filters.entity.UiFiltersEntity",
+      "range": {
+        "startLine": 1,
+        "startChar": 0,
+        "endLine": 2,
+        "endChar": 42
+      },
+      "revId": "6ddb28f38f929d074e758b6f6ec3b5773abafa6a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "1a76adc5_ef44aab8",
         "filename": "sparkybe-onap-service/src/main/java/org/onap/aai/sparky/search/filters/FilterElasticSearchAdapter.java",
         "patchSetId": 2
@@ -30,6 +53,52 @@
       "writtenOn": "2018-08-22T12:04:47Z",
       "side": 1,
       "message": "more system.out",
+      "revId": "6ddb28f38f929d074e758b6f6ec3b5773abafa6a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_aa09c0de",
+        "filename": "sparkybe-onap-service/src/test/resources/filters/aaiui_filters.json",
+        "patchSetId": 2
+      },
+      "lineNbr": 66,
+      "author": {
+        "id": 1157
+      },
+      "writtenOn": "2018-08-22T13:24:47Z",
+      "side": 1,
+      "message": "This filter shouldn\u0027t be in ONAP",
+      "range": {
+        "startLine": 31,
+        "startChar": 1,
+        "endLine": 66,
+        "endChar": 3
+      },
+      "revId": "6ddb28f38f929d074e758b6f6ec3b5773abafa6a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_8a0644cd",
+        "filename": "sparkybe-onap-service/src/test/resources/filters/aaiui_views.json",
+        "patchSetId": 2
+      },
+      "lineNbr": 31,
+      "author": {
+        "id": 1157
+      },
+      "writtenOn": "2018-08-22T13:24:47Z",
+      "side": 1,
+      "message": "This shouldn\u0027t be here, as there isn\u0027t any data-integrity in ONAP.",
+      "range": {
+        "startLine": 17,
+        "startChar": 1,
+        "endLine": 31,
+        "endChar": 3
+      },
       "revId": "6ddb28f38f929d074e758b6f6ec3b5773abafa6a",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
