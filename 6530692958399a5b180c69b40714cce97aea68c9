@@ -22,6 +22,30 @@
       "revId": "6530692958399a5b180c69b40714cce97aea68c9",
       "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
       "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_456fbfc5",
+        "filename": "sparkybe-onap-application/config/application.properties",
+        "patchSetId": 3
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 1061
+      },
+      "writtenOn": "2018-08-22T15:37:27Z",
+      "side": 1,
+      "message": "True. I\u0027m thinking the safest approach will be to create a task to actually remove all ES references once we have the code completely converted to using only SDS. Does that sound good to you?",
+      "parentUuid": "1a76adc5_8575d799",
+      "range": {
+        "startLine": 10,
+        "startChar": 0,
+        "endLine": 11,
+        "endChar": 23
+      },
+      "revId": "6530692958399a5b180c69b40714cce97aea68c9",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
     }
   ]
 }
