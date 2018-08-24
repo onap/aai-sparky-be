@@ -49,8 +49,8 @@
 		<constructor-arg name="gizmoAdapter">
 			<null />
 		</constructor-arg>
-		<constructor-arg ref="elasticSearchAdapter" />
-		<constructor-arg ref="elasticSearchEndpointConfig" />
+		<constructor-arg ref="searchServiceAdapter" />
+		<constructor-arg ref="searchServiceRestEndpointConfig" />
 		<constructor-arg ref="viewInspectSchemaConfig" />
 		<constructor-arg name="numActiveInventoryWorkers"
 			value="50" />

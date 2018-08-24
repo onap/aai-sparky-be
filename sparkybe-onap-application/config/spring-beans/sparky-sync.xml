@@ -74,14 +74,14 @@
 		class="org.onap.aai.sparky.aggregation.sync.AggregationSyncControllerFactory"
 		init-method="registerController">
 
-		<constructor-arg ref="elasticSearchEndpointConfig" />
+		<constructor-arg ref="searchServiceRestEndpointConfi" />
 		<constructor-arg ref="aggregationSyncControllerConfig" />
 		<constructor-arg ref="syncControllerRegistry" />
 		<constructor-arg ref="suggestionEntityLookup" />
 		<constructor-arg ref="oxmEntityLookup" />
 		<constructor-arg ref="elasticSearchSchemaFactory" />
 
-		<property name="esAdapter" ref="elasticSearchAdapter" />
+		<property name="searchServiceAdapter" ref="searchServiceAdapter" />
 		<property name="esStatConfig" ref="elasticSearchNetworkStatConfig" />
 
 		<property name="aaiAdapter" ref="activeInventoryAdapter" />
@@ -106,51 +106,6 @@
 		</property>
 
 	</bean>
-
-
-	<bean id="historicalEntitySyncControllerConfig" class="org.onap.aai.sparky.sync.config.SyncControllerConfig">
-
-		<property name="controllerName" value="Historical-Entity-Sync-Controller" />
-		<property name="enabled" value="${historicalEntitySyncEnabled:true}" />
-		<property name="syncTaskDelayInMs" value="5000" />
-		<property name="syncTaskFrequencyInDays" value="1" />
-		<property name="numSyncControllerWorkers" value="2" />
-		<property name="runOnceSyncEnabled" value="true" />
-		<property name="periodicSyncEnabled" value="false" />
-		<property name="numInternalSyncWorkers" value="2" />
-		<property name="numSyncElasticWorkers" value="5" />
-		<property name="numSyncActiveInventoryWorkers" value="5" />
-		<property name="targetSyncStartTimeStamp" value="06:00:00 UTC+00:00" />
-	</bean>
-
-	<bean id="historicalEntitySchemaConfig"
-		class="org.onap.aai.sparky.sync.config.ElasticSearchSchemaConfig">
-		<property name="indexName" value="entitycounthistoryindex" />
-		<property name="indexDocType" value="default" />
-		<property name="indexMappingsFileName" value="/schemas/entityCountHistoryMappings.json" />
-		<property name="indexSettingsFileName" value="/schemas/es_settings.json" />
-	</bean>
-
-	<bean id="historicalEntitySyncController"
-		class="org.onap.aai.sparky.aggregation.sync.HistoricalEntitySyncController"
-		init-method="registerController">
-
-		<constructor-arg ref="historicalEntitySyncControllerConfig" />
-		<constructor-arg ref="activeInventoryAdapter" />
-		<constructor-arg ref="elasticSearchAdapter" />
-		<constructor-arg ref="historicalEntitySchemaConfig" />
-		<constructor-arg ref="elasticSearchEndpointConfig" />
-		<constructor-arg value="60" />
-		<constructor-arg ref="aaiNetworkStatConfig" />
-		<constructor-arg ref="elasticSearchNetworkStatConfig" />
-		<constructor-arg ref="searchableEntityLookup" />
-		<constructor-arg ref="elasticSearchSchemaFactory" />
-
-		<property name="syncControllerRegistry" ref="syncControllerRegistry" />
-
-	</bean>
-
-
 
 	<bean id="autoSuggestionSyncControllerConfig" class="org.onap.aai.sparky.sync.config.SyncControllerConfig">
 
@@ -181,9 +136,9 @@
 
 		<constructor-arg ref="autoSuggestionSyncControllerConfig" />
 		<constructor-arg ref="activeInventoryAdapter" />
-		<constructor-arg ref="elasticSearchAdapter" />
+		<constructor-arg ref="searchServiceAdapter" />
 		<constructor-arg ref="autoSuggestionEntitySchemaConfig" />
-		<constructor-arg ref="elasticSearchEndpointConfig" />
+		<constructor-arg ref="searchServiceRestEndpointConfig" />
 		<constructor-arg ref="aaiNetworkStatConfig" />
 		<constructor-arg ref="elasticSearchNetworkStatConfig" />
 		<constructor-arg ref="oxmEntityLookup" />
@@ -228,9 +183,9 @@
 
 		<constructor-arg ref="vnfAliasSyncControllerConfig" />
 		<constructor-arg ref="activeInventoryAdapter" />
-		<constructor-arg ref="elasticSearchAdapter" />
+		<constructor-arg ref="searchServiceAdapter" />
 		<constructor-arg ref="vnfAliasEntitySchemaConfig" />
-		<constructor-arg ref="elasticSearchEndpointConfig" />
+		<constructor-arg ref="searchServiceRestEndpointConfig" />
 		<constructor-arg ref="aaiNetworkStatConfig" />
 		<constructor-arg ref="elasticSearchNetworkStatConfig" />
 		<constructor-arg ref="filtersConfig" />
@@ -239,48 +194,6 @@
 		<property name="syncControllerRegistry" ref="syncControllerRegistry" />
 
 	</bean>
-
-	<bean id="geoSyncControllerConfig" class="org.onap.aai.sparky.sync.config.SyncControllerConfig">
-
-		<property name="controllerName" value="Geo-Sync-Controller" />
-		<property name="enabled" value="${geoSyncEnabled:true}" />
-		<property name="syncTaskDelayInMs" value="5000" />
-		<property name="syncTaskFrequencyInDays" value="1" />
-		<property name="numSyncControllerWorkers" value="2" />
-		<property name="runOnceSyncEnabled" value="true" />
-		<property name="periodicSyncEnabled" value="false" />
-		<property name="numInternalSyncWorkers" value="2" />
-		<property name="numSyncElasticWorkers" value="5" />
-		<property name="numSyncActiveInventoryWorkers" value="5" />
-		<property name="targetSyncStartTimeStamp" value="06:00:00 UTC+00:00" />
-	</bean>
-
-	<bean id="geoEntitySchemaConfig"
-		class="org.onap.aai.sparky.sync.config.ElasticSearchSchemaConfig">
-		<property name="indexName" value="topographicalsearchindex" />
-		<property name="indexDocType" value="default" />
-		<property name="indexMappingsFileName" value="/schemas/dynamicMappings.json" />
-	</bean>
-
-	<bean id="geoSyncController" class="org.onap.aai.sparky.topology.sync.GeoSyncController"
-		init-method="registerController">
-
-		<constructor-arg ref="geoSyncControllerConfig" />
-		<constructor-arg ref="activeInventoryAdapter" />
-		<constructor-arg ref="elasticSearchAdapter" />
-		<constructor-arg ref="geoEntitySchemaConfig" />
-		<constructor-arg ref="elasticSearchEndpointConfig" />
-		<constructor-arg ref="aaiNetworkStatConfig" />
-		<constructor-arg ref="elasticSearchNetworkStatConfig" />
-		<constructor-arg ref="geoEntityLookup" />
-		<constructor-arg ref="oxmEntityLookup" />
-		<constructor-arg ref="elasticSearchSchemaFactory" />
-
-		<property name="syncControllerRegistry" ref="syncControllerRegistry" />
-
-	</bean>
-
-
 
 	<bean id="viewInspectControllerConfig" class="org.onap.aai.sparky.sync.config.SyncControllerConfig">
 
@@ -303,9 +216,9 @@
 
 		<constructor-arg ref="viewInspectControllerConfig" />
 		<constructor-arg ref="activeInventoryAdapter" />
-		<constructor-arg ref="elasticSearchAdapter" />
+		<constructor-arg ref="searchServiceAdapter" />
 		<constructor-arg ref="viewInspectSchemaConfig" />
-		<constructor-arg ref="elasticSearchEndpointConfig" />
+		<constructor-arg ref="searchServiceRestEndpointConfig" />
 		<constructor-arg ref="aaiNetworkStatConfig" />
 		<constructor-arg ref="elasticSearchNetworkStatConfig" />
 		<constructor-arg ref="crossEntityReferenceLookup" />

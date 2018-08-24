@@ -8,10 +8,10 @@ import org.mockito.Mockito;
 import org.onap.aai.sparky.config.oxm.OxmEntityLookup;
 import org.onap.aai.sparky.config.oxm.OxmModelLoader;
 import org.onap.aai.sparky.dal.ActiveInventoryAdapter;
-import org.onap.aai.sparky.dal.ElasticSearchAdapter;
 import org.onap.aai.sparky.dal.GizmoAdapter;
+import org.onap.aai.sparky.dal.rest.config.RestEndpointConfig;
+import org.onap.aai.sparky.search.SearchServiceAdapter;
 import org.onap.aai.sparky.subscription.config.SubscriptionConfig;
-import org.onap.aai.sparky.sync.config.ElasticSearchEndpointConfig;
 import org.onap.aai.sparky.sync.config.ElasticSearchSchemaConfig;
 import org.onap.aai.sparky.util.OxmModelAndProcessorHelper;
 import org.onap.aai.sparky.viewandinspect.config.VisualizationConfigs;
@@ -21,10 +21,10 @@ import org.onap.aai.sparky.viewandinspect.util.SchemaVisualizationTestDataBuilde
 
 public class BaseVisualizationServiceTest {
   private ActiveInventoryAdapter mockAaiAdapter;
-  private ElasticSearchAdapter mockEsAdapter;
+  private SearchServiceAdapter mocksearchServiceAdapter;
   private VisualizationConfigs visualizationConfigs;
   private SubscriptionConfig subConfig;
-  private ElasticSearchEndpointConfig endpointEConfig;
+  private RestEndpointConfig endpointEConfig;
   private ElasticSearchSchemaConfig schemaEConfig;
   private OxmEntityLookup oxmEntityLookup;
   private GizmoAdapter mockGizmoAdapter;
@@ -35,18 +35,18 @@ public class BaseVisualizationServiceTest {
   public void init() throws Exception {
     this.mockAaiAdapter = Mockito.mock(ActiveInventoryAdapter.class);
     this.mockAaiAdapter = Mockito.mock(ActiveInventoryAdapter.class);
-    this.mockEsAdapter = Mockito.mock(ElasticSearchAdapter.class);
+    this.mocksearchServiceAdapter = Mockito.mock(SearchServiceAdapter.class);
     this.mockGizmoAdapter = Mockito.mock(GizmoAdapter.class);
     this.visualizationConfigs = new VisualizationConfigs();
     this.subConfig = new SubscriptionConfig();
-    this.endpointEConfig = new ElasticSearchEndpointConfig();
+    this.endpointEConfig = new RestEndpointConfig();
     this.schemaEConfig = new ElasticSearchSchemaConfig();
     this.oxmEntityLookup = OxmModelAndProcessorHelper.getInstance().getOxmEntityLookup();
     
     OxmModelLoader modelLoader = OxmModelAndProcessorHelper.getInstance().getModelLoader();
     
     this.baseVisService = new BaseVisualizationService(modelLoader, visualizationConfigs,
-        mockAaiAdapter, mockGizmoAdapter, mockEsAdapter, endpointEConfig, schemaEConfig, 1,
+        mockAaiAdapter, mockGizmoAdapter, mocksearchServiceAdapter, endpointEConfig, schemaEConfig, 1,
         oxmEntityLookup, subConfig);
   }
   

@@ -22,7 +22,7 @@ import org.onap.aai.sparky.config.oxm.OxmEntityLookup;
 import org.onap.aai.sparky.config.oxm.OxmModelProcessor;
 import org.onap.aai.sparky.config.oxm.SearchableEntityLookup;
 import org.onap.aai.sparky.dal.ActiveInventoryAdapter;
-import org.onap.aai.sparky.dal.ElasticSearchAdapter;
+import org.onap.aai.sparky.search.SearchServiceAdapter;
 import org.onap.aai.sparky.dal.rest.config.RestEndpointConfig;
 import org.onap.aai.sparky.sync.config.ElasticSearchSchemaConfig;
 import org.onap.aai.sparky.sync.config.NetworkStatisticsConfig;
@@ -43,7 +43,7 @@ public class CrossEntityReferenceSynchronizerTest {
   private NetworkStatisticsConfig esStatConfig;
   private OxmEntityLookup oxmEntityLookup;
   private SearchableEntityLookup searchableEntityLookup;
-  private ElasticSearchAdapter esAdapter;
+  private SearchServiceAdapter searchServiceAdapter;
   private ActiveInventoryAdapter aaiAdapter;
   private CrossEntityReferenceLookup cerLookup;
   private RestEndpointConfig aaiRestEndPointConfig;
@@ -118,7 +118,7 @@ public class CrossEntityReferenceSynchronizerTest {
 
     oxmEntityLookup = new OxmEntityLookup();
 
-    esAdapter = Mockito.mock(ElasticSearchAdapter.class);
+    searchServiceAdapter = Mockito.mock(SearchServiceAdapter.class);
     aaiAdapter = Mockito.mock(ActiveInventoryAdapter.class);
 
 
@@ -164,10 +164,10 @@ public class CrossEntityReferenceSynchronizerTest {
         esStatConfig, cerLookup, oxmEntityLookup, searchableEntityLookup);
     
     cerSynchronizer.setAaiAdapter(aaiAdapter);
-    cerSynchronizer.setElasticSearchAdapter(esAdapter);
+    cerSynchronizer.setSearchServiceAdapter(searchServiceAdapter);
 
     assertNotNull(cerSynchronizer.getAaiAdapter());
-    assertNotNull(cerSynchronizer.getElasticSearchAdapter());
+    assertNotNull(cerSynchronizer.getSearchServiceAdapter());
 
   }
   
@@ -182,7 +182,7 @@ public class CrossEntityReferenceSynchronizerTest {
         esStatConfig, cerLookup, oxmEntityLookup, searchableEntityLookup);
 
     cerSynchronizer.setAaiAdapter(aaiAdapter);
-    cerSynchronizer.setElasticSearchAdapter(esAdapter);
+    cerSynchronizer.setSearchServiceAdapter(searchServiceAdapter);
 
     String nodesQueryResponse = TestResourceLoader
         .getTestResourceDataJson("/sync/aai/activeInventory_service-subscription_nodesQuery_response.json");
@@ -448,7 +448,7 @@ public class CrossEntityReferenceSynchronizerTest {
     
     
     
-    Mockito.when(esAdapter.buildElasticSearchGetDocUrl(Mockito.anyString(), Mockito.anyString()))
+    Mockito.when(searchServiceAdapter.buildSearchServiceDocUrl(Mockito.anyString(), Mockito.anyString()))
         .thenReturn("http://server.proxy:9200/myindex/mytype/doc1",
             "http://server.proxy:9200/myindex/mytype/doc2",
             "http://server.proxy:9200/myindex/mytype/doc3");
@@ -456,15 +456,15 @@ public class CrossEntityReferenceSynchronizerTest {
     /*
      * Our initial gets from elastic search should be record-not-found
      */
-    Mockito.when(esAdapter.doGet(Matchers.contains("doc1"), Mockito.any()))
+    Mockito.when(searchServiceAdapter.doGet(Matchers.contains("doc1"), Mockito.any()))
         .thenReturn(new OperationResult(404, null));
-    Mockito.when(esAdapter.doGet(Matchers.contains("doc2"), Mockito.any()))
+    Mockito.when(searchServiceAdapter.doGet(Matchers.contains("doc2"), Mockito.any()))
         .thenReturn(new OperationResult(404, null));
-    Mockito.when(esAdapter.doGet(Matchers.contains("doc3"), Mockito.any()))
+    Mockito.when(searchServiceAdapter.doGet(Matchers.contains("doc3"), Mockito.any()))
         .thenReturn(new OperationResult(404, null));
 
 
-    Mockito.when(esAdapter.doPut(Matchers.contains("doc"), Mockito.any(), Mockito.any()))
+    Mockito.when(searchServiceAdapter.doPut(Matchers.contains("doc"), Mockito.any(), Mockito.any()))
         .thenReturn(new OperationResult(200, null));
 
     OperationState syncState = cerSynchronizer.doSync();
@@ -486,7 +486,7 @@ public class CrossEntityReferenceSynchronizerTest {
         esStatConfig, cerLookup, oxmEntityLookup, searchableEntityLookup);
 
     cerSynchronizer.setAaiAdapter(aaiAdapter);
-    cerSynchronizer.setElasticSearchAdapter(esAdapter);
+    cerSynchronizer.setSearchServiceAdapter(searchServiceAdapter);
 
     String nodesQueryResponse = TestResourceLoader
         .getTestResourceDataJson("/sync/aai/activeInventory_service-subscription_nodesQuery_response.json");
@@ -752,7 +752,7 @@ public class CrossEntityReferenceSynchronizerTest {
     
     
     
-    Mockito.when(esAdapter.buildElasticSearchGetDocUrl(Mockito.anyString(), Mockito.anyString()))
+    Mockito.when(searchServiceAdapter.buildSearchServiceDocUrl(Mockito.anyString(), Mockito.anyString()))
         .thenReturn("http://server.proxy:9200/myindex/mytype/doc1",
             "http://server.proxy:9200/myindex/mytype/doc2",
             "http://server.proxy:9200/myindex/mytype/doc3");
@@ -760,11 +760,11 @@ public class CrossEntityReferenceSynchronizerTest {
     /*
      * Our initial gets from elastic search should be record-not-found
      */
-    Mockito.when(esAdapter.doGet(Matchers.contains("doc1"), Mockito.any()))
+    Mockito.when(searchServiceAdapter.doGet(Matchers.contains("doc1"), Mockito.any()))
         .thenReturn(new OperationResult(404, null));
-    Mockito.when(esAdapter.doGet(Matchers.contains("doc2"), Mockito.any()))
+    Mockito.when(searchServiceAdapter.doGet(Matchers.contains("doc2"), Mockito.any()))
         .thenReturn(new OperationResult(404, null));
-    Mockito.when(esAdapter.doGet(Matchers.contains("doc3"), Mockito.any()))
+    Mockito.when(searchServiceAdapter.doGet(Matchers.contains("doc3"), Mockito.any()))
         .thenReturn(new OperationResult(404, null));
 
 
@@ -772,7 +772,7 @@ public class CrossEntityReferenceSynchronizerTest {
      * Cause version conflict errors on every put to test retry flow
      */
     
-    Mockito.when(esAdapter.doPut(Matchers.contains("doc"), Mockito.any(), Mockito.any()))
+    Mockito.when(searchServiceAdapter.doPut(Matchers.contains("doc"), Mockito.any(), Mockito.any()))
         .thenReturn(new OperationResult(409, null));
 
     OperationState syncState = cerSynchronizer.doSync();
@@ -798,7 +798,7 @@ public class CrossEntityReferenceSynchronizerTest {
         esStatConfig, cerLookup, oxmEntityLookup, searchableEntityLookup);
 
     cerSynchronizer.setAaiAdapter(aaiAdapter);
-    cerSynchronizer.setElasticSearchAdapter(esAdapter);
+    cerSynchronizer.setSearchServiceAdapter(searchServiceAdapter);
 
     String nodesQueryResponse = TestResourceLoader
         .getTestResourceDataJson("/sync/aai/activeInventory_service-subscription_nodesQuery_response.json");
@@ -982,7 +982,7 @@ public class CrossEntityReferenceSynchronizerTest {
         "/sync/aai/aai-traversal/generic-query/service-instance-56.json")));
 
     
-    Mockito.when(esAdapter.buildElasticSearchGetDocUrl(Mockito.anyString(), Mockito.anyString()))
+    Mockito.when(searchServiceAdapter.buildSearchServiceDocUrl(Mockito.anyString(), Mockito.anyString()))
         .thenReturn("http://server.proxy:9200/myindex/mytype/doc1",
             "http://server.proxy:9200/myindex/mytype/doc2",
             "http://server.proxy:9200/myindex/mytype/doc3");
@@ -990,27 +990,27 @@ public class CrossEntityReferenceSynchronizerTest {
     /*
      * Our initial gets from elastic search return 200 ok with a found entity document requiring a doc update
      */
-    Mockito.when(esAdapter.doGet(Matchers.contains("doc1"), Mockito.any())).thenReturn(new OperationResult(200,
+    Mockito.when(searchServiceAdapter.doGet(Matchers.contains("doc1"), Mockito.any())).thenReturn(new OperationResult(200,
             TestResourceLoader.getTestResourceDataJson("/sync/ElasticSearch/docEntityFromElasticSearch1.json")));
 
-    Mockito.when(esAdapter.doGet(Matchers.contains("doc2"), Mockito.any())).thenReturn(new OperationResult(200,
+    Mockito.when(searchServiceAdapter.doGet(Matchers.contains("doc2"), Mockito.any())).thenReturn(new OperationResult(200,
             TestResourceLoader.getTestResourceDataJson("/sync/ElasticSearch/docEntityFromElasticSearch2.json")));
 
-    Mockito.when(esAdapter.doGet(Matchers.contains("doc3"), Mockito.any())).thenReturn(new OperationResult(200,
+    Mockito.when(searchServiceAdapter.doGet(Matchers.contains("doc3"), Mockito.any())).thenReturn(new OperationResult(200,
             TestResourceLoader.getTestResourceDataJson("/sync/ElasticSearch/docEntityFromElasticSearch3.json")));
 
-    Mockito.when(esAdapter.doGet(Matchers.contains("doc4"), Mockito.any())).thenReturn(new OperationResult(200,
+    Mockito.when(searchServiceAdapter.doGet(Matchers.contains("doc4"), Mockito.any())).thenReturn(new OperationResult(200,
             TestResourceLoader.getTestResourceDataJson("/sync/ElasticSearch/docEntityFromElasticSearch4.json")));
 
-    Mockito.when(esAdapter.doGet(Matchers.contains("doc5"), Mockito.any())).thenReturn(new OperationResult(200,
+    Mockito.when(searchServiceAdapter.doGet(Matchers.contains("doc5"), Mockito.any())).thenReturn(new OperationResult(200,
             TestResourceLoader.getTestResourceDataJson("/sync/ElasticSearch/docEntityFromElasticSearch5.json")));
 
-    Mockito.when(esAdapter.doPut(Matchers.contains("doc"), Mockito.any(), Mockito.any()))
+    Mockito.when(searchServiceAdapter.doPut(Matchers.contains("doc"), Mockito.any(), Mockito.any()))
             .thenReturn(new OperationResult(200, null));
     
 
     
-    Mockito.when(esAdapter.doPut(Matchers.contains("doc"), Mockito.any(), Mockito.any()))
+    Mockito.when(searchServiceAdapter.doPut(Matchers.contains("doc"), Mockito.any(), Mockito.any()))
         .thenReturn(new OperationResult(200, null));
 
     OperationState syncState = cerSynchronizer.doSync();

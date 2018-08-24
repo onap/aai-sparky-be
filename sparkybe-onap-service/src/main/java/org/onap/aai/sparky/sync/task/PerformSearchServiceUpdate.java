@@ -24,16 +24,16 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import org.onap.aai.restclient.client.OperationResult;
-import org.onap.aai.sparky.dal.ElasticSearchAdapter;
+import org.onap.aai.sparky.search.SearchServiceAdapter;
 import org.onap.aai.sparky.dal.NetworkTransaction;
 import org.slf4j.MDC;
 
 /**
  * The Class PerformElasticSearchUpdate.
  */
-public class PerformElasticSearchUpdate implements Supplier<NetworkTransaction> {
+public class PerformSearchServiceUpdate implements Supplier<NetworkTransaction> {
 
-  private ElasticSearchAdapter esAdapter;
+  private SearchServiceAdapter searchServiceAdapter;
   private NetworkTransaction operationTracker;
   private String updatePayload;
   private String updateUrl;
@@ -47,11 +47,11 @@ public class PerformElasticSearchUpdate implements Supplier<NetworkTransaction> 
    * @param esDataProvider the es data provider
    * @param transactionTracker the transaction tracker
    */
-  public PerformElasticSearchUpdate(String updateUrl, String updatePayload,
-      ElasticSearchAdapter esAdapter, NetworkTransaction transactionTracker) {
+  public PerformSearchServiceUpdate(String updateUrl, String updatePayload,
+		  SearchServiceAdapter searchServiceAdapter, NetworkTransaction transactionTracker) {
     this.updateUrl = updateUrl;
     this.updatePayload = updatePayload;
-    this.esAdapter = esAdapter;
+    this.searchServiceAdapter = searchServiceAdapter;
     this.contextMap = MDC.getCopyOfContextMap();
     this.operationTracker = new NetworkTransaction();
     operationTracker.setEntityType(transactionTracker.getEntityType());
@@ -69,7 +69,7 @@ public class PerformElasticSearchUpdate implements Supplier<NetworkTransaction> 
     operationTracker.setTaskAgeInMs();
     MDC.setContextMap(contextMap);
     long startTimeInMs = System.currentTimeMillis();
-    OperationResult or = esAdapter.doBulkOperation(updateUrl, updatePayload);
+    OperationResult or = searchServiceAdapter.doBulkOperation(updateUrl, updatePayload);
     operationTracker.setOperationResult(or);
     operationTracker.setOpTimeInMs(System.currentTimeMillis() - startTimeInMs);
     return operationTracker;

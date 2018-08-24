@@ -34,11 +34,11 @@ import org.onap.aai.restclient.client.OperationResult;
 import org.onap.aai.sparky.config.oxm.OxmEntityLookup;
 import org.onap.aai.sparky.config.oxm.OxmModelLoader;
 import org.onap.aai.sparky.dal.ActiveInventoryAdapter;
-import org.onap.aai.sparky.dal.ElasticSearchAdapter;
 import org.onap.aai.sparky.dal.GizmoAdapter;
+import org.onap.aai.sparky.dal.rest.config.RestEndpointConfig;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
+import org.onap.aai.sparky.search.SearchServiceAdapter;
 import org.onap.aai.sparky.subscription.config.SubscriptionConfig;
-import org.onap.aai.sparky.sync.config.ElasticSearchEndpointConfig;
 import org.onap.aai.sparky.sync.config.ElasticSearchSchemaConfig;
 import org.onap.aai.sparky.sync.entity.SearchableEntity;
 import org.onap.aai.sparky.util.NodeUtils;
@@ -64,7 +64,7 @@ public class BaseVisualizationService implements VisualizationService {
 
   private final ActiveInventoryAdapter aaiAdapter;
   private final GizmoAdapter gizmoAdapter;
-  private final ElasticSearchAdapter esAdapter;
+  private final SearchServiceAdapter searchServiceAdapter;
   private final ExecutorService aaiExecutorService;
   
   private ConcurrentHashMap<Long, VisualizationContext> contextMap;
@@ -72,18 +72,18 @@ public class BaseVisualizationService implements VisualizationService {
 
   private VisualizationConfigs visualizationConfigs;
   private SubscriptionConfig subConfig;
-  private ElasticSearchEndpointConfig endpointEConfig;
+  private RestEndpointConfig endpointConfig;
   private ElasticSearchSchemaConfig schemaEConfig;
   private OxmEntityLookup oxmEntityLookup;
   
 	public BaseVisualizationService(OxmModelLoader loader, VisualizationConfigs visualizationConfigs,
-			ActiveInventoryAdapter aaiAdapter, GizmoAdapter gizmoAdapter, ElasticSearchAdapter esAdapter,
-			ElasticSearchEndpointConfig endpointConfig, ElasticSearchSchemaConfig schemaConfig,
+			ActiveInventoryAdapter aaiAdapter, GizmoAdapter gizmoAdapter, SearchServiceAdapter searchServiceAdapter,
+			RestEndpointConfig endpointConfig, ElasticSearchSchemaConfig schemaConfig,
 			int numActiveInventoryWorkers, OxmEntityLookup oxmEntityLookup, SubscriptionConfig subscriptionConfig)
 			throws Exception {
    
     this.visualizationConfigs = visualizationConfigs;
-    this.endpointEConfig = endpointConfig; 
+    this.endpointConfig = endpointConfig; 
     this.schemaEConfig = schemaConfig; 
     this.oxmEntityLookup = oxmEntityLookup;
     this.subConfig = subscriptionConfig;
@@ -97,7 +97,7 @@ public class BaseVisualizationService implements VisualizationService {
  
     this.aaiAdapter = aaiAdapter;
     this.gizmoAdapter = gizmoAdapter;
-    this.esAdapter = esAdapter; 
+    this.searchServiceAdapter = searchServiceAdapter; 
 
     this.mapper = new ObjectMapper();
     mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
@@ -159,10 +159,10 @@ public class BaseVisualizationService implements VisualizationService {
     if (operationResult.wasSuccessful()) {
 
       try {
-        JsonNode elasticValue = mapper.readValue(operationResult.getResult(), JsonNode.class);
+        JsonNode searchServiceResults = mapper.readValue(operationResult.getResult(), JsonNode.class);
 
-        if (elasticValue != null) {
-          JsonNode sourceField = elasticValue.get("_source");
+        if (searchServiceResults != null) {
+        	JsonNode sourceField = extractSearchServiceContent(searchServiceResults);
 
           if (sourceField != null) {
             sourceEntity = new SearchableEntity();
@@ -203,9 +203,9 @@ public class BaseVisualizationService implements VisualizationService {
        * Here is where we need to make a dip to elastic-search for the self-link by entity-id (link
        * hash).
        */
-      dataCollectionResult = esAdapter.retrieveEntityById(endpointEConfig.getEsIpAddress(), 
-    		  endpointEConfig.getEsServerPort(),schemaEConfig.getIndexName(),
-    		  schemaEConfig.getIndexDocType(), queryRequest.getHashId());
+    	dataCollectionResult = searchServiceAdapter.retrieveEntityById(queryRequest.getHashId(), 
+          		 schemaEConfig.getIndexName());
+    	
       sourceEntity = extractSearchableEntityFromElasticEntity(dataCollectionResult);
 
       if (sourceEntity != null) {
@@ -376,6 +376,16 @@ public class BaseVisualizationService implements VisualizationService {
       LOG.error(AaiUiMsgs.FAILURE_TO_PROCESS_REQUEST, exc.getLocalizedMessage());
     }
     return output;
+  }
+  
+  private JsonNode extractSearchServiceContent(JsonNode returnedData){
+		 
+	  JsonNode searchResults = returnedData.get("searchResult");
+	  JsonNode searchHits = searchResults.get("hits");
+	  JsonNode searchDoc = searchHits.get(0).get("document");
+	  JsonNode content = searchDoc.get("content");
+	
+	 return content; 
   }
 
   public void shutdown() {

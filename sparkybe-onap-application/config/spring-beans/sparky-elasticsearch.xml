@@ -17,16 +17,4 @@
 		<property name="readTimeoutInMs" value="30000" />
 	</bean>
 
-	<bean id="elasticSearchAdapter" class="org.onap.aai.sparky.dal.ElasticSearchAdapter">
-		<constructor-arg ref="elasticSearchRestEndpointConfig" />
-	</bean>
-
-	<bean id="elasticSearchEndpointConfig"
-		class="org.onap.aai.sparky.sync.config.ElasticSearchEndpointConfig">
-		<property name="esIpAddress" value="${elasticsearch.hostname:127.0.0.1}" />
-		<property name="esServerPort" value="${elasticsearch.port:9200}" />
-		<property name="scrollContextTimeToLiveInMinutes" value="5" />
-		<property name="scrollContextBatchRequestSize" value="5000" />
-	</bean>
-
 </beans>

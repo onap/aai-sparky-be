@@ -25,15 +25,13 @@ import org.onap.aai.sparky.config.oxm.OxmEntityLookup;
 import org.onap.aai.sparky.config.oxm.SearchableEntityLookup;
 import org.onap.aai.sparky.crossentityreference.sync.CrossEntityReferenceSynchronizer;
 import org.onap.aai.sparky.dal.ActiveInventoryAdapter;
-import org.onap.aai.sparky.dal.ElasticSearchAdapter;
-import org.onap.aai.sparky.sync.ElasticSearchIndexCleaner;
+import org.onap.aai.sparky.dal.rest.config.RestEndpointConfig;
+import org.onap.aai.sparky.search.SearchServiceAdapter;
 import org.onap.aai.sparky.sync.ElasticSearchSchemaFactory;
-import org.onap.aai.sparky.sync.IndexCleaner;
 import org.onap.aai.sparky.sync.IndexIntegrityValidator;
 import org.onap.aai.sparky.sync.SyncControllerImpl;
 import org.onap.aai.sparky.sync.SyncControllerRegistrar;
 import org.onap.aai.sparky.sync.SyncControllerRegistry;
-import org.onap.aai.sparky.sync.config.ElasticSearchEndpointConfig;
 import org.onap.aai.sparky.sync.config.ElasticSearchSchemaConfig;
 import org.onap.aai.sparky.sync.config.NetworkStatisticsConfig;
 import org.onap.aai.sparky.sync.config.SyncControllerConfig;
@@ -43,13 +41,13 @@ public class ViewInspectSyncController extends SyncControllerImpl
 
   private SyncControllerRegistry syncControllerRegistry;
   private ActiveInventoryAdapter aaiAdapter;
-  private ElasticSearchAdapter esAdapter;
+  private SearchServiceAdapter searchServiceAdapter;
   private ElasticSearchSchemaConfig schemaConfig;
-  private ElasticSearchEndpointConfig endpointConfig;
+  private RestEndpointConfig endpointConfig;
 
   public ViewInspectSyncController(SyncControllerConfig syncControllerConfig,
-      ActiveInventoryAdapter aaiAdapter, ElasticSearchAdapter esAdapter,
-      ElasticSearchSchemaConfig schemaConfig, ElasticSearchEndpointConfig endpointConfig,
+      ActiveInventoryAdapter aaiAdapter, SearchServiceAdapter searchServiceAdapter,
+      ElasticSearchSchemaConfig schemaConfig, RestEndpointConfig endpointConfig,
       NetworkStatisticsConfig aaiStatConfig, NetworkStatisticsConfig esStatConfig,
       CrossEntityReferenceLookup crossEntityReferenceLookup, OxmEntityLookup oxmEntityLookup,
       SearchableEntityLookup searchableEntityLookup,
@@ -60,10 +58,10 @@ public class ViewInspectSyncController extends SyncControllerImpl
     // final String controllerName = "View and Inspect Entity Synchronizer";
 
      this.aaiAdapter = aaiAdapter; 
-     this.esAdapter = esAdapter; 
+     this.searchServiceAdapter = searchServiceAdapter; 
      this.schemaConfig = schemaConfig; 
      this.endpointConfig = endpointConfig; 
-    IndexIntegrityValidator indexValidator = new IndexIntegrityValidator(esAdapter, schemaConfig,
+    IndexIntegrityValidator indexValidator = new IndexIntegrityValidator(searchServiceAdapter, schemaConfig,
         endpointConfig, elasticSearchSchemaFactory.getIndexSchema(schemaConfig));
 
     registerIndexValidator(indexValidator);
@@ -76,7 +74,7 @@ public class ViewInspectSyncController extends SyncControllerImpl
         oxmEntityLookup, searchableEntityLookup);
     
     ses.setAaiAdapter(aaiAdapter);
-    ses.setElasticSearchAdapter(esAdapter);
+    ses.setSearchServiceAdapter(searchServiceAdapter);
 
     registerEntitySynchronizer(ses);
 
@@ -87,14 +85,10 @@ public class ViewInspectSyncController extends SyncControllerImpl
         crossEntityReferenceLookup, oxmEntityLookup, searchableEntityLookup);
 
     cers.setAaiAdapter(aaiAdapter);
-    cers.setElasticSearchAdapter(esAdapter);
+    cers.setSearchServiceAdapter(searchServiceAdapter);
 
     registerEntitySynchronizer(cers);
 
-    IndexCleaner indexCleaner =
-        new ElasticSearchIndexCleaner(esAdapter, endpointConfig, schemaConfig);
-
-    registerIndexCleaner(indexCleaner);
 
   }
 
