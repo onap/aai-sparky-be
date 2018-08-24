@@ -31,11 +31,10 @@ import org.json.JSONObject;
 import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
 import org.onap.aai.restclient.client.OperationResult;
-import org.onap.aai.sparky.dal.ElasticSearchAdapter;
+import org.onap.aai.sparky.search.SearchServiceAdapter;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
 import org.onap.aai.sparky.search.filters.config.UiFilterDataSourceConfig;
 import org.onap.aai.sparky.search.filters.entity.UiFilterEntity;
-import org.onap.aai.sparky.viewandinspect.config.SparkyConstants;
 
 
 /**
@@ -51,10 +50,10 @@ public class FilterElasticSearchAdapter {
   private static final String CONTAINER = "default";
   private static final String BUCKETS = "buckets";
   private static final String FILTER_VALUE_KEY = "key";
-  private ElasticSearchAdapter elasticSearchAdapter;
+  private SearchServiceAdapter searchServiceAdapter;
   
-  public FilterElasticSearchAdapter(ElasticSearchAdapter elasticSearchAdapter) {
-    this.elasticSearchAdapter = elasticSearchAdapter;
+  public FilterElasticSearchAdapter(SearchServiceAdapter searchServiceAdapter) {
+    this.searchServiceAdapter = searchServiceAdapter;
   }
   
   /**
@@ -76,10 +75,9 @@ public class FilterElasticSearchAdapter {
         filterValueQuery = FilterQueryBuilder.createFilterValueQueryObject(dataSourceConfig.getFieldName());
       }
       
-      OperationResult opResult = elasticSearchAdapter.doPost(
-          elasticSearchAdapter.buildElasticSearchUrlForApi(dataSourceConfig.getIndexName(),
-              SparkyConstants.ES_SEARCH_API),
-          filterValueQuery.toString(), MediaType.APPLICATION_JSON_TYPE);
+      OperationResult opResult = searchServiceAdapter.doPost(
+    		  searchServiceAdapter.buildSearchServiceQueryUrl(dataSourceConfig.getIndexName()),
+          filterValueQuery.toString(), "application/json");
       
       String result = opResult.getResult();
       if(opResult.wasSuccessful() && result != null) {

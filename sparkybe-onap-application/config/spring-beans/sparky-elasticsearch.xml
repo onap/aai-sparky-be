@@ -8,25 +8,4 @@
 		<property name="resourceLoader" ref="sparkyResourceLoader" />
 	</bean>
 
-	<bean id="elasticSearchRestEndpointConfig" class="org.onap.aai.sparky.dal.rest.config.RestEndpointConfig">
-		<property name="endpointIpAddress" value="${elasticsearch.hostname:127.0.0.1}" />
-		<property name="endpointServerPort" value="${elasticsearch.port:9200}" />
-		<property name="numRequestRetries" value="5" />
-		<property name="restAuthenticationMode" value="HTTP_NOAUTH" />
-		<property name="connectTimeoutInMs" value="60000" />
-		<property name="readTimeoutInMs" value="30000" />
-	</bean>
-
-	<bean id="elasticSearchAdapter" class="org.onap.aai.sparky.dal.ElasticSearchAdapter">
-		<constructor-arg ref="elasticSearchRestEndpointConfig" />
-	</bean>
-
-	<bean id="elasticSearchEndpointConfig"
-		class="org.onap.aai.sparky.sync.config.ElasticSearchEndpointConfig">
-		<property name="esIpAddress" value="${elasticsearch.hostname:127.0.0.1}" />
-		<property name="esServerPort" value="${elasticsearch.port:9200}" />
-		<property name="scrollContextTimeToLiveInMinutes" value="5" />
-		<property name="scrollContextBatchRequestSize" value="5000" />
-	</bean>
-
 </beans>

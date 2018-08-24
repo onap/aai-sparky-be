@@ -25,9 +25,9 @@ import javax.ws.rs.core.MediaType;
 import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
 import org.onap.aai.restclient.client.OperationResult;
-import org.onap.aai.sparky.dal.ElasticSearchAdapter;
+import org.onap.aai.sparky.search.SearchServiceAdapter;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
-import org.onap.aai.sparky.sync.config.ElasticSearchEndpointConfig;
+import org.onap.aai.sparky.dal.rest.config.RestEndpointConfig;
 import org.onap.aai.sparky.sync.config.ElasticSearchSchemaConfig;
 
 /**
@@ -38,11 +38,11 @@ public class IndexIntegrityValidator implements IndexValidator {
   private static final Logger LOG =
       LoggerFactory.getInstance().getLogger(IndexIntegrityValidator.class);
 
-  private ElasticSearchEndpointConfig endpointConfig;
+  private RestEndpointConfig endpointConfig;
   private ElasticSearchSchemaConfig schemaConfig;
   private String tableConfigJson;
 
-  private final ElasticSearchAdapter esAdapter;
+  private final SearchServiceAdapter searchServiceAdapter;
 
   /**
    * Instantiates a new index integrity validator.
@@ -54,21 +54,21 @@ public class IndexIntegrityValidator implements IndexValidator {
    * @param port the port
    * @param tableConfigJson the table config json
    */
-  public IndexIntegrityValidator(ElasticSearchAdapter esAdapter,
-      ElasticSearchSchemaConfig esSchemaConfig, ElasticSearchEndpointConfig esEndpointConfig,
+  public IndexIntegrityValidator(SearchServiceAdapter searchServiceAdapter,
+      ElasticSearchSchemaConfig esSchemaConfig, RestEndpointConfig esEndpointConfig,
       String tableConfigJson) {
 
-    this.esAdapter = esAdapter;
+    this.searchServiceAdapter = searchServiceAdapter;
     this.schemaConfig = esSchemaConfig;
     this.endpointConfig = esEndpointConfig;
     this.tableConfigJson = tableConfigJson;
   }
 
-  public ElasticSearchEndpointConfig getEndpointConfig() {
+  public RestEndpointConfig getEndpointConfig() {
     return endpointConfig;
   }
 
-  public void setEndpointConfig(ElasticSearchEndpointConfig endpointConfig) {
+  public void setEndpointConfig(RestEndpointConfig endpointConfig) {
     this.endpointConfig = endpointConfig;
   }
 
@@ -80,8 +80,8 @@ public class IndexIntegrityValidator implements IndexValidator {
     this.schemaConfig = schemaConfig;
   }
 
-  public ElasticSearchAdapter getEsAdapter() {
-    return esAdapter;
+  public SearchServiceAdapter getSearchServiceAdapter() {
+    return searchServiceAdapter;
   }
 
   @Override
@@ -95,10 +95,14 @@ public class IndexIntegrityValidator implements IndexValidator {
    * 
    * @see org.openecomp.sparky.synchronizer.IndexValidator#exists()
    */
+  /* TODO 	
+   * currently Search does not support head operations on an index neither does it support  get operations
+   * on an index. get is  being used so that it does not break any code.
+   * */
   @Override
   public boolean exists() {
-    final String fullUrlStr = getFullUrl("/" + schemaConfig.getIndexName() + "/");
-    OperationResult existsResult = esAdapter.doHead(fullUrlStr, MediaType.APPLICATION_JSON_TYPE);
+    final String fullUrlStr = getFullUrl(schemaConfig.getIndexName() + "/");
+    OperationResult existsResult = searchServiceAdapter.doGet(fullUrlStr, "application/json");
     
     int rc = existsResult.getResultCode();
 
@@ -135,7 +139,7 @@ public class IndexIntegrityValidator implements IndexValidator {
 
     final String fullUrlStr = getFullUrl("/" + schemaConfig.getIndexName() + "/");
     OperationResult createResult =
-        esAdapter.doPut(fullUrlStr, tableConfigJson, MediaType.APPLICATION_JSON_TYPE);
+    		searchServiceAdapter.doPut(fullUrlStr, tableConfigJson,"application/json");
 
     int rc = createResult.getResultCode();
 
@@ -167,8 +171,8 @@ public class IndexIntegrityValidator implements IndexValidator {
    * @return the full url
    */
   private String getFullUrl(String resourceUrl) {
-    return String.format("http://%s:%s%s", endpointConfig.getEsIpAddress(),
-        endpointConfig.getEsServerPort(), resourceUrl);
+	  String createIndexUrl = searchServiceAdapter.buildSearchServiceCreateIndexUrl(resourceUrl);
+	    return createIndexUrl;
   }
 
 }

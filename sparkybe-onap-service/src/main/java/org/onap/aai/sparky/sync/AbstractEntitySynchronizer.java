@@ -30,7 +30,7 @@ import org.onap.aai.cl.eelf.LoggerFactory;
 import org.onap.aai.cl.mdc.MdcContext;
 import org.onap.aai.restclient.client.OperationResult;
 import org.onap.aai.sparky.dal.ActiveInventoryAdapter;
-import org.onap.aai.sparky.dal.ElasticSearchAdapter;
+import org.onap.aai.sparky.search.SearchServiceAdapter;
 import org.onap.aai.sparky.dal.NetworkTransaction;
 import org.onap.aai.sparky.dal.aai.ActiveInventoryEntityStatistics;
 import org.onap.aai.sparky.dal.aai.ActiveInventoryProcessingExceptionStatistics;
@@ -39,7 +39,7 @@ import org.onap.aai.sparky.dal.rest.HttpMethod;
 import org.onap.aai.sparky.dal.rest.RestOperationalStatistics;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
 import org.onap.aai.sparky.sync.config.NetworkStatisticsConfig;
-import org.onap.aai.sparky.sync.task.PerformElasticSearchRetrieval;
+import org.onap.aai.sparky.sync.task.PerformSearchServiceRetrieval;
 import org.onap.aai.sparky.util.NodeUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -72,7 +72,7 @@ public abstract class AbstractEntitySynchronizer {
 
   protected EnumSet<StatFlag> enabledStatFlags;
 
-  protected ElasticSearchAdapter elasticSearchAdapter;
+  protected SearchServiceAdapter searchServiceAdapter;
   protected ActiveInventoryAdapter aaiAdapter;
 
   protected ExecutorService synchronizerExecutor;
@@ -362,12 +362,12 @@ public abstract class AbstractEntitySynchronizer {
    */
   public void clearCache() {}
   
-  public ElasticSearchAdapter getElasticSearchAdapter() {
-    return elasticSearchAdapter;
+  public SearchServiceAdapter getSearchServiceAdapter() {
+    return searchServiceAdapter;
   }
 
-  public void setElasticSearchAdapter(ElasticSearchAdapter elasticSearchAdapter) {
-    this.elasticSearchAdapter = elasticSearchAdapter;
+  public void setSearchServiceAdapter(SearchServiceAdapter searchServiceAdapter) {
+    this.searchServiceAdapter = searchServiceAdapter;
   }
 
   public ActiveInventoryAdapter getAaiAdapter() {
@@ -531,7 +531,7 @@ public abstract class AbstractEntitySynchronizer {
       /*
        * In this retry flow the se object has already derived its fields
        */
-      link = elasticSearchAdapter.buildElasticSearchGetDocUrl(getIndexName(), id);
+      link = searchServiceAdapter.buildSearchServiceDocUrl(getIndexName(), id);
     } catch (Exception exc) {
       LOG.error(AaiUiMsgs.ES_FAILED_TO_CONSTRUCT_URI, exc.getLocalizedMessage());
     }
@@ -548,7 +548,7 @@ public abstract class AbstractEntitySynchronizer {
        * called incrementAndGet when queuing the failed PUT!
        */
 
-      supplyAsync(new PerformElasticSearchRetrieval(retryTransaction, elasticSearchAdapter),
+      supplyAsync(new PerformSearchServiceRetrieval(retryTransaction, searchServiceAdapter),
               esExecutor).whenComplete((result, error) -> {
 
         esWorkOnHand.decrementAndGet();

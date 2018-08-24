@@ -23,46 +23,62 @@ package org.onap.aai.sparky.sync.task;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import javax.ws.rs.core.MediaType;
-
 import org.onap.aai.restclient.client.OperationResult;
-import org.onap.aai.sparky.dal.ElasticSearchAdapter;
+import org.onap.aai.sparky.search.SearchServiceAdapter;
 import org.onap.aai.sparky.dal.NetworkTransaction;
 import org.slf4j.MDC;
 
 /**
- * The Class PerformElasticSearchRetrieval.
+ * The Class PerformElasticSearchPut.
  */
-public class PerformElasticSearchRetrieval implements Supplier<NetworkTransaction> {
+public class PerformSearchServicePut implements Supplier<NetworkTransaction> {
 
+  private SearchServiceAdapter searchServiceAdapter;
+  private String jsonPayload;
   private NetworkTransaction txn;
-  private ElasticSearchAdapter esAdapter;
   private Map<String, String> contextMap;
 
   /**
-   * Instantiates a new perform elastic search retrieval.
+   * Instantiates a new perform elastic search put.
    *
-   * @param elasticSearchTxn the elastic search txn
+   * @param jsonPayload the json payload
+   * @param txn the txn
    * @param restDataProvider the rest data provider
    */
-  public PerformElasticSearchRetrieval(NetworkTransaction elasticSearchTxn,
-      ElasticSearchAdapter esAdapter) {
-    this.txn = elasticSearchTxn;
-    this.esAdapter = esAdapter;
+  public PerformSearchServicePut(String jsonPayload, NetworkTransaction txn,
+		  SearchServiceAdapter searchServiceAdapter) {
+    this.jsonPayload = jsonPayload;
+    this.txn = txn;
+    this.searchServiceAdapter = searchServiceAdapter;
     this.contextMap = MDC.getCopyOfContextMap();
   }
 
-  /* (non-Javadoc)
+  public PerformSearchServicePut(String jsonPayload, NetworkTransaction txn,
+		  SearchServiceAdapter searchServiceAdapter, Map<String, String> contextMap) {
+    this.jsonPayload = jsonPayload;
+    this.txn = txn;
+    this.searchServiceAdapter = searchServiceAdapter;
+    this.contextMap = contextMap;
+  }
+
+  /*
+   * (non-Javadoc)
+   * 
    * @see java.util.function.Supplier#get()
    */
   @Override
   public NetworkTransaction get() {
-	MDC.setContextMap(contextMap);
-	long startTimeInMs = System.currentTimeMillis();
-    OperationResult or = esAdapter.doGet(txn.getLink(), MediaType.APPLICATION_JSON_TYPE);
+    txn.setTaskAgeInMs();
+    MDC.setContextMap(contextMap);
+    
+    long startTimeInMs = System.currentTimeMillis();
+
+    OperationResult or =
+    		searchServiceAdapter.doPut(txn.getLink(), jsonPayload, "application/json");
+
     txn.setOperationResult(or);
     txn.setOpTimeInMs(System.currentTimeMillis() - startTimeInMs);
+
     return txn;
   }
-
 }

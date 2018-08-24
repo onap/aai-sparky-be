@@ -43,6 +43,13 @@ public class SearchServiceAdapter {
 
   private static final String VALUE_QUERY = "query";
   private static final String SUGGEST_QUERY = "suggest";
+  private static final String BULK_API = "bulk";
+  private static final String DOCUMENT_EDNPOINT = "documents";
+  private static final String SEARH_SERVICE_BULK_TEMPLATE =
+	      "{\"create\":{\"metaData\":{\"url\":\"%s\"},\"document\":\"%s\"}}\n";
+  
+  private static final String SEARH_SERVICE_SINGLE_ENTITY_TEMPLATE =
+	      "{\"queries\":[{\"must\":{\"match\":{\"field\":\"_id\",\"value\":\"%s\"}}}]}\n";
 
   private RestClient client;
   private RestEndpointConfig endpointConfig;
@@ -113,6 +120,13 @@ public class SearchServiceAdapter {
     OperationResult or = client.delete(url, getTxnHeader(), MediaType.APPLICATION_JSON_TYPE);
     return new OperationResult(or.getResultCode(), or.getResult());
   }
+  
+  public OperationResult doBulkOperation(String url, String jsonPayload) {
+	  
+	  OperationResult or = client.post(url, jsonPayload, getTxnHeader(),
+			  MediaType.APPLICATION_JSON_TYPE, MediaType.APPLICATION_JSON_TYPE);
+	  return new OperationResult(or.getResultCode(), or.getResult());
+  }
 
   public Map<String, List<String>> getTxnHeader() {
     HashMap<String, List<String>> headers = new HashMap<String, List<String>>();
@@ -120,6 +134,15 @@ public class SearchServiceAdapter {
     headers.put("X-TransactionId", Arrays.asList(MDC.get(MdcContext.MDC_REQUEST_ID)));
     headers.put("X-FromAppId", Arrays.asList(MDC.get(MdcContext.MDC_PARTNER_NAME)));
     return headers;
+  }
+  
+public String buildBulkImportOperationRequest(String indexName, String id, String payload){
+	  
+	  StringBuilder requestPayload = new StringBuilder(128);
+	  String SearchTarget = buildSearchServiceDocUrl(indexName,id);
+	  
+	  requestPayload.append(String.format(SEARH_SERVICE_BULK_TEMPLATE,SearchTarget,payload));
+	  return requestPayload.toString();   
   }
 
   /**
@@ -143,12 +166,50 @@ public class SearchServiceAdapter {
   public String buildSuggestServiceQueryUrl(String indexName) {
     return buildSearchServiceUrlForApi(indexName, SUGGEST_QUERY);
   }
+  
+  public String buildSearchServiceDocUrl(String indexName,String api) {
+	  
+	  return String.format("https://%s:%s/services/search-data-service/%s/search/indexes/%s/%s/%s",
+		      endpointConfig.getEndpointIpAddress(), endpointConfig.getEndpointServerPort(),
+		        serviceApiVersion, indexName,DOCUMENT_EDNPOINT, api);
+  }
+  
+  
+  public String buildSearchServiceCreateDocApi(String indexName){
+	  
+	  return String.format("https://%s:%s/services/search-data-service/%s/search/indexes/%s/%s",
+		      endpointConfig.getEndpointIpAddress(), endpointConfig.getEndpointServerPort(),
+		      serviceApiVersion, indexName,DOCUMENT_EDNPOINT );
+  }
 
   public String buildSearchServiceUrlForApi(String indexName, String api) {
+	  
     return String.format("https://%s:%s/services/search-data-service/%s/search/indexes/%s/%s",
         endpointConfig.getEndpointIpAddress(), endpointConfig.getEndpointServerPort(),
         serviceApiVersion, indexName, api);
   }
+  
+  public String buildSearchServiceBulkUrl() {
+	  
+	    return String.format("https://%s:%s/services/search-data-service/%s/search/%s", endpointConfig.getEndpointIpAddress(),
+	        endpointConfig.getEndpointServerPort(),serviceApiVersion,BULK_API);
+  }
+
+  public OperationResult retrieveEntityById(String entityId,String indexName) {
+	  
+	  StringBuilder requestPayload = new StringBuilder(128);
+	  requestPayload.append(String.format(SEARH_SERVICE_SINGLE_ENTITY_TEMPLATE,entityId));
+	  String payload = requestPayload.toString();
+	  String searchServiceUrl = buildSearchServiceQueryUrl(indexName);
+	   
+	  return this.doPost(searchServiceUrl,payload);
+  }
+
+public String buildSearchServiceCreateIndexUrl(String indexName) {
+	
+	    return String.format("https://%s:%s/services/search-data-service/%s/search/indexes/dynamic/%s", endpointConfig.getEndpointIpAddress(),
+	        endpointConfig.getEndpointServerPort(),serviceApiVersion,indexName);
+	}
 
 
 }
