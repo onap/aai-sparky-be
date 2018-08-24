@@ -22,7 +22,7 @@ import org.onap.aai.sparky.config.oxm.OxmModelProcessor;
 import org.onap.aai.sparky.config.oxm.SearchableEntityLookup;
 import org.onap.aai.sparky.config.oxm.SuggestionEntityDescriptor;
 import org.onap.aai.sparky.dal.ActiveInventoryAdapter;
-import org.onap.aai.sparky.dal.ElasticSearchAdapter;
+import org.onap.aai.sparky.search.SearchServiceAdapter;
 import org.onap.aai.sparky.sync.config.ElasticSearchSchemaConfig;
 import org.onap.aai.sparky.sync.config.NetworkStatisticsConfig;
 import org.onap.aai.sparky.sync.enumeration.OperationState;
@@ -38,7 +38,7 @@ public class ViewInspectEntitySynchronizerTest {
   private NetworkStatisticsConfig esStatConfig;
   private OxmEntityLookup oxmEntityLookup;
   private SearchableEntityLookup searchableEntityLookup;
-  private ElasticSearchAdapter esAdapter;
+  private SearchServiceAdapter searchServiceAdapter;
   private ActiveInventoryAdapter aaiAdapter;
 
 
@@ -113,7 +113,7 @@ public class ViewInspectEntitySynchronizerTest {
 
     oxmEntityLookup = new OxmEntityLookup();
 
-    esAdapter = Mockito.mock(ElasticSearchAdapter.class);
+    searchServiceAdapter = Mockito.mock(SearchServiceAdapter.class);
     aaiAdapter = Mockito.mock(ActiveInventoryAdapter.class);
 
 
@@ -169,10 +169,10 @@ public class ViewInspectEntitySynchronizerTest {
         aaiStatConfig, esStatConfig, oxmEntityLookup, searchableEntityLookup);
 
     viewInspectSynchronizer.setAaiAdapter(aaiAdapter);
-    viewInspectSynchronizer.setElasticSearchAdapter(esAdapter);
+    viewInspectSynchronizer.setSearchServiceAdapter(searchServiceAdapter);
 
     assertNotNull(viewInspectSynchronizer.getAaiAdapter());
-    assertNotNull(viewInspectSynchronizer.getElasticSearchAdapter());
+    assertNotNull(viewInspectSynchronizer.getSearchServiceAdapter());
 
   }
 
@@ -184,7 +184,7 @@ public class ViewInspectEntitySynchronizerTest {
 
 
     viewInspectSynchronizer.setAaiAdapter(aaiAdapter);
-    viewInspectSynchronizer.setElasticSearchAdapter(esAdapter);
+    viewInspectSynchronizer.setSearchServiceAdapter(searchServiceAdapter);
 
     String nodesQueryResponse = TestResourceLoader
         .getTestResourceDataJson("/sync/aai/activeInventory_generic-vnf_nodesQuery_response.json");
@@ -227,7 +227,7 @@ public class ViewInspectEntitySynchronizerTest {
         .thenReturn(new OperationResult(200, TestResourceLoader
             .getTestResourceDataJson("/sync/aai/generic-vnf-generic-vnf-3_full_depth.json")));
 
-    Mockito.when(esAdapter.buildElasticSearchGetDocUrl(Mockito.anyString(), Mockito.anyString()))
+    Mockito.when(searchServiceAdapter.buildSearchServiceDocUrl(Mockito.anyString(), Mockito.anyString()))
         .thenReturn("http://server.proxy:9200/myindex/mytype/doc1",
             "http://server.proxy:9200/myindex/mytype/doc2",
             "http://server.proxy:9200/myindex/mytype/doc3");
@@ -235,15 +235,15 @@ public class ViewInspectEntitySynchronizerTest {
     /*
      * Our initial gets from elastic search should be record-not-found
      */
-    Mockito.when(esAdapter.doGet(Matchers.contains("doc1"), Mockito.any()))
+    Mockito.when(searchServiceAdapter.doGet(Matchers.contains("doc1"), Mockito.any()))
         .thenReturn(new OperationResult(404, null));
-    Mockito.when(esAdapter.doGet(Matchers.contains("doc2"), Mockito.any()))
+    Mockito.when(searchServiceAdapter.doGet(Matchers.contains("doc2"), Mockito.any()))
         .thenReturn(new OperationResult(404, null));
-    Mockito.when(esAdapter.doGet(Matchers.contains("doc3"), Mockito.any()))
+    Mockito.when(searchServiceAdapter.doGet(Matchers.contains("doc3"), Mockito.any()))
         .thenReturn(new OperationResult(404, null));
 
 
-    Mockito.when(esAdapter.doPut(Matchers.contains("doc"), Mockito.any(), Mockito.any()))
+    Mockito.when(searchServiceAdapter.doPut(Matchers.contains("doc"), Mockito.any(), Mockito.any()))
         .thenReturn(new OperationResult(200, null));
 
     OperationState syncState = viewInspectSynchronizer.doSync();
@@ -266,7 +266,7 @@ public class ViewInspectEntitySynchronizerTest {
 
 
     viewInspectSynchronizer.setAaiAdapter(aaiAdapter);
-    viewInspectSynchronizer.setElasticSearchAdapter(esAdapter);
+    viewInspectSynchronizer.setSearchServiceAdapter(searchServiceAdapter);
 
     String nodesQueryResponse = TestResourceLoader
         .getTestResourceDataJson("/sync/aai/activeInventory_generic-vnf_nodesQuery_response.json");
@@ -309,7 +309,7 @@ public class ViewInspectEntitySynchronizerTest {
         .thenReturn(new OperationResult(200, TestResourceLoader
             .getTestResourceDataJson("/sync/aai/generic-vnf-generic-vnf-3_full_depth.json")));
 
-    Mockito.when(esAdapter.buildElasticSearchGetDocUrl(Mockito.anyString(), Mockito.anyString()))
+    Mockito.when(searchServiceAdapter.buildSearchServiceDocUrl(Mockito.anyString(), Mockito.anyString()))
         .thenReturn("http://localhost:9200/myindex/mytype/doc1",
             "http://localhost:9200/myindex/mytype/doc2",
             "http://localhost:9200/myindex/mytype/doc3");
@@ -317,11 +317,11 @@ public class ViewInspectEntitySynchronizerTest {
     /*
      * Our initial gets from elastic search should be record-not-found
      */
-    Mockito.when(esAdapter.doGet(Matchers.contains("doc1"), Mockito.any()))
+    Mockito.when(searchServiceAdapter.doGet(Matchers.contains("doc1"), Mockito.any()))
         .thenReturn(new OperationResult(404, null));
-    Mockito.when(esAdapter.doGet(Matchers.contains("doc2"), Mockito.any()))
+    Mockito.when(searchServiceAdapter.doGet(Matchers.contains("doc2"), Mockito.any()))
         .thenReturn(new OperationResult(404, null));
-    Mockito.when(esAdapter.doGet(Matchers.contains("doc3"), Mockito.any()))
+    Mockito.when(searchServiceAdapter.doGet(Matchers.contains("doc3"), Mockito.any()))
         .thenReturn(new OperationResult(404, null));
 
 
@@ -329,7 +329,7 @@ public class ViewInspectEntitySynchronizerTest {
      * Elastic Search puts always fail with a version conflict = 409
      */
 
-    Mockito.when(esAdapter.doPut(Matchers.contains("doc"), Mockito.any(), Mockito.any()))
+    Mockito.when(searchServiceAdapter.doPut(Matchers.contains("doc"), Mockito.any(), Mockito.any()))
         .thenReturn(new OperationResult(409, null));
 
     OperationState syncState = viewInspectSynchronizer.doSync();

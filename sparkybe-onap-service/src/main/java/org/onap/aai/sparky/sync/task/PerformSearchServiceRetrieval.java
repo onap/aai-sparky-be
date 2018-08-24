@@ -23,38 +23,30 @@ package org.onap.aai.sparky.sync.task;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import javax.ws.rs.core.MediaType;
-
 import org.onap.aai.restclient.client.OperationResult;
-import org.onap.aai.sparky.dal.ElasticSearchAdapter;
+import org.onap.aai.sparky.search.SearchServiceAdapter;
 import org.onap.aai.sparky.dal.NetworkTransaction;
-import org.onap.aai.sparky.sync.entity.IndexDocument;
 import org.slf4j.MDC;
 
 /**
- * The Class StoreDocumentTask.
+ * The Class PerformElasticSearchRetrieval.
  */
-public class StoreDocumentTask implements Supplier<NetworkTransaction> {
-
-  private IndexDocument doc;
+public class PerformSearchServiceRetrieval implements Supplier<NetworkTransaction> {
 
   private NetworkTransaction txn;
-
-  private ElasticSearchAdapter esAdapter;
+  private SearchServiceAdapter searchServiceAdapter;
   private Map<String, String> contextMap;
 
   /**
-   * Instantiates a new store document task.
+   * Instantiates a new perform elastic search retrieval.
    *
-   * @param doc the doc
-   * @param txn the txn
-   * @param esAdapter the es adapter
+   * @param elasticSearchTxn the elastic search txn
+   * @param restDataProvider the rest data provider
    */
-  public StoreDocumentTask(IndexDocument doc, NetworkTransaction txn,
-      ElasticSearchAdapter esAdapter) {
-    this.doc = doc;
-    this.txn = txn;
-    this.esAdapter = esAdapter;
+  public PerformSearchServiceRetrieval(NetworkTransaction elasticSearchTxn,
+		  SearchServiceAdapter searchServiceAdapter) {
+    this.txn = elasticSearchTxn;
+    this.searchServiceAdapter = searchServiceAdapter;
     this.contextMap = MDC.getCopyOfContextMap();
   }
 
@@ -63,23 +55,11 @@ public class StoreDocumentTask implements Supplier<NetworkTransaction> {
    */
   @Override
   public NetworkTransaction get() {
-    txn.setTaskAgeInMs();
-
-    long startTimeInMs = System.currentTimeMillis();
-    MDC.setContextMap(contextMap);
-    OperationResult operationResult = new OperationResult();
-
-    try {
-
-      operationResult =
-          esAdapter.doPut(txn.getLink(), doc.getAsJson(), MediaType.APPLICATION_JSON_TYPE);
-      txn.setOpTimeInMs(System.currentTimeMillis() - startTimeInMs);
-    } catch (Exception exception) {
-      operationResult.setResult(500, exception.getMessage());
-    }
-
-    txn.setOperationResult(operationResult);
-
+	MDC.setContextMap(contextMap);
+	long startTimeInMs = System.currentTimeMillis();
+    OperationResult or = searchServiceAdapter.doGet(txn.getLink(), "application/json");
+    txn.setOperationResult(or);
+    txn.setOpTimeInMs(System.currentTimeMillis() - startTimeInMs);
     return txn;
   }
 

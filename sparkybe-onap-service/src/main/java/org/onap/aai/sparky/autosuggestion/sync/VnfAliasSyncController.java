@@ -21,16 +21,14 @@
 package org.onap.aai.sparky.autosuggestion.sync;
 
 import org.onap.aai.sparky.dal.ActiveInventoryAdapter;
-import org.onap.aai.sparky.dal.ElasticSearchAdapter;
+import org.onap.aai.sparky.dal.rest.config.RestEndpointConfig;
+import org.onap.aai.sparky.search.SearchServiceAdapter;
 import org.onap.aai.sparky.search.filters.config.FiltersConfig;
-import org.onap.aai.sparky.sync.ElasticSearchIndexCleaner;
 import org.onap.aai.sparky.sync.ElasticSearchSchemaFactory;
-import org.onap.aai.sparky.sync.IndexCleaner;
 import org.onap.aai.sparky.sync.IndexIntegrityValidator;
 import org.onap.aai.sparky.sync.SyncControllerImpl;
 import org.onap.aai.sparky.sync.SyncControllerRegistrar;
 import org.onap.aai.sparky.sync.SyncControllerRegistry;
-import org.onap.aai.sparky.sync.config.ElasticSearchEndpointConfig;
 import org.onap.aai.sparky.sync.config.ElasticSearchSchemaConfig;
 import org.onap.aai.sparky.sync.config.NetworkStatisticsConfig;
 import org.onap.aai.sparky.sync.config.SyncControllerConfig;
@@ -40,8 +38,8 @@ public class VnfAliasSyncController extends SyncControllerImpl implements SyncCo
   private SyncControllerRegistry syncControllerRegistry;
   
   public VnfAliasSyncController(SyncControllerConfig syncControllerConfig,
-      ActiveInventoryAdapter aaiAdapter, ElasticSearchAdapter esAdapter,
-      ElasticSearchSchemaConfig schemaConfig, ElasticSearchEndpointConfig endpointConfig,
+      ActiveInventoryAdapter aaiAdapter, SearchServiceAdapter searchServiceAdapter,
+      ElasticSearchSchemaConfig schemaConfig, RestEndpointConfig endpointConfig,
       NetworkStatisticsConfig aaiStatConfig, NetworkStatisticsConfig esStatConfig,
       FiltersConfig filtersConfig,
       ElasticSearchSchemaFactory elasticSearchSchemaFactory) throws Exception {
@@ -49,7 +47,7 @@ public class VnfAliasSyncController extends SyncControllerImpl implements SyncCo
     
     // final String controllerName = "VNFs Alias Suggestion Synchronizer";
 
-    IndexIntegrityValidator indexValidator = new IndexIntegrityValidator(esAdapter, schemaConfig,
+    IndexIntegrityValidator indexValidator = new IndexIntegrityValidator(searchServiceAdapter, schemaConfig,
         endpointConfig, elasticSearchSchemaFactory.getIndexSchema(schemaConfig));
 
     registerIndexValidator(indexValidator);
@@ -60,15 +58,9 @@ public class VnfAliasSyncController extends SyncControllerImpl implements SyncCo
         syncControllerConfig.getNumSyncElasticWorkers(), aaiStatConfig, esStatConfig, filtersConfig);
 
     synchronizer.setAaiAdapter(aaiAdapter);
-    synchronizer.setElasticSearchAdapter(esAdapter);
+    synchronizer.setSearchServiceAdapter(searchServiceAdapter);
 
     registerEntitySynchronizer(synchronizer);
-
-
-    IndexCleaner indexCleaner =
-        new ElasticSearchIndexCleaner(esAdapter, endpointConfig, schemaConfig);
-
-    registerIndexCleaner(indexCleaner);
 
   }
 

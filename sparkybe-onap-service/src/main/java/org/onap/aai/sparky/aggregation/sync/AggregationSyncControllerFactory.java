@@ -30,17 +30,15 @@ import org.onap.aai.sparky.config.oxm.OxmEntityLookup;
 import org.onap.aai.sparky.config.oxm.SuggestionEntityDescriptor;
 import org.onap.aai.sparky.config.oxm.SuggestionEntityLookup;
 import org.onap.aai.sparky.dal.ActiveInventoryAdapter;
-import org.onap.aai.sparky.dal.ElasticSearchAdapter;
+import org.onap.aai.sparky.dal.rest.config.RestEndpointConfig;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
-import org.onap.aai.sparky.sync.ElasticSearchIndexCleaner;
 import org.onap.aai.sparky.sync.ElasticSearchSchemaFactory;
-import org.onap.aai.sparky.sync.IndexCleaner;
 import org.onap.aai.sparky.sync.IndexIntegrityValidator;
 import org.onap.aai.sparky.sync.SyncController;
 import org.onap.aai.sparky.sync.SyncControllerImpl;
 import org.onap.aai.sparky.sync.SyncControllerRegistrar;
 import org.onap.aai.sparky.sync.SyncControllerRegistry;
-import org.onap.aai.sparky.sync.config.ElasticSearchEndpointConfig;
+import org.onap.aai.sparky.search.SearchServiceAdapter;
 import org.onap.aai.sparky.sync.config.ElasticSearchSchemaConfig;
 import org.onap.aai.sparky.sync.config.NetworkStatisticsConfig;
 import org.onap.aai.sparky.sync.config.SyncControllerConfig;
@@ -51,13 +49,13 @@ public class AggregationSyncControllerFactory implements SyncControllerRegistrar
       LoggerFactory.getInstance().getLogger(AggregationSyncControllerFactory.class);
 
   private ActiveInventoryAdapter aaiAdapter;
-  private ElasticSearchAdapter esAdapter;
+  private SearchServiceAdapter searchServiceAdapter;
   private SuggestionEntityLookup suggestionEntityLookup;
 
   private Map<String, String> aggregationEntityToIndexMap;
   private Map<String, ElasticSearchSchemaConfig> indexNameToSchemaConfigMap;
 
-  private ElasticSearchEndpointConfig elasticSearchEndpointConfig;
+  private RestEndpointConfig endpointConfig;
   private SyncControllerConfig syncControllerConfig;
   private SyncControllerRegistry syncControllerRegistry;
   private NetworkStatisticsConfig aaiStatConfig; 
@@ -67,14 +65,14 @@ public class AggregationSyncControllerFactory implements SyncControllerRegistrar
   
   private List<SyncController> syncControllers;
 
-  public AggregationSyncControllerFactory(ElasticSearchEndpointConfig esEndpointConfig,
+  public AggregationSyncControllerFactory(RestEndpointConfig endpointConfig,
       SyncControllerConfig syncControllerConfig, SyncControllerRegistry syncControllerRegistry,
       SuggestionEntityLookup suggestionEntityLookup,
       OxmEntityLookup oxmEntityLookup,
       ElasticSearchSchemaFactory elasticSearchSchemaFactory) {
     this.elasticSearchSchemaFactory = elasticSearchSchemaFactory;
     this.syncControllers = new ArrayList<SyncController>();
-    this.elasticSearchEndpointConfig = esEndpointConfig;
+    this.endpointConfig = endpointConfig;
     this.syncControllerConfig = syncControllerConfig;
     this.syncControllerRegistry = syncControllerRegistry;
     this.suggestionEntityLookup = suggestionEntityLookup;
@@ -106,13 +104,13 @@ public class AggregationSyncControllerFactory implements SyncControllerRegistrar
     this.indexNameToSchemaConfigMap = indexNameToSchemaConfigMap;
   }
 
-  public ElasticSearchEndpointConfig getElasticSearchEndpointConfig() {
-    return elasticSearchEndpointConfig;
+  public RestEndpointConfig getEndpointConfig() {
+    return endpointConfig;
   }
 
-  public void setElasticSearchEndpointConfig(
-      ElasticSearchEndpointConfig elasticSearchEndpointConfig) {
-    this.elasticSearchEndpointConfig = elasticSearchEndpointConfig;
+  public void setEndpointConfig(
+		  RestEndpointConfig endpointConfig) {
+    this.endpointConfig = endpointConfig;
   }
 
   public SyncControllerConfig getSyncControllerConfig() {
@@ -131,12 +129,12 @@ public class AggregationSyncControllerFactory implements SyncControllerRegistrar
     this.aaiAdapter = aaiAdapter;
   }
 
-  public ElasticSearchAdapter getEsAdapter() {
-    return esAdapter;
+  public SearchServiceAdapter getSearchServiceAdapter() {
+    return searchServiceAdapter;
   }
 
-  public void setEsAdapter(ElasticSearchAdapter esAdapter) {
-    this.esAdapter = esAdapter;
+  public void setSearchServiceAdapter(SearchServiceAdapter searchServiceAdapter) {
+    this.searchServiceAdapter = searchServiceAdapter;
   }
 
   public SuggestionEntityLookup getSuggestionEntityLookup() {
@@ -185,8 +183,8 @@ public class AggregationSyncControllerFactory implements SyncControllerRegistrar
             continue;
           }
 
-          IndexIntegrityValidator aggregationIndexValidator = new IndexIntegrityValidator(esAdapter,
-              schemaConfig, elasticSearchEndpointConfig, elasticSearchSchemaFactory.getIndexSchema(schemaConfig));
+          IndexIntegrityValidator aggregationIndexValidator = new IndexIntegrityValidator(searchServiceAdapter,
+              schemaConfig, endpointConfig, elasticSearchSchemaFactory.getIndexSchema(schemaConfig));
 
           aggregationSyncController.registerIndexValidator(aggregationIndexValidator);
 
@@ -197,14 +195,9 @@ public class AggregationSyncControllerFactory implements SyncControllerRegistrar
               oxmEntityLookup);
 
           aggSynchronizer.setAaiAdapter(aaiAdapter);
-          aggSynchronizer.setElasticSearchAdapter(esAdapter);
+          aggSynchronizer.setSearchServiceAdapter(searchServiceAdapter);
 
           aggregationSyncController.registerEntitySynchronizer(aggSynchronizer);
-
-          IndexCleaner entityDataIndexCleaner =
-              new ElasticSearchIndexCleaner(esAdapter, elasticSearchEndpointConfig, schemaConfig);
-
-          aggregationSyncController.registerIndexCleaner(entityDataIndexCleaner);
 
           syncControllers.add(aggregationSyncController);
         } catch (Exception exc) {

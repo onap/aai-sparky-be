@@ -23,16 +23,14 @@ package org.onap.aai.sparky.autosuggestion.sync;
 import org.onap.aai.sparky.config.oxm.OxmEntityLookup;
 import org.onap.aai.sparky.config.oxm.SuggestionEntityLookup;
 import org.onap.aai.sparky.dal.ActiveInventoryAdapter;
-import org.onap.aai.sparky.dal.ElasticSearchAdapter;
+import org.onap.aai.sparky.dal.rest.config.RestEndpointConfig;
+import org.onap.aai.sparky.search.SearchServiceAdapter;
 import org.onap.aai.sparky.search.filters.config.FiltersConfig;
-import org.onap.aai.sparky.sync.ElasticSearchIndexCleaner;
 import org.onap.aai.sparky.sync.ElasticSearchSchemaFactory;
-import org.onap.aai.sparky.sync.IndexCleaner;
 import org.onap.aai.sparky.sync.IndexIntegrityValidator;
 import org.onap.aai.sparky.sync.SyncControllerImpl;
 import org.onap.aai.sparky.sync.SyncControllerRegistrar;
 import org.onap.aai.sparky.sync.SyncControllerRegistry;
-import org.onap.aai.sparky.sync.config.ElasticSearchEndpointConfig;
 import org.onap.aai.sparky.sync.config.ElasticSearchSchemaConfig;
 import org.onap.aai.sparky.sync.config.NetworkStatisticsConfig;
 import org.onap.aai.sparky.sync.config.SyncControllerConfig;
@@ -43,8 +41,8 @@ public class AutoSuggestionSyncController extends SyncControllerImpl implements 
   private SyncControllerRegistry syncControllerRegistry;
     
   public AutoSuggestionSyncController(SyncControllerConfig syncControllerConfig,
-      ActiveInventoryAdapter aaiAdapter, ElasticSearchAdapter esAdapter,
-      ElasticSearchSchemaConfig schemaConfig, ElasticSearchEndpointConfig endpointConfig,
+      ActiveInventoryAdapter aaiAdapter, SearchServiceAdapter searchServiceAdapter,
+      ElasticSearchSchemaConfig schemaConfig, RestEndpointConfig endpointConfig,
       NetworkStatisticsConfig aaiStatConfig, NetworkStatisticsConfig esStatConfig,
       OxmEntityLookup oxmEntityLookup, SuggestionEntityLookup suggestionEntityLookup,
       FiltersConfig filtersConfig,
@@ -53,7 +51,7 @@ public class AutoSuggestionSyncController extends SyncControllerImpl implements 
 
     // final String controllerName = "Auto Suggestion Synchronizer";
 
-    IndexIntegrityValidator autoSuggestionIndexValidator = new IndexIntegrityValidator(esAdapter,
+    IndexIntegrityValidator autoSuggestionIndexValidator = new IndexIntegrityValidator(searchServiceAdapter,
         schemaConfig, endpointConfig, elasticSearchSchemaFactory.getIndexSchema(schemaConfig));
 
     registerIndexValidator(autoSuggestionIndexValidator);
@@ -65,14 +63,9 @@ public class AutoSuggestionSyncController extends SyncControllerImpl implements 
         oxmEntityLookup, suggestionEntityLookup, filtersConfig);
 
     suggestionSynchronizer.setAaiAdapter(aaiAdapter);
-    suggestionSynchronizer.setElasticSearchAdapter(esAdapter);
+    suggestionSynchronizer.setSearchServiceAdapter(searchServiceAdapter);
 
     registerEntitySynchronizer(suggestionSynchronizer);
-
-    IndexCleaner autosuggestIndexCleaner =
-        new ElasticSearchIndexCleaner(esAdapter, endpointConfig, schemaConfig);
-
-    registerIndexCleaner(autosuggestIndexCleaner);
 
   }
 

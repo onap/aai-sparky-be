@@ -62,8 +62,8 @@ import org.onap.aai.sparky.sync.entity.SuggestionSearchEntity;
 import org.onap.aai.sparky.sync.enumeration.OperationState;
 import org.onap.aai.sparky.sync.enumeration.SynchronizerState;
 import org.onap.aai.sparky.sync.task.PerformActiveInventoryRetrieval;
-import org.onap.aai.sparky.sync.task.PerformElasticSearchPut;
-import org.onap.aai.sparky.sync.task.PerformElasticSearchRetrieval;
+import org.onap.aai.sparky.sync.task.PerformSearchServicePut;
+import org.onap.aai.sparky.sync.task.PerformSearchServiceRetrieval;
 import org.onap.aai.sparky.util.NodeUtils;
 import org.onap.aai.sparky.util.SuggestionsPermutation;
 import org.slf4j.MDC;
@@ -434,7 +434,7 @@ public class AutosuggestionSynchronizer extends AbstractEntitySynchronizer
           if (sse.isSuggestableDoc()) {
             String link = null;
             try {
-              link = elasticSearchAdapter.buildElasticSearchGetDocUrl(getIndexName(), sse.getId());
+              link = searchServiceAdapter.buildSearchServiceDocUrl(getIndexName(), sse.getId());
             } catch (Exception exc) {
               LOG.error(AaiUiMsgs.ES_FAILED_TO_CONSTRUCT_QUERY, exc.getLocalizedMessage());
             }
@@ -448,8 +448,8 @@ public class AutosuggestionSynchronizer extends AbstractEntitySynchronizer
 
               esWorkOnHand.incrementAndGet();
 
-              supplyAsync(new PerformElasticSearchRetrieval(n2, elasticSearchAdapter), esExecutor)
-                  .whenComplete((result, error) -> {
+              supplyAsync(new PerformSearchServiceRetrieval(n2, searchServiceAdapter), esExecutor)
+              .whenComplete((result, error) -> {
 
                     esWorkOnHand.decrementAndGet();
 
@@ -515,7 +515,7 @@ public class AutosuggestionSynchronizer extends AbstractEntitySynchronizer
      */
     String link = null;
     try {
-      link = elasticSearchAdapter.buildElasticSearchGetDocUrl(getIndexName(), sse.getId());
+      link = searchServiceAdapter.buildSearchServiceDocUrl(getIndexName(), sse.getId());
     } catch (Exception exc) {
       LOG.error(AaiUiMsgs.ES_LINK_UPSERT, exc.getLocalizedMessage());
       return;
@@ -552,8 +552,8 @@ public class AutosuggestionSynchronizer extends AbstractEntitySynchronizer
           updateElasticTxn.setOperationType(HttpMethod.PUT);
 
           esWorkOnHand.incrementAndGet();
-          supplyAsync(new PerformElasticSearchPut(jsonPayload, updateElasticTxn, elasticSearchAdapter),
-              esPutExecutor).whenComplete((result, error) -> {
+          supplyAsync(new PerformSearchServicePut(jsonPayload, updateElasticTxn, searchServiceAdapter),
+                  esPutExecutor).whenComplete((result, error) -> {
 
                 esWorkOnHand.decrementAndGet();
 

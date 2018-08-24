@@ -56,9 +56,9 @@ import org.onap.aai.sparky.sync.entity.SelfLinkDescriptor;
 import org.onap.aai.sparky.sync.enumeration.OperationState;
 import org.onap.aai.sparky.sync.enumeration.SynchronizerState;
 import org.onap.aai.sparky.sync.task.PerformActiveInventoryRetrieval;
-import org.onap.aai.sparky.sync.task.PerformElasticSearchPut;
-import org.onap.aai.sparky.sync.task.PerformElasticSearchRetrieval;
-import org.onap.aai.sparky.sync.task.PerformElasticSearchUpdate;
+import org.onap.aai.sparky.sync.task.PerformSearchServicePut;
+import org.onap.aai.sparky.sync.task.PerformSearchServiceRetrieval;
+import org.onap.aai.sparky.sync.task.PerformSearchServiceUpdate;
 import org.onap.aai.sparky.util.NodeUtils;
 import org.slf4j.MDC;
 
@@ -263,7 +263,7 @@ public class AggregationSynchronizer extends AbstractEntitySynchronizer
      */
     String link = null;
     try {
-      link = elasticSearchAdapter.buildElasticSearchGetDocUrl(getIndexName(), ae.getId()); 
+      link = searchServiceAdapter.buildSearchServiceDocUrl(getIndexName(), ae.getId()); 
     } catch (Exception exc) {
       LOG.error(AaiUiMsgs.ES_LINK_UPSERT, exc.getLocalizedMessage());
       return;
@@ -326,9 +326,9 @@ public class AggregationSynchronizer extends AbstractEntitySynchronizer
       if (wasEntryDiscovered) {
         if (versionNumber != null && jsonPayload != null) {
 
-          String requestPayload =
-              elasticSearchAdapter.buildBulkImportOperationRequest(schemaConfig.getIndexName(),
-                  schemaConfig.getIndexDocType(), ae.getId(), versionNumber, jsonPayload);
+        	String requestPayload =
+            		  searchServiceAdapter.buildBulkImportOperationRequest(schemaConfig.getIndexName(),
+                       ae.getId(),jsonPayload);
 
           NetworkTransaction transactionTracker = new NetworkTransaction();
           transactionTracker.setEntityType(esGetTxn.getEntityType());
@@ -336,9 +336,9 @@ public class AggregationSynchronizer extends AbstractEntitySynchronizer
           transactionTracker.setOperationType(HttpMethod.PUT);
 
           esWorkOnHand.incrementAndGet();
-          supplyAsync(new PerformElasticSearchUpdate(elasticSearchAdapter.getBulkUrl(),
-              requestPayload, elasticSearchAdapter, transactionTracker), esPutExecutor)
-                  .whenComplete((result, error) -> {
+          supplyAsync(new PerformSearchServiceUpdate(searchServiceAdapter.buildSearchServiceBulkUrl(),
+                  requestPayload, searchServiceAdapter, transactionTracker), esPutExecutor)
+          .whenComplete((result, error) -> {
 
                     esWorkOnHand.decrementAndGet();
 
@@ -363,8 +363,8 @@ public class AggregationSynchronizer extends AbstractEntitySynchronizer
           updateElasticTxn.setOperationType(HttpMethod.PUT);
 
           esWorkOnHand.incrementAndGet();
-          supplyAsync(new PerformElasticSearchPut(jsonPayload, updateElasticTxn, elasticSearchAdapter),
-              esPutExecutor).whenComplete((result, error) -> {
+          supplyAsync(new PerformSearchServicePut(jsonPayload, updateElasticTxn, searchServiceAdapter),
+                  esPutExecutor).whenComplete((result, error) -> {
 
                 esWorkOnHand.decrementAndGet();
 
@@ -525,7 +525,7 @@ public class AggregationSynchronizer extends AbstractEntitySynchronizer
 
           String link = null;
           try {
-            link = elasticSearchAdapter.buildElasticSearchGetDocUrl(getIndexName(), ae.getId());
+            link = searchServiceAdapter.buildSearchServiceDocUrl(getIndexName(), ae.getId());
           } catch (Exception exc) {
             LOG.error(AaiUiMsgs.ES_FAILED_TO_CONSTRUCT_QUERY, exc.getLocalizedMessage());
           }
@@ -539,8 +539,8 @@ public class AggregationSynchronizer extends AbstractEntitySynchronizer
 
             esWorkOnHand.incrementAndGet();
 
-            supplyAsync(new PerformElasticSearchRetrieval(n2, elasticSearchAdapter), esExecutor)
-                .whenComplete((result, error) -> {
+            supplyAsync(new PerformSearchServiceRetrieval(n2, searchServiceAdapter), esExecutor)
+            .whenComplete((result, error) -> {
 
                   esWorkOnHand.decrementAndGet();
 

@@ -26,7 +26,7 @@ import org.onap.aai.sparky.config.oxm.OxmModelProcessor;
 import org.onap.aai.sparky.config.oxm.SuggestionEntityDescriptor;
 import org.onap.aai.sparky.config.oxm.SuggestionEntityLookup;
 import org.onap.aai.sparky.dal.ActiveInventoryAdapter;
-import org.onap.aai.sparky.dal.ElasticSearchAdapter;
+import org.onap.aai.sparky.search.SearchServiceAdapter;
 import org.onap.aai.sparky.search.filters.config.FiltersConfig;
 import org.onap.aai.sparky.search.filters.config.FiltersDetailsConfig;
 import org.onap.aai.sparky.search.filters.config.FiltersForViewsConfig;
@@ -58,7 +58,7 @@ public class AutosuggestionSynchronizerTest {
   private NetworkStatisticsConfig esStatConfig;
 
  
-  private ElasticSearchAdapter esAdapter;
+  private SearchServiceAdapter searchServiceAdapter;
   private ActiveInventoryAdapter aaiAdapter;
 
   @Inject
@@ -153,7 +153,7 @@ public class AutosuggestionSynchronizerTest {
 
     
 
-    esAdapter = Mockito.mock(ElasticSearchAdapter.class);
+    searchServiceAdapter = Mockito.mock(SearchServiceAdapter.class);
     aaiAdapter = Mockito.mock(ActiveInventoryAdapter.class);
 
 
@@ -221,10 +221,10 @@ public class AutosuggestionSynchronizerTest {
         esStatConfig, oxmEntityLookup, suggestionEntityLookup, filtersConfig);
 
     suggestionSynchronizer.setAaiAdapter(aaiAdapter);
-    suggestionSynchronizer.setElasticSearchAdapter(esAdapter);
+    suggestionSynchronizer.setSearchServiceAdapter(searchServiceAdapter);
 
     assertNotNull(suggestionSynchronizer.getAaiAdapter());
-    assertNotNull(suggestionSynchronizer.getElasticSearchAdapter());
+    assertNotNull(suggestionSynchronizer.getSearchServiceAdapter());
 
   }
 
@@ -236,7 +236,7 @@ public class AutosuggestionSynchronizerTest {
 
 
     suggestionSynchronizer.setAaiAdapter(aaiAdapter);
-    suggestionSynchronizer.setElasticSearchAdapter(esAdapter);
+    suggestionSynchronizer.setSearchServiceAdapter(searchServiceAdapter);
 
     String nodesQueryResponse = TestResourceLoader
         .getTestResourceDataJson("/sync/aai/activeInventory_generic-vnf_nodesQuery_response.json");
@@ -287,7 +287,7 @@ public class AutosuggestionSynchronizerTest {
         .thenReturn(new OperationResult(200, TestResourceLoader
             .getTestResourceDataJson("/sync/aai/generic-vnf-generic-vnf-3_full_depth.json")));
 
-    Mockito.when(esAdapter.buildElasticSearchGetDocUrl(Mockito.anyString(), Mockito.anyString()))
+    Mockito.when(searchServiceAdapter.buildSearchServiceDocUrl(Mockito.anyString(), Mockito.anyString()))
         .thenReturn("http://server.proxy:9200/myindex/mytype/doc1",
             "http://server.proxy:9200/myindex/mytype/doc2",
             "http://server.proxy:9200/myindex/mytype/doc3");
@@ -295,15 +295,15 @@ public class AutosuggestionSynchronizerTest {
     /*
      * Our initial gets from elastic search should be record-not-found
      */
-    Mockito.when(esAdapter.doGet(Matchers.contains("doc1"), Mockito.any()))
+    Mockito.when(searchServiceAdapter.doGet(Matchers.contains("doc1"), Mockito.any()))
         .thenReturn(new OperationResult(404, null));
-    Mockito.when(esAdapter.doGet(Matchers.contains("doc2"), Mockito.any()))
+    Mockito.when(searchServiceAdapter.doGet(Matchers.contains("doc2"), Mockito.any()))
         .thenReturn(new OperationResult(404, null));
-    Mockito.when(esAdapter.doGet(Matchers.contains("doc3"), Mockito.any()))
+    Mockito.when(searchServiceAdapter.doGet(Matchers.contains("doc3"), Mockito.any()))
         .thenReturn(new OperationResult(404, null));
 
 
-    Mockito.when(esAdapter.doPut(Matchers.contains("doc"), Mockito.any(), Mockito.any()))
+    Mockito.when(searchServiceAdapter.doPut(Matchers.contains("doc"), Mockito.any(), Mockito.any()))
         .thenReturn(new OperationResult(200, null));
 
     OperationState syncState = suggestionSynchronizer.doSync();
@@ -326,7 +326,7 @@ public class AutosuggestionSynchronizerTest {
 
 
     suggestionSynchronizer.setAaiAdapter(aaiAdapter);
-    suggestionSynchronizer.setElasticSearchAdapter(esAdapter);
+    suggestionSynchronizer.setSearchServiceAdapter(searchServiceAdapter);
 
     String nodesQueryResponse = TestResourceLoader
         .getTestResourceDataJson("/sync/aai/activeInventory_generic-vnf_nodesQuery_response.json");
@@ -377,7 +377,7 @@ public class AutosuggestionSynchronizerTest {
         .thenReturn(new OperationResult(200, TestResourceLoader
             .getTestResourceDataJson("/sync/aai/generic-vnf-generic-vnf-3_full_depth.json")));
 
-    Mockito.when(esAdapter.buildElasticSearchGetDocUrl(Mockito.anyString(), Mockito.anyString()))
+    Mockito.when(searchServiceAdapter.buildSearchServiceDocUrl(Mockito.anyString(), Mockito.anyString()))
         .thenReturn("http://server.proxy:9200/myindex/mytype/doc1",
             "http://server.proxy:9200/myindex/mytype/doc2",
             "http://server.proxy:9200/myindex/mytype/doc3");
@@ -385,11 +385,11 @@ public class AutosuggestionSynchronizerTest {
     /*
      * Our initial gets from elastic search should be record-not-found
      */
-    Mockito.when(esAdapter.doGet(Matchers.contains("doc1"), Mockito.any()))
+    Mockito.when(searchServiceAdapter.doGet(Matchers.contains("doc1"), Mockito.any()))
         .thenReturn(new OperationResult(404, null));
-    Mockito.when(esAdapter.doGet(Matchers.contains("doc2"), Mockito.any()))
+    Mockito.when(searchServiceAdapter.doGet(Matchers.contains("doc2"), Mockito.any()))
         .thenReturn(new OperationResult(404, null));
-    Mockito.when(esAdapter.doGet(Matchers.contains("doc3"), Mockito.any()))
+    Mockito.when(searchServiceAdapter.doGet(Matchers.contains("doc3"), Mockito.any()))
         .thenReturn(new OperationResult(404, null));
 
 
@@ -397,7 +397,7 @@ public class AutosuggestionSynchronizerTest {
      * Elastic Search puts always fail with a version conflict = 409
      */
 
-    Mockito.when(esAdapter.doPut(Matchers.contains("doc"), Mockito.any(), Mockito.any()))
+    Mockito.when(searchServiceAdapter.doPut(Matchers.contains("doc"), Mockito.any(), Mockito.any()))
         .thenReturn(new OperationResult(409, null));
 
     OperationState syncState = suggestionSynchronizer.doSync();
