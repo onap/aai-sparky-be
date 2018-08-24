@@ -20,7 +20,7 @@ import org.onap.aai.restclient.client.OperationResult;
 import org.onap.aai.sparky.config.oxm.SearchableEntityLookup;
 import org.onap.aai.sparky.config.oxm.SearchableOxmEntityDescriptor;
 import org.onap.aai.sparky.dal.ActiveInventoryAdapter;
-import org.onap.aai.sparky.dal.ElasticSearchAdapter;
+import org.onap.aai.sparky.search.SearchServiceAdapter;
 import org.onap.aai.sparky.dal.NetworkTransaction;
 import org.onap.aai.sparky.dal.rest.HttpMethod;
 import org.onap.aai.sparky.sync.config.NetworkStatisticsConfig;
@@ -75,7 +75,7 @@ public class AbstractEntitySynchronizerTest {
 	private QuantumSynchronizer quantumSync;
 	private NetworkStatisticsConfig aaiStatConfig;
 	private NetworkStatisticsConfig esStatConfig;
-	private ElasticSearchAdapter esAdapter;
+	private SearchServiceAdapter searchServiceAdapter;
 	private ActiveInventoryAdapter aaiAdapter;
 	private SearchableEntityLookup searchableEntityLookup;
 	
@@ -141,7 +141,7 @@ public class AbstractEntitySynchronizerTest {
    		esStatConfig.setTpsHistogramNumBins(20);
    		esStatConfig.setTpsHistogramNumDecimalPoints(2);
    		
-   		esAdapter = Mockito.mock(ElasticSearchAdapter.class);
+   		searchServiceAdapter = Mockito.mock(SearchServiceAdapter.class);
    		aaiAdapter = Mockito.mock(ActiveInventoryAdapter.class);
 	
 	}
@@ -216,12 +216,12 @@ public class AbstractEntitySynchronizerTest {
 				esStatConfig);
 		
 		quantumSync.setAaiAdapter(aaiAdapter);
-		quantumSync.setElasticSearchAdapter(esAdapter);
+		quantumSync.setSearchServiceAdapter(searchServiceAdapter);
 		
 		quantumSync.clearCache();
 		
 		assertNotNull(quantumSync.getAaiAdapter());
-		assertNotNull(quantumSync.getElasticSearchAdapter());
+		assertNotNull(quantumSync.getSearchServiceAdapter());
 		assertEquals("quantum-search-index", quantumSync.getIndexName());
 		
 		quantumSync.setIndexName("new-search-index-name");
@@ -285,7 +285,7 @@ public class AbstractEntitySynchronizerTest {
 				esStatConfig);
 		
 		quantumSync.setAaiAdapter(aaiAdapter);
-		quantumSync.setElasticSearchAdapter(esAdapter);
+		quantumSync.setSearchServiceAdapter(searchServiceAdapter);
 		
 		searchableEntityLookup = new SearchableEntityLookup();
 		
