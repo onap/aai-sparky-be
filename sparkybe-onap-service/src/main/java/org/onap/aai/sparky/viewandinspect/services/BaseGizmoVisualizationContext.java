@@ -194,8 +194,8 @@ public class BaseGizmoVisualizationContext implements VisualizationContext {
     ain.setEntityType(gizmoEntity.getType());
 
     ain.setPrimaryKeyName(getEntityTypePrimaryKeyName(gizmoEntity.getType()));
-    
-    OxmEntityDescriptor descriptor = oxmEntityLookup.getEntityDescriptors().get(gizmoEntity);
+
+    OxmEntityDescriptor descriptor = oxmEntityLookup.getEntityDescriptors().get(gizmoEntity.getType());
 
     if (descriptor != null) {
       ain.setPrimaryKeyValue(getPrimaryKeyValues(gizmoEntity.getProperties(),
@@ -203,7 +203,7 @@ public class BaseGizmoVisualizationContext implements VisualizationContext {
     } else {
       LOG.error(AaiUiMsgs.ERROR_GENERIC, "Could not determine oxm descriptor for entity type = " + gizmoEntity.getType());
     }
-    
+
     gizmoEntity.getProperties().forEach((key, value) -> {
       ain.getProperties().put(key, value);
     });
@@ -212,8 +212,6 @@ public class BaseGizmoVisualizationContext implements VisualizationContext {
     if (ain.getSelfLink() != null) {
       ain.addProperty(SparkyConstants.URI_ATTR_NAME, ain.getSelfLink());
     }
-    
-
 
     /*
      * Only discover neighbors if our depth is less than the Max-Traversal-Depth
@@ -223,7 +221,7 @@ public class BaseGizmoVisualizationContext implements VisualizationContext {
 
       /*
        * I think the next thing to do is:
-       * 
+       *
        * 1. Calculate the source / target node id 2. Add the nodeId to the incoming / outgoing links
        * collection 3. Add the node to the node cache for processing
        */
@@ -598,7 +596,7 @@ public class BaseGizmoVisualizationContext implements VisualizationContext {
           break;
         }
 
-        case READY: 
+        case READY:
         case ERROR: {
           break;
         }
@@ -618,7 +616,7 @@ public class BaseGizmoVisualizationContext implements VisualizationContext {
       }
 
     }
-    
+
     dumpThrottledWorkOnHandLog();
 
   }
@@ -773,7 +771,7 @@ public class BaseGizmoVisualizationContext implements VisualizationContext {
       }
 
     }
-    
+
     return (aaiWorkOnHand.get() + numNodesWithPendingStates);
 
   }
@@ -803,14 +801,14 @@ public class BaseGizmoVisualizationContext implements VisualizationContext {
       }
 
     }
-    
+
     dumpThrottledWorkOnHandLog(true);
 
   }
 
   /*
    * (non-Javadoc)
-   * 
+   *
    * @see
    * org.onap.aai.sparky.viewandinspect.services.VisualizationContext#processSelfLinks(org.onap.aai.
    * sparky.sync.entity.SearchableEntity, org.onap.aai.sparky.viewandinspect.entity.QueryParams)
