@@ -55,12 +55,12 @@ public class IndexIntegrityValidator implements IndexValidator {
    * @param tableConfigJson the table config json
    */
   public IndexIntegrityValidator(SearchServiceAdapter searchServiceAdapter,
-      ElasticSearchSchemaConfig esSchemaConfig, RestEndpointConfig esEndpointConfig,
+      ElasticSearchSchemaConfig esSchemaConfig, RestEndpointConfig endpointConfig,
       String tableConfigJson) {
 
     this.searchServiceAdapter = searchServiceAdapter;
     this.schemaConfig = esSchemaConfig;
-    this.endpointConfig = esEndpointConfig;
+    this.endpointConfig = endpointConfig;
     this.tableConfigJson = tableConfigJson;
   }
 
@@ -137,7 +137,7 @@ public class IndexIntegrityValidator implements IndexValidator {
         "IndexIntegrityValidator.createOrRepair() for indexName = " + schemaConfig.getIndexName();
     LOG.info(AaiUiMsgs.INFO_GENERIC, message);
 
-    final String fullUrlStr = getFullUrl("/" + schemaConfig.getIndexName() + "/");
+    final String fullUrlStr = getFullUrl(schemaConfig.getIndexName() + "/");
     OperationResult createResult =
     		searchServiceAdapter.doPut(fullUrlStr, tableConfigJson,"application/json");
 

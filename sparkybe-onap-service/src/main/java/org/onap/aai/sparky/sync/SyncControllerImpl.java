@@ -517,9 +517,9 @@ public class SyncControllerImpl implements SyncController {
 
     for (IndexValidator validator : registeredIndexValidators) {
       try {
-        if (!validator.exists()) {
+       
           validator.createOrRepair();
-        }
+       
       } catch (Exception exc) {
         String message = "Index validator caused an error = " + exc.getMessage();
         LOG.error(AaiUiMsgs.ERROR_GENERIC, message);
