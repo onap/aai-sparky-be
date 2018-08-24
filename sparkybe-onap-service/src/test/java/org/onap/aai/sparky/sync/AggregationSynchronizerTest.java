@@ -20,7 +20,7 @@ import org.onap.aai.sparky.aggregation.sync.AggregationSynchronizer;
 import org.onap.aai.sparky.config.oxm.OxmEntityDescriptor;
 import org.onap.aai.sparky.config.oxm.OxmEntityLookup;
 import org.onap.aai.sparky.dal.ActiveInventoryAdapter;
-import org.onap.aai.sparky.dal.ElasticSearchAdapter;
+import org.onap.aai.sparky.search.SearchServiceAdapter;
 import org.onap.aai.sparky.sync.config.ElasticSearchSchemaConfig;
 import org.onap.aai.sparky.sync.config.NetworkStatisticsConfig;
 import org.onap.aai.sparky.sync.enumeration.OperationState;
@@ -37,7 +37,7 @@ public class AggregationSynchronizerTest {
 	private NetworkStatisticsConfig aaiStatConfig;
 	private NetworkStatisticsConfig esStatConfig;
 	private OxmEntityLookup oxmEntityLookup;
-	private ElasticSearchAdapter esAdapter;
+	private SearchServiceAdapter searchServiceAdapter;
 	private ActiveInventoryAdapter aaiAdapter;
 
 	
@@ -112,7 +112,7 @@ public class AggregationSynchronizerTest {
    		
    		oxmEntityLookup = new OxmEntityLookup();
    		
-   		esAdapter = Mockito.mock(ElasticSearchAdapter.class);
+   		searchServiceAdapter = Mockito.mock(SearchServiceAdapter.class);
    		aaiAdapter = Mockito.mock(ActiveInventoryAdapter.class);
 
 		Map<String,OxmEntityDescriptor> oxmEntityDescriptors = new HashMap<String,OxmEntityDescriptor>();
@@ -139,10 +139,10 @@ public class AggregationSynchronizerTest {
 				esStatConfig, oxmEntityLookup);
 		
 		aggregationSynchronizer.setAaiAdapter(aaiAdapter);
-		aggregationSynchronizer.setElasticSearchAdapter(esAdapter);
+		aggregationSynchronizer.setSearchServiceAdapter(searchServiceAdapter);
 		
 		assertNotNull(aggregationSynchronizer.getAaiAdapter());
-		assertNotNull(aggregationSynchronizer.getElasticSearchAdapter());
+		assertNotNull(aggregationSynchronizer.getSearchServiceAdapter());
 	
 	}
 	
@@ -153,7 +153,7 @@ public class AggregationSynchronizerTest {
 				esStatConfig, oxmEntityLookup);
 		
 		aggregationSynchronizer.setAaiAdapter(aaiAdapter);
-		aggregationSynchronizer.setElasticSearchAdapter(esAdapter);
+		aggregationSynchronizer.setSearchServiceAdapter(searchServiceAdapter);
 
 		String nodesQueryResponse = TestResourceLoader
 				.getTestResourceDataJson("/sync/aai/activeInventory_complex_nodesQuery_response.json");
@@ -177,7 +177,7 @@ public class AggregationSynchronizerTest {
 
 		}
 		
-		Mockito.when(esAdapter.buildElasticSearchGetDocUrl(Mockito.anyString(), Mockito.anyString())).thenReturn(
+		Mockito.when(searchServiceAdapter.buildSearchServiceDocUrl(Mockito.anyString(), Mockito.anyString())).thenReturn(
 				"http://localhost:9200/myindex/mytype/doc1", "http://localhost:9200/myindex/mytype/doc2",
 				"http://localhost:9200/myindex/mytype/doc3", "http://localhost:9200/myindex/mytype/doc4",
 				"http://localhost:9200/myindex/mytype/doc5");
@@ -185,14 +185,14 @@ public class AggregationSynchronizerTest {
 		/*
 		 * Our initial gets from elastic search should be record-not-found
 		 */
-		Mockito.when( esAdapter.doGet(Matchers.contains("doc1"), Mockito.any())).thenReturn(new OperationResult(404,null));
-		Mockito.when( esAdapter.doGet(Matchers.contains("doc2"), Mockito.any())).thenReturn(new OperationResult(404,null));
-		Mockito.when( esAdapter.doGet(Matchers.contains("doc3"), Mockito.any())).thenReturn(new OperationResult(404,null));
-		Mockito.when( esAdapter.doGet(Matchers.contains("doc4"), Mockito.any())).thenReturn(new OperationResult(404,null));
-		Mockito.when( esAdapter.doGet(Matchers.contains("doc5"), Mockito.any())).thenReturn(new OperationResult(404,null));
+		Mockito.when( searchServiceAdapter.doGet(Matchers.contains("doc1"), Mockito.any())).thenReturn(new OperationResult(404,null));
+		Mockito.when( searchServiceAdapter.doGet(Matchers.contains("doc2"), Mockito.any())).thenReturn(new OperationResult(404,null));
+		Mockito.when( searchServiceAdapter.doGet(Matchers.contains("doc3"), Mockito.any())).thenReturn(new OperationResult(404,null));
+		Mockito.when( searchServiceAdapter.doGet(Matchers.contains("doc4"), Mockito.any())).thenReturn(new OperationResult(404,null));
+		Mockito.when( searchServiceAdapter.doGet(Matchers.contains("doc5"), Mockito.any())).thenReturn(new OperationResult(404,null));
 		
 
-		Mockito.when(esAdapter.doPut(Matchers.contains("doc"), Mockito.any(), Mockito.any()))
+		Mockito.when(searchServiceAdapter.doPut(Matchers.contains("doc"), Mockito.any(), Mockito.any()))
 				.thenReturn(new OperationResult(200, null));
 		
 		OperationState syncState = aggregationSynchronizer.doSync();
@@ -215,7 +215,7 @@ public class AggregationSynchronizerTest {
 				esStatConfig, oxmEntityLookup);
 		
 		aggregationSynchronizer.setAaiAdapter(aaiAdapter);
-		aggregationSynchronizer.setElasticSearchAdapter(esAdapter);
+		aggregationSynchronizer.setSearchServiceAdapter(searchServiceAdapter);
 
 		String nodesQueryResponse = TestResourceLoader
 				.getTestResourceDataJson("/sync/aai/activeInventory_complex_nodesQuery_response.json");
@@ -239,7 +239,7 @@ public class AggregationSynchronizerTest {
 
 		}
 		
-		Mockito.when(esAdapter.buildElasticSearchGetDocUrl(Mockito.anyString(), Mockito.anyString())).thenReturn(
+		Mockito.when(searchServiceAdapter.buildSearchServiceDocUrl(Mockito.anyString(), Mockito.anyString())).thenReturn(
 				"http://localhost:9200/myindex/mytype/doc1", "http://localhost:9200/myindex/mytype/doc2",
 				"http://localhost:9200/myindex/mytype/doc3", "http://localhost:9200/myindex/mytype/doc4",
 				"http://localhost:9200/myindex/mytype/doc5");
@@ -247,17 +247,17 @@ public class AggregationSynchronizerTest {
 		/*
 		 * Our initial gets from elastic search should be record-not-found
 		 */
-		Mockito.when( esAdapter.doGet(Matchers.contains("doc1"), Mockito.any())).thenReturn(new OperationResult(404,null));
-		Mockito.when( esAdapter.doGet(Matchers.contains("doc2"), Mockito.any())).thenReturn(new OperationResult(404,null));
-		Mockito.when( esAdapter.doGet(Matchers.contains("doc3"), Mockito.any())).thenReturn(new OperationResult(404,null));
-		Mockito.when( esAdapter.doGet(Matchers.contains("doc4"), Mockito.any())).thenReturn(new OperationResult(404,null));
-		Mockito.when( esAdapter.doGet(Matchers.contains("doc5"), Mockito.any())).thenReturn(new OperationResult(404,null));
+		Mockito.when( searchServiceAdapter.doGet(Matchers.contains("doc1"), Mockito.any())).thenReturn(new OperationResult(404,null));
+		Mockito.when( searchServiceAdapter.doGet(Matchers.contains("doc2"), Mockito.any())).thenReturn(new OperationResult(404,null));
+		Mockito.when( searchServiceAdapter.doGet(Matchers.contains("doc3"), Mockito.any())).thenReturn(new OperationResult(404,null));
+		Mockito.when( searchServiceAdapter.doGet(Matchers.contains("doc4"), Mockito.any())).thenReturn(new OperationResult(404,null));
+		Mockito.when( searchServiceAdapter.doGet(Matchers.contains("doc5"), Mockito.any())).thenReturn(new OperationResult(404,null));
 		
 
 		// 409 is the elastic search version conflict code, which will result in the entries being added
 		// to our retry queue and re-attempted a couple times.
 		
-		Mockito.when(esAdapter.doPut(Matchers.contains("doc"), Mockito.any(), Mockito.any()))
+		Mockito.when(searchServiceAdapter.doPut(Matchers.contains("doc"), Mockito.any(), Mockito.any()))
 				.thenReturn(new OperationResult(409, null));
 		
 		OperationState syncState = aggregationSynchronizer.doSync();
@@ -279,7 +279,7 @@ public class AggregationSynchronizerTest {
 				esStatConfig, oxmEntityLookup);
 		
 		aggregationSynchronizer.setAaiAdapter(aaiAdapter);
-		aggregationSynchronizer.setElasticSearchAdapter(esAdapter);
+		aggregationSynchronizer.setSearchServiceAdapter(searchServiceAdapter);
 
 		String nodesQueryResponse = TestResourceLoader
 				.getTestResourceDataJson("/sync/aai/activeInventory_complex_nodesQuery_response.json");
@@ -303,7 +303,7 @@ public class AggregationSynchronizerTest {
 
 		}
 		
-		Mockito.when(esAdapter.buildElasticSearchGetDocUrl(Mockito.anyString(), Mockito.anyString())).thenReturn(
+		Mockito.when(searchServiceAdapter.buildSearchServiceDocUrl(Mockito.anyString(), Mockito.anyString())).thenReturn(
 				"http://localhost:9200/myindex/mytype/doc1", "http://localhost:9200/myindex/mytype/doc2",
 				"http://localhost:9200/myindex/mytype/doc3", "http://localhost:9200/myindex/mytype/doc4",
 				"http://localhost:9200/myindex/mytype/doc5");
@@ -311,22 +311,22 @@ public class AggregationSynchronizerTest {
 		/*
 		 * Our initial gets from elastic search return 200 ok with a found entity document requiring a doc update
 		 */
-		Mockito.when(esAdapter.doGet(Matchers.contains("doc1"), Mockito.any())).thenReturn(new OperationResult(200,
+		Mockito.when(searchServiceAdapter.doGet(Matchers.contains("doc1"), Mockito.any())).thenReturn(new OperationResult(200,
 				TestResourceLoader.getTestResourceDataJson("/sync/ElasticSearch/docEntityFromElasticSearch1.json")));
 
-		Mockito.when(esAdapter.doGet(Matchers.contains("doc2"), Mockito.any())).thenReturn(new OperationResult(200,
+		Mockito.when(searchServiceAdapter.doGet(Matchers.contains("doc2"), Mockito.any())).thenReturn(new OperationResult(200,
 				TestResourceLoader.getTestResourceDataJson("/sync/ElasticSearch/docEntityFromElasticSearch2.json")));
 
-		Mockito.when(esAdapter.doGet(Matchers.contains("doc3"), Mockito.any())).thenReturn(new OperationResult(200,
+		Mockito.when(searchServiceAdapter.doGet(Matchers.contains("doc3"), Mockito.any())).thenReturn(new OperationResult(200,
 				TestResourceLoader.getTestResourceDataJson("/sync/ElasticSearch/docEntityFromElasticSearch3.json")));
 
-		Mockito.when(esAdapter.doGet(Matchers.contains("doc4"), Mockito.any())).thenReturn(new OperationResult(200,
+		Mockito.when(searchServiceAdapter.doGet(Matchers.contains("doc4"), Mockito.any())).thenReturn(new OperationResult(200,
 				TestResourceLoader.getTestResourceDataJson("/sync/ElasticSearch/docEntityFromElasticSearch4.json")));
 
-		Mockito.when(esAdapter.doGet(Matchers.contains("doc5"), Mockito.any())).thenReturn(new OperationResult(200,
+		Mockito.when(searchServiceAdapter.doGet(Matchers.contains("doc5"), Mockito.any())).thenReturn(new OperationResult(200,
 				TestResourceLoader.getTestResourceDataJson("/sync/ElasticSearch/docEntityFromElasticSearch5.json")));
 
-		Mockito.when(esAdapter.doPut(Matchers.contains("doc"), Mockito.any(), Mockito.any()))
+		Mockito.when(searchServiceAdapter.doPut(Matchers.contains("doc"), Mockito.any(), Mockito.any()))
 				.thenReturn(new OperationResult(200, null));
 		
 		OperationState syncState = aggregationSynchronizer.doSync();
