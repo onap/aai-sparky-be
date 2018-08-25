@@ -34,12 +34,8 @@ public class GraphMeta {
   private int numLinks;
 
   private long renderTimeInMs;
-
-  private int numLinksResolvedSuccessfullyFromCache;
-
-  private int numLinksResolvedSuccessfullyFromServer;
-
-  private int numLinkResolveFailed;
+  
+  private int numNodeWithProcessingErrors;
 
   private EntityTypeAggregation entitySummary;
 
@@ -67,31 +63,6 @@ public class GraphMeta {
     this.aaiEntityNodeDescriptors = aaiEntityNodeDefinitions;
   }
 
-  public int getNumLinksResolvedSuccessfullyFromCache() {
-    return numLinksResolvedSuccessfullyFromCache;
-  }
-
-  public void setNumLinksResolvedSuccessfullyFromCache(int numLinksResolvedSuccessfullyFromCache) {
-    this.numLinksResolvedSuccessfullyFromCache = numLinksResolvedSuccessfullyFromCache;
-  }
-
-  public int getNumLinksResolvedSuccessfullyFromServer() {
-    return numLinksResolvedSuccessfullyFromServer;
-  }
-
-  public void setNumLinksResolvedSuccessfullyFromServer(
-      int numLinksResolvedSuccessfullyFromServer) {
-    this.numLinksResolvedSuccessfullyFromServer = numLinksResolvedSuccessfullyFromServer;
-  }
-
-  public int getNumLinkResolveFailed() {
-    return numLinkResolveFailed;
-  }
-
-  public void setNumLinkResolveFailed(int numLinkResolveFailed) {
-    this.numLinkResolveFailed = numLinkResolveFailed;
-  }
-
   public int getNumNodes() {
     return numNodes;
   }
@@ -116,6 +87,14 @@ public class GraphMeta {
     this.renderTimeInMs = renderTimeInMs;
   }
 
+  public int getNumNodeWithProcessingErrors() {
+    return numNodeWithProcessingErrors;
+  }
+
+  public void setNumNodeWithProcessingErrors(int numNodeWithProcessingErrors) {
+    this.numNodeWithProcessingErrors = numNodeWithProcessingErrors;
+  }
+
   /**
    * Peg counter.
    *
@@ -125,19 +104,12 @@ public class GraphMeta {
     entitySummary.pegCounter(counterName);
   }
 
-  /* (non-Javadoc)
-   * @see java.lang.Object#toString()
-   */
   @Override
   public String toString() {
-    return "GraphMeta ["
-        + (aaiEntityNodeDescriptors != null
-            ? "aaiEntityNodeDescriptors=" + aaiEntityNodeDescriptors + ", " : "")
-        + "numNodes=" + numNodes + ", numLinks=" + numLinks + ", renderTimeInMs=" + renderTimeInMs
-        + ", numLinksResolvedSuccessfullyFromCache=" + numLinksResolvedSuccessfullyFromCache
-        + ", numLinksResolvedSuccessfullyFromServer=" + numLinksResolvedSuccessfullyFromServer
-        + ", numLinkResolveFailed=" + numLinkResolveFailed + ", "
-        + (entitySummary != null ? "entitySummary=" + entitySummary : "") + "]";
+    return "GraphMeta [aaiEntityNodeDescriptors=" + aaiEntityNodeDescriptors + ", numNodes="
+        + numNodes + ", numLinks=" + numLinks + ", renderTimeInMs=" + renderTimeInMs
+        + ", numNodeWithProcessingErrors=" + numNodeWithProcessingErrors + ", entitySummary="
+        + entitySummary + "]";
   }
 
 }

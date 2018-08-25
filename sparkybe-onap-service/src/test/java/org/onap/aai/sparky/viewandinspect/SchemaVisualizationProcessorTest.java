@@ -16,7 +16,6 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.onap.aai.sparky.util.HttpServletHelper;
 import org.onap.aai.sparky.viewandinspect.entity.QueryRequest;
-import org.onap.aai.sparky.viewandinspect.services.VisualizationService;
 import org.onap.aai.sparky.viewandinspect.util.SchemaVisualizationTestDataBuilder;
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
@@ -65,7 +64,7 @@ public class SchemaVisualizationProcessorTest {
     QueryRequest queryBody = nonEmptyMapper.readValue(queryRequest, QueryRequest.class);
     
     Mockito.when(mockVisualizationService.analyzeQueryRequestBody(Mockito.anyString())).thenReturn(queryBody);
-    Mockito.when(mockVisualizationService.buildVisualizationUsingGenericQuery(Mockito.anyObject())).thenReturn(SchemaVisualizationTestDataBuilder.getSchemaVisResult());
+    Mockito.when(mockVisualizationService.buildVisualization(Mockito.anyObject())).thenReturn(SchemaVisualizationTestDataBuilder.getSchemaVisResult());
 
     schemaVisProcessor.setVisualizationService(mockVisualizationService);
     schemaVisProcessor.processVisualizationRequest(exchange);

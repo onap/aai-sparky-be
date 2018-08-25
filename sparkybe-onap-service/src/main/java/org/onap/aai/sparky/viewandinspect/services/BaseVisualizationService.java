@@ -21,20 +21,14 @@
 package org.onap.aai.sparky.viewandinspect.services;
 
 import java.io.IOException;
-import java.security.SecureRandom;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
 
 import javax.servlet.ServletException;
 
 import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
 import org.onap.aai.restclient.client.OperationResult;
-import org.onap.aai.sparky.config.oxm.OxmEntityLookup;
-import org.onap.aai.sparky.config.oxm.OxmModelLoader;
-import org.onap.aai.sparky.dal.ActiveInventoryAdapter;
-import org.onap.aai.sparky.dal.GizmoAdapter;
 import org.onap.aai.sparky.dal.rest.config.RestEndpointConfig;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
 import org.onap.aai.sparky.search.SearchServiceAdapter;
@@ -42,6 +36,9 @@ import org.onap.aai.sparky.subscription.config.SubscriptionConfig;
 import org.onap.aai.sparky.sync.config.ElasticSearchSchemaConfig;
 import org.onap.aai.sparky.sync.entity.SearchableEntity;
 import org.onap.aai.sparky.util.NodeUtils;
+import org.onap.aai.sparky.viewandinspect.VisualizationContext;
+import org.onap.aai.sparky.viewandinspect.VisualizationContextBuilder;
+import org.onap.aai.sparky.viewandinspect.VisualizationService;
 import org.onap.aai.sparky.viewandinspect.config.VisualizationConfigs;
 import org.onap.aai.sparky.viewandinspect.entity.ActiveInventoryNode;
 import org.onap.aai.sparky.viewandinspect.entity.D3VisualizationOutput;
@@ -60,52 +57,36 @@ public class BaseVisualizationService implements VisualizationService {
   private static final Logger LOG =
       LoggerFactory.getInstance().getLogger(BaseVisualizationService.class);
   
-  private ObjectMapper mapper = new ObjectMapper();
+  protected ObjectMapper mapper = new ObjectMapper();
 
-  private final ActiveInventoryAdapter aaiAdapter;
-  private final GizmoAdapter gizmoAdapter;
-  private final SearchServiceAdapter searchServiceAdapter;
-  private final ExecutorService aaiExecutorService;
+  protected final SearchServiceAdapter searchServiceAdapter;
   
-  private ConcurrentHashMap<Long, VisualizationContext> contextMap;
-  private final SecureRandom secureRandom;
+  protected ConcurrentHashMap<Long, VisualizationContext> contextMap;
 
-  private VisualizationConfigs visualizationConfigs;
-  private SubscriptionConfig subConfig;
-  private RestEndpointConfig endpointConfig;
-  private ElasticSearchSchemaConfig schemaEConfig;
-  private OxmEntityLookup oxmEntityLookup;
+  protected VisualizationConfigs visualizationConfigs;
+  protected SubscriptionConfig subConfig;
+  protected RestEndpointConfig endpointConfig;
+  protected ElasticSearchSchemaConfig schemaEConfig;
   
-	public BaseVisualizationService(OxmModelLoader loader, VisualizationConfigs visualizationConfigs,
-			ActiveInventoryAdapter aaiAdapter, GizmoAdapter gizmoAdapter, SearchServiceAdapter searchServiceAdapter,
-			RestEndpointConfig endpointConfig, ElasticSearchSchemaConfig schemaConfig,
-			int numActiveInventoryWorkers, OxmEntityLookup oxmEntityLookup, SubscriptionConfig subscriptionConfig)
-			throws Exception {
+  protected VisualizationContextBuilder contextBuilder;
+  
+  public BaseVisualizationService(VisualizationContextBuilder contextBuilder,
+      VisualizationConfigs visualizationConfigs, SearchServiceAdapter searchServiceAdapter,
+      RestEndpointConfig endpointConfig, ElasticSearchSchemaConfig schemaConfig,
+      SubscriptionConfig subscriptionConfig) throws Exception {
    
     this.visualizationConfigs = visualizationConfigs;
     this.endpointConfig = endpointConfig; 
     this.schemaEConfig = schemaConfig; 
-    this.oxmEntityLookup = oxmEntityLookup;
     this.subConfig = subscriptionConfig;
+    this.contextBuilder = contextBuilder;
     
-
-    secureRandom = new SecureRandom();
-    
-    /*
-     * Fix constructor with properly wired in properties
-     */
- 
-    this.aaiAdapter = aaiAdapter;
-    this.gizmoAdapter = gizmoAdapter;
     this.searchServiceAdapter = searchServiceAdapter; 
 
     this.mapper = new ObjectMapper();
     mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
     
     this.contextMap = new ConcurrentHashMap<Long, VisualizationContext>();
-    
-    this.aaiExecutorService = NodeUtils.createNamedExecutor("SLNC-WORKER",
-        numActiveInventoryWorkers, LOG);
     
   }
   
@@ -144,12 +125,12 @@ public class BaseVisualizationService implements VisualizationService {
    * @param method the method
    * @param opStartTimeInMs the op start time in ms
    */
-  private void logOptime(String method, long opStartTimeInMs) {
+  protected void logOptime(String method, long opStartTimeInMs) {
     LOG.info(AaiUiMsgs.OPERATION_TIME, method,
         String.valueOf(System.currentTimeMillis() - opStartTimeInMs));
   }
   
-  private SearchableEntity extractSearchableEntityFromElasticEntity(OperationResult operationResult) {
+  protected SearchableEntity extractSearchableEntityFromElasticEntity(OperationResult operationResult) {
     if (operationResult == null || !operationResult.wasSuccessful()) {
       // error, return empty collection
       return null;
@@ -190,7 +171,8 @@ public class BaseVisualizationService implements VisualizationService {
    * @param queryRequest the query request
    * @return the operation result
    */
-  public OperationResult buildVisualizationUsingGenericQuery(QueryRequest queryRequest) {
+  @Override
+  public OperationResult buildVisualization(QueryRequest queryRequest) {
 
     OperationResult returnValue = new OperationResult();
     OperationResult dataCollectionResult;
@@ -263,7 +245,7 @@ public class BaseVisualizationService implements VisualizationService {
    * @throws ServletException the servlet exception
    * @throws  
    */
-  private String getVisualizationOutputBasedonGenericQuery(SearchableEntity searchtargetEntity,
+  protected String getVisualizationOutputBasedonGenericQuery(SearchableEntity searchtargetEntity,
       QueryParams queryParams, QueryRequest request) throws ServletException {
 
     long opStartTimeInMs = System.currentTimeMillis();
@@ -277,17 +259,12 @@ public class BaseVisualizationService implements VisualizationService {
     }
 
     VisualizationContext visContext = null;
-    long contextId = secureRandom.nextLong();
+    
     try {
-    	if ( visualizationConfigs.isGizmoEnabled()) {
-    	      visContext = new BaseGizmoVisualizationContext(contextId, this.gizmoAdapter, aaiExecutorService,
-    	              this.visualizationConfigs, oxmEntityLookup);
-    	} else {
-    	      visContext = new BaseVisualizationContext(contextId, this.aaiAdapter, aaiExecutorService,
-    	              this.visualizationConfigs, oxmEntityLookup);
-    	}
-    	
-      contextMap.putIfAbsent(contextId, visContext);
+
+      visContext = contextBuilder.getVisualizationContext();
+      contextMap.putIfAbsent(visContext.getContextId(), visContext);
+
     } catch (Exception e1) {
       LOG.error(AaiUiMsgs.EXCEPTION_CAUGHT,
           "While building Visualization Context, " + e1.getLocalizedMessage());
@@ -297,7 +274,7 @@ public class BaseVisualizationService implements VisualizationService {
     long startTimeInMs = System.currentTimeMillis();
 
     visContext.processSelfLinks(searchtargetEntity, queryParams);
-    contextMap.remove(contextId);
+    contextMap.remove(visContext.getContextId());
 
     logOptime("collectSelfLinkNodes()", startTimeInMs);
 
@@ -323,7 +300,9 @@ public class BaseVisualizationService implements VisualizationService {
       LOG.debug(AaiUiMsgs.DEBUG_GENERIC, sb.toString());
     }
 
-    transformer.buildFlatNodeArrayFromGraphCollection(cachedNodeMap);
+    GraphMeta graphMeta = new GraphMeta();
+    
+    transformer.buildFlatNodeArrayFromGraphCollection(cachedNodeMap, graphMeta);
     transformer.buildLinksFromGraphCollection(cachedNodeMap);
 
     /*
@@ -333,20 +312,12 @@ public class BaseVisualizationService implements VisualizationService {
      */
 
     transformer.addSearchTargetAttributesToRootNode();
-    
-    GraphMeta graphMeta = new GraphMeta();
 
     D3VisualizationOutput output = getD3VisualizationOutput(opStartTimeInMs, transformer, graphMeta);
 
     String jsonResponse = null;
 
     if (output != null) {
-      output.setInlineMessage(visContext.getInlineMessage());
-      output.getGraphMeta().setNumLinkResolveFailed(visContext.getNumFailedLinkResolve());
-      output.getGraphMeta().setNumLinksResolvedSuccessfullyFromCache(
-              visContext.getNumSuccessfulLinkResolveFromCache());
-      output.getGraphMeta().setNumLinksResolvedSuccessfullyFromServer(
-              visContext.getNumSuccessfulLinkResolveFromFromServer());
 
       try {
         jsonResponse = transformer.convertVisualizationOutputToJson(output);
@@ -365,7 +336,8 @@ public class BaseVisualizationService implements VisualizationService {
 
   }
 
-  private D3VisualizationOutput getD3VisualizationOutput(long opStartTimeInMs, VisualizationTransformer transformer, GraphMeta graphMeta) throws ServletException {
+  protected D3VisualizationOutput getD3VisualizationOutput(long opStartTimeInMs,
+      VisualizationTransformer transformer, GraphMeta graphMeta) throws ServletException {
     D3VisualizationOutput output = null;
     try {
       output = transformer
@@ -378,7 +350,7 @@ public class BaseVisualizationService implements VisualizationService {
     return output;
   }
   
-  private JsonNode extractSearchServiceContent(JsonNode returnedData){
+  protected JsonNode extractSearchServiceContent(JsonNode returnedData){
 		 
 	  JsonNode searchResults = returnedData.get("searchResult");
 	  JsonNode searchHits = searchResults.get("hits");
@@ -388,8 +360,11 @@ public class BaseVisualizationService implements VisualizationService {
 	 return content; 
   }
 
+  @Override
   public void shutdown() {
-    aaiExecutorService.shutdown();
+    if ( contextBuilder != null ) {
+      contextBuilder.shutdown();
+    }
   }
   
 }

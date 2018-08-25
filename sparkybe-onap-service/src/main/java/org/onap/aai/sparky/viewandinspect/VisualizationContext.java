@@ -18,13 +18,12 @@
  * limitations under the License.
  * ============LICENSE_END=========================================================
  */
-package org.onap.aai.sparky.viewandinspect.services;
+package org.onap.aai.sparky.viewandinspect;
 
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.onap.aai.sparky.sync.entity.SearchableEntity;
 import org.onap.aai.sparky.viewandinspect.entity.ActiveInventoryNode;
-import org.onap.aai.sparky.viewandinspect.entity.InlineMessage;
 import org.onap.aai.sparky.viewandinspect.entity.QueryParams;
 
 
@@ -36,16 +35,10 @@ public interface VisualizationContext {
    * @param skeletonNode the skeleton node
    * @param queryParams the query params
    */
-  void processSelfLinks(SearchableEntity searchtargetEntity, QueryParams queryParams);
+  public void processSelfLinks(SearchableEntity searchtargetEntity, QueryParams queryParams);
 
-  ConcurrentHashMap<String, ActiveInventoryNode> getNodeCache();
-
-  InlineMessage getInlineMessage();
+  public ConcurrentHashMap<String, ActiveInventoryNode> getNodeCache();
   
-  int getNumFailedLinkResolve();
-
-  int getNumSuccessfulLinkResolveFromCache();
-
-  int getNumSuccessfulLinkResolveFromFromServer();
+  public long getContextId();
 
 }

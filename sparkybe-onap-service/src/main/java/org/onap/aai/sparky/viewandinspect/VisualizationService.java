@@ -18,49 +18,31 @@
  * limitations under the License.
  * ============LICENSE_END=========================================================
  */
-package org.onap.aai.sparky.viewandinspect.entity;
+package org.onap.aai.sparky.viewandinspect;
 
-/**
- * The Class InlineMessage.
- */
-public class InlineMessage {
 
-  private String level;
-  private String message;
+import org.onap.aai.restclient.client.OperationResult;
+import org.onap.aai.sparky.viewandinspect.entity.QueryRequest;
 
-  /**
-   * Instantiates a new inline message.
-   *
-   * @param level the level
-   * @param message the message
-   */
-  public InlineMessage(String level, String message) {
-    this.level = level;
-    this.message = message;
-  }
+public interface VisualizationService {
 
-  public String getLevel() {
-    return level;
-  }
+	  /**
+	   * Analyze query request body.
+	   *
+	   * @param queryRequestJson the query request json
+	   * @return the query request
+	   */
 
-  public void setLevel(String level) {
-    this.level = level;
-  }
+	  public QueryRequest analyzeQueryRequestBody(String queryRequestJson);
 
-  public String getMessage() {
-    return message;
-  }
-
-  public void setMessage(String message) {
-    this.message = message;
-  }
-
-  /* (non-Javadoc)
-   * @see java.lang.Object#toString()
-   */
-  @Override
-  public String toString() {
-    return level + " : " + message;
-  }
+	  /**
+	   * Builds the visualization using generic query.
+	   *
+	   * @param queryRequest the query request
+	   * @return the operation result
+	   */
+	  public OperationResult buildVisualization(QueryRequest queryRequest);
+	  
+	  public void shutdown();
 
 }

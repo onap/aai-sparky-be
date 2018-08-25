@@ -20,6 +20,7 @@ import org.onap.aai.sparky.dal.GizmoAdapter;
 import org.onap.aai.sparky.dal.rest.config.RestEndpointConfig;
 import org.onap.aai.sparky.util.NodeUtils;
 import org.onap.aai.sparky.viewandinspect.config.VisualizationConfigs;
+import org.onap.aai.sparky.viewandinspect.context.BaseGizmoVisualizationContext;
 
 public class BaseGizmoVisualizationContextTest {
 

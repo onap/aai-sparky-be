@@ -14,7 +14,6 @@
 		<property name="selectedSearchedNodeClassName" value="selectedSearchedNodeClass" />
 		<property name="numOfThreadsToFetchNodeIntegrity" value="20" />
 		<property name="makeAllNeighborsBidirectional" value="false" />
-		<property name="gizmoEnabled" value="true" />
 		<property name="resourceLoader" ref="sparkyResourceLoader" />
 
 		<property name="shallowEntities">
@@ -39,20 +38,24 @@
 		<property name="indexDocType" value="default" />
 		<property name="indexMappingsFileName" value="/schemas/es_mappings.json" />
 		<property name="indexSettingsFileName" value="/schemas/es_settings.json" />
-	</bean>	
+	</bean>
+
+	<bean id="gizmoVisualizationContextBuilder"
+		class="org.onap.aai.sparky.viewandinspect.context.BaseGizmoVisualizationContextBuilder">
+		<constructor-arg name="gizmoAdapter" ref="gizmoAdapter" />
+		<constructor-arg name="numWorkers" value="50" />
+		<constructor-arg name="visualizationConfig" ref="visualizationConfigurations" />
+		<constructor-arg name="oxmEntityType" ref="oxmEntityLookup" />
+	</bean>
 
 	<bean id="baseVisualizationService"
 		class="org.onap.aai.sparky.viewandinspect.services.BaseVisualizationService">
-		<constructor-arg ref="oxmModelLoader" />
-		<constructor-arg ref="visualizationConfigurations" />
-		<constructor-arg name="aaiAdapter"><null/></constructor-arg>
-		<constructor-arg ref="gizmoAdapter" />
-		<constructor-arg ref="elasticSearchAdapter" />
-		<constructor-arg ref="elasticSearchEndpointConfig" />
-		<constructor-arg ref="viewInspectSchemaConfig" />
-		<constructor-arg name="numActiveInventoryWorkers" value="50" />
-		<constructor-arg ref="oxmEntityLookup" />
-		<constructor-arg ref="subscriptionConfig" />
+		<constructor-arg name="contextBuilder" ref="gizmoVisualizationContextBuilder" />
+		<constructor-arg name="visualizationConfigs" ref="visualizationConfigurations" />
+		<constructor-arg name="searchServiceAdapter" ref="searchServiceAdapter" />
+		<constructor-arg name="endpointConfig" ref="searchServiceRestEndpointConfig" />
+		<constructor-arg name="schemaConfig" ref="viewInspectSchemaConfig" />
+		<constructor-arg name="subscriptionConfig" ref="subscriptionConfig" />
 	</bean>
 
 	<bean id="schemaVisualizationProcessor"

@@ -29,8 +29,6 @@ public class VisualizationConfigTest {
 
     visualConfig.setShallowEntities(shallowEntities);
     assertNotNull(visualConfig.getShallowEntities());
-    visualConfig.setGizmoEnabled(true);
-    assertTrue(visualConfig.isGizmoEnabled());
     visualConfig.setMakeAllNeighborsBidirectional(true);
     assertTrue(visualConfig.makeAllNeighborsBidirectional());
     visualConfig.setSelectedSearchedNodeClassName("selectedsearchedNodeClass");

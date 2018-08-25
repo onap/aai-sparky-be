@@ -22,7 +22,6 @@ package org.onap.aai.sparky.viewandinspect;
 
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.camel.Exchange;
 import org.onap.aai.cl.api.Logger;
@@ -31,7 +30,6 @@ import org.onap.aai.restclient.client.OperationResult;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
 import org.onap.aai.sparky.logging.util.ServletUtils;
 import org.onap.aai.sparky.viewandinspect.entity.QueryRequest;
-import org.onap.aai.sparky.viewandinspect.services.VisualizationService;
 import org.restlet.data.Status;
 
 public class SchemaVisualizationProcessor {
@@ -42,7 +40,7 @@ public class SchemaVisualizationProcessor {
 
 	private VisualizationService visualizationService; 
 
-	public SchemaVisualizationProcessor()throws Exception{}
+	public SchemaVisualizationProcessor() throws Exception{}
 
 	protected String generateJsonErrorResponse(String message) {
 	    return String.format("{ \"errorMessage\" : %s }", message);
@@ -68,7 +66,7 @@ public class SchemaVisualizationProcessor {
 
     if (hashId != null) {
 
-      operationResult = this.getVisualizationService().buildVisualizationUsingGenericQuery(hashId);
+      operationResult = this.getVisualizationService().buildVisualization(hashId);
 
       if (operationResult.getResultCode() != Status.SUCCESS_OK.getCode()) {
         exchange.getOut().setHeader(Exchange.HTTP_RESPONSE_CODE, operationResult.getResultCode());

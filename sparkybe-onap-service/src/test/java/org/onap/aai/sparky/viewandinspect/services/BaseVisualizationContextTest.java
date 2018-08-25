@@ -34,6 +34,7 @@ import org.onap.aai.sparky.util.NodeUtils;
 import org.onap.aai.sparky.util.StringCollectionContainsMatcher;
 import org.onap.aai.sparky.util.TestResourceLoader;
 import org.onap.aai.sparky.viewandinspect.config.VisualizationConfigs;
+import org.onap.aai.sparky.viewandinspect.context.BaseVisualizationContext;
 import org.onap.aai.sparky.viewandinspect.entity.ActiveInventoryNode;
 import org.onap.aai.sparky.viewandinspect.entity.QueryParams;
 import org.onap.aai.sparky.viewandinspect.enumeration.NodeProcessingState;

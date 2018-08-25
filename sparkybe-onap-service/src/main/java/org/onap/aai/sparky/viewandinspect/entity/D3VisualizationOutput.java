@@ -31,7 +31,6 @@ public class D3VisualizationOutput {
   public GraphMeta graphMeta;
   public List<SparkyGraphNode> nodes;
   public List<SparkyGraphLink> links;
-  public InlineMessage inlineMessage;
 
   /**
    * Instantiates a new d 3 visualization output.
@@ -39,7 +38,6 @@ public class D3VisualizationOutput {
   public D3VisualizationOutput() {
     nodes = new ArrayList<SparkyGraphNode>();
     links = new ArrayList<SparkyGraphLink>();
-    inlineMessage = null;
   }
 
   public GraphMeta getGraphMeta() {
@@ -76,14 +74,5 @@ public class D3VisualizationOutput {
   public void addLinks(List<SparkyGraphLink> links) {
     this.links.addAll(links);
   }
-
-  public InlineMessage getInlineMessage() {
-    return inlineMessage;
-  }
-
-  public void setInlineMessage(InlineMessage inlineMessage) {
-    this.inlineMessage = inlineMessage;
-  }
-
 
 }

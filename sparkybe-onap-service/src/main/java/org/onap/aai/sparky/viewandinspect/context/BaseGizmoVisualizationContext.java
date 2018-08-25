@@ -18,7 +18,7 @@
  * limitations under the License.
  * ============LICENSE_END=========================================================
  */
-package org.onap.aai.sparky.viewandinspect.services;
+package org.onap.aai.sparky.viewandinspect.context;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
@@ -38,13 +38,13 @@ import org.onap.aai.sparky.dal.GizmoAdapter;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
 import org.onap.aai.sparky.sync.entity.SearchableEntity;
 import org.onap.aai.sparky.util.NodeUtils;
+import org.onap.aai.sparky.viewandinspect.VisualizationContext;
 import org.onap.aai.sparky.viewandinspect.config.SparkyConstants;
 import org.onap.aai.sparky.viewandinspect.config.VisualizationConfigs;
 import org.onap.aai.sparky.viewandinspect.entity.ActiveInventoryNode;
 import org.onap.aai.sparky.viewandinspect.entity.GizmoEntity;
 import org.onap.aai.sparky.viewandinspect.entity.GizmoRelationshipEntity;
 import org.onap.aai.sparky.viewandinspect.entity.GizmoRelationshipHint;
-import org.onap.aai.sparky.viewandinspect.entity.InlineMessage;
 import org.onap.aai.sparky.viewandinspect.entity.NodeProcessingTransaction;
 import org.onap.aai.sparky.viewandinspect.entity.QueryParams;
 import org.onap.aai.sparky.viewandinspect.enumeration.NodeProcessingAction;
@@ -65,36 +65,35 @@ public class BaseGizmoVisualizationContext implements VisualizationContext {
   private static final Logger LOG =
       LoggerFactory.getInstance().getLogger(BaseGizmoVisualizationContext.class);
 
-  private final GizmoAdapter gizmoAdapter;
+  protected final GizmoAdapter gizmoAdapter;
 
-  private AtomicInteger numLinksDiscovered;
-  private AtomicInteger numSuccessfulLinkResolveFromCache;
-  private AtomicInteger numSuccessfulLinkResolveFromFromServer;
-  private AtomicInteger numFailedLinkResolve;
-  private AtomicInteger aaiWorkOnHand;
+  protected AtomicInteger numLinksDiscovered;
+  protected AtomicInteger numSuccessfulLinkResolveFromCache;
+  protected AtomicInteger numSuccessfulLinkResolveFromFromServer;
+  protected AtomicInteger numFailedLinkResolve;
+  protected AtomicInteger aaiWorkOnHand;
 
-  private VisualizationConfigs visualizationConfigs;
+  protected VisualizationConfigs visualizationConfigs;
 
-  private AtomicInteger totalLinksRetrieved;
+  protected AtomicInteger totalLinksRetrieved;
 
-  private final long contextId;
-  private final String contextIdStr;
-  private long lastProcessStatesSummaryLogInMs = -1;
+  protected final long contextId;
+  protected final String contextIdStr;
+  protected long lastProcessStatesSummaryLogInMs = -1;
 
 
-  private ObjectMapper mapper;
-  private InlineMessage inlineMessage = null;
+  protected ObjectMapper mapper;
 
-  private ExecutorService graphExecutorService;
-  private OxmEntityLookup oxmEntityLookup;
-  private boolean rootNodeFound;
+  protected ExecutorService graphExecutorService;
+  protected OxmEntityLookup oxmEntityLookup;
+  protected boolean rootNodeFound;
 
   /*
    * The node cache is intended to be a flat structure indexed by a primary key to avoid needlessly
    * re-requesting the same self-links over-and-over again, to speed up the overall render time and
    * more importantly to reduce the network cost of determining information we already have.
    */
-  private ConcurrentHashMap<String, ActiveInventoryNode> nodeCache;
+  protected ConcurrentHashMap<String, ActiveInventoryNode> nodeCache;
 
   /**
    * Instantiates a new self link node collector.
@@ -148,7 +147,7 @@ public class BaseGizmoVisualizationContext implements VisualizationContext {
    *
    * @param nodeId the node id
    */
-  private void processSelfLinkResponse(String nodeId) {
+  protected void processSelfLinkResponse(String nodeId) {
 
     if (nodeId == null) {
       LOG.error(AaiUiMsgs.SELF_LINK_PROCESSING_ERROR,
@@ -288,7 +287,7 @@ public class BaseGizmoVisualizationContext implements VisualizationContext {
    *
    * @param nodeId the node id
    */
-  private void performSelfLinkResolve(String nodeId) {
+  protected void performSelfLinkResolve(String nodeId) {
 
     if (nodeId == null) {
       LOG.error(AaiUiMsgs.SELF_LINK_PROCESSING_ERROR,
@@ -456,7 +455,7 @@ public class BaseGizmoVisualizationContext implements VisualizationContext {
    * @param queryParams the query params
    * @return true, if successful
    */
-  private void findAndMarkRootNode(QueryParams queryParams) {
+  protected void findAndMarkRootNode(QueryParams queryParams) {
 
     if (isRootNodeFound()) {
       return;
@@ -511,7 +510,7 @@ public class BaseGizmoVisualizationContext implements VisualizationContext {
     dumpThrottledWorkOnHandLog(false);
   }
 
-  private void dumpThrottledWorkOnHandLog(boolean override) {
+  protected void dumpThrottledWorkOnHandLog(boolean override) {
 
     if ((lastProcessStatesSummaryLogInMs < 0)
         || ((System.currentTimeMillis() > (lastProcessStatesSummaryLogInMs + 5000))) || override) {
@@ -572,7 +571,7 @@ public class BaseGizmoVisualizationContext implements VisualizationContext {
    *
    * @param rootNodeDiscovered the root node discovered
    */
-  private void processCurrentNodeStates(QueryParams queryParams) {
+  protected void processCurrentNodeStates(QueryParams queryParams) {
     /*
      * Force an evaluation of node depths before determining if we should limit state-based
      * traversal or processing.
@@ -635,14 +634,6 @@ public class BaseGizmoVisualizationContext implements VisualizationContext {
     return numFailedLinkResolve.get();
   }
 
-  public InlineMessage getInlineMessage() {
-    return inlineMessage;
-  }
-
-  public void setInlineMessage(InlineMessage inlineMessage) {
-    this.inlineMessage = inlineMessage;
-  }
-
   public ConcurrentHashMap<String, ActiveInventoryNode> getNodeCache() {
     return nodeCache;
   }
@@ -654,7 +645,7 @@ public class BaseGizmoVisualizationContext implements VisualizationContext {
    *
    * @param nodeId the node id
    */
-  private void processInitialState(String nodeId) {
+  protected void processInitialState(String nodeId) {
 
     if (nodeId == null) {
       LOG.error(AaiUiMsgs.FAILED_TO_PROCESS_INITIAL_STATE, "Node id is null");
@@ -713,7 +704,7 @@ public class BaseGizmoVisualizationContext implements VisualizationContext {
    * @param skeletonNode the skeleton node
    * @param queryParams the query params
    */
-  private void processSearchableEntity(SearchableEntity searchTargetEntity,
+  protected void processSearchableEntity(SearchableEntity searchTargetEntity,
       QueryParams queryParams) {
 
     if (searchTargetEntity == null) {
@@ -741,7 +732,7 @@ public class BaseGizmoVisualizationContext implements VisualizationContext {
     nodeCache.putIfAbsent(newNode.getNodeId(), newNode);
   }
 
-  private int getTotalWorkOnHand() {
+  protected int getTotalWorkOnHand() {
 
     int numNodesWithPendingStates = 0;
 
@@ -781,7 +772,7 @@ public class BaseGizmoVisualizationContext implements VisualizationContext {
    *
    * @return true, if successful
    */
-  private void processOutstandingWork(QueryParams queryParams) {
+  protected void processOutstandingWork(QueryParams queryParams) {
 
     while (getTotalWorkOnHand() > 0) {
 
@@ -852,7 +843,7 @@ public class BaseGizmoVisualizationContext implements VisualizationContext {
   /**
    * Verify outbound neighbors.
    */
-  private void verifyOutboundNeighbors() {
+  protected void verifyOutboundNeighbors() {
 
     for (ActiveInventoryNode srcNode : nodeCache.values()) {
 
@@ -879,7 +870,7 @@ public class BaseGizmoVisualizationContext implements VisualizationContext {
   /**
    * Evaluate node depths.
    */
-  private void evaluateNodeDepths() {
+  protected void evaluateNodeDepths() {
 
     int numChanged = -1;
     int numAttempts = 0;
@@ -954,7 +945,7 @@ public class BaseGizmoVisualizationContext implements VisualizationContext {
    */
 
 
-  private String getEntityTypePrimaryKeyName(String entityType) {
+  protected String getEntityTypePrimaryKeyName(String entityType) {
 
     if (entityType == null) {
       LOG.error(AaiUiMsgs.FAILED_TO_DETERMINE,

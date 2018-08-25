@@ -18,7 +18,7 @@
  * limitations under the License.
  * ============LICENSE_END=========================================================
  */
-package org.onap.aai.sparky.viewandinspect.services;
+package org.onap.aai.sparky.viewandinspect.context;
 
 import static java.util.concurrent.CompletableFuture.supplyAsync;
 
@@ -43,10 +43,10 @@ import org.onap.aai.sparky.dal.ActiveInventoryAdapter;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
 import org.onap.aai.sparky.sync.entity.SearchableEntity;
 import org.onap.aai.sparky.util.NodeUtils;
+import org.onap.aai.sparky.viewandinspect.VisualizationContext;
 import org.onap.aai.sparky.viewandinspect.config.SparkyConstants;
 import org.onap.aai.sparky.viewandinspect.config.VisualizationConfigs;
 import org.onap.aai.sparky.viewandinspect.entity.ActiveInventoryNode;
-import org.onap.aai.sparky.viewandinspect.entity.InlineMessage;
 import org.onap.aai.sparky.viewandinspect.entity.NodeProcessingTransaction;
 import org.onap.aai.sparky.viewandinspect.entity.QueryParams;
 import org.onap.aai.sparky.viewandinspect.entity.Relationship;
@@ -68,42 +68,41 @@ import com.fasterxml.jackson.databind.PropertyNamingStrategy;
  */
 public class BaseVisualizationContext implements VisualizationContext {
 
-  private static final int MAX_DEPTH_EVALUATION_ATTEMPTS = 100;
-  private static final String DEPTH_ALL_MODIFIER = "?depth=all";
-  private static final String NODES_ONLY_MODIFIER = "?nodes-only";
-  private static final String SERVICE_INSTANCE = "service-instance";
+  protected static final int MAX_DEPTH_EVALUATION_ATTEMPTS = 100;
+  protected static final String DEPTH_ALL_MODIFIER = "?depth=all";
+  protected static final String NODES_ONLY_MODIFIER = "?nodes-only";
+  protected static final String SERVICE_INSTANCE = "service-instance";
 
   private static final Logger LOG = LoggerFactory.getInstance().getLogger(
       BaseVisualizationContext.class);
-  private final ActiveInventoryAdapter aaiAdapter;
+  protected final ActiveInventoryAdapter aaiAdapter;
 
-  private int maxSelfLinkTraversalDepth;
-  private AtomicInteger numLinksDiscovered;
-  private AtomicInteger numSuccessfulLinkResolveFromCache;
-  private AtomicInteger numSuccessfulLinkResolveFromFromServer;
-  private AtomicInteger numFailedLinkResolve;
-  private AtomicInteger aaiWorkOnHand;
+  protected int maxSelfLinkTraversalDepth;
+  protected AtomicInteger numLinksDiscovered;
+  protected AtomicInteger numSuccessfulLinkResolveFromCache;
+  protected AtomicInteger numSuccessfulLinkResolveFromFromServer;
+  protected AtomicInteger numFailedLinkResolve;
+  protected AtomicInteger aaiWorkOnHand;
  
-  private VisualizationConfigs visualizationConfigs;
+  protected VisualizationConfigs visualizationConfigs;
 
-  private AtomicInteger totalLinksRetrieved;
+  protected AtomicInteger totalLinksRetrieved;
 
-  private final long contextId;
-  private final String contextIdStr;
+  protected final long contextId;
+  protected final String contextIdStr;
 
-  private ObjectMapper mapper;
-  private InlineMessage inlineMessage = null;
+  protected ObjectMapper mapper;
   
-  private ExecutorService aaiExecutorService;
-  private OxmEntityLookup oxmEntityLookup;
-  private boolean rootNodeFound;
+  protected ExecutorService aaiExecutorService;
+  protected OxmEntityLookup oxmEntityLookup;
+  protected boolean rootNodeFound;
 
   /*
    * The node cache is intended to be a flat structure indexed by a primary key to avoid needlessly
    * re-requesting the same self-links over-and-over again, to speed up the overall render time and
    * more importantly to reduce the network cost of determining information we already have.
    */
-  private ConcurrentHashMap<String, ActiveInventoryNode> nodeCache;
+  protected ConcurrentHashMap<String, ActiveInventoryNode> nodeCache;
 
   /**
    * Instantiates a new self link node collector.
@@ -471,7 +470,7 @@ public class BaseVisualizationContext implements VisualizationContext {
    *
    * @param nodeId the node id
    */
-  private void processSelfLinkResponse(String nodeId) {
+  protected void processSelfLinkResponse(String nodeId) {
 
     if (nodeId == null) {
       LOG.error(AaiUiMsgs.SELF_LINK_PROCESSING_ERROR, "Cannot process self link"
@@ -605,7 +604,7 @@ public class BaseVisualizationContext implements VisualizationContext {
 
   }
 
-  private void handleNodeValue(ActiveInventoryNode ain, String fieldName, String key, String value) {
+  protected void handleNodeValue(ActiveInventoryNode ain, String fieldName, String key, String value) {
     if (oxmEntityLookup.getEntityDescriptors().get(fieldName) == null) {
 
       /*
@@ -623,7 +622,7 @@ public class BaseVisualizationContext implements VisualizationContext {
    *
    * @param nodeId the node id
    */
-  private void performSelfLinkResolve(String nodeId) {
+  protected void performSelfLinkResolve(String nodeId) {
 
     if (nodeId == null) {
       LOG.error(AaiUiMsgs.SELF_LINK_PROCESSING_ERROR, "Resolve of self-link"
@@ -744,7 +743,7 @@ public class BaseVisualizationContext implements VisualizationContext {
    *
    * @param nodeId the node id
    */
-  private void processNeighbors(String nodeId) {
+  protected void processNeighbors(String nodeId) {
     
     if (nodeId == null) {
       LOG.error(AaiUiMsgs.SELF_LINK_PROCESS_NEIGHBORS_ERROR, "Failed to process"
@@ -795,7 +794,7 @@ public class BaseVisualizationContext implements VisualizationContext {
    * @param queryParams the query params
    * @return true, if successful
    */
-  private void findAndMarkRootNode(QueryParams queryParams) {
+  protected void findAndMarkRootNode(QueryParams queryParams) {
 
     if (isRootNodeFound()) {
       return;
@@ -817,7 +816,7 @@ public class BaseVisualizationContext implements VisualizationContext {
    * Process current node states.
    *
    */
-  private void processCurrentNodeStates(QueryParams queryParams) {
+  protected void processCurrentNodeStates(QueryParams queryParams) {
     /*
      * Force an evaluation of node depths before determining if we should limit state-based
      * traversal or processing.
@@ -896,7 +895,7 @@ public class BaseVisualizationContext implements VisualizationContext {
    * @param attributeGroup the attribute group
    * @return true, if successful
    */
-  private boolean addComplexGroupToNode(ActiveInventoryNode targetNode, JsonNode attributeGroup) {
+  protected boolean addComplexGroupToNode(ActiveInventoryNode targetNode, JsonNode attributeGroup) {
 
     if (attributeGroup == null) {
       targetNode.changeState(NodeProcessingState.ERROR,
@@ -986,14 +985,6 @@ public class BaseVisualizationContext implements VisualizationContext {
     return numFailedLinkResolve.get();
   }
 
-  public InlineMessage getInlineMessage() {
-    return inlineMessage;
-  }
-
-  public void setInlineMessage(InlineMessage inlineMessage) {
-    this.inlineMessage = inlineMessage;
-  }
-
   public void setMaxSelfLinkTraversalDepth(int depth) {
     this.maxSelfLinkTraversalDepth = depth;
   }
@@ -1014,7 +1005,7 @@ public class BaseVisualizationContext implements VisualizationContext {
    * @param pkeyNames the pkey names
    * @return the relationship primary key values
    */
-  private String getRelationshipPrimaryKeyValues(Relationship r, String entityType,
+  protected String getRelationshipPrimaryKeyValues(Relationship r, String entityType,
       List<String> pkeyNames) {
 
     StringBuilder sb = new StringBuilder(64);
@@ -1066,7 +1057,7 @@ public class BaseVisualizationContext implements VisualizationContext {
    * @param keyName the key name
    * @return the string
    */
-  private String extractKeyValueFromRelationData(Relationship r, String keyName) {
+  protected String extractKeyValueFromRelationData(Relationship r, String keyName) {
 
     RelationshipData[] rdList = r.getRelationshipData();
 
@@ -1086,7 +1077,7 @@ public class BaseVisualizationContext implements VisualizationContext {
    * @param ain the ain
    * @return true, if successful
    */
-  private boolean addNodeQueryParams(ActiveInventoryNode ain) {
+  protected boolean addNodeQueryParams(ActiveInventoryNode ain) {
 
     if (ain == null) {
       LOG.error(AaiUiMsgs.FAILED_TO_DETERMINE_NODE_ID, "ActiveInventoryNode is null");
@@ -1158,7 +1149,7 @@ public class BaseVisualizationContext implements VisualizationContext {
    * @param relationshipList the relationship list
    * @return true, if successful
    */
-  private boolean addSelfLinkRelationshipChildren(ActiveInventoryNode processingNode,
+  protected boolean addSelfLinkRelationshipChildren(ActiveInventoryNode processingNode,
       RelationshipList relationshipList) {
 
     if (relationshipList == null) {
@@ -1171,7 +1162,6 @@ public class BaseVisualizationContext implements VisualizationContext {
 
     Relationship[] relationshipArray = relationshipList.getRelationshipList();
     OxmEntityDescriptor descriptor = null;
-    String repairedSelfLink = null;
 
     if (relationshipArray != null) {
 
@@ -1254,7 +1244,7 @@ public class BaseVisualizationContext implements VisualizationContext {
    *
    * @param nodeId the node id
    */
-  private void processInitialState(String nodeId) {
+  protected void processInitialState(String nodeId) {
 
     if (nodeId == null) {
       LOG.error(AaiUiMsgs.FAILED_TO_PROCESS_INITIAL_STATE, "Node id is null");
@@ -1313,7 +1303,7 @@ public class BaseVisualizationContext implements VisualizationContext {
    * @param skeletonNode the skeleton node
    * @param queryParams the query params
    */
-  private void processSearchableEntity(SearchableEntity searchTargetEntity, QueryParams queryParams) {
+  protected void processSearchableEntity(SearchableEntity searchTargetEntity, QueryParams queryParams) {
 
     if (searchTargetEntity == null) {
       return;
@@ -1361,7 +1351,7 @@ public class BaseVisualizationContext implements VisualizationContext {
     nodeCache.putIfAbsent(newNode.getNodeId(), newNode);
   }
 
-  private int getTotalWorkOnHand() {
+  protected int getTotalWorkOnHand() {
     
     int numNodesWithPendingStates = 0;
     
@@ -1419,7 +1409,7 @@ public class BaseVisualizationContext implements VisualizationContext {
    *
    * @return true, if successful
    */
-  private void processOutstandingWork(QueryParams queryParams) {
+  protected void processOutstandingWork(QueryParams queryParams) {
     
     while (getTotalWorkOnHand() > 0) {
 
@@ -1484,7 +1474,7 @@ public class BaseVisualizationContext implements VisualizationContext {
   /**
    * Verify outbound neighbors.
    */
-  private void verifyOutboundNeighbors() {
+  protected void verifyOutboundNeighbors() {
 
     for (ActiveInventoryNode srcNode : nodeCache.values()) {
 
@@ -1511,7 +1501,7 @@ public class BaseVisualizationContext implements VisualizationContext {
   /**
    * Evaluate node depths.
    */
-  private void evaluateNodeDepths() {
+  protected void evaluateNodeDepths() {
 
     int numChanged = -1;
     int numAttempts = 0;
@@ -1586,7 +1576,7 @@ public class BaseVisualizationContext implements VisualizationContext {
    */
 
   
-  private String getEntityTypePrimaryKeyName(String entityType) {
+  protected String getEntityTypePrimaryKeyName(String entityType) {
 
     if (entityType == null) {
       LOG.error(AaiUiMsgs.FAILED_TO_DETERMINE, "node primary key"

@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.aai.sparky.viewandinspect.EntityTypeAggregation;
@@ -36,12 +35,6 @@ public class GraphMetaTest {
 		graphMeta.setAaiEntityNodeDescriptors(aaiEntityNodeDescriptors);
 		assertNotNull(graphMeta.getAaiEntityNodeDescriptors());
 		
-		graphMeta.setNumLinksResolvedSuccessfullyFromCache(3);
-		assertEquals(3,graphMeta.getNumLinksResolvedSuccessfullyFromCache());
-		graphMeta.setNumLinksResolvedSuccessfullyFromServer(25);
-		assertEquals(25,graphMeta.getNumLinksResolvedSuccessfullyFromServer());
-		graphMeta.setNumLinkResolveFailed(3);
-		assertEquals(3,graphMeta.getNumLinkResolveFailed());
 		graphMeta.setNumNodes(25);
 		assertEquals(25,graphMeta.getNumNodes());
 		graphMeta.setNumLinks(3);

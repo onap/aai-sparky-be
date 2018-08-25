@@ -33,7 +33,6 @@ import org.onap.aai.cl.eelf.LoggerFactory;
 import org.onap.aai.sparky.config.SparkyResourceLoader;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
 import org.onap.aai.sparky.subscription.config.SubscriptionConfig;
-import org.onap.aai.sparky.util.ConfigHelper;
 import org.onap.aai.sparky.viewandinspect.config.VisualizationConfigs;
 import org.onap.aai.sparky.viewandinspect.entity.ActiveInventoryNode;
 import org.onap.aai.sparky.viewandinspect.entity.D3VisualizationOutput;
@@ -41,6 +40,7 @@ import org.onap.aai.sparky.viewandinspect.entity.GraphMeta;
 import org.onap.aai.sparky.viewandinspect.entity.NodeDebug;
 import org.onap.aai.sparky.viewandinspect.entity.SparkyGraphLink;
 import org.onap.aai.sparky.viewandinspect.entity.SparkyGraphNode;
+import org.onap.aai.sparky.viewandinspect.enumeration.NodeProcessingState;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -263,13 +263,17 @@ public class VisualizationTransformer {
    * Builds the flat node array from graph collection.
    *
    * @param nodeMap the node map
+   * @param graphMeta information + stats about the graph
    */
   /*
    * Recursive function to walk multi-graph nodes and children to build a folded resource target
    * graph.
    */
-  public void buildFlatNodeArrayFromGraphCollection(Map<String, ActiveInventoryNode> nodeMap) {
+  public void buildFlatNodeArrayFromGraphCollection(Map<String, ActiveInventoryNode> nodeMap,
+      GraphMeta graphMeta) {
 
+    int numNodesWithErrors = 0;
+    
     for (ActiveInventoryNode n : nodeMap.values()) {
 
       if (n.getNodeDepth() <= this.visualizationConfigs.getMaxSelfLinkTraversalDepth()) {
@@ -277,6 +281,10 @@ public class VisualizationTransformer {
         SparkyGraphNode jsonNode = new SparkyGraphNode(n, this.visualizationConfigs, this.subConfig);
 
         jsonNode.getNodeMeta().setClassName(this.visualizationConfigs.getGeneralNodeClassName());
+        
+        if (n.getState() == NodeProcessingState.ERROR) {
+          numNodesWithErrors++;
+        }
 
         if (this.visualizationConfigs.isVisualizationDebugEnabled()) {
 
@@ -296,6 +304,9 @@ public class VisualizationTransformer {
         }
       }
     }
+    
+    graphMeta.setNumNodeWithProcessingErrors(numNodesWithErrors);
+    
   }
 
 }
