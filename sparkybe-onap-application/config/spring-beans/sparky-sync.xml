@@ -74,7 +74,7 @@
 		class="org.onap.aai.sparky.aggregation.sync.AggregationSyncControllerFactory"
 		init-method="registerController">
 
-		<constructor-arg ref="searchServiceRestEndpointConfi" />
+		<constructor-arg ref="searchServiceRestEndpointConfig" />
 		<constructor-arg ref="aggregationSyncControllerConfig" />
 		<constructor-arg ref="syncControllerRegistry" />
 		<constructor-arg ref="suggestionEntityLookup" />
