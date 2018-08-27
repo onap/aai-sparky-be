@@ -1,0 +1,11 @@
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+1: Shwetank Dave <shwetank.dave@amdocs.com>
+Code-Review+1: Daniel Silverthorn <daniel.silverthorn@amdocs.com>
+Code-Review+1: Richard von Dadelszen <richard.vondadelszen@amdocs.com>
+Code-Review+1: Reneal  Rogers <reneal.rogers@amdocs.com>
+Code-Review+2: Steven Blimkie <Steven.Blimkie@amdocs.com>
+Submitted-by: Steven Blimkie <Steven.Blimkie@amdocs.com>
+Submitted-at: Mon, 27 Aug 2018 15:29:38 +0000
+Reviewed-on: https://gerrit.onap.org/r/62893
+Project: aai/sparky-be
+Branch: refs/heads/master
