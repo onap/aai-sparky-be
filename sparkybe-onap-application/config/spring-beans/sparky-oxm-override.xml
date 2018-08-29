@@ -6,7 +6,7 @@
 
 	<bean id="oxmModelLoader" class="org.onap.aai.sparky.config.oxm.OxmModelLoader"
 		init-method="loadModel">
-		<constructor-arg name="apiVersionOverride" value="${oxm.apiVersionOverride}" />
+		<constructor-arg name="apiVersionOverride" value="${oxm.apiVersion}" />
 		<constructor-arg ref="oxmModelProcessorSet" />
 		<constructor-arg ref="nodeIngestor" />
 	</bean>

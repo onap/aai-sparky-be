@@ -26,7 +26,8 @@ import org.eclipse.persistence.jaxb.dynamic.DynamicJAXBContext;
 import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
 import org.onap.aai.nodes.NodeIngestor;
-import org.onap.aai.setup.Version;
+import org.onap.aai.setup.SchemaVersion;
+import org.onap.aai.setup.SchemaVersions;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
 
 public class OxmModelLoader {
@@ -42,25 +43,24 @@ public class OxmModelLoader {
    * specified version, and that stream will be returned if available.
    */
 
-  protected Version oxmApiVersion;
+  protected SchemaVersion oxmApiVersion;
   protected Set<OxmModelProcessor> processors;
 
   private NodeIngestor nodeIngestor;
 
-  public OxmModelLoader(Version apiVersionOverride, Set<OxmModelProcessor> oxmModelProcessors,
-      NodeIngestor nodeIngestor) {
-    this.oxmApiVersion = apiVersionOverride;
+  public OxmModelLoader(String apiVersionOverride, Set<OxmModelProcessor> oxmModelProcessors, NodeIngestor nodeIngestor) {
+    this.oxmApiVersion = new SchemaVersion(apiVersionOverride);
     this.processors = oxmModelProcessors;
     this.nodeIngestor = nodeIngestor;
   }
 
-  public OxmModelLoader(Set<OxmModelProcessor> oxmModelProcessors, NodeIngestor nodeIngestor) {
-    this.oxmApiVersion = Version.getLatest();
+  public OxmModelLoader(Set<OxmModelProcessor> oxmModelProcessors, NodeIngestor nodeIngestor, SchemaVersions schemaVersions) {
+    this.oxmApiVersion = schemaVersions.getDefaultVersion();
     this.processors = oxmModelProcessors;
     this.nodeIngestor = nodeIngestor;
   }
 
-  public Version getLatestVersionNum() {
+  public SchemaVersion getOxmApiVersion() {
     return oxmApiVersion;
   }
 
@@ -94,6 +94,8 @@ public class OxmModelLoader {
 
       for (OxmModelProcessor processor : processors) {
 
+        System.out.println("DIS IS PROCESSEIRRI - " + processor.getClass());
+        
         try {
 
           processor.processOxmModel(oxmContext);

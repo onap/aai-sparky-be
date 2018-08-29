@@ -23,8 +23,8 @@
 		<nexusproxy>https://nexus.onap.org</nexusproxy>
 		<camel-spring-boot.version>2.20.0</camel-spring-boot.version>
 		<config-home>${basedir}/</config-home>
-		<version.aai.aai-schema-ingest>1.2.4</version.aai.aai-schema-ingest>
-		<version.aai-schema>1.2.4</version.aai-schema>
+		<version.aai.aai-schema-ingest>1.3.0-SNAPSHOT</version.aai.aai-schema-ingest>
+		<version.aai-schema>1.3.0-SNAPSHOT</version.aai-schema>
 		<sitePath>/content/sites/site/org/onap/aai/sparky-be/${project.artifactId}/${project.version}</sitePath>
 		<onap.nexus.url>https://nexus.onap.org</onap.nexus.url>
 	</properties>

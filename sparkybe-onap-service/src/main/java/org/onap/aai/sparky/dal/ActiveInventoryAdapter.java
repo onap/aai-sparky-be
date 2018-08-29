@@ -145,7 +145,7 @@ public class ActiveInventoryAdapter {
 
     String versionStr;
     if (oxmModelLoader != null) {
-      versionStr = String.valueOf(oxmModelLoader.getLatestVersionNum());
+      versionStr = String.valueOf(oxmModelLoader.getOxmApiVersion());
     } else {
       throw new RuntimeException("Unable to resolve aai version.");
     }

@@ -25,7 +25,7 @@ ADD scripts/* $MICRO_HOME/bin/
 COPY static/ $MICRO_HOME/static/
 COPY config/ $MICRO_HOME/config/
 
-COPY oxm $MICRO_HOME/oxm/
+COPY oxm $MICRO_HOME/
 
 RUN chmod 755 $MICRO_HOME/bin/*
 RUN chmod 755 $MICRO_HOME/lib/*
