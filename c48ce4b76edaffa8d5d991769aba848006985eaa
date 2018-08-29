@@ -1,0 +1,38 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "1a76adc5_ec3ecf8b",
+        "filename": "sparkybe-onap-application/config/schemaIngest.properties",
+        "patchSetId": 3
+      },
+      "lineNbr": 7,
+      "author": {
+        "id": 1041
+      },
+      "writtenOn": "2018-08-29T19:33:53Z",
+      "side": 1,
+      "message": "Very minor: New is kind of relative term. What is new today will be old tomorrow. So in future let us avoid it",
+      "revId": "c48ce4b76edaffa8d5d991769aba848006985eaa",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "1a76adc5_cc60b3a7",
+        "filename": "sparkybe-onap-service/src/test/java/org/onap/aai/sparky/dal/GizmoAdapterTest.java",
+        "patchSetId": 3
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 1041
+      },
+      "writtenOn": "2018-08-29T19:33:53Z",
+      "side": 1,
+      "message": "Why are we adding a file that is completely commented?",
+      "revId": "c48ce4b76edaffa8d5d991769aba848006985eaa",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
