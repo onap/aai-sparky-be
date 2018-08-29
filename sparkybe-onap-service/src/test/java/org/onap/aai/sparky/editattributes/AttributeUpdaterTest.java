@@ -37,7 +37,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.onap.aai.restclient.client.OperationResult;
-import org.onap.aai.setup.Version;
+import org.onap.aai.setup.SchemaVersion;
 import org.onap.aai.sparky.config.oxm.OxmEntityDescriptor;
 import org.onap.aai.sparky.config.oxm.OxmEntityLookup;
 import org.onap.aai.sparky.config.oxm.OxmModelLoader;
@@ -74,12 +74,11 @@ public class AttributeUpdaterTest {
     OxmEntityDescriptor desc = new OxmEntityDescriptor();
     desc.addPrimaryKeyName("hostname");
     desc.setEntityName("pserver");
-    Version version = Version.V11;
     OxmEntityLookup entityLookup = new OxmEntityLookup();
     entityLookup.addEntityDescriptor("pserver", desc);
 
     AttributeUpdater updater =
-        new AttributeUpdater(new OxmModelLoader(version, null, null), entityLookup, aaiAdapter);
+        new AttributeUpdater(new OxmModelLoader("v11", null, null), entityLookup, aaiAdapter);
     Map<String, Object> attributes = new HashMap<>();
     attributes.put("prov-status", "PREPROV");
     attributes.put("in-maint", "true");
@@ -97,7 +96,7 @@ public class AttributeUpdaterTest {
    */
   @Test(expected = NullPointerException.class)
   public void testGetEditObjectFromUri() throws Exception {
-    Version version = Version.V11;
+    String version = "v11";
     OxmModelLoader loader = new OxmModelLoader(version, null, null);
 
 
@@ -147,7 +146,7 @@ public class AttributeUpdaterTest {
     OxmEntityLookup entityLookup = new OxmEntityLookup();
     entityLookup.addEntityDescriptor("pserver", desc);
 
-    AttributeUpdater updater = new AttributeUpdater(new OxmModelLoader(null,null), entityLookup, aaiAdapter);
+    AttributeUpdater updater = new AttributeUpdater(new OxmModelLoader("v11",null,null), entityLookup, aaiAdapter);
     // Test entity uri without "/aai/version/"
     String result = updater.getRelativeUri("cloud-infrastructure/pservers/pserver/mtznjtax101");
     assertEquals("/cloud-infrastructure/pservers/pserver/mtznjtax101", result);
