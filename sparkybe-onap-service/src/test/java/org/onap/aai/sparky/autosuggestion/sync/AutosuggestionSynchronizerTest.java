@@ -18,7 +18,6 @@ import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.onap.aai.nodes.NodeIngestor;
 import org.onap.aai.restclient.client.OperationResult;
-import org.onap.aai.setup.Version;
 import org.onap.aai.sparky.config.oxm.OxmEntityDescriptor;
 import org.onap.aai.sparky.config.oxm.OxmEntityLookup;
 import org.onap.aai.sparky.config.oxm.OxmModelLoader;
@@ -172,8 +171,7 @@ public class AutosuggestionSynchronizerTest {
     suggestionEntityLookup = new SuggestionEntityLookup(filtersConfig);
 
     processors.add(suggestionEntityLookup);
-    Version v = Version.V11;
-    OxmModelLoader oxmModelLoader = new OxmModelLoader(v, processors,nodeInjest);
+    OxmModelLoader oxmModelLoader = new OxmModelLoader("v11", processors,nodeInjest);
     oxmModelLoader.loadModel();
     
     

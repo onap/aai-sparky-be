@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.aai.restclient.enums.RestAuthenticationMode;
-import org.onap.aai.setup.Version;
 import org.onap.aai.sparky.config.oxm.OxmEntityLookup;
 import org.onap.aai.sparky.config.oxm.OxmModelLoader;
 import org.onap.aai.sparky.dal.rest.config.RestEndpointConfig;
@@ -20,12 +19,10 @@ public class ActiveInventoryAdapterTest {
   private RestEndpointConfig endpointConfig;
   private ActiveInventoryAdapter aaiAdapter;
   private ArrayList<String> queryParams;
-  private Version version;
 
   @Before
   public void init() throws Exception {
-    version= Version.V11;
-    oxmModelLoader = new OxmModelLoader(version,null,null);
+    oxmModelLoader = new OxmModelLoader("v11",null,null);
     oxmEntityLookup = new OxmEntityLookup();
     endpointConfig = new RestEndpointConfig();
     queryParams = new ArrayList<String>();

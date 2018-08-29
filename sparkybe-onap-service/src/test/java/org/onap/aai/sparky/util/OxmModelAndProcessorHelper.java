@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.onap.aai.setup.Version;
 import org.onap.aai.sparky.config.SparkyResourceLoader;
 import org.onap.aai.sparky.config.oxm.CrossEntityReferenceLookup;
 import org.onap.aai.sparky.config.oxm.GeoEntityLookup;
@@ -19,7 +18,7 @@ import org.springframework.core.io.DefaultResourceLoader;
 
 public class OxmModelAndProcessorHelper {
 
-	public static Version API_VERSION_OVERRIDE = Version.V11;
+	public static String API_VERSION_OVERRIDE = "v11";
 
 	private OxmModelLoader modelLoader;
 	private Set<OxmModelProcessor> processors;

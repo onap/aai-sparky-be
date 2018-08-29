@@ -156,7 +156,7 @@ public class AttributeUpdater {
 
     String versionStr = null;
     if (oxmModelLoader != null) {
-      versionStr = String.valueOf(oxmModelLoader.getLatestVersionNum());
+      versionStr = String.valueOf(oxmModelLoader.getOxmApiVersion());
     }
 
     return "/aai/v" + versionStr;
@@ -263,7 +263,7 @@ public class AttributeUpdater {
     String version = getVersionFromUri(objectUri);
 
     if ( null == version ) {
-      version = "v" + String.valueOf(oxmModelLoader.getLatestVersionNum());
+      version = "v" + String.valueOf(oxmModelLoader.getOxmApiVersion());
     }
     object.setSchemaVersion(version);
 
