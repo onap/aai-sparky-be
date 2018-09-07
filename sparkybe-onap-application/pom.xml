@@ -22,7 +22,7 @@
 		<serverPort>9517</serverPort>
 		<sslport>8000</sslport>
 		<nexusproxy>https://nexus.onap.org</nexusproxy>
-		<camel-spring-boot.version>2.20.0</camel-spring-boot.version>
+		<camel-spring-boot.version>2.22.0</camel-spring-boot.version>
 		<config-home>${basedir}/</config-home>
 		<docker.location>${basedir}/target</docker.location>
 		<docker.image.name>sparky-be</docker.image.name>
@@ -47,7 +47,7 @@
  			<dependency>
 				<groupId>ch.qos.logback</groupId>
 				<artifactId>logback-classic</artifactId>
-				<version>1.2.1</version>
+				<version>1.2.3</version>
 			</dependency>
 
  
