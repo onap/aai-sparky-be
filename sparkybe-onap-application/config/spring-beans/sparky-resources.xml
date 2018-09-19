@@ -12,7 +12,7 @@
 		<property name="connectTimeoutInMs" value="60000" />
 		<property name="readTimeoutInMs" value="30000" />
 		<property name="basicAuthUserName" value="${resources.basicAuthUserName:}" />
-		<property name="basicAuthPassword" value="${resources.basicAuthPassword:}" />
+		<property name="basicAuthPassword" value="OBF:${resources.basicAuthPassword:}" />
 		<property name="certFileName" value="/auth/${resources.client-cert}" />
 		<property name="certPassword" value="OBF:${resources.client-cert-password}" />
 		<property name="truststoreFileName" value="/auth/${resources.trust-store}" />
