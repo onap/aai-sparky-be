@@ -1,5 +1,7 @@
 # Sparky - Inventory UI Service
 
+[![alt text](https://bestpractices.coreinfrastructure.org/projects/1737/badge)](https://bestpractices.coreinfrastructure.org/projects/1737)
+
 ## Overview
 _Sparky_ is a service that interacts with AAI and provides users a UI to view and analyze AAI data. The main goal behind _Sparky_ is providing a more user friendly and clear view of AAI data.
 
