@@ -1,0 +1,9 @@
+Code-Review+1: Arul Nambi <arul.n.mohan@gmail.com>
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Code-Review+1: Francis Paquette <Francis.Paquette@amdocs.com>
+Code-Review+2: James Forsyth <jf2512@att.com>
+Submitted-by: James Forsyth <jf2512@att.com>
+Submitted-at: Fri, 12 Oct 2018 22:28:28 +0000
+Reviewed-on: https://gerrit.onap.org/r/70392
+Project: aai/sparky-be
+Branch: refs/heads/master
