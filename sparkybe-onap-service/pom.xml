@@ -9,7 +9,7 @@
 
 	<groupId>org.onap.aai.sparky-be</groupId>
 	<artifactId>sparkybe-onap-service</artifactId>
-	<version>1.3.0-SNAPSHOT</version>
+	<version>1.3.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<properties>
