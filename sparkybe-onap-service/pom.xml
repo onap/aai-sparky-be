@@ -17,7 +17,7 @@
 		<version.jacoco.maven.plugin>0.7.9</version.jacoco.maven.plugin>
 		<frontEndGroupdId>org.onap.aai</frontEndGroupdId>
 		<frontEndArtifactId>sparky-fe</frontEndArtifactId>
-		<frontEndVersion>1.3.0-SNAPSHOT</frontEndVersion>
+		<frontEndVersion>1.3.0</frontEndVersion>
 		<serverPort>9517</serverPort>
 		<sslport>8000</sslport>
 		<nexusproxy>https://nexus.onap.org</nexusproxy>
