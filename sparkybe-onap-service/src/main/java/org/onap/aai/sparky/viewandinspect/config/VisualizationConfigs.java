@@ -21,6 +21,7 @@
 package org.onap.aai.sparky.viewandinspect.config;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.onap.aai.sparky.config.SparkyResourceLoader;
 
@@ -60,6 +61,22 @@ public class VisualizationConfigs {
 
   public void setShallowEntities(ArrayList<String> shallowEntities) {
     this.shallowEntities = shallowEntities;
+  }
+  
+  public void setDelimitedShallowEntities(String delimitedShallowEntites) {
+
+    if (delimitedShallowEntites == null) {
+      this.shallowEntities = new ArrayList<>();
+      return;
+    }
+
+    try {
+      this.shallowEntities =
+          new ArrayList<String>(Arrays.asList(delimitedShallowEntites.split(",")));
+    } catch (Exception exc) {
+      this.shallowEntities = new ArrayList<>();
+    }
+
   }
 
   /**

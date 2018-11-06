@@ -46,6 +46,7 @@ public class PerformActiveInventoryRetrieval implements Supplier<NetworkTransact
   private NetworkTransaction txn;
   private ActiveInventoryAdapter aaiAdapter;
   private Map<String, String> contextMap;
+  private String uiRequestType;
 
   /**
    * Instantiates a new perform active inventory retrieval.
@@ -54,10 +55,11 @@ public class PerformActiveInventoryRetrieval implements Supplier<NetworkTransact
    * @param aaiProvider the aai provider
    */
   public PerformActiveInventoryRetrieval(NetworkTransaction txn,
-      ActiveInventoryAdapter aaiAdapter) {
+      ActiveInventoryAdapter aaiAdapter,String uiRequestType) {
     this.txn = txn;
     this.aaiAdapter = aaiAdapter;
     this.contextMap = MDC.getCopyOfContextMap();
+    this.uiRequestType = uiRequestType;
   }
 
   /* (non-Javadoc)
@@ -74,7 +76,7 @@ public class PerformActiveInventoryRetrieval implements Supplier<NetworkTransact
     try {
 
       final String absoluteSelfLink = aaiAdapter.repairSelfLink(txn.getLink(), txn.getQueryParameters());
-      result = aaiAdapter.queryActiveInventoryWithRetries(absoluteSelfLink, "application/json", 5);
+      result = aaiAdapter.queryActiveInventoryWithRetries(absoluteSelfLink, "application/json", 5,uiRequestType);
     } catch (Exception exc) {
       logger.error(AaiUiMsgs.ERROR_GENERIC,"Failure to resolve self link from AAI.  Error = " + exc.getMessage());
       result = new OperationResult(500,

@@ -37,6 +37,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.onap.aai.restclient.client.OperationResult;
 import org.onap.aai.sparky.config.oxm.OxmEntityLookup;
+import org.onap.aai.sparky.util.NodeUtils;
 import org.onap.aai.sparky.viewandinspect.config.VisualizationConfigs;
 
 public class ActiveInventoryNodeTest {
@@ -118,8 +119,8 @@ public class ActiveInventoryNodeTest {
 			assertNotNull(activeInventoryNode.getEntityType());
 			assertNotNull(activeInventoryNode.dumpNodeTree(true));
 			assertNotNull(activeInventoryNode.getProcessingErrorCauses());
-			assertNull(activeInventoryNode.calculateEditAttributeUri("Invalid-link"));
-			assertNull(activeInventoryNode.calculateEditAttributeUri("aai/v[\\d]/"));
+			assertNull(NodeUtils.calculateEditAttributeUri("Invalid-link"));
+			assertNull(NodeUtils.calculateEditAttributeUri("aai/v[\\d]/"));
 			activeInventoryNode.processPathedSelfLinkResponse("jsonResp","startNodeType","startNodeResourceKey");
 			activeInventoryNode.processPathedSelfLinkResponse(null,"startNodeType","startNodeResourceKey");
 			activeInventoryNode.processPathedSelfLinkResponse("","startNodeType","startNodeResourceKey");

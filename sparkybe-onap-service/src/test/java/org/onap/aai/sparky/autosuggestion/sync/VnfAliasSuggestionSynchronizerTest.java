@@ -228,19 +228,19 @@ public class VnfAliasSuggestionSynchronizerTest {
 
     Mockito
         .when(aaiAdapter.queryActiveInventoryWithRetries(Matchers.contains("generic-vnf-1"),
-            Mockito.anyString(), Mockito.anyInt()))
+            Mockito.anyString(), Mockito.anyInt(),Mockito.anyString()))
         .thenReturn(new OperationResult(200, TestResourceLoader
             .getTestResourceDataJson("/sync/aai/generic-vnf-generic-vnf-1_full_depth.json")));
 
     Mockito
         .when(aaiAdapter.queryActiveInventoryWithRetries(Matchers.contains("generic-vnf-2"),
-            Mockito.anyString(), Mockito.anyInt()))
+            Mockito.anyString(), Mockito.anyInt(),Mockito.anyString()))
         .thenReturn(new OperationResult(200, TestResourceLoader
             .getTestResourceDataJson("/sync/aai/generic-vnf-generic-vnf-2_full_depth.json")));
 
     Mockito
         .when(aaiAdapter.queryActiveInventoryWithRetries(Matchers.contains("generic-vnf-3"),
-            Mockito.anyString(), Mockito.anyInt()))
+            Mockito.anyString(), Mockito.anyInt(),Mockito.anyString()))
         .thenReturn(new OperationResult(200, TestResourceLoader
             .getTestResourceDataJson("/sync/aai/generic-vnf-generic-vnf-3_full_depth.json")));
 
@@ -310,19 +310,19 @@ public class VnfAliasSuggestionSynchronizerTest {
 
     Mockito
         .when(aaiAdapter.queryActiveInventoryWithRetries(Matchers.contains("generic-vnf-1"),
-            Mockito.anyString(), Mockito.anyInt()))
+            Mockito.anyString(), Mockito.anyInt(),Mockito.anyString()))
         .thenReturn(new OperationResult(200, TestResourceLoader
             .getTestResourceDataJson("/sync/aai/generic-vnf-generic-vnf-1_full_depth.json")));
 
     Mockito
         .when(aaiAdapter.queryActiveInventoryWithRetries(Matchers.contains("generic-vnf-2"),
-            Mockito.anyString(), Mockito.anyInt()))
+            Mockito.anyString(), Mockito.anyInt(),Mockito.anyString()))
         .thenReturn(new OperationResult(200, TestResourceLoader
             .getTestResourceDataJson("/sync/aai/generic-vnf-generic-vnf-2_full_depth.json")));
 
     Mockito
         .when(aaiAdapter.queryActiveInventoryWithRetries(Matchers.contains("generic-vnf-3"),
-            Mockito.anyString(), Mockito.anyInt()))
+            Mockito.anyString(), Mockito.anyInt(),Mockito.anyString()))
         .thenReturn(new OperationResult(200, TestResourceLoader
             .getTestResourceDataJson("/sync/aai/generic-vnf-generic-vnf-3_full_depth.json")));
 

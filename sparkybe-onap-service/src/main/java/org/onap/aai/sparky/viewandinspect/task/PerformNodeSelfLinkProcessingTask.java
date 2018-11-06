@@ -106,7 +106,7 @@ public class PerformNodeSelfLinkProcessingTask implements Supplier<NodeProcessin
 
     try {
       opResult = aaiAdapter.queryActiveInventoryWithRetries(link, "application/json",
-          aaiAdapter.getEndpointConfig().getNumRequestRetries());
+          aaiAdapter.getEndpointConfig().getNumRequestRetries(),"req");
     } catch (Exception exc) {
       opResult = new OperationResult();
       opResult.setResult(500, "Querying AAI with retry failed due to an exception.");

@@ -70,7 +70,7 @@ import com.google.common.util.concurrent.ThreadFactoryBuilder;
 public class NodeUtils {
   private static SecureRandom sRandom = new SecureRandom();
   
-  private static final Pattern AAI_VERSION_PREFIX = Pattern.compile("/aai/v[0-9]+/(.*)");
+  private static final Pattern URL_VERSION_PREFIX = Pattern.compile("/v[0-9]+/(.*)");
   private static final Pattern OXM_VERSION_PREFIX = Pattern.compile(".*_v([0-9]+).*");
   private static final Pattern GIZMO_VERSION_PREFIX = Pattern.compile("[/]*services/inventory/v[0-9]+/(.*)");
   private static final Pattern GIZMO_RELATIONSHIP_VERSION_PREFIX = Pattern.compile("services/inventory/relationships/v[0-9]+/(.*)");
@@ -125,7 +125,7 @@ public class NodeUtils {
 
       String rawPath = new URI(selfLinkUri).getRawPath();
       
-      Matcher m = AAI_VERSION_PREFIX.matcher(rawPath);
+      Matcher m = URL_VERSION_PREFIX.matcher(rawPath);
 
       if (m.matches()) {
 

@@ -478,7 +478,7 @@ public class AggregationSynchronizer extends AbstractEntitySynchronizer
 
         aaiWorkOnHand.incrementAndGet();
 
-        supplyAsync(new PerformActiveInventoryRetrieval(txn, aaiAdapter), aaiExecutor)
+        supplyAsync(new PerformActiveInventoryRetrieval(txn, aaiAdapter,"sync"), aaiExecutor)
             .whenComplete((result, error) -> {
 
               aaiWorkOnHand.decrementAndGet();

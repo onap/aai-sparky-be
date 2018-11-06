@@ -9,6 +9,7 @@
                 <constructor-arg ref="oxmModelLoader" />
                 <constructor-arg ref="oxmEntityLookup" />
                 <constructor-arg ref="activeInventoryAdapter" />
+                <constructor-arg name="domain" value="${resources.domain:aai}" />
         </bean>
 
         <bean id="attributeEditProcessor"

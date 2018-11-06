@@ -72,7 +72,7 @@ public class PerformSelfLinkDeterminationTask implements Supplier<SelfLinkDeterm
     OperationResult opResult = null;
     try {
       opResult = aaiAdapter.queryActiveInventoryWithRetries(txn.getQueryString(), "application/json",
-          aaiAdapter.getEndpointConfig().getNumRequestRetries());
+          aaiAdapter.getEndpointConfig().getNumRequestRetries(),"req");
     } catch (Exception exc) {
       opResult = new OperationResult();
       opResult.setResult(500, "Querying AAI with retry failed due to an exception.");

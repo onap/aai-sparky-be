@@ -25,6 +25,10 @@
 		<constructor-arg ref="oxmModelLoader" />
 		<constructor-arg ref="oxmEntityLookup" />
 		<constructor-arg ref="aaiRestEndpointConfig" />
+		<constructor-arg name="domain" value="${resources.domain:aai}" />
+		
+		<property name="appPartnerName" value="${resources.appPartnerName:AAI-UI}" />
+		<property name="syncPartnerName" value="${resources.syncPartnerName:AAI-UI-SYNC}" />
 	</bean>
 
 </beans>
