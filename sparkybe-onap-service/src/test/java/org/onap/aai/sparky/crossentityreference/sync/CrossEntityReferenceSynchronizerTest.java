@@ -216,20 +216,20 @@ public class CrossEntityReferenceSynchronizerTest {
     Mockito
         .when(aaiAdapter.queryActiveInventoryWithRetries(
             Matchers.contains("service-subscription-2"), Mockito.anyString(),
-            Mockito.anyInt()))
+            Mockito.anyInt(),Mockito.anyString()))
         .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
             "/sync/aai/service-subscription-service-subscription-2.json")));
 
     Mockito
         .when(aaiAdapter.queryActiveInventoryWithRetries(
             Matchers.contains("service-subscription-1"), Mockito.anyString(),
-            Mockito.anyInt()))
+            Mockito.anyInt(),Mockito.anyString()))
         .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
             "/sync/aai/service-subscription-service-subscription-1.json")));
 
     Mockito
         .when(aaiAdapter.queryActiveInventoryWithRetries(Matchers.contains("service-subscription-3"),
-            Mockito.anyString(), Mockito.anyInt()))
+            Mockito.anyString(), Mockito.anyInt(),Mockito.anyString()))
         .thenReturn(new OperationResult(200, TestResourceLoader
             .getTestResourceDataJson("/sync/aai/service-subscription-service-subscription-3.json")));
     
@@ -298,70 +298,70 @@ public class CrossEntityReferenceSynchronizerTest {
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
         Matchers.contains("generic-query/service-instance-59"), Mockito.anyString(),
-        Mockito.anyInt()))
+        Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-59.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
         Matchers.contains("generic-query/service-instance-54"), Mockito.anyString(),
-        Mockito.anyInt()))
+        Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-54.json")));
     
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
         Matchers.contains("generic-query/service-instance-55"), Mockito.anyString(),
-        Mockito.anyInt()))
+        Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-55.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
         Matchers.contains("generic-query/service-instance-50"), Mockito.anyString(),
-        Mockito.anyInt()))
+        Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-50.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
         Matchers.contains("generic-query/service-instance-52"), Mockito.anyString(),
-        Mockito.anyInt()))
+        Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-52.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
         Matchers.contains("generic-query/service-instance-57"), Mockito.anyString(),
-        Mockito.anyInt()))
+        Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-57.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
         Matchers.contains("generic-query/service-instance-53"), Mockito.anyString(),
-        Mockito.anyInt()))
+        Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-53.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
         Matchers.contains("generic-query/service-instance-58"), Mockito.anyString(),
-        Mockito.anyInt()))
+        Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-58.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
         Matchers.contains("generic-query/service-instance-51"), Mockito.anyString(),
-        Mockito.anyInt()))
+        Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-51.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
         Matchers.contains("generic-query/service-instance-56"), Mockito.anyString(),
-        Mockito.anyInt()))
+        Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-56.json")));
 
@@ -520,20 +520,20 @@ public class CrossEntityReferenceSynchronizerTest {
     Mockito
         .when(aaiAdapter.queryActiveInventoryWithRetries(
             Matchers.contains("service-subscription-2"), Mockito.anyString(),
-            Mockito.anyInt()))
+            Mockito.anyInt(),Mockito.anyString()))
         .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
             "/sync/aai/service-subscription-service-subscription-2.json")));
 
     Mockito
         .when(aaiAdapter.queryActiveInventoryWithRetries(
             Matchers.contains("service-subscription-1"), Mockito.anyString(),
-            Mockito.anyInt()))
+            Mockito.anyInt(),Mockito.anyString()))
         .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
             "/sync/aai/service-subscription-service-subscription-1.json")));
 
     Mockito
         .when(aaiAdapter.queryActiveInventoryWithRetries(Matchers.contains("service-subscription-3"),
-            Mockito.anyString(), Mockito.anyInt()))
+            Mockito.anyString(), Mockito.anyInt(),Mockito.anyString()))
         .thenReturn(new OperationResult(200, TestResourceLoader
             .getTestResourceDataJson("/sync/aai/service-subscription-service-subscription-3.json")));
     
@@ -602,70 +602,70 @@ public class CrossEntityReferenceSynchronizerTest {
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
         Matchers.contains("generic-query/service-instance-59"), Mockito.anyString(),
-        Mockito.anyInt()))
+        Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-59.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
         Matchers.contains("generic-query/service-instance-54"), Mockito.anyString(),
-        Mockito.anyInt()))
+        Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-54.json")));
     
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
         Matchers.contains("generic-query/service-instance-55"), Mockito.anyString(),
-        Mockito.anyInt()))
+        Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-55.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
         Matchers.contains("generic-query/service-instance-50"), Mockito.anyString(),
-        Mockito.anyInt()))
+        Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-50.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
         Matchers.contains("generic-query/service-instance-52"), Mockito.anyString(),
-        Mockito.anyInt()))
+        Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-52.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
         Matchers.contains("generic-query/service-instance-57"), Mockito.anyString(),
-        Mockito.anyInt()))
+        Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-57.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
         Matchers.contains("generic-query/service-instance-53"), Mockito.anyString(),
-        Mockito.anyInt()))
+        Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-53.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
         Matchers.contains("generic-query/service-instance-58"), Mockito.anyString(),
-        Mockito.anyInt()))
+        Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-58.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
         Matchers.contains("generic-query/service-instance-51"), Mockito.anyString(),
-        Mockito.anyInt()))
+        Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-51.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
         Matchers.contains("generic-query/service-instance-56"), Mockito.anyString(),
-        Mockito.anyInt()))
+        Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-56.json")));
 
@@ -832,20 +832,20 @@ public class CrossEntityReferenceSynchronizerTest {
     Mockito
         .when(aaiAdapter.queryActiveInventoryWithRetries(
             Matchers.contains("service-subscription-2"), Mockito.anyString(),
-            Mockito.anyInt()))
+            Mockito.anyInt(),Mockito.anyString()))
         .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
             "/sync/aai/service-subscription-service-subscription-2.json")));
 
     Mockito
         .when(aaiAdapter.queryActiveInventoryWithRetries(
             Matchers.contains("service-subscription-1"), Mockito.anyString(),
-            Mockito.anyInt()))
+            Mockito.anyInt(),Mockito.anyString()))
         .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
             "/sync/aai/service-subscription-service-subscription-1.json")));
 
     Mockito
         .when(aaiAdapter.queryActiveInventoryWithRetries(Matchers.contains("service-subscription-3"),
-            Mockito.anyString(), Mockito.anyInt()))
+            Mockito.anyString(), Mockito.anyInt(),Mockito.anyString()))
         .thenReturn(new OperationResult(200, TestResourceLoader
             .getTestResourceDataJson("/sync/aai/service-subscription-service-subscription-3.json")));
     
@@ -914,70 +914,70 @@ public class CrossEntityReferenceSynchronizerTest {
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
         Matchers.contains("generic-query/service-instance-59"), Mockito.anyString(),
-        Mockito.anyInt()))
+        Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-59.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
         Matchers.contains("generic-query/service-instance-54"), Mockito.anyString(),
-        Mockito.anyInt()))
+        Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-54.json")));
     
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
         Matchers.contains("generic-query/service-instance-55"), Mockito.anyString(),
-        Mockito.anyInt()))
+        Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-55.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
         Matchers.contains("generic-query/service-instance-50"), Mockito.anyString(),
-        Mockito.anyInt()))
+        Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-50.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
         Matchers.contains("generic-query/service-instance-52"), Mockito.anyString(),
-        Mockito.anyInt()))
+        Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-52.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
         Matchers.contains("generic-query/service-instance-57"), Mockito.anyString(),
-        Mockito.anyInt()))
+        Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-57.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
         Matchers.contains("generic-query/service-instance-53"), Mockito.anyString(),
-        Mockito.anyInt()))
+        Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-53.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
         Matchers.contains("generic-query/service-instance-58"), Mockito.anyString(),
-        Mockito.anyInt()))
+        Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-58.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
         Matchers.contains("generic-query/service-instance-51"), Mockito.anyString(),
-        Mockito.anyInt()))
+        Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-51.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
         Matchers.contains("generic-query/service-instance-56"), Mockito.anyString(),
-        Mockito.anyInt()))
+        Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-56.json")));
 

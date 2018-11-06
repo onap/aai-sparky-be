@@ -22,5 +22,6 @@
 	<bean id="searchServiceAdapter" class="org.onap.aai.sparky.search.SearchServiceAdapter">
 		<constructor-arg ref="searchServiceRestEndpointConfig" />
 		<constructor-arg name="serviceApiVersion" value="v1" />
+		<property name="appPartnerName" value="${searchservice.appPartnerName:AAI-UI}" />
 	</bean>
 </beans>

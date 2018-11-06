@@ -15,20 +15,7 @@
 		<property name="numOfThreadsToFetchNodeIntegrity" value="20" />
 		<property name="makeAllNeighborsBidirectional" value="false" />
 		<property name="resourceLoader" ref="sparkyResourceLoader" />
-
-		<property name="shallowEntities">
-			<list value-type="java.lang.String">
-				<value>cloud-region</value>
-				<value>complex</value>
-				<value>vnf-image</value>
-				<value>image</value>
-				<value>flavor</value>
-				<value>availability-zone</value>
-				<value>tenant</value>
-				<value>network-profile</value>
-				<value>l-interface</value>
-			</list>
-		</property>
+		<property name="delimitedShallowEntities" value="${resources.delimitedShallowEntities:cloud-region,complex,vnf-image,image,flavor,availability-zone,tenant,network-profile,l-interface}" />
 
 	</bean>
 

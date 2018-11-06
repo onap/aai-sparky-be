@@ -27,7 +27,7 @@ public class ActiveInventoryAdapterTest {
     endpointConfig = new RestEndpointConfig();
     queryParams = new ArrayList<String>();
     endpointConfig.setRestAuthenticationMode(RestAuthenticationMode.SSL_BASIC);
-    aaiAdapter = new ActiveInventoryAdapter(oxmModelLoader, oxmEntityLookup, endpointConfig);
+    aaiAdapter = new ActiveInventoryAdapter(oxmModelLoader, oxmEntityLookup, endpointConfig,"aai");
   }
 
 
@@ -42,9 +42,9 @@ public class ActiveInventoryAdapterTest {
     assertNotNull(aaiAdapter.getGenericQueryForSelfLink("", queryParams));
     assertNull(aaiAdapter.getSelfLinkForEntity("pserver", "PrimaryKeyName", "PrimaryKeyValue"));
     assertNotNull(
-        aaiAdapter.queryActiveInventory("https://server.proxy:8443/aai/v11/", "application/json"));
+        aaiAdapter.queryActiveInventory("https://server.proxy:8443/aai/v11/", "application/json","sync"));
     assertNotNull(aaiAdapter.queryActiveInventoryWithRetries(
-        "https://server.proxy:8443/aai/v11/business/customers/", "application/json", 4));
+        "https://server.proxy:8443/aai/v11/business/customers/", "application/json", 4,"sync"));
     aaiAdapter.setOxmEntityLookup(oxmEntityLookup);
     assertNotNull(aaiAdapter.getOxmEntityLookup());
     aaiAdapter.setEndpointConfig(endpointConfig);

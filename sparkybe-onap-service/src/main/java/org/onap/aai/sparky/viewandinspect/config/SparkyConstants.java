@@ -91,7 +91,7 @@ public class SparkyConstants {
   // Injected Attributes
   public static String URI_ATTR_NAME = "uri";
 
-  public static final String URI_VERSION_REGEX_PATTERN = "aai/v[\\d]+/";
+  public static final String URI_VERSION_REGEX_PATTERN = "/v[\\d]+/";
   
   public static final String getConfigPath(String configFile){
     return CONFIG_HOME + FILESEP + configFile;

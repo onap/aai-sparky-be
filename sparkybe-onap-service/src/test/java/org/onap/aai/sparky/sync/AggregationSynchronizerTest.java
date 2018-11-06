@@ -171,7 +171,7 @@ public class AggregationSynchronizerTest {
 					.thenReturn("https://server.proxy:8443/aai/v11/cloud-infrastructure/complexes/complex" + x);
 
 			Mockito.when(aaiAdapter.queryActiveInventoryWithRetries(Matchers.contains("complex" + x),
-					Mockito.anyString(), Mockito.anyInt()))
+					Mockito.anyString(), Mockito.anyInt(),Mockito.anyString()))
 					.thenReturn(new OperationResult(200, TestResourceLoader
 							.getTestResourceDataJson("/sync/aai/complex" + x + "_fullDepth_aaiEntityRetrieval.json")));
 
@@ -233,7 +233,7 @@ public class AggregationSynchronizerTest {
 					.thenReturn("https://server.proxy:8443/aai/v11/cloud-infrastructure/complexes/complex" + x);
 
 			Mockito.when(aaiAdapter.queryActiveInventoryWithRetries(Matchers.contains("complex" + x),
-					Mockito.anyString(), Mockito.anyInt()))
+					Mockito.anyString(), Mockito.anyInt(),Mockito.anyString()))
 					.thenReturn(new OperationResult(200, TestResourceLoader
 							.getTestResourceDataJson("/sync/aai/complex" + x + "_fullDepth_aaiEntityRetrieval.json")));
 
@@ -297,7 +297,7 @@ public class AggregationSynchronizerTest {
 					.thenReturn("https://server.proxy:8443/aai/v11/cloud-infrastructure/complexes/complex" + x);
 
 			Mockito.when(aaiAdapter.queryActiveInventoryWithRetries(Matchers.contains("complex" + x),
-					Mockito.anyString(), Mockito.anyInt()))
+					Mockito.anyString(), Mockito.anyInt(),Mockito.anyString()))
 					.thenReturn(new OperationResult(200, TestResourceLoader
 							.getTestResourceDataJson("/sync/aai/complex" + x + "_fullDepth_aaiEntityRetrieval.json")));
 

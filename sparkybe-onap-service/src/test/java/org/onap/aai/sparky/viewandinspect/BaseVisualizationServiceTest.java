@@ -64,7 +64,7 @@ public class BaseVisualizationServiceTest {
 
   private void initializeMocksForBuildVisualizationUsingGenericQueryTest() {
     Mockito.when(mockAaiAdapter.queryActiveInventoryWithRetries(Mockito.anyString(),
-        Mockito.anyString(), Mockito.anyInt())).thenReturn(null);
+        Mockito.anyString(), Mockito.anyInt(),Mockito.anyString())).thenReturn(null);
   }
 
 }

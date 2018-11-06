@@ -133,16 +133,18 @@ public class AttributeUpdater {
   private UserValidator validator;
   private OxmModelLoader oxmModelLoader;
   private OxmEntityLookup oxmEntityLookup;
+  private String domain;
   
   /**
    * Instantiates a new attribute updater.
    * @throws AttributeUpdateException 
    */
-  public AttributeUpdater(OxmModelLoader oxmModelLoader, OxmEntityLookup oxmEntityLookup, ActiveInventoryAdapter activeInventoryAdapter) throws AttributeUpdateException {
+  public AttributeUpdater(OxmModelLoader oxmModelLoader, OxmEntityLookup oxmEntityLookup, ActiveInventoryAdapter activeInventoryAdapter,String domain) throws AttributeUpdateException {
     super();
     this.oxmModelLoader = oxmModelLoader;
     this.oxmEntityLookup = oxmEntityLookup;
     this.aaiAdapter = activeInventoryAdapter;
+    this.domain = domain;
     
     try {
       this.validator = new UserValidator();
@@ -159,7 +161,7 @@ public class AttributeUpdater {
       versionStr = String.valueOf(oxmModelLoader.getOxmApiVersion());
     }
 
-    return "/aai/v" + versionStr;
+    return "/" + domain + "/v" + versionStr;
 
   }
   

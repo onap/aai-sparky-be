@@ -31,8 +31,6 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
@@ -54,7 +52,6 @@ public class ActiveInventoryNode {
 
   private static final Logger LOG = LoggerFactory.getInstance().getLogger(
       ActiveInventoryNode.class);
-  private static final String URIRegexPattern = "aai/v[\\d]/";
 
   public static final int DEFAULT_INIT_NODE_DEPTH = 1000;
 
@@ -567,22 +564,6 @@ public class ActiveInventoryNode {
 
   public String getSelfLink() {
     return selfLink;
-  }
-
-  /**
-   * Calculate edit attribute uri.
-   *
-   * @param link the link
-   * @return the string
-   */
-  public String calculateEditAttributeUri(String link) {
-    String uri = null;
-    Pattern pattern = Pattern.compile(URIRegexPattern);
-    Matcher matcher = pattern.matcher(link);
-    if (matcher.find()) {
-      uri = link.substring(matcher.end());
-    }
-    return uri;
   }
 
   /**

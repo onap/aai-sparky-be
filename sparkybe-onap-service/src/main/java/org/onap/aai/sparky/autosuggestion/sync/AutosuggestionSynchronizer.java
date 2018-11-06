@@ -158,6 +158,7 @@ public class AutosuggestionSynchronizer extends AbstractEntitySynchronizer
         suggestionEntityLookup.getSuggestionSearchEntityDescriptors();
 
     if (descriptorMap.isEmpty()) {
+      this.allWorkEnumerated = true;
       LOG.error(AaiUiMsgs.ERROR_LOADING_OXM_SUGGESTIBLE_ENTITIES);
       LOG.info(AaiUiMsgs.ERROR_LOADING_OXM_SUGGESTIBLE_ENTITIES);
       return OperationState.ERROR;
@@ -335,7 +336,7 @@ public class AutosuggestionSynchronizer extends AbstractEntitySynchronizer
 
         aaiWorkOnHand.incrementAndGet();
 
-        supplyAsync(new PerformActiveInventoryRetrieval(txn, aaiAdapter), aaiExecutor)
+        supplyAsync(new PerformActiveInventoryRetrieval(txn, aaiAdapter,"sync"), aaiExecutor)
             .whenComplete((result, error) -> {
 
               aaiWorkOnHand.decrementAndGet();

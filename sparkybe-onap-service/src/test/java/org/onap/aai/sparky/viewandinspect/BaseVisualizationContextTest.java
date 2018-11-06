@@ -152,7 +152,7 @@ public class BaseVisualizationContextTest {
 
     Mockito
         .when(aaiAdapter.queryActiveInventoryWithRetries(Matchers.contains("customer-4"),
-            Mockito.anyString(), Mockito.anyInt()))
+            Mockito.anyString(), Mockito.anyInt(),Mockito.anyString()))
         .thenReturn(new OperationResult(200, TestResourceLoader
             .getTestResourceDataJson("/sync/aai/aai-resources/customer/customer-4.json")));
 
@@ -160,7 +160,7 @@ public class BaseVisualizationContextTest {
 
     Mockito
         .when(aaiAdapter.queryActiveInventoryWithRetries(Matchers.contains("tenant/tenant-1"),
-            Mockito.anyString(), Mockito.anyInt()))
+            Mockito.anyString(), Mockito.anyInt(),Mockito.anyString()))
         .thenReturn(new OperationResult(200, TestResourceLoader
             .getTestResourceDataJson("/sync/aai/aai-resources/tenant/tenant-1.json")));
 
@@ -176,7 +176,7 @@ public class BaseVisualizationContextTest {
     Mockito
         .when(aaiAdapter.queryActiveInventoryWithRetries(
             Matchers.contains("generic-query/service-subscription-2"), Mockito.anyString(),
-            Mockito.anyInt()))
+            Mockito.anyInt(),Mockito.anyString()))
         .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
             "/sync/aai/aai-traversal/generic-query/service-subscription/service-subscription-2.json")));
 
@@ -191,7 +191,7 @@ public class BaseVisualizationContextTest {
     Mockito
         .when(aaiAdapter.queryActiveInventoryWithRetries(
             Matchers.contains("generic-query/service-instance-id/service-instance-54"),
-            Mockito.anyString(), Mockito.anyInt()))
+            Mockito.anyString(), Mockito.anyInt(),Mockito.anyString()))
         .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
             "/sync/aai/aai-traversal/generic-query/service-instance/service-instance-54.json")));
 
@@ -206,7 +206,7 @@ public class BaseVisualizationContextTest {
     Mockito
         .when(aaiAdapter.queryActiveInventoryWithRetries(
             Matchers.contains("generic-query/service-instance-id/service-instance-55"),
-            Mockito.anyString(), Mockito.anyInt()))
+            Mockito.anyString(), Mockito.anyInt(),Mockito.anyString()))
         .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
             "/sync/aai/aai-traversal/generic-query/service-instance/service-instance-55.json")));
 

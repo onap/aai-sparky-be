@@ -78,7 +78,7 @@ public class AttributeUpdaterTest {
     entityLookup.addEntityDescriptor("pserver", desc);
 
     AttributeUpdater updater =
-        new AttributeUpdater(new OxmModelLoader("v11", null, null), entityLookup, aaiAdapter);
+        new AttributeUpdater(new OxmModelLoader("v11", null, null), entityLookup, aaiAdapter,"aai");
     Map<String, Object> attributes = new HashMap<>();
     attributes.put("prov-status", "PREPROV");
     attributes.put("in-maint", "true");
@@ -122,7 +122,7 @@ public class AttributeUpdaterTest {
 
 
     AttributeUpdater updater =
-        new AttributeUpdater(new OxmModelLoader(version, null, null), entityLookup, aaiAdapter);
+        new AttributeUpdater(new OxmModelLoader(version, null, null), entityLookup, aaiAdapter,"aai");
     AaiEditObject result = updater.getEditObjectFromUri(null);
     assertEquals("Pserver", result.getObjectType());
     assertEquals("pserver", result.getRootElement());
@@ -146,7 +146,7 @@ public class AttributeUpdaterTest {
     OxmEntityLookup entityLookup = new OxmEntityLookup();
     entityLookup.addEntityDescriptor("pserver", desc);
 
-    AttributeUpdater updater = new AttributeUpdater(new OxmModelLoader("v11",null,null), entityLookup, aaiAdapter);
+    AttributeUpdater updater = new AttributeUpdater(new OxmModelLoader("v11",null,null), entityLookup, aaiAdapter,"aai");
     // Test entity uri without "/aai/version/"
     String result = updater.getRelativeUri("cloud-infrastructure/pservers/pserver/mtznjtax101");
     assertEquals("/cloud-infrastructure/pservers/pserver/mtznjtax101", result);

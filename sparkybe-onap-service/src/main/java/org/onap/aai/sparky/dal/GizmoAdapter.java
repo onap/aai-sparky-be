@@ -50,229 +50,231 @@ import org.onap.aai.sparky.util.NodeUtils;
 
 public class GizmoAdapter {
 
-	private static final Logger LOG = LoggerFactory.getInstance().getLogger(GizmoAdapter.class);
+  private static final Logger LOG = LoggerFactory.getInstance().getLogger(GizmoAdapter.class);
 
-	private static final String HEADER_TRANS_ID = "X-TransactionId";
-	private static final String HEADER_FROM_APP_ID = "X-FromAppId";
-	private static final String HEADER_AUTHORIZATION = "Authorization";
+  private static final String HEADER_TRANS_ID = "X-TransactionId";
+  private static final String HEADER_FROM_APP_ID = "X-FromAppId";
+  private static final String HEADER_AUTHORIZATION = "Authorization";
 
-	private static final String HTTP_SCHEME = "http";
-	private static final String HTTPS_SCHEME = "https";
+  private static final String HTTP_SCHEME = "http";
+  private static final String HTTPS_SCHEME = "https";
 
-	private static final String TRANSACTION_ID_PREFIX = "txnId-";
-	private static final String UI_APP_NAME = "AAI-UI";
+  private static final String TRANSACTION_ID_PREFIX = "txnId-";
+  private static final String UI_APP_NAME = "AAI-UI";
 
-	private OxmModelLoader oxmModelLoader;
+  private OxmModelLoader oxmModelLoader;
 
-	private RestEndpointConfig endpointConfig;
+  private RestEndpointConfig endpointConfig;
 
-	private RestClient restClient;
+  private RestClient restClient;
 
-	private String inventoryBasePath;
-	private String relationshipsBasePath;
+  private String inventoryBasePath;
+  private String relationshipsBasePath;
+  private String appPartnerName = "";
 
-	/**
-	 * Instantiates a new active inventory adapter.
-	 * 
-	 * @throws RestClientConstructionException
-	 *
-	 */
+  /**
+   * Instantiates a new active inventory adapter.
+   * 
+   * @throws RestClientConstructionException
+   *
+   */
 
-	public GizmoAdapter(OxmModelLoader oxmModelLoader, RestEndpointConfig endpointConfig)
-			throws ElasticSearchOperationException, IOException, RestClientConstructionException {
+  public GizmoAdapter(OxmModelLoader oxmModelLoader, RestEndpointConfig endpointConfig)
+      throws ElasticSearchOperationException, IOException, RestClientConstructionException {
 
-		this.oxmModelLoader = oxmModelLoader;
-		this.endpointConfig = endpointConfig;
-		this.restClient = RestClientFactory.buildClient(endpointConfig);
+    this.oxmModelLoader = oxmModelLoader;
+    this.endpointConfig = endpointConfig;
+    this.restClient = RestClientFactory.buildClient(endpointConfig);
 
-	}
+  }
 
-	public String getRelationshipsBasePath() {
-		return relationshipsBasePath;
-	}
+  public String getAppPartnerName() {
+    return appPartnerName;
+  }
 
-	public void setRelationshipsBasePath(String relationshipsBasePath) {
-		this.relationshipsBasePath = relationshipsBasePath;
-	}
+  public void setAppPartnerName(String appPartnerName) {
+    this.appPartnerName = appPartnerName;
+  }
 
-	public String getInventoryBasePath() {
-		return inventoryBasePath;
-	}
 
-	public void setInventoryBasePath(String inventoryBasePath) {
-		this.inventoryBasePath = inventoryBasePath;
-	}
+  public String getRelationshipsBasePath() {
+    return relationshipsBasePath;
+  }
 
-	public String getFullInventoryUrl(String resourceUrl) throws Exception {
-		final String host = endpointConfig.getEndpointIpAddress();
-		final String port = endpointConfig.getEndpointServerPort();
-		final String basePath = getInventoryBasePath();
-		return String.format("https://%s:%s%s%s", host, port, basePath, resourceUrl);
-	}
+  public void setRelationshipsBasePath(String relationshipsBasePath) {
+    this.relationshipsBasePath = relationshipsBasePath;
+  }
 
-	public String addServerDetailsToUrl(String resourceUrl) throws Exception {
-		final String host = endpointConfig.getEndpointIpAddress();
-		final String port = endpointConfig.getEndpointServerPort();
-		return String.format("https://%s:%s/%s", host, port, resourceUrl);
-	}
+  public String getInventoryBasePath() {
+    return inventoryBasePath;
+  }
 
-	public String getFullRelationshipUrl(String resourceUrl) throws Exception {
-		final String host = endpointConfig.getEndpointIpAddress();
-		final String port = endpointConfig.getEndpointServerPort();
-		final String basePath = getRelationshipsBasePath();
-		return String.format("https://%s:%s%s%s", host, port, basePath, resourceUrl);
-	}
+  public void setInventoryBasePath(String inventoryBasePath) {
+    this.inventoryBasePath = inventoryBasePath;
+  }
 
-	protected Map<String, List<String>> getMessageHeaders() {
+  public String getFullInventoryUrl(String resourceUrl) throws Exception {
+    final String host = endpointConfig.getEndpointIpAddress();
+    final String port = endpointConfig.getEndpointServerPort();
+    final String basePath = getInventoryBasePath();
+    return String.format("https://%s:%s%s%s", host, port, basePath, resourceUrl);
+  }
 
-		Map<String, List<String>> headers = new HashMap<String, List<String>>();
+  public String addServerDetailsToUrl(String resourceUrl) throws Exception {
+    final String host = endpointConfig.getEndpointIpAddress();
+    final String port = endpointConfig.getEndpointServerPort();
+    return String.format("https://%s:%s/%s", host, port, resourceUrl);
+  }
 
-		headers.putIfAbsent(HEADER_FROM_APP_ID, new ArrayList<String>());
-		headers.get(HEADER_FROM_APP_ID).add(UI_APP_NAME);
+  public String getFullRelationshipUrl(String resourceUrl) throws Exception {
+    final String host = endpointConfig.getEndpointIpAddress();
+    final String port = endpointConfig.getEndpointServerPort();
+    final String basePath = getRelationshipsBasePath();
+    return String.format("https://%s:%s%s%s", host, port, basePath, resourceUrl);
+  }
 
-		headers.putIfAbsent(HEADER_TRANS_ID, new ArrayList<String>());
-		headers.get(HEADER_TRANS_ID).add(TRANSACTION_ID_PREFIX + NodeUtils.getRandomTxnId());
+  protected Map<String, List<String>> getMessageHeaders() {
 
-		if (endpointConfig.getRestAuthenticationMode() == RestAuthenticationMode.SSL_BASIC) {
+    Map<String, List<String>> headers = new HashMap<String, List<String>>();
 
-			headers.putIfAbsent(HEADER_AUTHORIZATION, new ArrayList<String>());
-			headers.get(HEADER_AUTHORIZATION).add(getBasicAuthenticationCredentials());
+    headers.putIfAbsent(HEADER_FROM_APP_ID, new ArrayList<String>());
+    headers.get(HEADER_FROM_APP_ID).add(appPartnerName);
 
-		}
+    headers.putIfAbsent(HEADER_TRANS_ID, new ArrayList<String>());
+    headers.get(HEADER_TRANS_ID).add(TRANSACTION_ID_PREFIX + NodeUtils.getRandomTxnId());
 
-		return headers;
-	}
+    if (endpointConfig.getRestAuthenticationMode() == RestAuthenticationMode.SSL_BASIC) {
 
-	protected String getBasicAuthenticationCredentials() {
-		String usernameAndPassword = String.join(":", endpointConfig.getBasicAuthUserName(),
-				endpointConfig.getBasicAuthPassword());
-		return "Basic " + java.util.Base64.getEncoder().encodeToString(usernameAndPassword.getBytes());
-	}
+      headers.putIfAbsent(HEADER_AUTHORIZATION, new ArrayList<String>());
+      headers.get(HEADER_AUTHORIZATION).add(getBasicAuthenticationCredentials());
 
-	/**
-	 * Our retry conditions should be very specific.
-	 *
-	 * @param r
-	 *            the r
-	 * @return true, if successful
-	 */
-	private boolean shouldRetryRequest(OperationResult r) {
+    }
 
-		if (r == null) {
-			return true;
-		}
+    return headers;
+  }
 
-		int rc = r.getResultCode();
+  protected String getBasicAuthenticationCredentials() {
+    String usernameAndPassword = String.join(":", endpointConfig.getBasicAuthUserName(),
+        endpointConfig.getBasicAuthPassword());
+    return "Basic " + java.util.Base64.getEncoder().encodeToString(usernameAndPassword.getBytes());
+  }
 
-		if (rc == 200) {
-			return false;
-		}
+  /**
+   * Our retry conditions should be very specific.
+   *
+   * @param r the r
+   * @return true, if successful
+   */
+  private boolean shouldRetryRequest(OperationResult r) {
 
-		if (rc == 404) {
-			return false;
-		}
+    if (r == null) {
+      return true;
+    }
 
-		return true;
+    int rc = r.getResultCode();
 
-	}
+    if (rc == 200) {
+      return false;
+    }
 
-	/**
-	 * Query active inventory.
-	 *
-	 * @param url
-	 *            the url
-	 * @param acceptContentType
-	 *            the accept content type
-	 * @return the operation result
-	 */
-	OperationResult queryGizmo(String url, String acceptContentType) {
+    if (rc == 404) {
+      return false;
+    }
 
-		return restClient.get(url, getMessageHeaders(), MediaType.APPLICATION_JSON_TYPE);
+    return true;
 
-	}
+  }
 
-	public RestEndpointConfig getEndpointConfig() {
-		return endpointConfig;
-	}
+  /**
+   * Query active inventory.
+   *
+   * @param url the url
+   * @param acceptContentType the accept content type
+   * @return the operation result
+   */
+  OperationResult queryGizmo(String url, String acceptContentType) {
 
-	public void setEndpointConfig(RestEndpointConfig endpointConfig) {
-		this.endpointConfig = endpointConfig;
-	}
+    return restClient.get(url, getMessageHeaders(), MediaType.APPLICATION_JSON_TYPE);
 
-	public OperationResult queryGizmoWithRetries(String url, String responseType, int numRetries) {
+  }
 
-		OperationResult result = null;
+  public RestEndpointConfig getEndpointConfig() {
+    return endpointConfig;
+  }
 
-		for (int retryCount = 0; retryCount < numRetries; retryCount++) {
+  public void setEndpointConfig(RestEndpointConfig endpointConfig) {
+    this.endpointConfig = endpointConfig;
+  }
 
-			LOG.debug(AaiUiMsgs.QUERY_AAI_RETRY_SEQ, url, String.valueOf(retryCount + 1));
+  public OperationResult queryGizmoWithRetries(String url, String responseType, int numRetries) {
 
-			result = queryGizmo(url, responseType);
+    OperationResult result = null;
 
-			/**
-			 * Record number of times we have attempted the request to later
-			 * summarize how many times we are generally retrying over thousands
-			 * of messages in a sync.
-			 * 
-			 * If the number of retries is surprisingly high, then we need to
-			 * understand why that is as the number of retries is also causing a
-			 * heavier load on AAI beyond the throttling controls we already
-			 * have in place in term of the transaction rate controller and
-			 * number of parallelized threads per task processor.
-			 */
+    for (int retryCount = 0; retryCount < numRetries; retryCount++) {
 
-			result.setNumRetries(retryCount);
+      LOG.debug(AaiUiMsgs.QUERY_AAI_RETRY_SEQ, url, String.valueOf(retryCount + 1));
 
-			if (!shouldRetryRequest(result)) {
+      result = queryGizmo(url, responseType);
 
-				result.setFromCache(false);
-				LOG.debug(AaiUiMsgs.QUERY_AAI_RETRY_DONE_SEQ, url, String.valueOf(retryCount + 1));
+      /**
+       * Record number of times we have attempted the request to later summarize how many times we
+       * are generally retrying over thousands of messages in a sync.
+       * 
+       * If the number of retries is surprisingly high, then we need to understand why that is as
+       * the number of retries is also causing a heavier load on AAI beyond the throttling controls
+       * we already have in place in term of the transaction rate controller and number of
+       * parallelized threads per task processor.
+       */
 
-				return result;
-			}
+      result.setNumRetries(retryCount);
 
-			try {
-				/*
-				 * Sleep between re-tries to be nice to the target system.
-				 */
-				Thread.sleep(50);
-			} catch (InterruptedException exc) {
-				LOG.error(AaiUiMsgs.QUERY_AAI_WAIT_INTERRUPTION, exc.getLocalizedMessage());
-				Thread.currentThread().interrupt();
-				break;
-			}
-			LOG.error(AaiUiMsgs.QUERY_AAI_RETRY_FAILURE_WITH_SEQ, url, String.valueOf(retryCount + 1));
+      if (!shouldRetryRequest(result)) {
 
-		}
+        result.setFromCache(false);
+        LOG.debug(AaiUiMsgs.QUERY_AAI_RETRY_DONE_SEQ, url, String.valueOf(retryCount + 1));
 
-		LOG.info(AaiUiMsgs.QUERY_AAI_RETRY_MAXED_OUT, url);
+        return result;
+      }
 
-		return result;
+      try {
+        /*
+         * Sleep between re-tries to be nice to the target system.
+         */
+        Thread.sleep(50);
+      } catch (InterruptedException exc) {
+        LOG.error(AaiUiMsgs.QUERY_AAI_WAIT_INTERRUPTION, exc.getLocalizedMessage());
+        Thread.currentThread().interrupt();
+        break;
+      }
+      LOG.error(AaiUiMsgs.QUERY_AAI_RETRY_FAILURE_WITH_SEQ, url, String.valueOf(retryCount + 1));
 
-	}
+    }
 
-	/**
-	 * This method adds a scheme, host and port (if missing) to the passed-in
-	 * URI. If these parts of the URI are already present, they will not be
-	 * duplicated.
-	 * 
-	 * @param selflink
-	 *            The URI to repair
-	 * @param queryParams
-	 *            The query parameters as a single string
-	 * @return The corrected URI (i.e. includes a scheme/host/port)
-	 */
+    LOG.info(AaiUiMsgs.QUERY_AAI_RETRY_MAXED_OUT, url);
+
+    return result;
+
+  }
+
+  /**
+   * This method adds a scheme, host and port (if missing) to the passed-in URI. If these parts of
+   * the URI are already present, they will not be duplicated.
+   * 
+   * @param selflink The URI to repair
+   * @param queryParams The query parameters as a single string
+   * @return The corrected URI (i.e. includes a scheme/host/port)
+   */
 
   private String repairGizmoSelfLink(String baseUrlPath, String selfLink, String queryParams) {
 
     if (selfLink == null) {
       return selfLink;
     }
-    
+
     if (selfLink.startsWith("http") || selfLink.startsWith("https")) {
       return selfLink;
     }
-    
+
     UriBuilder builder = UriBuilder.fromPath(baseUrlPath + "/" + selfLink)
         .host(endpointConfig.getEndpointIpAddress())
         .port(Integer.parseInt(endpointConfig.getEndpointServerPort()));
@@ -300,7 +302,7 @@ public class GizmoAdapter {
     return (builder.build().toString() + (includeQueryParams ? queryParams : ""));
 
   }
-	
+
   public String repairRelationshipSelfLink(String selflink, String queryParams) {
     return repairGizmoSelfLink(relationshipsBasePath, selflink, queryParams);
   }
@@ -309,25 +311,27 @@ public class GizmoAdapter {
     return repairGizmoSelfLink(inventoryBasePath, selflink, queryParams);
   }
 
-	public OperationResult getSelfLinksByEntityType(String entityType) throws Exception {
-		
-		if (entityType == null) {
-			throw new NullPointerException("Failed to getSelfLinksByEntityType() because entityType is null");
-		}
+  public OperationResult getSelfLinksByEntityType(String entityType) throws Exception {
 
-		String link = getFullInventoryUrl(entityType);
+    if (entityType == null) {
+      throw new NullPointerException(
+          "Failed to getSelfLinksByEntityType() because entityType is null");
+    }
 
-		return queryGizmoWithRetries(link, "application/json", endpointConfig.getNumRequestRetries());
+    String link = getFullInventoryUrl(entityType);
 
-	}
-	
-	public static String extractResourcePath(String selflink) {
-		try {
-			return new URI(selflink).getRawPath();
-		} catch (URISyntaxException uriSyntaxException) {
-			LOG.error(AaiUiMsgs.ERROR_EXTRACTING_RESOURCE_PATH_FROM_LINK, uriSyntaxException.getMessage());
-			return selflink;
-		}
-	}
+    return queryGizmoWithRetries(link, "application/json", endpointConfig.getNumRequestRetries());
+
+  }
+
+  public static String extractResourcePath(String selflink) {
+    try {
+      return new URI(selflink).getRawPath();
+    } catch (URISyntaxException uriSyntaxException) {
+      LOG.error(AaiUiMsgs.ERROR_EXTRACTING_RESOURCE_PATH_FROM_LINK,
+          uriSyntaxException.getMessage());
+      return selflink;
+    }
+  }
 
 }

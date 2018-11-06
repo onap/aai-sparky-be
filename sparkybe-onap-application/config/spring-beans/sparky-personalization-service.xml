@@ -1,0 +1,19 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+	       http://www.springframework.org/schema/beans
+	       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+
+	<bean id="personalizationConfig"
+		class="org.onap.aai.sparky.personalization.config.PersonalizationConfig">
+		<property name="topLeftHeader" value="${personalization.topLeftHeader:A&amp;AI}" />
+		<property name="htmlDocumentTitle" value="${personalization.htmlDocumentTitle:A&amp;AI}" />
+	</bean>
+
+	<bean id="personalizationServiceProcessor"
+		class="org.onap.aai.sparky.personalization.PersonalizationServiceProvider">
+		<constructor-arg ref="personalizationConfig" />
+	</bean>
+
+</beans>

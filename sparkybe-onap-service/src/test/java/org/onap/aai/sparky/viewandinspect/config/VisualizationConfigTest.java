@@ -57,6 +57,10 @@ public class VisualizationConfigTest {
     visualConfig.setSelectedSearchedNodeClassName(null);
     assertNull(visualConfig.getSelectedSearchedNodeClassName());
     assertNotNull(visualConfig.toString());
+    
+    visualConfig.setDelimitedShallowEntities("cloud-region,network,pserver");
+    assertNotNull(visualConfig.getShallowEntities());
+    assertEquals(3, visualConfig.getShallowEntities().size());
 
 
   }

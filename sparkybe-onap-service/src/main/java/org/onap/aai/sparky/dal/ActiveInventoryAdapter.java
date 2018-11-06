@@ -69,12 +69,19 @@ public class ActiveInventoryAdapter {
   
   private static final String TRANSACTION_ID_PREFIX = "txnId-";
   private static final String UI_APP_NAME = "AAI-UI";
+  private static final String UI_REQUEST_TYPE = "req";
 
   private OxmModelLoader oxmModelLoader;
   private OxmEntityLookup oxmEntityLookup;
   private RestEndpointConfig endpointConfig; 
 
   private RestClient restClient;
+  private String domain;
+  
+  
+  private String appPartnerName = "";
+  private String syncPartnerName = "";
+  private Map<String, List<String>> messageHeaders;
 
   /**
    * Instantiates a new active inventory adapter.
@@ -83,12 +90,13 @@ public class ActiveInventoryAdapter {
    */
 
   public ActiveInventoryAdapter(OxmModelLoader oxmModelLoader, OxmEntityLookup oxmEntityLookup,
-      RestEndpointConfig endpointConfig)
+      RestEndpointConfig endpointConfig,String domain)
       throws ElasticSearchOperationException, IOException, RestClientConstructionException {
 
     this.oxmModelLoader = oxmModelLoader;
     this.oxmEntityLookup = oxmEntityLookup;
     this.endpointConfig = endpointConfig;
+    this.domain = domain;
     
     /*
      * Add support for de-obfuscating basic auth password (if obfuscated)
@@ -107,13 +115,47 @@ public class ActiveInventoryAdapter {
     this.restClient = RestClientFactory.buildClient(endpointConfig);
 
   }
+  
+  public String getAppPartnerName() {
+    return appPartnerName;
+  }
+
+  public void setAppPartnerName(String appPartnerName) {
+    this.appPartnerName = appPartnerName;
+  }
+
+  public String getSyncPartnerName() {
+    return syncPartnerName;
+  }
+
+  public void setSyncPartnerName(String syncPartnerName) {
+    this.syncPartnerName = syncPartnerName;
+  }
 
   protected Map<String, List<String>> getMessageHeaders() {
 
     Map<String, List<String>> headers = new HashMap<String, List<String>>();
 
     headers.putIfAbsent(HEADER_FROM_APP_ID, new ArrayList<String>());
-    headers.get(HEADER_FROM_APP_ID).add(UI_APP_NAME);
+    headers.get(HEADER_FROM_APP_ID).add(appPartnerName);
+
+    headers.putIfAbsent(HEADER_TRANS_ID, new ArrayList<String>());
+    headers.get(HEADER_TRANS_ID).add(TRANSACTION_ID_PREFIX + NodeUtils.getRandomTxnId());
+
+    if (endpointConfig.getRestAuthenticationMode() == RestAuthenticationMode.SSL_BASIC) {
+      headers.putIfAbsent(HEADER_AUTHORIZATION, new ArrayList<String>());
+      headers.get(HEADER_AUTHORIZATION).add(getBasicAuthenticationCredentials());
+    }
+
+    return headers;
+  }
+  
+  protected Map<String, List<String>> getSyncMessageHeaders() {
+
+    Map<String, List<String>> headers = new HashMap<String, List<String>>();
+
+    headers.putIfAbsent(HEADER_FROM_APP_ID, new ArrayList<String>());
+    headers.get(HEADER_FROM_APP_ID).add(syncPartnerName);
 
     headers.putIfAbsent(HEADER_TRANS_ID, new ArrayList<String>());
     headers.get(HEADER_TRANS_ID).add(TRANSACTION_ID_PREFIX + NodeUtils.getRandomTxnId());
@@ -150,7 +192,7 @@ public class ActiveInventoryAdapter {
       throw new RuntimeException("Unable to resolve aai version.");
     }
 
-    return "/aai/" + versionStr.toLowerCase();
+    return "/" + domain + "/" + versionStr.toLowerCase();
 
   }
   
@@ -271,7 +313,7 @@ public class ActiveInventoryAdapter {
     }
 
     return queryActiveInventoryWithRetries(link, "application/json",
-        endpointConfig.getNumRequestRetries());
+        endpointConfig.getNumRequestRetries(),"sync");
 
   }
 
@@ -310,9 +352,14 @@ public class ActiveInventoryAdapter {
    * @return the operation result
    */
   // package protected for test classes instead of private
-  OperationResult queryActiveInventory(String url, String acceptContentType) {
+  OperationResult queryActiveInventory(String url, String acceptContentType, String uiRequestType) {
 
-    return restClient.get(url, getMessageHeaders(), MediaType.APPLICATION_JSON_TYPE);
+    if (uiRequestType == UI_REQUEST_TYPE) {
+      messageHeaders = getMessageHeaders();
+    } else {
+      messageHeaders = getSyncMessageHeaders();
+    }
+    return restClient.get(url, messageHeaders, MediaType.APPLICATION_JSON_TYPE);
 
   }
 
@@ -325,7 +372,7 @@ public class ActiveInventoryAdapter {
   }
 
   public OperationResult queryActiveInventoryWithRetries(String url, String responseType,
-      int numRetries) {
+      int numRetries,String uiRequestType) {
 
     OperationResult result = null;
 
@@ -333,7 +380,7 @@ public class ActiveInventoryAdapter {
 
       LOG.debug(AaiUiMsgs.QUERY_AAI_RETRY_SEQ, url, String.valueOf(retryCount + 1));
 
-      result = queryActiveInventory(url, responseType);
+      result = queryActiveInventory(url, responseType,uiRequestType);
 
       /**
        * Record number of times we have attempted the request to later summarize how many times we
@@ -414,6 +461,10 @@ public class ActiveInventoryAdapter {
        so we're adding the query parameters separately, in their UTF-8 representations, so that
        characters such as '?', '&', etc. remain intact as needed by the synchronizer */
     return (builder.build().toString() + (includeQueryParams ? queryParams : ""));
+  }
+  
+  public String getDomain() {
+    return domain;
   }
 
 }

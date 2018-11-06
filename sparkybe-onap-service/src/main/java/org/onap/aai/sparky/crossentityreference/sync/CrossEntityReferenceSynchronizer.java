@@ -320,7 +320,7 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
 
           aaiWorkOnHand.incrementAndGet();
 
-          supplyAsync(new PerformActiveInventoryRetrieval(txn, aaiAdapter), aaiExecutor)
+          supplyAsync(new PerformActiveInventoryRetrieval(txn, aaiAdapter,"sync"), aaiExecutor)
               .whenComplete((result, error) -> {
 
                 aaiWorkOnHand.decrementAndGet();
@@ -534,7 +534,7 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
 
                       OperationResult aaiQueryResult = aaiAdapter.queryActiveInventoryWithRetries(
                           genericQueryStr, "application/json",
-                          aaiAdapter.getEndpointConfig().getNumRequestRetries());
+                          aaiAdapter.getEndpointConfig().getNumRequestRetries(),"sync");
 
                       aaiWorkOnHand.decrementAndGet();
 

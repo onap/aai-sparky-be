@@ -54,6 +54,7 @@ public class SearchServiceAdapter {
   private RestClient client;
   private RestEndpointConfig endpointConfig;
   private String serviceApiVersion;
+  private String appPartnerName = "";
 
   private Map<String, List<String>> commonHeaders;
 
@@ -69,10 +70,18 @@ public class SearchServiceAdapter {
 
     commonHeaders = new HashMap<String, List<String>>();
     commonHeaders.put("Accept", Arrays.asList("application/json"));
-    commonHeaders.put(Headers.FROM_APP_ID, Arrays.asList("AAI-UI"));
+    commonHeaders.put(Headers.FROM_APP_ID, Arrays.asList(appPartnerName));
 
     this.serviceApiVersion = serviceApiVersion;
     this.endpointConfig = endpointConfig;
+  }
+  
+  public String getAppPartnerName() {
+    return appPartnerName;
+  }
+
+  public void setAppPartnerName(String appPartnerName) {
+    this.appPartnerName = appPartnerName;
   }
 
   public String getServiceApiVersion() {
