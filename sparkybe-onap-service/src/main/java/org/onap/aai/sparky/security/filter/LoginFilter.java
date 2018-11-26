@@ -123,17 +123,10 @@ public class LoginFilter implements Filter {
       // All other requests require ECOMP Portal authentication
       if (EcompSso.validateEcompSso(request) == null) {
         String redirectURL, logMessage;
-        if (request.getRequestURI().contains("/editAttributes")) {
-          // If request is for Edit Attributes UI, redirect straight to the application.
-          String appPath = request.getRequestURI().substring(request.getContextPath().length() + 1)
-              + (request.getQueryString() != null ? ("?" + request.getQueryString()) : "");
-          redirectURL = SSOUtil.getECOMPSSORedirectURL(request, response, appPath);
-          logMessage = "Unauthenticated Edit Attributes UI login attempt.";
-        } else {
-          // Redirect to Portal UI
-          redirectURL = PortalApiProperties.getProperty(PortalApiConstants.ECOMP_REDIRECT_URL);
-          logMessage = "Unauthorized login attempt.";
-        }
+
+        // Redirect to Portal UI
+        redirectURL = PortalApiProperties.getProperty(PortalApiConstants.ECOMP_REDIRECT_URL);
+        logMessage = "Unauthorized login attempt.";
         
         LOG.debug(AaiUiMsgs.LOGIN_FILTER_DEBUG,
             logMessage + 
