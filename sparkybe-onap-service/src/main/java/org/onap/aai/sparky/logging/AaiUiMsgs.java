@@ -310,20 +310,6 @@ public enum AaiUiMsgs implements LogMessageEnum {
   AAI_RETRIEVAL_FAILED_GENERIC,
   /** Arguments: {0} = Self Link */
   AAI_RETRIEVAL_FAILED_FOR_SELF_LINK,
-  /** Arguments: {0} = Exception */
-  ATTRIBUTES_NOT_UPDATED_EXCEPTION,
-  /** Arguments: {0} = Message */
-  ATTRIBUTES_NOT_UPDATED_MESSAGE,
-  /** Arguments: {0} = Exception */
-  ATTRIBUTES_ERROR_GETTING_AAI_CONFIG_OR_ADAPTER,
-  /** Arguments: {0} = Schema File URI */
-  ATTRIBUTES_ERROR_LOADING_MODEL_VERSION,
-  /** Arguments: {0} = Request URI {1} = Edit Request Body */
-  ATTRIBUTES_HANDLING_EDIT,
-  /** Arguments: {0} = Object URI {1} = Attribute ID {2} Attribute Values */
-  ATTRIBUTES_UPDATE_METHOD_CALLED,
-  /** Arguments: {0} = Attribute ID */
-  ATTRIBUTES_USER_NOT_AUTHORIZED_TO_UPDATE,
   /** Arguments: {0} = Cookie */
   COOKIE_FOUND,
   /** No argument */
