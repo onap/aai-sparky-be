@@ -63,7 +63,7 @@
 		<property name="syncTaskFrequencyInDays" value="1" />
 		<property name="numSyncControllerWorkers" value="2" />
 		<property name="runOnceSyncEnabled" value="true" />
-		<property name="periodicSyncEnabled" value="false" />
+		<property name="periodicSyncEnabled" value="true" />
 		<property name="numInternalSyncWorkers" value="2" />
 		<property name="numSyncElasticWorkers" value="5" />
 		<property name="numSyncActiveInventoryWorkers" value="5" />
@@ -115,7 +115,7 @@
 		<property name="syncTaskFrequencyInDays" value="1" />
 		<property name="numSyncControllerWorkers" value="2" />
 		<property name="runOnceSyncEnabled" value="true" />
-		<property name="periodicSyncEnabled" value="false" />
+		<property name="periodicSyncEnabled" value="true" />
 		<property name="numInternalSyncWorkers" value="2" />
 		<property name="numSyncElasticWorkers" value="5" />
 		<property name="numSyncActiveInventoryWorkers" value="5" />
@@ -162,7 +162,7 @@
 		<property name="syncTaskFrequencyInDays" value="1" />
 		<property name="numSyncControllerWorkers" value="2" />
 		<property name="runOnceSyncEnabled" value="true" />
-		<property name="periodicSyncEnabled" value="false" />
+		<property name="periodicSyncEnabled" value="true" />
 		<property name="numInternalSyncWorkers" value="2" />
 		<property name="numSyncElasticWorkers" value="5" />
 		<property name="numSyncActiveInventoryWorkers" value="5" />
@@ -203,7 +203,7 @@
 		<property name="syncTaskFrequencyInDays" value="1" />
 		<property name="numSyncControllerWorkers" value="2" />
 		<property name="runOnceSyncEnabled" value="true" />
-		<property name="periodicSyncEnabled" value="false" />
+		<property name="periodicSyncEnabled" value="true" />
 		<property name="numInternalSyncWorkers" value="2" />
 		<property name="numSyncElasticWorkers" value="5" />
 		<property name="numSyncActiveInventoryWorkers" value="5" />
