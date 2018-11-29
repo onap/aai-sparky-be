@@ -40,12 +40,14 @@ public class PortalAuthenticationConfig {
   private String username;
   private String password;
   private boolean isOnapEnabled;
+  private String userIdCookieName;
   private CookieDecryptor cookieDecryptor;
   private String cookieDecryptorClassName;
 
   public static final String PROP_USERNAME = "username";
   public static final String PROP_PASSWORD = "password"; // NOSONAR
   public static final String PROP_IS_ONAP_ENABLED = "onap_enabled"; // NOSONAR
+  public static final String PROP_USERID_COOKIE_NAME = "onap.user_id_cookie_name"; // NOSONAR
   private static final String AUTHENTICATION_CONFIG_FILE = SparkyConstants.PORTAL_AUTHENTICATION_FILE_LOCATION;
   public static final String PROP_COOKIEDECRYPTORCLASSNAME = "cookie_decryptor_classname";
   private static final Logger LOG = LoggerFactory.getInstance().getLogger(PortalAuthenticationConfig.class);
@@ -87,7 +89,13 @@ public class PortalAuthenticationConfig {
   public String getcookieDecryptorClassName() {
 	    return cookieDecryptorClassName;
 	  }
-
+  public String getUserIdCookieName() {
+	  return userIdCookieName;
+	}
+	
+  public void setUserIdCookieName(String userIdCookieName) {
+	this.userIdCookieName = userIdCookieName;
+	}
   /**
    * Reload the Portal authentication properties from the classpath.
    */
@@ -103,6 +111,7 @@ public class PortalAuthenticationConfig {
     username = props.getProperty(PROP_USERNAME);
     password = props.getProperty(PROP_PASSWORD);
     isOnapEnabled = Boolean.parseBoolean(props.getProperty(PROP_IS_ONAP_ENABLED, "true"));
+    userIdCookieName = props.getProperty(PROP_USERID_COOKIE_NAME);
     cookieDecryptorClassName= props.getProperty(PROP_COOKIEDECRYPTORCLASSNAME);
   }
   

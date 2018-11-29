@@ -33,8 +33,8 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
 
 import org.onap.aai.sparky.security.portal.config.RolesConfig;
-import org.openecomp.portalsdk.core.restful.domain.EcompRole;
-import org.openecomp.portalsdk.core.restful.domain.EcompUser;
+import org.onap.portalsdk.core.restful.domain.EcompRole;
+import org.onap.portalsdk.core.restful.domain.EcompUser;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
