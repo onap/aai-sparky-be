@@ -27,8 +27,9 @@ import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
 import org.onap.aai.sparky.security.portal.config.PortalAuthenticationConfig;
-import org.openecomp.portalsdk.core.onboarding.util.CipherUtil;
-import org.openecomp.portalsdk.core.onboarding.util.PortalApiProperties;
+import org.onap.portalsdk.core.onboarding.exception.CipherUtilException;
+import org.onap.portalsdk.core.onboarding.util.CipherUtil;
+import org.onap.portalsdk.core.onboarding.util.PortalApiProperties;
 
 /**
  * Provides authentication services for onboarded ECOMP applications.
@@ -59,18 +60,7 @@ public class EcompSso {
 
     return null;
   }
-
-  /**
-   * Answers whether the ECOMP Portal service cookie is present in the specified request.
-   *
-   * @param request
-   * @return true if the cookie is found, else false.
-   */
-  private static boolean isEPServiceCookiePresent(HttpServletRequest request) {
-    Cookie ep = getCookie(request, EP_SERVICE);
-    return (ep != null);
-  }
-
+  
   /**
    * Validates whether the ECOMP Portal sign-on process has completed, which relies the AT&T Global
    * Log On single-sign on process. Checks for the ECOMP cookie (see {@link #EP_SERVICE}). If found,
@@ -81,40 +71,41 @@ public class EcompSso {
    *         else null.
    */
   public static String validateEcompSso(HttpServletRequest request) {
-    boolean isOnapEnabled = PortalAuthenticationConfig.getInstance().getIsOnapEnabled();
-    if (isOnapEnabled) {
-      if (isEPServiceCookiePresent(request)) {
-        /*
-         * This is a "temporary" fix until proper separation between closed source and open source
-         * code is reached
-         */
-        return ONAP_ENABLED;
-      }
-      return null;
-    } else {
-      return getLoginIdFromCookie(request);
-    }
-  }
+	  String uid = null;
+	  boolean isOnapEnabled = PortalAuthenticationConfig.getInstance().getIsOnapEnabled();
+	    if(isOnapEnabled) {
+	    	final String cookieName = PortalAuthenticationConfig.getInstance().getUserIdCookieName();
+	        
+	        if (cookieName == null) {
+	          LOG.debug(AaiUiMsgs.LOGIN_FILTER_DEBUG,
+	              "getCspData failed to load cookie");
+	          return null;
+	        }
+	        Cookie csp = getCookie(request, cookieName);
+	        if (csp == null) {
+	          LOG.debug(AaiUiMsgs.LOGIN_FILTER_DEBUG, "getCspData failed to get cookie " + cookieName);
+	          return null;
+	        }
+	        final String cspCookieEncrypted = csp.getValue();
 
-  /**
-   * Searches the specified request for the CSP cookie, decodes it and gets the ATT UID.
-   *
-   * @param request
-   * @return ATTUID if the cookie is present in the request and can be decoded successfully (expired
-   *         cookies do not decode); else null.
-   */
-  private static String getLoginIdFromCookie(HttpServletRequest request) {
-    String uid = null;
-    try {
-      String[] cspFields = getCspData(request);
-      if (cspFields != null && cspFields.length > 5)
-        uid = cspFields[5];
-    } catch (Exception t) {
-      LOG.info(AaiUiMsgs.LOGIN_FILTER_INFO,
-          "getLoginIdFromCookie failed " + t.getLocalizedMessage());
-    }
-    return uid;
-  }
+	        try {
+	    		uid = PortalAuthenticationConfig.getInstance().getCookieDecryptor().decryptCookie(cspCookieEncrypted);
+	    	} catch (ClassNotFoundException e) {
+	    		LOG.error(AaiUiMsgs.DECRYPTION_ERROR,"Unable to find the Cookie Decryptor Class");
+	    	}
+
+	    }else {
+	    	try {
+	  	      String[] cspFields = getCspData(request);
+	  	      if (cspFields != null && cspFields.length > 5)
+	  	        uid = cspFields[5];
+	  	    } catch (Exception t) {
+	  	      LOG.info(AaiUiMsgs.LOGIN_FILTER_INFO,
+	  	          "getLoginIdFromCookie failed " + t.getLocalizedMessage());
+	  	    }
+	  	}
+	    return uid;
+	}
 
   /**
    * Searches the specified request for the CSP cookie, decodes it and parses it to a String array.
@@ -124,28 +115,28 @@ public class EcompSso {
    *         array if the cookie could not be decoded.
    */
   private static String[] getCspData(HttpServletRequest request) {
-    final String cookieName = PortalApiProperties.getProperty(CSP_COOKIE_NAME);
-    if (cookieName == null) {
-      LOG.debug(AaiUiMsgs.LOGIN_FILTER_DEBUG,
-          "getCspData: Failed to get property " + CSP_COOKIE_NAME);
-      return null;
-    }
-    Cookie csp = getCookie(request, cookieName);
-    if (csp == null) {
-      LOG.debug(AaiUiMsgs.LOGIN_FILTER_DEBUG, "getCspData failed to get cookie " + cookieName);
-      return null;
-    }
-    final String cspCookieEncrypted = csp.getValue();
+	  final String cookieName = PortalApiProperties.getProperty(CSP_COOKIE_NAME);
+      if (cookieName == null) {
+        LOG.debug(AaiUiMsgs.LOGIN_FILTER_DEBUG,
+            "getCspData: Failed to get property " + CSP_COOKIE_NAME);
+        return null;
+      }
+      Cookie csp = getCookie(request, cookieName);
+      if (csp == null) {
+        LOG.debug(AaiUiMsgs.LOGIN_FILTER_DEBUG, "getCspData failed to get cookie " + cookieName);
+        return null;
+      }
+      final String cspCookieEncrypted = csp.getValue();
 
-    String cspCookieDecrypted = null;
-	try {
-		cspCookieDecrypted = PortalAuthenticationConfig.getInstance().getCookieDecryptor().decryptCookie(cspCookieEncrypted);
-		return cspCookieDecrypted.split("\\|");
-		
-	} catch (ClassNotFoundException e) {
-		LOG.error(AaiUiMsgs.DECRYPTION_ERROR,"Unable to find the Cookie Decryptor Class");
-	}
-	
+      String cspCookieDecrypted = null;
+  	try {
+  		cspCookieDecrypted = PortalAuthenticationConfig.getInstance().getCookieDecryptor().decryptCookie(cspCookieEncrypted);
+  		return cspCookieDecrypted.split("\\|");
+  		
+  	} catch (ClassNotFoundException e) {
+  		LOG.error(AaiUiMsgs.DECRYPTION_ERROR,"Unable to find the Cookie Decryptor Class");
+    }
+    
     return null;
   }
 }

@@ -39,10 +39,10 @@ import org.onap.aai.cl.eelf.LoggerFactory;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
 import org.onap.aai.sparky.security.EcompSso;
 import org.onap.aai.sparky.security.portal.config.PortalAuthenticationConfig;
-import org.openecomp.portalsdk.core.onboarding.listener.PortalTimeoutHandler;
-import org.openecomp.portalsdk.core.onboarding.util.PortalApiConstants;
-import org.openecomp.portalsdk.core.onboarding.util.PortalApiProperties;
-import org.openecomp.portalsdk.core.onboarding.util.SSOUtil;
+import org.onap.portalsdk.core.onboarding.listener.PortalTimeoutHandler;
+import org.onap.portalsdk.core.onboarding.util.PortalApiConstants;
+import org.onap.portalsdk.core.onboarding.util.PortalApiProperties;
+import org.onap.portalsdk.core.onboarding.util.SSOUtil;
 
 /**
  * This filter checks every request for proper ECOMP Portal single sign on initialization. The

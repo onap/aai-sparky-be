@@ -23,7 +23,7 @@ package org.onap.aai.sparky.security;
 import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
-import org.openecomp.portalsdk.core.onboarding.util.CipherUtil;
+import org.onap.portalsdk.core.onboarding.util.CipherUtil;
 
 public class BaseCookieDecryptor implements CookieDecryptor {
 
@@ -36,7 +36,7 @@ public class BaseCookieDecryptor implements CookieDecryptor {
 
 		 String decryptedCookie = "";
 		    try {
-		    	decryptedCookie = CipherUtil.decrypt(encryptedCookie, "");
+		    	decryptedCookie = CipherUtil.decrypt(encryptedCookie);
 		    } catch (Exception e) {
 		      LOG.error(AaiUiMsgs.LOGIN_FILTER_INFO, "decrypting base cookie failed " + e.getLocalizedMessage());
 		    }
