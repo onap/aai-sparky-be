@@ -29,7 +29,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.onap.aai.sparky.viewandinspect.config.SparkyConstants;
-import org.openecomp.portalsdk.core.restful.domain.EcompRole;
+import org.onap.portalsdk.core.restful.domain.EcompRole;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;

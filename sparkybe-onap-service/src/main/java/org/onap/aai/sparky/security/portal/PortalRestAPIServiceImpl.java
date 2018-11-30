@@ -23,18 +23,20 @@ package org.onap.aai.sparky.security.portal;
 import java.io.File;
 import java.io.IOException;
 import java.text.MessageFormat;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.onap.aai.sparky.security.EcompSso;
 import org.onap.aai.sparky.security.portal.config.PortalAuthenticationConfig;
 import org.onap.aai.sparky.viewandinspect.config.SparkyConstants;
-import org.openecomp.portalsdk.core.onboarding.crossapi.IPortalRestAPIService;
-import org.openecomp.portalsdk.core.onboarding.exception.PortalAPIException;
-import org.openecomp.portalsdk.core.restful.domain.EcompRole;
-import org.openecomp.portalsdk.core.restful.domain.EcompUser;
+import org.onap.portalsdk.core.onboarding.crossapi.IPortalRestAPIService;
+import org.onap.portalsdk.core.onboarding.exception.PortalAPIException;
+import org.onap.portalsdk.core.restful.domain.EcompRole;
+import org.onap.portalsdk.core.restful.domain.EcompUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -205,5 +207,15 @@ public class PortalRestAPIServiceImpl implements IPortalRestAPIService {
     LOG.debug("Get available roles");
     return UserManager.getRoles();
   }
+  
+  public Map<String, String> getCredentials() {
+    PortalAuthenticationConfig config = PortalAuthenticationConfig.getInstance();
+    Map<String, String> credentialsMap = new HashMap<>();
+    String appUserName = config.getUsername();
+    String appPassword = config.getPassword();
 
+    credentialsMap.put("username", appUserName);
+    credentialsMap.put("password", appPassword);
+    return credentialsMap;
+  }
 }
