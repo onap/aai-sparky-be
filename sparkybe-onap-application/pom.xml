@@ -392,7 +392,7 @@
 				<configuration>
 					<folders>
 						<folder>
-							${CONFIG_HOME}/portal/
+							${CONFIG_HOME}/portal/BOOT-INF/classes/
 						</folder>
 					</folders>
 				</configuration>
