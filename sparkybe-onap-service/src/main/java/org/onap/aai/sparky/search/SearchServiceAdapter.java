@@ -45,8 +45,8 @@ public class SearchServiceAdapter {
   private static final String SUGGEST_QUERY = "suggest";
   private static final String BULK_API = "bulk";
   private static final String DOCUMENT_EDNPOINT = "documents";
-  private static final String SEARH_SERVICE_BULK_TEMPLATE =
-	      "{\"create\":{\"metaData\":{\"url\":\"%s\"},\"document\":\"%s\"}}\n";
+  private static final String SEARCH_SERVICE_BULK_TEMPLATE =
+	      "[{\"update\":{\"metaData\":{\"url\":\"%s\", \"etag\":\"%s\"},\"document\":%s}}]\n";
   
   private static final String SEARH_SERVICE_SINGLE_ENTITY_TEMPLATE =
 	      "{\"queries\":[{\"must\":{\"match\":{\"field\":\"_id\",\"value\":\"%s\"}}}]}\n";
@@ -145,12 +145,12 @@ public class SearchServiceAdapter {
     return headers;
   }
   
-public String buildBulkImportOperationRequest(String indexName, String id, String payload){
+public String buildBulkImportOperationRequest(String indexName, String id, String version, String payload){
 	  
 	  StringBuilder requestPayload = new StringBuilder(128);
-	  String SearchTarget = buildSearchServiceDocUrl(indexName,id);
+	  String SearchTarget = buildSearchServiceDocBulkPayloadUrl(indexName,id);
 	  
-	  requestPayload.append(String.format(SEARH_SERVICE_BULK_TEMPLATE,SearchTarget,payload));
+	  requestPayload.append(String.format(SEARCH_SERVICE_BULK_TEMPLATE,SearchTarget,version, payload));
 	  return requestPayload.toString();   
   }
 
@@ -177,12 +177,17 @@ public String buildBulkImportOperationRequest(String indexName, String id, Strin
   }
   
   public String buildSearchServiceDocUrl(String indexName,String api) {
-	  
+
 	  return String.format("https://%s:%s/services/search-data-service/%s/search/indexes/%s/%s/%s",
 		      endpointConfig.getEndpointIpAddress(), endpointConfig.getEndpointServerPort(),
 		        serviceApiVersion, indexName,DOCUMENT_EDNPOINT, api);
   }
   
+  public String buildSearchServiceDocBulkPayloadUrl(String indexName,String api) {
+
+	  return String.format("/services/search-data-service/%s/search/indexes/%s/%s/%s",
+		        serviceApiVersion, indexName,DOCUMENT_EDNPOINT, api);
+  }
   
   public String buildSearchServiceCreateDocApi(String indexName){
 	  
