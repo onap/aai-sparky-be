@@ -19,6 +19,24 @@
     },
     {
       "key": {
+        "uuid": "9adffdf1_193fcb89",
+        "filename": "sparkybe-onap-application/config/application-resources.properties",
+        "patchSetId": 1
+      },
+      "lineNbr": 0,
+      "author": {
+        "id": 651
+      },
+      "writtenOn": "2018-12-12T16:11:50Z",
+      "side": 1,
+      "message": "Reverted in patch 2",
+      "parentUuid": "9adffdf1_cea2db4a",
+      "revId": "828f50831997f770d7687b0102f24c96d92eb2ba",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
         "uuid": "9adffdf1_eec9df26",
         "filename": "sparkybe-onap-service/src/test/java/org/onap/aai/sparky/synchronizer/IndexableCrossEntityReferenceTest.java",
         "patchSetId": 1
