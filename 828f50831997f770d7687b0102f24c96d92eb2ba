@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9adffdf1_eec9df26",
+        "filename": "sparkybe-onap-service/src/test/java/org/onap/aai/sparky/synchronizer/IndexableCrossEntityReferenceTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 72,
+      "author": {
+        "id": 1041
+      },
+      "writtenOn": "2018-12-12T13:31:38Z",
+      "side": 1,
+      "message": "Minor: Unwanted new line",
+      "revId": "828f50831997f770d7687b0102f24c96d92eb2ba",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
