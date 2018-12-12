@@ -18,6 +18,8 @@ import org.mockito.Mockito;
 import org.onap.aai.restclient.client.OperationResult;
 import org.onap.aai.sparky.config.oxm.CrossEntityReferenceLookup;
 import org.onap.aai.sparky.config.oxm.OxmEntityDescriptor;
+import org.onap.aai.sparky.config.oxm.CrossEntityReferenceDescriptor;
+import org.onap.aai.sparky.config.oxm.CrossEntityReference;
 import org.onap.aai.sparky.config.oxm.OxmEntityLookup;
 import org.onap.aai.sparky.config.oxm.OxmModelProcessor;
 import org.onap.aai.sparky.config.oxm.SearchableEntityLookup;
@@ -144,11 +146,28 @@ public class CrossEntityReferenceSynchronizerTest {
 
     cerLookup = new CrossEntityReferenceLookup();
     processors.add(cerLookup);
-    
+
+    Map<String, CrossEntityReferenceDescriptor> crossReferenceEntityDescriptors =
+            new HashMap<String, CrossEntityReferenceDescriptor>();
+
+    CrossEntityReferenceDescriptor crossReferenceEntiDescriptor = new CrossEntityReferenceDescriptor();
+    CrossEntityReference crossEntityReference = new CrossEntityReference();
+    crossEntityReference.setTargetEntityType("service-instance");
+    List<String> refEntities = new ArrayList<String>();
+    refEntities.add("service-type");
+    crossEntityReference.setReferenceAttributes(refEntities);
+
+    List<String> crossEntityPkeyNames = new ArrayList<String>();
+    crossEntityPkeyNames.add("service-type");
+    crossReferenceEntiDescriptor.setPrimaryKeyAttributeNames(crossEntityPkeyNames);
+
+    crossReferenceEntiDescriptor.setCrossEntityReference(crossEntityReference);
+    crossReferenceEntiDescriptor.setEntityName("service-subscription");
+    crossReferenceEntityDescriptors.put("service-subscription", crossReferenceEntiDescriptor);
+    cerLookup.setCrossReferenceEntityDescriptors(crossReferenceEntityDescriptors);
+
     searchableEntityLookup = new SearchableEntityLookup();
     processors.add(searchableEntityLookup);
-    
-    
 
     aaiRestEndPointConfig = new RestEndpointConfig();
     aaiRestEndPointConfig.setNumRequestRetries(5);

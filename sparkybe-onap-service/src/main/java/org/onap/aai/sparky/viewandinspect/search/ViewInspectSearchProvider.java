@@ -395,7 +395,7 @@ public class ViewInspectSearchProvider implements SearchProvider {
   
   private static final String VIUI_SEARCH_TEMPLATE =
       "{ " + "\"results-start\": 0," + "\"results-size\": %d," + "\"queries\": [{" + "\"must\": {"
-          + "\"match\": {" + "\"field\": \"entityType searchTags crossEntityReferenceValues\","
+          + "\"match\": {" + "\"field\": \"entityType searchTags crossReferenceEntityValues\","
           + "\"value\": \"%s\"," + "\"operator\": \"and\", "
           + "\"analyzer\": \"whitespace_analyzer\"" + "}" + "}" + "}]" + "}";
   
