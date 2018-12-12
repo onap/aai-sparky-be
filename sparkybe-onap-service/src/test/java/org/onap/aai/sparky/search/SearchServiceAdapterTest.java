@@ -44,6 +44,9 @@ public class SearchServiceAdapterTest {
         searchServiceAdapter.buildSearchServiceUrlForApi("searchentity-localhost", "2.0"));
     assertNotNull(searchServiceAdapter.buildSuggestServiceQueryUrl("searchentity-localhost"));
 
+    assertEquals(searchServiceAdapter.buildBulkImportOperationRequest("testIndex", "1", "4", "{\"payload\":\"value\"}"),
+       "[{\"update\":{\"metaData\":{\"url\":\"/services/search-data-service/2.0/search/indexes/testIndex/documents/1\", "
+       + "\"etag\":\"4\"},\"document\":{\"payload\":\"value\"}}}]\n");
 
   }
 

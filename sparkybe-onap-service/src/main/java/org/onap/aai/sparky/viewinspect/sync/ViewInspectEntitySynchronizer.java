@@ -393,7 +393,7 @@ public class ViewInspectEntitySynchronizer extends AbstractEntitySynchronizer
       try {
         versionNumber = NodeUtils.extractFieldValueFromObject(
             NodeUtils.convertJsonStrToJsonNode(esGetTxn.getOperationResult().getResult()),
-            "_version");
+            "etag");
       } catch (IOException exc) {
         String message =
             "Error extracting version number from response, aborting searchable entity sync of "
@@ -418,7 +418,7 @@ public class ViewInspectEntitySynchronizer extends AbstractEntitySynchronizer
           ArrayList<JsonNode> sourceObject = new ArrayList<JsonNode>();
           NodeUtils.extractObjectsByKey(
               NodeUtils.convertJsonStrToJsonNode(esGetTxn.getOperationResult().getResult()),
-              "_source", sourceObject);
+              "content", sourceObject);
 
           if (!sourceObject.isEmpty()) {
             String responseSource = NodeUtils.convertObjectToJson(sourceObject.get(0), false);
@@ -442,7 +442,7 @@ public class ViewInspectEntitySynchronizer extends AbstractEntitySynchronizer
         if (versionNumber != null && jsonPayload != null) {
 
         	String requestPayload = searchServiceAdapter.buildBulkImportOperationRequest(getIndexName(),
-                    se.getId(), jsonPayload);
+               se.getId(), versionNumber, jsonPayload);
 
           NetworkTransaction transactionTracker = new NetworkTransaction();
           transactionTracker.setEntityType(esGetTxn.getEntityType());
