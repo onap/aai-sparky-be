@@ -278,7 +278,7 @@ public class AggregationSynchronizer extends AbstractEntitySynchronizer
       try {
         versionNumber = NodeUtils.extractFieldValueFromObject(
             NodeUtils.convertJsonStrToJsonNode(esGetTxn.getOperationResult().getResult()),
-            "_version");
+            "etag");
       } catch (IOException exc) {
         String message =
             "Error extracting version number from response, aborting aggregation entity sync of "
@@ -303,7 +303,7 @@ public class AggregationSynchronizer extends AbstractEntitySynchronizer
           ArrayList<JsonNode> sourceObject = new ArrayList<JsonNode>();
           NodeUtils.extractObjectsByKey(
               NodeUtils.convertJsonStrToJsonNode(esGetTxn.getOperationResult().getResult()),
-              "_source", sourceObject);
+              "content", sourceObject);
 
           if (!sourceObject.isEmpty()) {
             String responseSource = NodeUtils.convertObjectToJson(sourceObject.get(0), false);
@@ -328,7 +328,7 @@ public class AggregationSynchronizer extends AbstractEntitySynchronizer
 
         	String requestPayload =
             		  searchServiceAdapter.buildBulkImportOperationRequest(schemaConfig.getIndexName(),
-                       ae.getId(),jsonPayload);
+                        versionNumber, ae.getId(),jsonPayload);
 
           NetworkTransaction transactionTracker = new NetworkTransaction();
           transactionTracker.setEntityType(esGetTxn.getEntityType());

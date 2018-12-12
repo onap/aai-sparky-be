@@ -684,7 +684,7 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
       try {
         versionNumber = NodeUtils.extractFieldValueFromObject(
             NodeUtils.convertJsonStrToJsonNode(esGetResult.getOperationResult().getResult()),
-            "_version");
+            "etag");
       } catch (IOException exc) {
         LOG.error(AaiUiMsgs.ES_ABORT_CROSS_ENTITY_REF_SYNC, "version Number",
             icer.getEntityPrimaryKeyValue(), exc.getLocalizedMessage());
@@ -707,7 +707,7 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
           ArrayList<JsonNode> sourceObject = new ArrayList<JsonNode>();
           NodeUtils.extractObjectsByKey(
               NodeUtils.convertJsonStrToJsonNode(esGetResult.getOperationResult().getResult()),
-              "_source", sourceObject);
+              "content", sourceObject);
 
           if (!sourceObject.isEmpty()) {
             String responseSource = NodeUtils.convertObjectToJson(sourceObject.get(0), false);
@@ -729,7 +729,7 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
         if (versionNumber != null && jsonPayload != null) {
 
         	String requestPayload = searchServiceAdapter.buildBulkImportOperationRequest(getIndexName(),
-                    icer.getId(), jsonPayload);
+              icer.getId(), versionNumber, jsonPayload);
 
           NetworkTransaction transactionTracker = new NetworkTransaction();
           transactionTracker.setEntityType(esGetResult.getEntityType());
@@ -744,7 +744,7 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
                     esWorkOnHand.decrementAndGet();
 
                     if (error != null) {
-                      LOG.error(AaiUiMsgs.ES_CROSS_ENTITY_REF_PUT, error.getLocalizedMessage());
+                       LOG.error(AaiUiMsgs.ES_CROSS_ENTITY_REF_PUT, error.getLocalizedMessage()); 
                     } else {
                       updateElasticSearchCounters(result);
                       processStoreDocumentResult(result, esGetResult, icer);
@@ -870,23 +870,6 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
       OxmEntityDescriptor resultDescriptor) throws JsonProcessingException, IOException {
 
     IndexableCrossEntityReference icer = new IndexableCrossEntityReference();
-
-    icer.setEntityType(resultDescriptor.getEntityName());
-
-    List<String> primaryKeyValues = new ArrayList<String>();
-    String pkeyValue = null;
-
-    for (String keyName : resultDescriptor.getPrimaryKeyAttributeNames()) {
-      pkeyValue = NodeUtils.getNodeFieldAsText(entityNode, keyName);
-      if (pkeyValue != null) {
-        primaryKeyValues.add(pkeyValue);
-      } else {
-        LOG.warn(AaiUiMsgs.ES_PKEYVALUE_NULL, resultDescriptor.getEntityName());
-      }
-    }
-
-    final String primaryCompositeKeyValue = NodeUtils.concatArray(primaryKeyValues, "/");
-    icer.setEntityPrimaryKeyValue(primaryCompositeKeyValue);
 
     return icer;
 
