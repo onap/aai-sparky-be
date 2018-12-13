@@ -20,11 +20,19 @@
  */
 package org.onap.aai.sparky;
 
+import org.onap.aai.config.EdgesConfiguration;
 import org.onap.aai.sparky.config.PropertyPasswordConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.PropertySource;
 
 @SpringBootApplication
+@ComponentScan(basePackages = {"org.onap.aai.config", "org.onap.aai.setup", "org.onap.aai.sparky"}, excludeFilters = {
+@ComponentScan.Filter(type = FilterType.ASSIGNABLE_TYPE,
+value = EdgesConfiguration.class)})
+@PropertySource(value = "file:${schema.ingest.file}", ignoreResourceNotFound = true)
 public class Application {
   
   public static void main(String[] args) {

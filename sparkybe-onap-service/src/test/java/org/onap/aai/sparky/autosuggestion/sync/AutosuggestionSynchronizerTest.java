@@ -171,7 +171,8 @@ public class AutosuggestionSynchronizerTest {
     suggestionEntityLookup = new SuggestionEntityLookup(filtersConfig);
 
     processors.add(suggestionEntityLookup);
-    OxmModelLoader oxmModelLoader = new OxmModelLoader("v11", processors,nodeInjest);
+    OxmModelLoader oxmModelLoader = new OxmModelLoader("v11", processors);
+    oxmModelLoader.setNodeIngestor(nodeInjest);
     oxmModelLoader.loadModel();
     
     

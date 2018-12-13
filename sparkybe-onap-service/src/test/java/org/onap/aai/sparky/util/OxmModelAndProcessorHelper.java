@@ -56,7 +56,7 @@ public class OxmModelAndProcessorHelper {
 		processors.add(searchableEntityLookup);
 		processors.add(suggestionEntityLookup);
 		processors.add(oxmEntityContainerLookup);
-		this.modelLoader = new OxmModelLoader(API_VERSION_OVERRIDE, processors, null);
+		this.modelLoader = new OxmModelLoader(API_VERSION_OVERRIDE, processors);
 		
 	}
 

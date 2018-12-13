@@ -35,24 +35,6 @@
 		</property>
 	</bean>
 
-	<bean id="schemaLocationsBean" class="org.onap.aai.setup.SchemaLocationsBean">
-		<!-- When running with AJSC these properties must be injected directly. 
-			The reason for this is unknown. -->
-		<property name="nodeDirectory" value="${nodeDir}" />
-		<property name="edgeDirectory" value="${edgeDir}" />
-	</bean>
-
-  <bean id="schemaVersions" class="org.onap.aai.setup.SchemaVersions"/>
-  
-  <bean id="oxmConfigTranslator" class="org.onap.aai.setup.AAIConfigTranslator">
-    <constructor-arg ref="schemaLocationsBean" />
-    <constructor-arg ref="schemaVersions" />
-	</bean>
-  
-	<bean id="nodeIngestor" class="org.onap.aai.nodes.NodeIngestor">
-		<constructor-arg ref="oxmConfigTranslator" />
-	</bean>
-
 	<bean id="searchProviderRegistry"
 		class="org.onap.aai.sparky.search.registry.SearchProviderRegistry" />
 

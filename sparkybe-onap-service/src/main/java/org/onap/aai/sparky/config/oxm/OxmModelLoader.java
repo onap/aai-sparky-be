@@ -29,7 +29,10 @@ import org.onap.aai.nodes.NodeIngestor;
 import org.onap.aai.setup.SchemaVersion;
 import org.onap.aai.setup.SchemaVersions;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
+@Component("oxmModelLoader")
 public class OxmModelLoader {
 
   private static final Logger LOG = LoggerFactory.getInstance().getLogger(OxmModelLoader.class);
@@ -48,16 +51,14 @@ public class OxmModelLoader {
 
   private NodeIngestor nodeIngestor;
 
-  public OxmModelLoader(String apiVersionOverride, Set<OxmModelProcessor> oxmModelProcessors, NodeIngestor nodeIngestor) {
+  public OxmModelLoader(String apiVersionOverride, Set<OxmModelProcessor> oxmModelProcessors) {
     this.oxmApiVersion = new SchemaVersion(apiVersionOverride);
     this.processors = oxmModelProcessors;
-    this.nodeIngestor = nodeIngestor;
   }
 
-  public OxmModelLoader(Set<OxmModelProcessor> oxmModelProcessors, NodeIngestor nodeIngestor, SchemaVersions schemaVersions) {
+  public OxmModelLoader(Set<OxmModelProcessor> oxmModelProcessors, SchemaVersions schemaVersions) {
     this.oxmApiVersion = schemaVersions.getDefaultVersion();
     this.processors = oxmModelProcessors;
-    this.nodeIngestor = nodeIngestor;
   }
 
   public SchemaVersion getOxmApiVersion() {
@@ -65,6 +66,15 @@ public class OxmModelLoader {
   }
 
 
+
+  public NodeIngestor getNodeIngestor() {
+    return nodeIngestor;
+  }
+
+  @Autowired
+  public void setNodeIngestor(NodeIngestor nodeIngestor) {
+    this.nodeIngestor = nodeIngestor;
+  }
 
   /**
    * Load an oxm model.

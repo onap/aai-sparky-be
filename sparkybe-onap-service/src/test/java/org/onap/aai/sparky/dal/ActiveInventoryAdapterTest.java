@@ -22,7 +22,7 @@ public class ActiveInventoryAdapterTest {
 
   @Before
   public void init() throws Exception {
-    oxmModelLoader = new OxmModelLoader("v11",null,null);
+    oxmModelLoader = new OxmModelLoader("v11",null);
     oxmEntityLookup = new OxmEntityLookup();
     endpointConfig = new RestEndpointConfig();
     queryParams = new ArrayList<String>();
