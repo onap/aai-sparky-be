@@ -8,7 +8,6 @@
 		init-method="loadModel">
 		<constructor-arg name="apiVersionOverride" value="${oxm.apiVersion}" />
 		<constructor-arg ref="oxmModelProcessorSet" />
-		<constructor-arg ref="nodeIngestor" />
 	</bean>
 
 </beans>

@@ -59,12 +59,10 @@
 		<property name="nodeDirectory" value="bundleconfig-local/etc/oxm/" />
 		<property name="edgeDirectory" value="bundleconfig-local/etc/oxm/" />
 	</bean>
-
-  <bean id="schemaVersions" class="org.onap.aai.setup.SchemaVersions"/>
-  
+ 
 	<bean id="oxmConfigTranslator" class="org.onap.aai.setup.AAIConfigTranslator">
-    <constructor-arg ref="schemaLocationsBean" />
-    <constructor-arg ref="schemaVersions" />
+		<constructor-arg ref="schemaLocationsBean" />
+		<constructor-arg ref="schemaVersions" />
 	</bean>
   
 	<bean id="nodeIngestor" class="org.onap.aai.nodes.NodeIngestor">

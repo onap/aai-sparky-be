@@ -71,7 +71,6 @@ public class GizmoEntitySummarizer {
 		gizmoConfig.setValidateServerHostname(false);
 
 		gizmoAdapter = new GizmoAdapter(oxmModelLoader, gizmoConfig);
-
 		gizmoAdapter.setInventoryBasePath("/services/inventory/v12/");
 		gizmoAdapter.setRelationshipsBasePath("/services/inventory/relationships/v12/");
 
