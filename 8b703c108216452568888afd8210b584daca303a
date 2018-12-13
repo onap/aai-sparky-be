@@ -1,0 +1,55 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9adffdf1_abf7448a",
+        "filename": "sparkybe-onap-application/config/application.properties",
+        "patchSetId": 1
+      },
+      "lineNbr": 12,
+      "author": {
+        "id": 651
+      },
+      "writtenOn": "2018-12-13T21:37:17Z",
+      "side": 1,
+      "message": "ssl must remain.",
+      "revId": "8b703c108216452568888afd8210b584daca303a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9adffdf1_4bf01891",
+        "filename": "sparkybe-onap-application/config/spring-beans/sparky-oxm-default.xml",
+        "patchSetId": 1
+      },
+      "lineNbr": 6,
+      "author": {
+        "id": 651
+      },
+      "writtenOn": "2018-12-13T21:37:17Z",
+      "side": 1,
+      "message": "Remove extra space",
+      "revId": "8b703c108216452568888afd8210b584daca303a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    },
+    {
+      "key": {
+        "uuid": "9adffdf1_6beddcb6",
+        "filename": "sparkybe-onap-service/src/main/java/org/onap/aai/sparky/config/oxm/OxmModelLoader.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 73,
+      "author": {
+        "id": 651
+      },
+      "writtenOn": "2018-12-13T21:37:17Z",
+      "side": 1,
+      "message": "Remove extra space",
+      "revId": "8b703c108216452568888afd8210b584daca303a",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
