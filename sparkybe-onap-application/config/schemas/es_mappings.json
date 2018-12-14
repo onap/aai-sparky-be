@@ -16,7 +16,7 @@
             "type": "string",
             "analyzer": "ngram_analyzer"
         },
-        "crossEntityReferenceValues": {
+        "crossReferenceEntityValues": {
             "type": "string",
             "analyzer": "ngram_analyzer"
         },

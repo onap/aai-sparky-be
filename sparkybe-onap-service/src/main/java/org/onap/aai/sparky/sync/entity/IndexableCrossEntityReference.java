@@ -21,17 +21,21 @@
 package org.onap.aai.sparky.sync.entity;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import org.onap.aai.sparky.util.NodeUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.core.JsonProcessingException;
-
+import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
+import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
 /**
  * The Class IndexableCrossEntityReference.
  */
-
+@JsonInclude(Include.NON_NULL)
 public class IndexableCrossEntityReference extends IndexableEntity implements IndexDocument {
 
   protected String crossReferenceEntityValues;
