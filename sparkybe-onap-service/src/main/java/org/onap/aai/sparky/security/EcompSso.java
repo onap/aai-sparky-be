@@ -20,16 +20,20 @@
  */
 package org.onap.aai.sparky.security;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 
 import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
+import org.onap.aai.sparky.security.portal.PortalRestAPICentralServiceImpl;
 import org.onap.aai.sparky.security.portal.config.PortalAuthenticationConfig;
-import org.onap.portalsdk.core.onboarding.exception.CipherUtilException;
-import org.onap.portalsdk.core.onboarding.util.CipherUtil;
+import org.onap.portalsdk.core.onboarding.exception.PortalAPIException;
 import org.onap.portalsdk.core.onboarding.util.PortalApiProperties;
+import org.onap.portalsdk.core.restful.domain.EcompRole;
 
 /**
  * Provides authentication services for onboarded ECOMP applications.
@@ -40,6 +44,8 @@ public class EcompSso {
   public static final String CSP_COOKIE_NAME = "csp_cookie_name";
   public static final String CSP_GATE_KEEPER_PROD_KEY = "csp_gate_keeper_prod_key";
   public static final String ONAP_ENABLED = "ONAP_ENABLED";
+  private static  EcompSso eCompSso = new EcompSso();
+  private PortalRestAPICentralServiceImpl portalRestCentralImpl = new PortalRestAPICentralServiceImpl();
   private static final Logger LOG = LoggerFactory.getInstance().getLogger(EcompSso.class);
 
   /**
@@ -104,6 +110,11 @@ public class EcompSso {
             "getLoginIdFromCookie failed " + t.getLocalizedMessage());
       }
     }
+    boolean validated = eCompSso.validateUserAccess(uid);
+    if (!validated) {
+      LOG.debug(AaiUiMsgs.DEBUG_GENERIC, "Unable to grant user access to application");
+      return null;
+    }
     return uid;
   }
 
@@ -139,5 +150,29 @@ public class EcompSso {
     }
 
     return null;
+  }
+
+  public boolean validateUserAccess(String uid) {
+    boolean hasAccess = false;
+    ArrayList<String> appRoles = PortalAuthenticationConfig.getInstance().getAppRoles();
+    if (uid != null) {
+      List<EcompRole> userRoles = null;
+      try {
+        userRoles = portalRestCentralImpl.getUserRoles(uid);
+      } catch (PortalAPIException e) {
+        LOG.error(AaiUiMsgs.ERROR_GENERIC, "Unable to get user roles from Portal");
+      }
+      if (userRoles == null || appRoles.isEmpty()) {
+        LOG.debug(AaiUiMsgs.DEBUG_GENERIC, " Role list is either null or empty");
+        return hasAccess;
+      } else {
+        for (EcompRole userRole : userRoles) {
+          if (appRoles.contains(userRole.getName())) {
+            hasAccess = true;
+          }
+        }
+      }
+    }
+    return hasAccess;
   }
 }
