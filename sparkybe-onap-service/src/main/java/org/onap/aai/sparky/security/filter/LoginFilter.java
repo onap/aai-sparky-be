@@ -127,17 +127,18 @@ public class LoginFilter implements Filter {
         // Redirect to Portal UI
         redirectURL = PortalApiProperties.getProperty(PortalApiConstants.ECOMP_REDIRECT_URL);
         logMessage = "Unauthorized login attempt.";
-        
+
         LOG.debug(AaiUiMsgs.LOGIN_FILTER_DEBUG,
-            logMessage + 
-            " | Remote IP: " + request.getRemoteAddr() + 
-            " | User agent: " + request.getHeader(HttpHeaders.USER_AGENT) + 
+            logMessage +
+            " | Remote IP: " + request.getRemoteAddr() +
+            " | User agent: " + request.getHeader(HttpHeaders.USER_AGENT) +
             " | Request URL: " + request.getRequestURL() +
-            " | Redirecting to: " + redirectURL); 
-        
+            " | Redirecting to: " + redirectURL);
+
         response.sendRedirect(redirectURL);
       } else {
         HttpSession session = request.getSession(false);
+        response.addHeader("Cache-Control", "no-cache, no-store");
         if (session == null) {
           // New session
           session = request.getSession(true);
