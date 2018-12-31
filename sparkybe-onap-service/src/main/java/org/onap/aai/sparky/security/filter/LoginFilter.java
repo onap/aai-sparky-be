@@ -138,6 +138,7 @@ public class LoginFilter implements Filter {
         response.sendRedirect(redirectURL);
       } else {
         HttpSession session = request.getSession(false);
+        response.addHeader("Cache-Control", "no-cache, no-store");
         if (session == null) {
           // New session
           session = request.getSession(true);
