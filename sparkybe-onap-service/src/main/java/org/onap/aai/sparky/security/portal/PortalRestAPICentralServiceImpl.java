@@ -37,6 +37,9 @@ import org.onap.portalsdk.core.onboarding.crossapi.IPortalRestAPIService;
 import org.onap.portalsdk.core.onboarding.crossapi.IPortalRestCentralService;
 import org.onap.portalsdk.core.onboarding.exception.PortalAPIException;
 import org.onap.portalsdk.core.onboarding.rest.RestWebServiceClient;
+import org.onap.portalsdk.core.onboarding.util.AuthUtil;
+import org.onap.portalsdk.core.onboarding.util.PortalApiConstants;
+import org.onap.portalsdk.core.onboarding.util.PortalApiProperties;
 import org.onap.portalsdk.core.restful.domain.EcompRole;
 import org.onap.portalsdk.core.restful.domain.EcompUser;
 import org.slf4j.Logger;
@@ -233,11 +236,15 @@ public class PortalRestAPICentralServiceImpl
   @Override
   public boolean isAppAuthenticated(HttpServletRequest request) throws PortalAPIException {
     LOG.debug("Authentication request");
-    PortalAuthenticationConfig config = PortalAuthenticationConfig.getInstance();
-    String restUsername = request.getHeader(PortalAuthenticationConfig.PROP_USERNAME);
-    String restPassword = request.getHeader(PortalAuthenticationConfig.PROP_PASSWORD);
-    return restUsername != null && restPassword != null && restUsername.equals(config.getUsername())
-        && restPassword.equals(config.getPassword());
+    String nameSpace = PortalApiProperties.getProperty(PortalApiConstants.AUTH_NAMESPACE);
+    boolean accessAllowed = false;
+    try {
+      accessAllowed = AuthUtil.isAccessAllowed(request, nameSpace);
+    } catch (Exception e) {
+      String response = "PortalRestAPICentralServiceImpl.isAppAuthenticated failed";
+      LOG.error(response, e);
+    }
+    return accessAllowed;
   }
 
 

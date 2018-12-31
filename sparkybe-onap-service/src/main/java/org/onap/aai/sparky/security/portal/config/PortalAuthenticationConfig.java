@@ -21,6 +21,8 @@
 package org.onap.aai.sparky.security.portal.config;
 
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Properties;
 
 import org.onap.aai.cl.api.Logger;
@@ -43,6 +45,7 @@ public class PortalAuthenticationConfig {
   private String userIdCookieName;
   private CookieDecryptor cookieDecryptor;
   private String cookieDecryptorClassName;
+  private String delimitedAppRoles;
 
   public static final String PROP_USERNAME = "username";
   public static final String PROP_PASSWORD = "password"; // NOSONAR
@@ -50,6 +53,7 @@ public class PortalAuthenticationConfig {
   public static final String PROP_USERID_COOKIE_NAME = "onap.user_id_cookie_name"; // NOSONAR
   private static final String AUTHENTICATION_CONFIG_FILE = SparkyConstants.PORTAL_AUTHENTICATION_FILE_LOCATION;
   public static final String PROP_COOKIEDECRYPTORCLASSNAME = "cookie_decryptor_classname";
+  public static final String PROP_APP_ROLES = "app_roles";
   private static final Logger LOG = LoggerFactory.getInstance().getLogger(PortalAuthenticationConfig.class);
 
   private PortalAuthenticationConfig() {
@@ -113,17 +117,33 @@ public class PortalAuthenticationConfig {
     isOnapEnabled = Boolean.parseBoolean(props.getProperty(PROP_IS_ONAP_ENABLED, "true"));
     userIdCookieName = props.getProperty(PROP_USERID_COOKIE_NAME);
     cookieDecryptorClassName= props.getProperty(PROP_COOKIEDECRYPTORCLASSNAME);
+    delimitedAppRoles = props.getProperty(PROP_APP_ROLES);
   }
-  
-  public CookieDecryptor getCookieDecryptor() throws ClassNotFoundException{
-	  
-	  Class cookieDecrypterClass = Class.forName(cookieDecryptorClassName);
-	  try {
-		cookieDecryptor = (CookieDecryptor) cookieDecrypterClass.newInstance();
-	} catch (InstantiationException | IllegalAccessException e) {
-		 LOG.error(AaiUiMsgs.DECRYPTION_ERROR,"Unable to instantiate Cookie Decryptor Class");
-	}
-	  return cookieDecryptor;
+
+  public CookieDecryptor getCookieDecryptor() throws ClassNotFoundException {
+
+    Class cookieDecrypterClass = Class.forName(cookieDecryptorClassName);
+    try {
+      cookieDecryptor = (CookieDecryptor) cookieDecrypterClass.newInstance();
+    } catch (InstantiationException | IllegalAccessException e) {
+      LOG.error(AaiUiMsgs.DECRYPTION_ERROR, "Unable to instantiate Cookie Decryptor Class");
+    }
+    return cookieDecryptor;
   }
-  
+
+  public ArrayList<String> getAppRoles() {
+
+    ArrayList<String> appRoles = null;
+    if (delimitedAppRoles == null) {
+      return new ArrayList<>();
+    }
+
+    try {
+      appRoles = new ArrayList<String>(Arrays.asList(delimitedAppRoles.split(",")));
+    } catch (Exception exc) {
+      appRoles = new ArrayList<>();
+    }
+    return appRoles;
+  }
+
 }
