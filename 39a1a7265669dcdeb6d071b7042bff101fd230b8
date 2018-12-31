@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "9adffdf1_04c98dab",
+        "filename": "sparkybe-onap-service/src/main/java/org/onap/aai/sparky/security/portal/config/PortalAuthenticationConfig.java",
+        "patchSetId": 2
+      },
+      "lineNbr": 133,
+      "author": {
+        "id": 1041
+      },
+      "writtenOn": "2018-12-31T18:23:25Z",
+      "side": 1,
+      "message": "You know what this means ;-)",
+      "revId": "39a1a7265669dcdeb6d071b7042bff101fd230b8",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
