@@ -67,7 +67,7 @@ public class Encryptor {
   public String decryptValue(String value) {
     String decyptedValue = "";
     try {
-      decyptedValue = Password.deobfuscate(value);
+      decyptedValue = value.startsWith("OBF:")?Password.deobfuscate(value) : value;
     } catch (Exception exc) {
       LOG.error(AaiUiMsgs.DECRYPTION_ERROR, value, exc.toString());
     }
