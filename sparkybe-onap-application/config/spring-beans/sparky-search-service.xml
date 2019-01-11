@@ -12,7 +12,7 @@
 		<property name="connectTimeoutInMs" value="60000" />
 		<property name="readTimeoutInMs" value="30000" />
 		<property name="certFileName" value="/auth/${searchservice.client-cert:}" />
-		<property name="certPassword" value="OBF:${searchservice.client-cert-password:}" />
+		<property name="certPassword" value="${searchservice.client-cert-password:}" />
 		<property name="truststoreFileName" value="/auth/${searchservice.truststore:}" />
 		<property name="validateServerCertChain" value="false" />
 		<property name="validateServerHostname" value="false" />

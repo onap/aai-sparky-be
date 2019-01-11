@@ -12,7 +12,7 @@
 		<property name="connectTimeoutInMs" value="60000" />
 		<property name="readTimeoutInMs" value="30000" />
 		<property name="certFileName" value="/auth/${gizmo.client-cert}" />
-		<property name="certPassword" value="OBF:${gizmo.client-cert-password}" />
+		<property name="certPassword" value="${gizmo.client-cert-password}" />
 		<property name="truststoreFileName" value="/auth/${gizmo.trust-store}" />
 		<property name="validateServerCertChain" value="false" />
 		<property name="validateServerHostname" value="false" />
