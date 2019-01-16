@@ -4,6 +4,7 @@
  * ================================================================================
  * Copyright © 2017-2018 AT&T Intellectual Property. All rights reserved.
  * Copyright © 2017-2018 Amdocs
+ * Copyright © 2019 IBM
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -46,7 +47,6 @@ public class AggregateVnfSearchProvider implements SearchProvider {
   private static final Logger LOG =
       LoggerFactory.getInstance().getLogger(AggregateVnfSearchProvider.class);
 
-  private ObjectMapper mapper;
   private SearchServiceAdapter searchServiceAdapter = null;
   private String autoSuggestIndexName;
   private String vnfSearchSuggestionRoute;
@@ -63,7 +63,6 @@ public class AggregateVnfSearchProvider implements SearchProvider {
 
   public AggregateVnfSearchProvider(SearchServiceAdapter searchServiceAdapter,
       String autoSuggestIndexName, String vnfSearchSuggestionRoute) {
-    mapper = new ObjectMapper();
     this.searchServiceAdapter = searchServiceAdapter;
     this.autoSuggestIndexName = autoSuggestIndexName;
     this.vnfSearchSuggestionRoute = vnfSearchSuggestionRoute;
@@ -76,7 +75,7 @@ public class AggregateVnfSearchProvider implements SearchProvider {
   @Override
   public List<SearchSuggestion> search(QuerySearchEntity queryRequest) {
 
-    List<SearchSuggestion> returnList = new ArrayList<SearchSuggestion>();
+    List<SearchSuggestion> returnList = new ArrayList<>();
     try {
 
       final String fullUrlStr =
@@ -106,7 +105,7 @@ public class AggregateVnfSearchProvider implements SearchProvider {
     }
 
     ObjectMapper mapper = new ObjectMapper();
-    List<SearchSuggestion> suggestionEntityList = new ArrayList<SearchSuggestion>();
+    List<SearchSuggestion> suggestionEntityList = new ArrayList<>();
 
     try {
       JsonNode rootNode = mapper.readTree(operationResult);
