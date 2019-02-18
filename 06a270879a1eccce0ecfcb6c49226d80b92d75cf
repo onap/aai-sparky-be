@@ -1,0 +1,21 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "b260a6b1_a303bdb3",
+        "filename": "sparkybe-onap-service/src/test/java/org/onap/aai/sparky/util/ErrorUtilTest.java",
+        "patchSetId": 1
+      },
+      "lineNbr": 13,
+      "author": {
+        "id": 33
+      },
+      "writtenOn": "2019-02-18T21:09:20Z",
+      "side": 1,
+      "message": "Isn\u0027t there a function for line separator (or maybe a function to count the lines)?",
+      "revId": "06a270879a1eccce0ecfcb6c49226d80b92d75cf",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": false
+    }
+  ]
+}
