@@ -4,6 +4,7 @@
  * ================================================================================
  * Copyright © 2017-2018 AT&T Intellectual Property. All rights reserved.
  * Copyright © 2017-2018 Amdocs
+ * Copyright © 2019 IBM
  * ================================================================================
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -102,8 +103,8 @@ public class VnfSearchQueryBuilder {
     JsonObjectBuilder queryBlobBuilder = Json.createObjectBuilder();
     JsonObjectBuilder aggsBlobBuilder = Json.createObjectBuilder();
     JsonArrayBuilder mustBlobBuilder = Json.createArrayBuilder();
-    for (String key : attributes.keySet()) {
-      mustBlobBuilder.add(getTermBlob(key, attributes.get(key)));
+    for (Map.Entry<String, String> entry : attributes.entrySet()) {
+      mustBlobBuilder.add(getTermBlob(entry.getKey(), entry.getValue()));
     }
     JsonArray mustBlob = mustBlobBuilder.build();
 
@@ -127,8 +128,8 @@ public class VnfSearchQueryBuilder {
   public static void buildMultiTermCountQuery(JsonObjectBuilder jsonBuilder,
       Map<String, String> attributes) {
     JsonArrayBuilder mustBlobBuilder = Json.createArrayBuilder();
-    for (String key : attributes.keySet()) {
-      mustBlobBuilder.add(getTermBlob(key, attributes.get(key)));
+    for (Map.Entry<String, String> entry : attributes.entrySet()) {
+      mustBlobBuilder.add(getTermBlob(entry.getKey(), entry.getValue()));
     }
     jsonBuilder.add("query", Json.createObjectBuilder().add("bool",
         Json.createObjectBuilder().add("must", mustBlobBuilder)));
