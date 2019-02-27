@@ -5,6 +5,7 @@ import javax.servlet.Filter;
 import org.onap.aai.sparky.security.filter.LoginFilter;
 import org.onap.portalsdk.core.onboarding.crossapi.CadiAuthFilter;
 import org.onap.portalsdk.core.onboarding.crossapi.PortalRestAPIProxy;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +18,9 @@ public class PortalBean {
 
   private Filter loginFilter = new LoginFilter();
   private Filter cadiAuthFilter = new CadiAuthFilter();
+  
+  @Value("${portal.cadiFileLocation}")
+  private String cadiPropsLocation; 
 
   /**
    * bind LoginFilter
@@ -41,7 +45,7 @@ public class PortalBean {
     registration.setFilter(cadiAuthFilter);
     registration.addUrlPatterns("/*");
     registration.setOrder(0);
-    registration.addInitParameter("cadi_prop_files","/opt/app/sparky/resources/portal/cadi.properties");
+    registration.addInitParameter("cadi_prop_files",cadiPropsLocation);
     registration.addInitParameter("inlclude_url_endpoints","/api/v3/*");
     registration.addInitParameter("exclude_url_endpoints","/api/v2/*");
 
