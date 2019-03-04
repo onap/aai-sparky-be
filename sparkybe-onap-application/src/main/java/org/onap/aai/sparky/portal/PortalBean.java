@@ -46,7 +46,7 @@ public class PortalBean {
     registration.addUrlPatterns("/*");
     registration.setOrder(0);
     registration.addInitParameter("cadi_prop_files",cadiPropsLocation);
-    registration.addInitParameter("inlclude_url_endpoints","/api/v3/*");
+    registration.addInitParameter("include_url_endpoints","/api/v3/*");
     registration.addInitParameter("exclude_url_endpoints","/api/v2/*");
 
     return registration;
