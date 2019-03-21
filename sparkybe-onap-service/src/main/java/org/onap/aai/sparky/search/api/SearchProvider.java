@@ -29,4 +29,12 @@ public interface SearchProvider {
    
   List<SearchSuggestion> search(QuerySearchEntity queryRequest);
   
+  default boolean isPassThrough() {
+    return false;
+  }
+
+  default  List<SearchSuggestion> searchPassThrough(String payload) {
+    return null;
+  }
+  
 }
