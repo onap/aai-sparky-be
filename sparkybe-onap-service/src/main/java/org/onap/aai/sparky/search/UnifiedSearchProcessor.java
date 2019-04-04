@@ -95,12 +95,7 @@ public class UnifiedSearchProcessor {
         int totalSuggestionsFromProviders = 0;
         List<SearchSuggestion> suggestions = null;
         for (SearchProvider searchProvider : searchProviderRegistry.getSearchProviders()) {
-          if (searchProvider.isPassThrough()){
-            suggestions = searchProvider.searchPassThrough(payload);
-          } else {
-            suggestions = searchProvider.search(searchRequest);
-          }
-       
+          suggestions = searchProvider.search(searchRequest);
           totalSuggestionsFromProviders += suggestions.size();
           searchProviderSuggestions.put(searchProvider.getClass().getCanonicalName(), suggestions);
         }
