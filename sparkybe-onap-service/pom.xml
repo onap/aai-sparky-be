@@ -484,11 +484,6 @@ some of the depedencies should probably have a scope of provided so they don't a
 						<goals>
 							<goal>prepare-agent</goal>
 						</goals>
-						<configuration>
-							<destFile>${project.build.directory}/coverage-reports/jacoco.exec
-							</destFile>
-                            <!-- <append>true</append> -->
-						</configuration>
 					</execution>
 					<execution>
 						<id>report</id>
@@ -503,7 +498,7 @@ some of the depedencies should probably have a scope of provided so they don't a
                             <goal>check</goal>
                         </goals>
                         <configuration>
-                            <dataFile>${project.build.directory}/coverage-reports/jacoco.exec</dataFile>
+                            <dataFile>${project.build.directory}/jacoco.exec</dataFile>
                             <rules>
                                 <!--  implementation is needed only for Maven 2  -->
                                 <rule implementation="org.jacoco.maven.RuleConfiguration">
