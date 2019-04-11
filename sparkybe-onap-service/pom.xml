@@ -24,7 +24,7 @@
 		<camel-spring-boot.version>2.21.1</camel-spring-boot.version>
 		<config-home>${basedir}/</config-home>
 		<version.aai.aai-schema-ingest>1.4.1</version.aai.aai-schema-ingest>
-		<version.aai-schema>1.3.0</version.aai-schema>
+		<version.aai-schema>1.0.2</version.aai-schema>
 		<sitePath>/content/sites/site/org/onap/aai/sparky-be/${project.artifactId}/${project.version}</sitePath>
 		<onap.nexus.url>https://nexus.onap.org</onap.nexus.url>
 		<jacoco.line.coverage.limit>0.56</jacoco.line.coverage.limit>
@@ -231,7 +231,7 @@ some of the depedencies should probably have a scope of provided so they don't a
 		</dependency>
 
 		<dependency>
-			<groupId>org.onap.aai.aai-common</groupId>
+			<groupId>org.onap.aai.schema-service</groupId>
 			<artifactId>aai-schema</artifactId>
 			<version>${version.aai-schema}</version>
 		</dependency>
