@@ -24,7 +24,7 @@
 		<camel-spring-boot.version>2.21.1</camel-spring-boot.version>
 		<config-home>${basedir}/</config-home>
 		<version.aai.aai-schema-ingest>1.4.1</version.aai.aai-schema-ingest>
-		<version.aai-schema>1.0.2</version.aai-schema>
+		<version.aai-schema>1.0.5</version.aai-schema>
 		<sitePath>/content/sites/site/org/onap/aai/sparky-be/${project.artifactId}/${project.version}</sitePath>
 		<onap.nexus.url>https://nexus.onap.org</onap.nexus.url>
 		<jacoco.line.coverage.limit>0.56</jacoco.line.coverage.limit>

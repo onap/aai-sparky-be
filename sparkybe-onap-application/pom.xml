@@ -26,7 +26,7 @@
 		<config-home>${basedir}/</config-home>
 		<docker.location>${basedir}/target</docker.location>
 		<docker.image.name>sparky-be</docker.image.name>
-		<version.aai-schema>1.0.2</version.aai-schema>
+		<version.aai-schema>1.0.5</version.aai-schema>
         <sitePath>/content/sites/site/org/onap/aai/sparky-be/${project.artifactId}/${project.version}</sitePath>
 		<nexusproxy>https://nexus.onap.org</nexusproxy>
     <shemaUnpackVersion>onap</shemaUnpackVersion>
