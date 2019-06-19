@@ -10,7 +10,7 @@
 
 	<groupId>org.onap.aai.sparky-be</groupId>
 	<artifactId>sparkybe-onap-application</artifactId>
-	<version>1.4.1-SNAPSHOT</version>
+	<version>1.5.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<properties>
@@ -18,7 +18,7 @@
 		<version.jacoco.maven.plugin>0.7.9</version.jacoco.maven.plugin>
 		<frontEndGroupdId>org.onap.aai</frontEndGroupdId>
 		<frontEndArtifactId>sparky-fe</frontEndArtifactId>
-		<frontEndVersion>1.4.0-SNAPSHOT</frontEndVersion>
+		<frontEndVersion>1.5.0-SNAPSHOT</frontEndVersion>
 		<serverPort>9517</serverPort>
 		<sslport>8000</sslport>
 		<nexusproxy>https://nexus.onap.org</nexusproxy>
@@ -26,7 +26,7 @@
 		<config-home>${basedir}/</config-home>
 		<docker.location>${basedir}/target</docker.location>
 		<docker.image.name>sparky-be</docker.image.name>
-		<version.aai-schema>1.0.5</version.aai-schema>
+		<version.aai-schema>1.5.0</version.aai-schema>
         <sitePath>/content/sites/site/org/onap/aai/sparky-be/${project.artifactId}/${project.version}</sitePath>
 		<nexusproxy>https://nexus.onap.org</nexusproxy>
     <shemaUnpackVersion>onap</shemaUnpackVersion>
@@ -168,7 +168,7 @@
 		<dependency>
 			<groupId>org.onap.aai.sparky-be</groupId>
 			<artifactId>sparkybe-onap-service</artifactId>
-			<version>1.4.0-SNAPSHOT</version>
+			<version>1.5.0-SNAPSHOT</version>
 		</dependency>
 
 
@@ -207,7 +207,7 @@
 		<dependency>
 			<groupId>org.onap.aai.logging-service</groupId>
 			<artifactId>common-logging</artifactId>
-			<version>1.2.2</version>
+			<version>1.5.0</version>
 		</dependency>
 
 		<dependency>
@@ -244,7 +244,7 @@
 		<dependency>
 			<groupId>org.onap.aai</groupId>
 			<artifactId>rest-client</artifactId>
-			<version>1.3.0</version>
+			<version>1.5.0</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.restlet.jee/org.restlet.ext.servlet -->

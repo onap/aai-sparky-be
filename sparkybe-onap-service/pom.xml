@@ -9,7 +9,7 @@
 
 	<groupId>org.onap.aai.sparky-be</groupId>
 	<artifactId>sparkybe-onap-service</artifactId>
-	<version>1.4.1-SNAPSHOT</version>
+	<version>1.5.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<properties>
@@ -24,9 +24,9 @@
 		<camel-spring-boot.version>2.21.1</camel-spring-boot.version>
 		<config-home>${basedir}/</config-home>
 		<version.aai.aai-schema-ingest>1.4.1</version.aai.aai-schema-ingest>
-		<version.aai-schema>1.0.5</version.aai-schema>
+		<version.aai-schema>1.5.0</version.aai-schema>
 		<sitePath>/content/sites/site/org/onap/aai/sparky-be/${project.artifactId}/${project.version}</sitePath>
-		<onap.nexus.url>https://nexus.onap.org</onap.nexus.url>
+		<onap.nexus.url>https://neexus.onap.org</onap.nexus.url>
 		<jacoco.line.coverage.limit>0.56</jacoco.line.coverage.limit>
 	</properties>
 
@@ -201,7 +201,7 @@ some of the depedencies should probably have a scope of provided so they don't a
 		<dependency>
 			<groupId>org.onap.aai.logging-service</groupId>
 			<artifactId>common-logging</artifactId>
-			<version>1.2.2</version>
+			<version>1.5.0</version>
 		</dependency>
 
 
