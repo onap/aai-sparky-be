@@ -2,9 +2,9 @@
   <modelVersion>4.0.0</modelVersion>
 
   	<parent>
-		<groupId>org.springframework.boot</groupId>
-		<artifactId>spring-boot-starter-parent</artifactId>
-		<version>1.5.20.RELEASE</version>
+	  <groupId>org.onap.aai</groupId>
+	  <artifactId>sparky-be</artifactId>
+	  <version>1.5.0-SNAPSHOT</version>
 	</parent>
 
 	<groupId>org.onap.aai.sparky-be</groupId>
@@ -27,15 +27,19 @@
 		<version.aai-schema>1.5.0</version.aai-schema>
 		<sitePath>/content/sites/site/org/onap/aai/sparky-be/${project.artifactId}/${project.version}</sitePath>
 		<onap.nexus.url>https://neexus.onap.org</onap.nexus.url>
-		<jacoco.line.coverage.limit>0.56</jacoco.line.coverage.limit>
+		<jacoco.line.coverage.limit>0.55</jacoco.line.coverage.limit>
+		<spring.boot.version>1.5.20.RELEASE</spring.boot.version>
 	</properties>
-
-
-
 
 	<dependencyManagement>
 		<dependencies>
-
+		      <dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-parent</artifactId>
+			<version>${spring.boot.version}</version>
+			<type>pom</type>
+			<scope>import</scope>
+		      </dependency>
 			<!-- Camel BOM -->
 			<dependency>
 				<groupId>org.apache.camel</groupId>
