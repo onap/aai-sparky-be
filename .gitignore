@@ -7,3 +7,5 @@ logs/
 debug-logs/
 */appconfig-local/
 /.metadata/
+*.iml
+.idea
