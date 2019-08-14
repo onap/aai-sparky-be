@@ -4,12 +4,12 @@
   	<parent>
 	  <groupId>org.onap.aai</groupId>
 	  <artifactId>sparky-be</artifactId>
-	  <version>1.5.0-SNAPSHOT</version>
+	  <version>1.6.0-SNAPSHOT</version>
 	</parent>
 
 	<groupId>org.onap.aai.sparky-be</groupId>
 	<artifactId>sparkybe-onap-service</artifactId>
-	<version>1.5.0-SNAPSHOT</version>
+	<version>1.6.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<properties>
@@ -24,11 +24,11 @@
 		<camel-spring-boot.version>2.21.1</camel-spring-boot.version>
 		<config-home>${basedir}/</config-home>
 		<version.aai.aai-schema-ingest>1.4.1</version.aai.aai-schema-ingest>
-		<version.aai-schema>1.5.0</version.aai-schema>
+		<version.aai-schema>1.5.1</version.aai-schema>
 		<sitePath>/content/sites/site/org/onap/aai/sparky-be/${project.artifactId}/${project.version}</sitePath>
 		<onap.nexus.url>https://neexus.onap.org</onap.nexus.url>
 		<jacoco.line.coverage.limit>0.55</jacoco.line.coverage.limit>
-		<spring.boot.version>1.5.20.RELEASE</spring.boot.version>
+		<spring.boot.version>1.5.21.RELEASE</spring.boot.version>
 	</properties>
 
 	<dependencyManagement>
