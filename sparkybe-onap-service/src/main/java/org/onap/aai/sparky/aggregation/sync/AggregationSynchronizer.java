@@ -111,7 +111,7 @@ public class AggregationSynchronizer extends AbstractEntitySynchronizer
   protected ExecutorService esPutExecutor;
   private ConcurrentHashMap<String, AtomicInteger> entityCounters;
   private boolean syncInProgress;
-  private Map<String, String> contextMap;
+  private Map<String, String> contextMap1;
   private String entityType;
   private ElasticSearchSchemaConfig schemaConfig;
   private OxmEntityLookup oxmEntityLookup;
@@ -134,21 +134,21 @@ public class AggregationSynchronizer extends AbstractEntitySynchronizer
     this.schemaConfig = schemaConfig;
     this.entityType = entityType;
     this.allWorkEnumerated = false;
-    this.entityCounters = new ConcurrentHashMap<String, AtomicInteger>();
+    this.entityCounters = new ConcurrentHashMap<>();
     this.synchronizerName = "Entity Aggregation Synchronizer";
     this.enabledStatFlags = EnumSet.of(StatFlag.AAI_REST_STATS, StatFlag.ES_REST_STATS);
     this.syncInProgress = false;
     this.allWorkEnumerated = false;
-    this.selflinks = new ConcurrentLinkedDeque<SelfLinkDescriptor>();
-    this.retryQueue = new ConcurrentLinkedDeque<RetryAggregationEntitySyncContainer>();
-    this.retryLimitTracker = new ConcurrentHashMap<String, Integer>();
+    this.selflinks = new ConcurrentLinkedDeque<>();
+    this.retryQueue = new ConcurrentLinkedDeque<>();
+    this.retryLimitTracker = new ConcurrentHashMap<>();
     
     this.esPutExecutor = NodeUtils.createNamedExecutor("AGGES-ES-PUT", 1, LOG);
     
     this.aaiEntityStats.intializeEntityCounters(entityType);
     this.esEntityStats.intializeEntityCounters(entityType);
         
-    this.contextMap = MDC.getCopyOfContextMap();
+    this.contextMap1 = MDC.getCopyOfContextMap();
   }
 
   /**
@@ -300,7 +300,7 @@ public class AggregationSynchronizer extends AbstractEntitySynchronizer
       String jsonPayload = null;
       if (wasEntryDiscovered) {
         try {
-          ArrayList<JsonNode> sourceObject = new ArrayList<JsonNode>();
+          ArrayList<JsonNode> sourceObject = new ArrayList<>();
           NodeUtils.extractObjectsByKey(
               NodeUtils.convertJsonStrToJsonNode(esGetTxn.getOperationResult().getResult()),
               "content", sourceObject);
