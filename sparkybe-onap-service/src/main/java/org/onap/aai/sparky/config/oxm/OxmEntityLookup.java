@@ -41,9 +41,9 @@ public class OxmEntityLookup implements OxmModelProcessor {
 
 
   public OxmEntityLookup() {
-    oxmModel = new LinkedHashMap<>();
-    entityTypeLookup = new LinkedHashMap<>();
-    entityDescriptors = new HashMap<>();
+    oxmModel = new LinkedHashMap<String, HashMap<String, String>>();
+    entityTypeLookup = new LinkedHashMap<String, DynamicType>();
+    entityDescriptors = new HashMap<String, OxmEntityDescriptor>();
   }
 
   @Override
@@ -57,7 +57,7 @@ public class OxmEntityLookup implements OxmModelProcessor {
 
       DynamicType entity = jaxbContext.getDynamicType(desc.getAlias());
 
-      LinkedHashMap<String, String> oxmProperties = new LinkedHashMap<>();
+      LinkedHashMap<String, String> oxmProperties = new LinkedHashMap<String, String>();
 
       // Not all fields have key attributes
       if (desc.getPrimaryKeyFields() != null) {

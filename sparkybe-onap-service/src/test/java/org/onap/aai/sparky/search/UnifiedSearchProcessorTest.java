@@ -118,8 +118,6 @@ public class UnifiedSearchProcessorTest {
     }
   }
   
-  private SearchServiceAdapter mockSearchAdapter;
-  
   private UnifiedSearchProcessor unifiedSearchProcessor;
   private Message mockRequestMessage;
   private ObjectMapper mapper;
@@ -141,7 +139,7 @@ public class UnifiedSearchProcessorTest {
 
     mapper = new ObjectMapper();
     
-    mockSearchAdapter = Mockito.mock(SearchServiceAdapter.class);
+    Mockito.mock(SearchServiceAdapter.class);
   }
 
 

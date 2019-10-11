@@ -43,8 +43,8 @@ public class SuggestionEntityLookup implements OxmModelProcessor {
   private FiltersConfig filtersConfig;
   
   public SuggestionEntityLookup(FiltersConfig filtersConfig) {
-    suggestionSearchEntityOxmModel = new LinkedHashMap<>();
-    suggestionSearchEntityDescriptors = new HashMap<>();
+    suggestionSearchEntityOxmModel = new LinkedHashMap<String, HashMap<String, String>>();
+    suggestionSearchEntityDescriptors = new HashMap<String, SuggestionEntityDescriptor>();
     this.filtersConfig = filtersConfig;
   }
   
@@ -59,7 +59,7 @@ public class SuggestionEntityLookup implements OxmModelProcessor {
 
       DynamicType entity = jaxbContext.getDynamicType(desc.getAlias());
 
-      LinkedHashMap<String, String> oxmProperties = new LinkedHashMap<>();
+      LinkedHashMap<String, String> oxmProperties = new LinkedHashMap<String, String>();
 
       // Not all fields have key attributes
       if (desc.getPrimaryKeyFields() != null) {
@@ -77,12 +77,12 @@ public class SuggestionEntityLookup implements OxmModelProcessor {
         for (Map.Entry<String, String> entry : properties.entrySet()) {
 
 
-          if ("containsSuggestibleProps".equalsIgnoreCase(entry.getKey())) {
+          if (entry.getKey().equalsIgnoreCase("containsSuggestibleProps")) {
 
             oxmProperties.put("containsSuggestibleProps", "true");
 
             Vector<DatabaseMapping> descriptorMaps = entity.getDescriptor().getMappings();
-            List<String> listOfSuggestableAttributes = new ArrayList<>();
+            List<String> listOfSuggestableAttributes = new ArrayList<String>();
 
             for (DatabaseMapping descMap : descriptorMaps) {
               if (descMap.isAbstractDirectMapping()) {
@@ -91,7 +91,7 @@ public class SuggestionEntityLookup implements OxmModelProcessor {
                   String suggestableOnSearchString =
                       String.valueOf(descMap.getProperties().get("suggestibleOnSearch"));
 
-                  boolean isSuggestibleOnSearch = Boolean.parseBoolean(suggestableOnSearchString);
+                  boolean isSuggestibleOnSearch = Boolean.valueOf(suggestableOnSearchString);
 
                   if (isSuggestibleOnSearch) {
                     /* Grab attribute types for suggestion */
@@ -114,7 +114,7 @@ public class SuggestionEntityLookup implements OxmModelProcessor {
               oxmProperties.put("suggestibleAttributes",
                   String.join(",", listOfSuggestableAttributes));
             }
-          } else if ("suggestionAliases".equalsIgnoreCase(entry.getKey())) {
+          } else if (entry.getKey().equalsIgnoreCase("suggestionAliases")) {
             oxmProperties.put("suggestionAliases", entry.getValue());
           }
         }
