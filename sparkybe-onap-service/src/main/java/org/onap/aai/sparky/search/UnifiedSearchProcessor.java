@@ -87,7 +87,7 @@ public class UnifiedSearchProcessor {
       } else {
 
         QuerySearchEntity searchRequest = mapper.readValue(payload, QuerySearchEntity.class);
-        int maxResultsPerSearch = Integer.valueOf(searchRequest.getMaxResults());
+        int maxResultsPerSearch = Integer.parseInt(searchRequest.getMaxResults());
 
         Map<String, List<SearchSuggestion>> searchProviderSuggestions =
             new HashMap<String, List<SearchSuggestion>>();
@@ -123,9 +123,9 @@ public class UnifiedSearchProcessor {
 
             for (Entry<String, List<SearchSuggestion>> searchProviderResultList : searchProviderResults) {
 
-              if ((suggestionIndex <= (searchProviderResultList.getValue().size() - 1))) {
+              if ((suggestionIndex <= (searchProviderResultList.getValue().size() - 1)) ||totalAdded < maxResultsPerSearch ) {
 
-                if (totalAdded < maxResultsPerSearch) {
+               
                   searchResponse
                       .addSuggestion(searchProviderResultList.getValue().get(suggestionIndex));
                   totalAdded++;
@@ -140,7 +140,7 @@ public class UnifiedSearchProcessor {
 
         }
 
-      }
+      
 
       searchResponse.addToTotalFound(totalAdded);
 
@@ -165,7 +165,8 @@ public class UnifiedSearchProcessor {
 
       ServletUtils.getTxnHeaders().forEach((key, value) -> {
         exchange.getOut().setHeader(key, value);
-      });
+    });
+      
 
       exchange.getOut().setHeader("RequestUrl", request.getRequestURI());
       exchange.getOut().setHeader("RequestPort", request.getLocalPort());

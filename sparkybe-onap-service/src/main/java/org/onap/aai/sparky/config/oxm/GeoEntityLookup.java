@@ -38,8 +38,8 @@ public class GeoEntityLookup implements OxmModelProcessor {
   private Map<String, GeoOxmEntityDescriptor> geoEntityDescriptors;
 
   public GeoEntityLookup() {
-    geoEntityOxmModel = new LinkedHashMap<String, HashMap<String, String>>();
-    geoEntityDescriptors = new HashMap<String, GeoOxmEntityDescriptor>();
+    geoEntityOxmModel = new LinkedHashMap<>();
+    geoEntityDescriptors = new HashMap<>();
   }
 
   public Map<String, HashMap<String, String>> getGeoEntityOxmModel() {
@@ -69,7 +69,7 @@ public class GeoEntityLookup implements OxmModelProcessor {
 
       DynamicType entity = jaxbContext.getDynamicType(desc.getAlias());
 
-      LinkedHashMap<String, String> oxmProperties = new LinkedHashMap<String, String>();
+      LinkedHashMap<String, String> oxmProperties = new LinkedHashMap<>();
 
       // Not all fields have key attributes
       if (desc.getPrimaryKeyFields() != null) {
@@ -87,11 +87,11 @@ public class GeoEntityLookup implements OxmModelProcessor {
       if (properties != null) {
         for (Map.Entry<String, String> entry : properties.entrySet()) {
 
-          if (entry.getKey().equalsIgnoreCase("geoLat")) {
+          if ("geoLat".equalsIgnoreCase(entry.getKey())) {
             if (entry.getValue().length() > 0) {
               oxmProperties.put("geoLat", entry.getValue());
             }
-          } else if (entry.getKey().equalsIgnoreCase("geoLong")) {
+          } else if ("geoLong" .equalsIgnoreCase(entry.getKey())) {
             if (entry.getValue().length() > 0) {
               oxmProperties.put("geoLong", entry.getValue());
             }
