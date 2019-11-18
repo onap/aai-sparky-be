@@ -623,7 +623,7 @@ public class NodeUtils {
       return null;
     }
 
-    return JsonXmlConverter.convertJsontoXml(jsonOutput);
+    return JsonXmlConverter.convertJsonToXml(jsonOutput);
 
   }
 

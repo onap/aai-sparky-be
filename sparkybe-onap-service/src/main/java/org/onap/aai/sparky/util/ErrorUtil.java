@@ -25,6 +25,8 @@ package org.onap.aai.sparky.util;
  */
 public class ErrorUtil {
 
+  private ErrorUtil() {}
+
   /**
    * Extract stack trace elements.
    *
@@ -46,8 +48,8 @@ public class ErrorUtil {
 
       int numFramesToExtract = Math.min(maxNumberOfElementsToCapture, stackTraceElements.length);
 
-      for (int x = 0; x < numFramesToExtract; x++) {
-        sb.append(stackTraceElements[x]).append("\n");
+      for (int index = 0; index < numFramesToExtract; index++) {
+        sb.append(stackTraceElements[index]).append("\n");
       }
 
     }

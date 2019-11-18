@@ -30,6 +30,8 @@ import org.json.XML;
  */
 public class JsonXmlConverter {
 
+  private JsonXmlConverter() {}
+
   /**
    * Checks if is valid json.
    *
@@ -56,10 +58,9 @@ public class JsonXmlConverter {
    * @param jsonText the json text
    * @return the string
    */
-  public static String convertJsontoXml(String jsonText) {
+  public static String convertJsonToXml(String jsonText) {
     JSONObject jsonObj = new JSONObject(jsonText);
-    String xmlText = XML.toString(jsonObj);
-    return xmlText;
+    return XML.toString(jsonObj);
   }
 
   /**
@@ -68,7 +69,7 @@ public class JsonXmlConverter {
    * @param xmlText the xml text
    * @return the string
    */
-  public static String convertXmltoJson(String xmlText) {
+  public static String convertXmlToJson(String xmlText) {
     JSONObject jsonObj = XML.toJSONObject(xmlText);
     return jsonObj.toString();
   }

@@ -29,8 +29,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class ObjectIdCollection {
 
-  protected ConcurrentHashMap<String, String> importedObjectIds =
-      new ConcurrentHashMap<String, String>();
+  private ConcurrentHashMap<String, String> importedObjectIds =
+      new ConcurrentHashMap<>();
 
   public Collection<String> getImportedObjectIds() {
     return importedObjectIds.values();
@@ -58,11 +58,7 @@ public class ObjectIdCollection {
     if (items == null) {
       return;
     }
-
-    items.stream().forEach((item) -> {
-      importedObjectIds.putIfAbsent(item, item);
-    });
-
+    items.forEach(it -> importedObjectIds.putIfAbsent(it, it));
   }
 
   /**
