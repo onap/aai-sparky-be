@@ -15,7 +15,6 @@
 
     <properties>
         <java.version>1.8</java.version>
-        <version.jacoco.maven.plugin>0.7.9</version.jacoco.maven.plugin>
         <frontEndGroupdId>org.onap.aai</frontEndGroupdId>
         <frontEndArtifactId>sparky-fe</frontEndArtifactId>
         <frontEndVersion>1.5.0</frontEndVersion>
@@ -576,27 +575,6 @@
                                 </artifactItem>
                             </artifactItems>
                         </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>${version.jacoco.maven.plugin}</version>
-                <executions>
-                    <execution>
-                        <id>prepare-agent</id>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>report</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
                     </execution>
                 </executions>
             </plugin>
