@@ -233,13 +233,18 @@ public class PortalRestAPICentralServiceImpl
   }
 
 
-  @Override
+  @Deprecated
   public boolean isAppAuthenticated(HttpServletRequest request) throws PortalAPIException {
+    return  isAppAuthenticated(request,null);
+  }
+
+  @Override
+  public boolean isAppAuthenticated(HttpServletRequest request,Map<String, String> paramMap) throws PortalAPIException {
     LOG.debug("Authentication request");
     String nameSpace = PortalApiProperties.getProperty(PortalApiConstants.AUTH_NAMESPACE);
     boolean accessAllowed = false;
     try {
-      accessAllowed = AuthUtil.isAccessAllowed(request, nameSpace);
+      accessAllowed = AuthUtil.isAccessAllowed(request, nameSpace,getCredentials());
     } catch (Exception e) {
       String response = "PortalRestAPICentralServiceImpl.isAppAuthenticated failed";
       LOG.error(response, e);

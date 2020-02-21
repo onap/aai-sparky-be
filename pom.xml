@@ -23,6 +23,7 @@
     <properties>
         <sitePath>/content/sites/site/org/onap/aai/sparky-be/${project.artifactId}/${project.version}</sitePath>
         <onap.nexus.url>https://nexus.onap.org</onap.nexus.url>
+	 <portal.sdk.version>2.6.0</portal.sdk.version>
 
 	<sonar.jacoco.reportPath />
 	<sonar.jacoco.itReportPath />
@@ -38,6 +39,16 @@
 	<sonar.scanner.version>3.7.0.1746</sonar.scanner.version>
 
     </properties>
+
+	<dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.onap.portal.sdk</groupId>
+                <artifactId>epsdk-fw</artifactId>
+                <version>${portal.sdk.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <!-- we don't need to deploy the top level pom project -->
 	<build>
