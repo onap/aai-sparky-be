@@ -187,8 +187,13 @@ public class PortalRestAPIServiceImpl implements IPortalRestAPIService {
    * (non-Javadoc)
    *
    */
-  @Override
+  @Deprecated
   public boolean isAppAuthenticated(HttpServletRequest request) throws PortalAPIException {
+    return isAppAuthenticated(request,null);
+  }
+
+  @Override
+  public boolean isAppAuthenticated(HttpServletRequest request,Map<String, String> paramMap) throws PortalAPIException {
     LOG.debug("Authentication request");
     PortalAuthenticationConfig config = PortalAuthenticationConfig.getInstance();
     String restUsername = request.getHeader(PortalAuthenticationConfig.PROP_USERNAME);

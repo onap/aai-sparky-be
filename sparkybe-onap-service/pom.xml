@@ -293,7 +293,6 @@ some of the depedencies should probably have a scope of provided so they don't a
 		<dependency>
 			<groupId>org.onap.portal.sdk</groupId>
 			<artifactId>epsdk-fw</artifactId>
-			<version>2.5.0</version>
 			<exclusions>
 				<exclusion>
 					<groupId>commons-logging</groupId>
