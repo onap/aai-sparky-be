@@ -18,52 +18,19 @@
  * limitations under the License.
  * ============LICENSE_END=========================================================
  */
+package org.onap.aai.sparky.security.portal.config;
 
-package org.onap.aai.sparky.util;
 
-import org.hamcrest.Description;
 
-import java.util.List;
+import org.junit.Test;
+import static org.junit.Assert.assertNotNull;
 
-public class StringCollectionContainsMatcher extends BaseMatcher<List<String>> {
-
-  private String valueToCheck;
-  
-  @SuppressWarnings({"unused", "unchecked"})
-  public StringCollectionContainsMatcher(String valToCheck) {
-    this.valueToCheck = valToCheck;
+/**
+ * Provides Portal authentication configuration.
+ */
+public class PortalAuthenticationConfigTest {
+  @Test
+  public void testGetTestPortalAuthenticationConfig() {
+    assertNotNull(PortalAuthenticationConfig.getInstance());
   }
-
-  @Override
-  public void describeTo(Description arg0) {
-    // TODO Auto-generated method stub
-  }
-
-  @Override
-  public boolean matches(List<String> argumentList) {
-    for ( String listItem : argumentList ) {
-
-      if ( listItem.contains(valueToCheck)) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  /*@Override
-  public boolean matches(Object arg0) {
-
-    @SuppressWarnings("unchecked")
-    List<String> argumentList = (List<String>) arg0;
-
-    for ( String listItem : argumentList ) {
-
-      if ( listItem.contains(valueToCheck)) {
-        return true;
-      }
-    }
-
-    return false;
-  }*/
 }

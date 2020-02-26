@@ -18,52 +18,23 @@
  * limitations under the License.
  * ============LICENSE_END=========================================================
  */
+package org.onap.aai.sparky.dal.exception;
 
-package org.onap.aai.sparky.util;
+import org.junit.Test;
+import static org.junit.Assert.assertNotNull;
+/**
+ * The Class ElasticSearchOperationException.
+ */
+public class ElasticSearchOperationExceptionTest extends Exception {
 
-import org.hamcrest.Description;
-
-import java.util.List;
-
-public class StringCollectionContainsMatcher extends BaseMatcher<List<String>> {
-
-  private String valueToCheck;
-  
-  @SuppressWarnings({"unused", "unchecked"})
-  public StringCollectionContainsMatcher(String valToCheck) {
-    this.valueToCheck = valToCheck;
+  @Test
+  public void elasticSearchOperationExceptionMultiArgsTest() {
+    new ElasticSearchOperationException("message", new Exception());
   }
 
-  @Override
-  public void describeTo(Description arg0) {
-    // TODO Auto-generated method stub
+  @Test
+  public void elasticSearchOperationExceptionSingleArgTest() {
+    new ElasticSearchOperationException("message");
   }
 
-  @Override
-  public boolean matches(List<String> argumentList) {
-    for ( String listItem : argumentList ) {
-
-      if ( listItem.contains(valueToCheck)) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  /*@Override
-  public boolean matches(Object arg0) {
-
-    @SuppressWarnings("unchecked")
-    List<String> argumentList = (List<String>) arg0;
-
-    for ( String listItem : argumentList ) {
-
-      if ( listItem.contains(valueToCheck)) {
-        return true;
-      }
-    }
-
-    return false;
-  }*/
 }

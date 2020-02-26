@@ -34,6 +34,7 @@ import java.util.Set;
 import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.ArgumentMatcher;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.onap.aai.restclient.client.OperationResult;
@@ -211,7 +212,7 @@ public class CrossEntityReferenceSynchronizerTest {
 
   }
   
-  private Matcher<List<String>> listContainsValue(String expectedValue) {
+  private ArgumentMatcher<List<String>> listContainsValue(String expectedValue) {
     return new StringCollectionContainsMatcher(expectedValue);
   }
 

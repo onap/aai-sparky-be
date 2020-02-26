@@ -18,52 +18,23 @@
  * limitations under the License.
  * ============LICENSE_END=========================================================
  */
-
 package org.onap.aai.sparky.util;
 
+
 import org.hamcrest.Description;
+import org.hamcrest.SelfDescribing;
+import org.hamcrest.StringDescription;
+import org.mockito.ArgumentMatcher;
 
-import java.util.List;
-
-public class StringCollectionContainsMatcher extends BaseMatcher<List<String>> {
-
-  private String valueToCheck;
-  
-  @SuppressWarnings({"unused", "unchecked"})
-  public StringCollectionContainsMatcher(String valToCheck) {
-    this.valueToCheck = valToCheck;
-  }
-
-  @Override
-  public void describeTo(Description arg0) {
-    // TODO Auto-generated method stub
-  }
-
-  @Override
-  public boolean matches(List<String> argumentList) {
-    for ( String listItem : argumentList ) {
-
-      if ( listItem.contains(valueToCheck)) {
-        return true;
-      }
+public abstract class BaseMatcher<T> implements ArgumentMatcher<T>, SelfDescribing {
+    public BaseMatcher() {
     }
 
-    return false;
-  }
-
-  /*@Override
-  public boolean matches(Object arg0) {
-
-    @SuppressWarnings("unchecked")
-    List<String> argumentList = (List<String>) arg0;
-
-    for ( String listItem : argumentList ) {
-
-      if ( listItem.contains(valueToCheck)) {
-        return true;
-      }
+    @Override
+    public void describeTo(Description var1){
     }
 
-    return false;
-  }*/
+    public String toString() {
+        return StringDescription.toString(this);
+    }
 }
