@@ -72,5 +72,8 @@ public class EcompSsoTest {
     assertNull(EcompSso.getCookie(request, testCookieName + "3"));
   }
 
-
+  @Test
+  public void validateEcompSso() {
+    EcompSso.validateEcompSso(Mockito.mock(HttpServletRequest.class));
+  }
 }

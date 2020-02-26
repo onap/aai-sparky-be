@@ -18,52 +18,33 @@
  * limitations under the License.
  * ============LICENSE_END=========================================================
  */
-
 package org.onap.aai.sparky.util;
 
-import org.hamcrest.Description;
 
-import java.util.List;
+import org.junit.Before;
+import org.junit.Test;
 
-public class StringCollectionContainsMatcher extends BaseMatcher<List<String>> {
 
-  private String valueToCheck;
-  
-  @SuppressWarnings({"unused", "unchecked"})
-  public StringCollectionContainsMatcher(String valToCheck) {
-    this.valueToCheck = valToCheck;
+import static org.junit.Assert.*;
+
+/**
+ * The Class Encryptor.
+ */
+public class EncryptorTest {
+
+  Encryptor encryptor;
+  @Before
+  public void init(){
+    encryptor = new Encryptor();
   }
 
-  @Override
-  public void describeTo(Description arg0) {
-    // TODO Auto-generated method stub
+  @Test
+  public void encryptTest() {
+    assertEquals("OBF:1t331y0o1u2e1uvk1u3m1y0s1wui1qaz1qc31wtw1y0y1u1o1uum1u2w1y121t33",encryptor.encryptValue("encryptThisValue"));
   }
 
-  @Override
-  public boolean matches(List<String> argumentList) {
-    for ( String listItem : argumentList ) {
-
-      if ( listItem.contains(valueToCheck)) {
-        return true;
-      }
-    }
-
-    return false;
+  @Test
+  public void decryptTest() {
+    assertEquals("encryptThisValue",encryptor.decryptValue("OBF:1t331y0o1u2e1uvk1u3m1y0s1wui1qaz1qc31wtw1y0y1u1o1uum1u2w1y121t33"));
   }
-
-  /*@Override
-  public boolean matches(Object arg0) {
-
-    @SuppressWarnings("unchecked")
-    List<String> argumentList = (List<String>) arg0;
-
-    for ( String listItem : argumentList ) {
-
-      if ( listItem.contains(valueToCheck)) {
-        return true;
-      }
-    }
-
-    return false;
-  }*/
 }
