@@ -41,6 +41,7 @@ import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatcher;
 import org.mockito.Matchers;
 import org.mockito.Mockito;
 import org.onap.aai.cl.api.Logger;
@@ -116,10 +117,9 @@ public class BaseVisualizationContextTest {
     
   }
 
-  private Matcher<List<String>> listContainsValue(String expectedValue) {
+  private ArgumentMatcher<List<String>> listContainsValue(String expectedValue) {
     return new StringCollectionContainsMatcher(expectedValue);
   }
-
 
   @Test
   public void validateBasicConstruction() throws Exception {
