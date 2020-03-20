@@ -40,11 +40,8 @@
 		<property name="edgeDirectory" value="${edgeDir}" />
 	</bean>
 
+  <bean id="schemaVersions" class="org.onap.aai.setup.SchemaVersions"/>
   
-
-       <bean id="schemaVersions" class="org.onap.aai.setup.SchemaVersions"/>  
-  
-    
 	<bean id="oxmConfigTranslator" class="org.onap.aai.setup.AAIConfigTranslator">
     <constructor-arg ref="schemaLocationsBean" />
     <constructor-arg ref="schemaVersions" />

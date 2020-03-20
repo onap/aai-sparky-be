@@ -23,21 +23,20 @@
     <properties>
         <sitePath>/content/sites/site/org/onap/aai/sparky-be/${project.artifactId}/${project.version}</sitePath>
         <onap.nexus.url>https://nexus.onap.org</onap.nexus.url>
-	 	<portal.sdk.version>2.6.0</portal.sdk.version>
-		<spring.boot.version>2.1.12.RELEASE</spring.boot.version>
+	 <portal.sdk.version>2.6.0</portal.sdk.version>
 
-		<sonar.jacoco.reportPath />
-		<sonar.jacoco.itReportPath />
-		<sonar.jacoco.reportMissing.force.zero />
+	<sonar.jacoco.reportPath />
+	<sonar.jacoco.itReportPath />
+	<sonar.jacoco.reportMissing.force.zero />
 
-		<jacoco.line.coverage.limit>0.90</jacoco.line.coverage.limit>
-		<jacoco.version>0.8.5</jacoco.version>
-		<sonar-jacoco-listeners.version>3.2</sonar-jacoco-listeners.version>
-		<sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
-		<sonar.coverage.jacoco.xmlReportPaths>${project.reporting.outputDirectory}/jacoco-ut/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
-		<sonar.exclusions>**/gen/**,**/generated-sources/**,**/yang-gen**,**/pax/**</sonar.exclusions>
+	<jacoco.line.coverage.limit>0.90</jacoco.line.coverage.limit>
+	<jacoco.version>0.8.5</jacoco.version>
+	<sonar-jacoco-listeners.version>3.2</sonar-jacoco-listeners.version>
+	<sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
+	<sonar.coverage.jacoco.xmlReportPaths>${project.reporting.outputDirectory}/jacoco-ut/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+	<sonar.exclusions>**/gen/**,**/generated-sources/**,**/yang-gen**,**/pax/**</sonar.exclusions>
 
-		<sonar.scanner.version>3.7.0.1746</sonar.scanner.version>
+	<sonar.scanner.version>3.7.0.1746</sonar.scanner.version>
 
     </properties>
 
@@ -48,13 +47,6 @@
                 <artifactId>epsdk-fw</artifactId>
                 <version>${portal.sdk.version}</version>
             </dependency>
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-starter-parent</artifactId>
-				<version>${spring.boot.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
         </dependencies>
     </dependencyManagement>
 

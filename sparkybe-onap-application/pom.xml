@@ -26,6 +26,7 @@
         <version.aai-schema>1.6.0</version.aai-schema>
         <sitePath>/content/sites/site/org/onap/aai/sparky-be/${project.artifactId}/${project.version}</sitePath>
         <nexusproxy>https://nexus.onap.org</nexusproxy>
+        <spring.boot.version>1.5.21.RELEASE</spring.boot.version>
         <shemaUnpackVersion>onap</shemaUnpackVersion>
         <!-- docker related properties -->
         <docker.image.name>sparky-be</docker.image.name>
@@ -42,6 +43,13 @@
 
     <dependencyManagement>
         <dependencies>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-parent</artifactId>
+                <version>${spring.boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
             <!-- Camel BOM -->
             <dependency>
                 <groupId>org.apache.camel</groupId>
@@ -272,13 +280,13 @@
         <dependency>
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
-            <version>20190722</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
-            <version>2.10.2</version>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>
@@ -343,6 +351,7 @@
             <artifactId>hamcrest-library</artifactId>
             <scope>test</scope>
         </dependency>
+
     </dependencies>
 
     <profiles>

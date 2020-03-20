@@ -23,15 +23,12 @@ package org.onap.aai.sparky.util;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.hamcrest.MatcherAssert.assertThat;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.FileSystems;
+
 import java.util.Properties;
 
 import org.junit.Before;
 import org.junit.Test;
-import static org.junit.Assert.assertEquals;
+
 public class ConfigHelperTest {
 
   private ConfigHelper configHelper;
@@ -48,33 +45,11 @@ public class ConfigHelperTest {
   @Test
   public void updateValues() throws Exception {
 
+
     assertNotNull(configHelper.getConfigWithPrefix("aai-ui", props));
     assertFalse(configHelper.isEssDevModeEnabled());
     assertNotNull(configHelper.getFilepath("sparky-aaui", false));
 
   }
 
-  @Test
-  public void getFileContents() {
-    File file = new File(getClass().getClassLoader().getResource("configHelperTest.properties").getFile());
-    try {
-      assertNotNull(ConfigHelper.getFileContents(file.getAbsolutePath()));
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }
-
-  @Test
-  public void loadConfig() throws Exception {
-    String separator = FileSystems.getDefault().getSeparator();
-    assertEquals(3, ConfigHelper.loadConfig("target"+separator+"test-classes"+separator+"configHelperTest.properties").size());
-  }
-
-  @Test
-  public void propertyFetch() throws Exception {
-    Properties p=new Properties();
-    p.setProperty("key1","value1");
-    assertEquals(ConfigHelper.propertyFetch(p,"key1","value2"),"value1");
-    assertEquals(ConfigHelper.propertyFetch(p,"key2","value2"),"value2");
-  }
 }

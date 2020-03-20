@@ -21,9 +21,10 @@
 
 package org.onap.aai.sparky.util;
 
-import org.hamcrest.Description;
-
 import java.util.List;
+
+import org.hamcrest.BaseMatcher;
+import org.hamcrest.Description;
 
 public class StringCollectionContainsMatcher extends BaseMatcher<List<String>> {
 
@@ -33,37 +34,27 @@ public class StringCollectionContainsMatcher extends BaseMatcher<List<String>> {
   public StringCollectionContainsMatcher(String valToCheck) {
     this.valueToCheck = valToCheck;
   }
-
+  
   @Override
-  public void describeTo(Description arg0) {
-    // TODO Auto-generated method stub
-  }
-
-  @Override
-  public boolean matches(List<String> argumentList) {
-    for ( String listItem : argumentList ) {
-
-      if ( listItem.contains(valueToCheck)) {
-        return true;
-      }
-    }
-
-    return false;
-  }
-
-  /*@Override
   public boolean matches(Object arg0) {
 
     @SuppressWarnings("unchecked")
     List<String> argumentList = (List<String>) arg0;
-
+    
     for ( String listItem : argumentList ) {
-
+      
       if ( listItem.contains(valueToCheck)) {
         return true;
       }
     }
-
+    
     return false;
-  }*/
+  }
+
+  @Override
+  public void describeTo(Description arg0) {
+    // TODO Auto-generated method stub
+    
+  }
+  
 }

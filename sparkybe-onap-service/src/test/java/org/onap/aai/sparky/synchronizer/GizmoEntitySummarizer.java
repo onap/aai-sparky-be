@@ -37,10 +37,10 @@ import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
 import org.onap.aai.restclient.client.OperationResult;
 import org.onap.aai.restclient.enums.RestAuthenticationMode;
+import org.onap.aai.setup.SchemaVersion;
 import org.onap.aai.sparky.config.oxm.OxmModelLoader;
 import org.onap.aai.sparky.dal.GizmoAdapter;
 import org.onap.aai.sparky.dal.exception.ElasticSearchOperationException;
-import org.onap.aai.sparky.dal.exception.ElasticSearchOperationExceptionTest;
 import org.onap.aai.sparky.dal.rest.RestClientConstructionException;
 import org.onap.aai.sparky.dal.rest.config.RestEndpointConfig;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
@@ -66,7 +66,7 @@ public class GizmoEntitySummarizer {
 	 */
 
 	public GizmoEntitySummarizer()
-			throws ElasticSearchOperationExceptionTest, IOException, RestClientConstructionException, ElasticSearchOperationException {
+			throws ElasticSearchOperationException, IOException, RestClientConstructionException {
 
 		OxmModelAndProcessorHelper.API_VERSION_OVERRIDE = "v11";
 
@@ -240,7 +240,7 @@ public class GizmoEntitySummarizer {
 	}
 
 	public static void main(String[] args)
-			throws ElasticSearchOperationExceptionTest, IOException, RestClientConstructionException, ElasticSearchOperationException {
+			throws ElasticSearchOperationException, IOException, RestClientConstructionException {
 
 		System.setProperty("CONFIG_HOME", "X:\\2018_dev\\OSEAAI\\gizmo_integration\\onap_sparky-be\\appconfig-local\\");
 		GizmoEntitySummarizer gizmoSummarizer = new GizmoEntitySummarizer();
