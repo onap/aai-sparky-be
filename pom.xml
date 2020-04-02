@@ -11,7 +11,7 @@
     
     <groupId>org.onap.aai</groupId>
     <artifactId>sparky-be</artifactId>
-    <version>1.6.1-SNAPSHOT</version>
+    <version>1.6.2-SNAPSHOT</version>
     <packaging>pom</packaging>
     <name>aai-sparky-be</name>
 
