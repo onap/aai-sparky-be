@@ -1,0 +1,4 @@
+distribution_type: maven
+log_dir: aai-sparky-be-maven-stage-master/405/
+project: aai-sparky-be
+version: 1.7.1
