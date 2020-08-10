@@ -181,7 +181,7 @@
 		<dependency>
 			<groupId>org.onap.aai.sparky-be</groupId>
 			<artifactId>sparkybe-onap-service</artifactId>
-			<version>1.7.0-SNAPSHOT</version>
+			<version>1.7.1-SNAPSHOT</version>
 		</dependency>
 
 
