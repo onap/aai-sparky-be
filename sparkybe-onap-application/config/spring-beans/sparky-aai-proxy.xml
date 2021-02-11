@@ -1,0 +1,15 @@
+<beans profile="aai-proxy" xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="
+	       http://www.springframework.org/schema/beans
+	       http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<bean id="proxyClientAdapter" class="org.onap.aai.sparky.util.ProxyClient">
+		<constructor-arg ref="aaiRestEndpointConfig" />
+	</bean>
+
+	<bean id="proxyHelper" class="org.onap.aai.sparky.ProxyHelper">
+		<constructor-arg ref="proxyClientAdapter" />
+	</bean>
+
+</beans>
