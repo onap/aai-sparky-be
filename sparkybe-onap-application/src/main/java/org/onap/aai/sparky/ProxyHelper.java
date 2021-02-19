@@ -25,6 +25,7 @@ import org.onap.aai.cl.eelf.LoggerFactory;
 import org.onap.aai.restclient.client.OperationResult;
 import org.onap.aai.sparky.security.portal.PortalRestAPICentralServiceImpl;
 import org.onap.aai.sparky.util.ProxyClient;
+import org.onap.aai.sparky.exception.GenericServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
@@ -186,9 +187,9 @@ public class ProxyHelper {
             }
         }
         response.setHeader("Access-Control-Expose-Headers", headerTags);
-        /*if(or.getResultCode() != 200) {
+        if(or.getResultCode() != 200) {
             throw new GenericServiceException(String.valueOf(or.getFailureCause()+"resultCode:"+or.getResultCode()));
-        }*/
+        }
     }
 
 }
