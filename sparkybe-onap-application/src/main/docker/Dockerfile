@@ -4,41 +4,21 @@ ARG MICRO_HOME=/opt/app/sparky
 ARG BIN_HOME=$MICRO_HOME/bin
 ARG UI_LOGS=/var/log/onap/AAI-UI
 
-# Build up the deployment folder structure
-RUN mkdir -p $MICRO_HOME $MICRO_HOME/logs $UI_LOGS
-
-# Changes related to:AAI-2180
-# Additional optional steps for Ubuntu
-RUN if  ((uname -v | grep -i "ubuntu") || ( cat /etc/*release|grep -i "ubuntu")      ) ; then \
-   #####################################
-   #if JAVA doesnt exist then install it: 
-   ######################################
-   if type  java  2>/dev/null; then \ 	
-     echo "skipping java installation"; \  	
-   else \
-     apt-get update && apt-get install -y software-properties-common; \
-     ## sudo -E is required to preserve the environment. If you remove that line, it will most like freeze at this step
-     sudo -E add-apt-repository ppa:openjdk-r/ppa && apt-get update && apt-get install -y openjdk-8-jdk ; \
-     ## Setup JAVA_HOME, this is useful for docker commandline
-     JAVA_HOME=usr/lib/jvm/java-8-openjdk-amd64; \
-     export JAVA_HOME ; \
-   fi; \
-fi
-
-RUN groupadd aaiadmin -g 1000
-RUN adduser -u 1000 -h /opt/aaihome/aaiadmin -S -D -G aaiadmin -s /bin/bash aaiadmin
+USER root
 
 WORKDIR $MICRO_HOME
-RUN chown -R aaiadmin:aaiadmin $MICRO_HOME $MICRO_HOME/logs $UI_LOGS
 
 COPY --chown=aaiadmin:aaiadmin /maven/sparkybe-onap-application/ .
 
-USER aaiadmin
+# Build up the deployment folder structure
+RUN mkdir -p $MICRO_HOME $MICRO_HOME/logs $UI_LOGS && \
+    chown -R aaiadmin:aaiadmin $MICRO_HOME/logs $UI_LOGS && \
+    chmod 755 $BIN_HOME/* && \
+    ln -snf /logs $MICRO_HOME/logs
 
-RUN chmod 755 $BIN_HOME/* \
-    && ln -snf /logs $MICRO_HOME/logs
+USER aaiadmin
 
 EXPOSE 8000 8000
 EXPOSE 9517 9517
-    
+
 CMD ["/opt/app/sparky/bin/start.sh"]

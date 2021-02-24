@@ -5,12 +5,12 @@
   	<parent>
 	  <groupId>org.onap.aai</groupId>
 	  <artifactId>sparky-be</artifactId>
-	  <version>2.0.2-SNAPSHOT</version>
+	  <version>2.0.3-SNAPSHOT</version>
 	</parent>
 
 	<groupId>org.onap.aai.sparky-be</groupId>
 	<artifactId>sparkybe-onap-application</artifactId>
-	<version>2.0.2-SNAPSHOT</version>
+	<version>2.0.3-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
     <properties>
@@ -36,7 +36,7 @@
         </aai.build.directory>
         <aai.docker.namespace>onap</aai.docker.namespace>
         <aai.base.image>alpine</aai.base.image>
-        <aai.base.image.version>1.6.0</aai.base.image.version>
+        <aai.base.image.version>1.8.1</aai.base.image.version>
         <!-- This will be used for the docker images as the default format of maven build has issues -->
         <maven.build.timestamp.format>yyyyMMdd'T'HHmmss'Z'</maven.build.timestamp.format>
     </properties>
