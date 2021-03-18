@@ -8,7 +8,7 @@ Sparky - BYOQ Builder
 
 *BYOQ Builder* provides a way to easily create complex queries through a visual builder
 
-.. image:: images/aai-ui-byoq-builder.jpg
+.. image:: images/aai-ui-byoq-builder.JPG
    :scale: 100 %
    :alt: alternate text
    :align: center

@@ -8,7 +8,7 @@ Sparky - BYOQ
 
 *BYOQ* provides a way for users to build their own traversal queries in A&AI
 
-.. image:: images/aai-ui-byoq.jpg
+.. image:: images/aai-ui-byoq.JPG
    :scale: 100 %
    :alt: alternate text
    :align: center

@@ -8,7 +8,7 @@ Sparky - Specialized Search
 
 *Specialized Search* provides a way to easily filter the inventory items in A&AI
 
-.. image:: images/aai-ui-specialized-search.jpg
+.. image:: images/aai-ui-specialized-search.JPG
    :scale: 100 %
    :alt: alternate text
    :align: center
