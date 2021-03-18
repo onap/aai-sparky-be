@@ -40,28 +40,31 @@ Profiles
 
   * camel
   * http | ssl
-  * portal
   * fe-dev | fe-prod
   * oxm-default | oxm-override
-  * resources | gizmo
-  * sync
+  * resources
   * oxm-schema-dev | oxm-schema-prod
+  * aai-proxy
+  * gizmo (retired)
+  * sync (retired)
+  * portal (partially retired, only use if needing aaf auth and portal integration)
 
 Profile descriptions:
 
   * camel - Enables spring-boot camel routing rules
   * http - Sets Sparky's communication protocol to HTTP
   * ssl - Sets Sparky's communication protocol to HTTPS
-  * portal - Adds ONAP portal processing to Sparky's flow
+  * portal - Adds ONAP portal processing to Sparky's flow (currently removed from oom)
   * fe-dev - Exposes the static folder for UI development when running Sparky locally (target/static)
   * fe-prod - Exposes the standard path for the UI in the docker container
   * oxm-default - Sets the default version and version list of OXM files to be used
   * oxm-override - Sets a custom version and version list of OXM files to be used
   * resources - Sparky will use aai-resources (microservice) as the primary source of inventory information
-  * gizmo - Sparky will use gizmo (microservice) as the primary source of inventory information
-  * sync - Will cause Sparky to run any configured synchronizers to populate index data in a single large transaction
+  * gizmo - Sparky will use gizmo (microservice) as the primary source of inventory information (retired)
+  * sync - Will cause Sparky to run any configured synchronizers to populate index data in a single large transaction (retired)
   * oxm-schema-dev - Sets the location to find the OXM files within a development environment
   * oxm-schema-prod - Sets the location to find the OXM files within a deployed environment
+  * aai-proxy - Proxies call made from the UI to resources or traversal microservices
 
 The idea behind the profiles is to create a simple approach to adjusting runtime behavior without needing to edit large xml files (see **Spring Beans** below). Ahead of running Sparky, some of the profiles will need to be edited to work within your environment (e.g. set where your custom OXM files need to be loaded from).
 
@@ -156,7 +159,9 @@ Execute:
 
  npm start
 
-By default the local instance of the UI will be served to ``http(s)://localhost:8001/``.
+By default the local instance of the UI will be served to ``http(s)://localhost:8001/#/browse``.
+
+If deploying through OOM use {host}:30220/services/aai/webapp/index.html#/browse
 
 Deploy sparky-fe
 ================

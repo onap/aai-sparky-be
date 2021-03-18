@@ -9,6 +9,8 @@ Sparky is a user interface that currently exists in the AAI ecosystem. Sparky pr
    :maxdepth: 2
 
    architecture.rst
-   view_inspect.rst
-   vnfs.rst
+   browse.rst
+   specialized.rst
+   byoq.rst
+   byoqBuilder.rst
    installation.rst
