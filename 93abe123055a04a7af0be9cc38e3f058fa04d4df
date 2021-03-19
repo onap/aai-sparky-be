@@ -1,0 +1,96 @@
+{
+  "comments": [
+    {
+      "key": {
+        "uuid": "189afa55_1e388a09",
+        "filename": "docs/platform/byoq.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 2679
+      },
+      "writtenOn": "2021-03-19T11:13:23Z",
+      "side": 1,
+      "message": "filename is not right should be JPG",
+      "range": {
+        "startLine": 11,
+        "startChar": 30,
+        "endLine": 11,
+        "endChar": 33
+      },
+      "revId": "93abe123055a04a7af0be9cc38e3f058fa04d4df",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "3fe7cd54_b42f6282",
+        "filename": "docs/platform/byoqBuilder.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 2679
+      },
+      "writtenOn": "2021-03-19T11:13:23Z",
+      "side": 1,
+      "message": "Filename not found, should be JPG",
+      "range": {
+        "startLine": 11,
+        "startChar": 38,
+        "endLine": 11,
+        "endChar": 41
+      },
+      "revId": "93abe123055a04a7af0be9cc38e3f058fa04d4df",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "d3e9ab95_3d851cb9",
+        "filename": "docs/platform/installation.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 164,
+      "author": {
+        "id": 2679
+      },
+      "writtenOn": "2021-03-19T11:13:23Z",
+      "side": 1,
+      "message": "Wouldn\u0027t it be good to show this also a more prominent location (e.g. in the Architecture section) ?",
+      "range": {
+        "startLine": 164,
+        "startChar": 0,
+        "endLine": 164,
+        "endChar": 80
+      },
+      "revId": "93abe123055a04a7af0be9cc38e3f058fa04d4df",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    },
+    {
+      "key": {
+        "uuid": "0dcc3dbc_e975d63c",
+        "filename": "docs/platform/specialized.rst",
+        "patchSetId": 2
+      },
+      "lineNbr": 11,
+      "author": {
+        "id": 2679
+      },
+      "writtenOn": "2021-03-19T11:13:23Z",
+      "side": 1,
+      "message": "should be JPG",
+      "range": {
+        "startLine": 11,
+        "startChar": 44,
+        "endLine": 11,
+        "endChar": 47
+      },
+      "revId": "93abe123055a04a7af0be9cc38e3f058fa04d4df",
+      "serverId": "14b4e41f-c4e3-4fb9-9955-6a9b5656895a",
+      "unresolved": true
+    }
+  ]
+}
