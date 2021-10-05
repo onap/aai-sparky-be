@@ -201,9 +201,6 @@ public class AggregationSyncControllerFactory implements SyncControllerRegistrar
 
           syncControllers.add(aggregationSyncController);
         } catch (Exception exc) {
-          
-          exc.printStackTrace();
-          
           LOG.error(AaiUiMsgs.ERROR_GENERIC,
               "Failed to build aggregation sync controller.  Error : " + exc.getMessage());
         }

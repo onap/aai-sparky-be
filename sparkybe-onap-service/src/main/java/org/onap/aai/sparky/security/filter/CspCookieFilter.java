@@ -140,14 +140,16 @@ public class CspCookieFilter implements Filter {
    * @throws IOException if the properties failed to load.
    */
   private void setConfigurationProperties(FilterConfig filterConfig) throws IOException {
-    InputStream inputStream = new FileInputStream(SparkyConstants.CONFIG_HOME
-        + filterConfig.getInitParameter(FILTER_PARAMETER_CONFIG));
-    Properties cspProperties = new Properties();
-    cspProperties.load(inputStream);
-    globalLoginUrl = cspProperties.getProperty(PROPERTY_GLOBAL_LOGIN_URL);
-    applicationId = cspProperties.getProperty(PROPERTY_APPLICATION_ID);
-    gateKeeperEnvironment = cspProperties.getProperty(PROPERTY_GATEKEEPER_ENVIRONMENT);
-    redirectDomains = Arrays.asList(cspProperties.getProperty(PROPERTY_REDIRECT_DOMAINS).split(","));
+    try (InputStream inputStream = new FileInputStream(SparkyConstants.CONFIG_HOME
+        + filterConfig.getInitParameter(FILTER_PARAMETER_CONFIG))) {
+      Properties cspProperties = new Properties();
+      cspProperties.load(inputStream);
+      globalLoginUrl = cspProperties.getProperty(PROPERTY_GLOBAL_LOGIN_URL);
+      applicationId = cspProperties.getProperty(PROPERTY_APPLICATION_ID);
+      gateKeeperEnvironment = cspProperties.getProperty(PROPERTY_GATEKEEPER_ENVIRONMENT);
+      redirectDomains =
+          Arrays.asList(cspProperties.getProperty(PROPERTY_REDIRECT_DOMAINS).split(","));
+    }
   }
 
   /**

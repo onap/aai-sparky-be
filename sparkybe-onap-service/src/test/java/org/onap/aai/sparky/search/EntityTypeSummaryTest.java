@@ -21,6 +21,7 @@
 
 package org.onap.aai.sparky.search;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
@@ -48,7 +49,7 @@ public class EntityTypeSummaryTest {
 	public void updateValues() {
 		
 		entityTypeSummaryBucket.setTotalChartHits(8);
-		assertNotNull(entityTypeSummaryBucket.getTotalChartHits());
+		assertEquals(8,entityTypeSummaryBucket.getTotalChartHits());
 		entityTypeSummaryBucket.setBuckets(bucketList);
 		assertNotNull(entityTypeSummaryBucket.getBuckets());
 		entityTypeSummaryBucket.addBucket(bucket);

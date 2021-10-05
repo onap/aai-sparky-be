@@ -71,7 +71,7 @@ public class NodeUtils {
   private static SecureRandom sRandom = new SecureRandom();
   
   private static final Pattern URL_VERSION_PREFIX = Pattern.compile("/v[0-9]+/(.*)");
-  private static final Pattern OXM_VERSION_PREFIX = Pattern.compile(".*_v([0-9]+).*");
+  private static final Pattern OXM_VERSION_PREFIX = Pattern.compile(".{0,256}_v([0-9]{1,5})[^_]*");
   private static final Pattern GIZMO_VERSION_PREFIX = Pattern.compile("[/]*services/inventory/v[0-9]+/(.*)");
   private static final Pattern GIZMO_RELATIONSHIP_VERSION_PREFIX = Pattern.compile("services/inventory/relationships/v[0-9]+/(.*)");
                                                                                     
@@ -116,9 +116,39 @@ public class NodeUtils {
     
     return null;
     
-  }  
-  
-  
+  }
+
+
+  public static String extractOxmVersionFromPath2(String filePath) {
+
+    if (filePath == null) {
+      return null;
+    }
+
+    String[] parts = filePath.split("_v");
+    if (parts.length == 1 && parts[0].equals(filePath)) {
+      return null;
+    }
+
+    for(int i=parts.length-1; i>=0; i--) {
+      String p = parts[i];
+      if(p.length() == 0) {
+        continue;
+      }
+      StringBuilder result = new StringBuilder();
+      for(int j=0; j<p.length() && (p.charAt(j)>='0' && p.charAt(j) <= '9'); j++) {
+        result.append(p.charAt(j));
+      }
+      if (result.length() > 0) {
+        return result.toString();
+      }
+    }
+
+    return null;
+
+  }
+
+
   public static String extractRawPathWithoutVersion(String selfLinkUri) {
 
     try {

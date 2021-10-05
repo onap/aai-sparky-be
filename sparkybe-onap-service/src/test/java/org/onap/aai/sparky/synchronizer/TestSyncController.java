@@ -68,7 +68,7 @@ public class TestSyncController implements SyncController {
         Thread.sleep(10000L);
       } catch (InterruptedException e) {
         // TODO Auto-generated catch block
-        e.printStackTrace();
+        Thread.currentThread().interrupt();
       }
 
       System.out.println("Sync done with thread = " + Thread.currentThread().getName()

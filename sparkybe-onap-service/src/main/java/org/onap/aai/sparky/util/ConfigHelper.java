@@ -77,14 +77,12 @@ public class ConfigHelper {
    * @throws Exception the exception
    */
   public static Properties loadConfig(String fileName) throws Exception {
-
     String basePath = System.getProperty("user.dir");
-    InputStream fileInputStream = new FileInputStream(basePath + "//" + fileName);
-
-    Properties props = new Properties();
-    props.load(fileInputStream);
-
-    return props;
+    try (InputStream fileInputStream = new FileInputStream(basePath + "//" + fileName)) {
+      Properties props = new Properties();
+      props.load(fileInputStream);
+      return props;
+    }
   }
 
   /**
@@ -96,14 +94,11 @@ public class ConfigHelper {
   public static Properties loadConfigFromExplicitPath(String fileName) {
 
     Properties props = new Properties();
-
-    try {
-      InputStream fileInputStream = new FileInputStream(fileName);
+    try (InputStream fileInputStream = new FileInputStream(fileName)) {
       props.load(fileInputStream);
     } catch (Exception exc) {
       LOG.warn(AaiUiMsgs.CONFIG_NOT_FOUND_VERBOSE, fileName, exc.getLocalizedMessage());
     }
-
     return props;
   }
 

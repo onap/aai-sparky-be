@@ -68,7 +68,7 @@ import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 /**
- * The Class AutosuggestionSynchronizer.
+ * The Class AggregationSynchronizer.
  */
 public class AggregationSynchronizer extends AbstractEntitySynchronizer
     implements IndexSynchronizer {
@@ -212,7 +212,9 @@ public class AggregationSynchronizer extends AbstractEntitySynchronizer
        * syncs
        */
       retryLimitTracker.clear();
-
+    } catch (InterruptedException e) {
+      // Restore interrupted state...
+      Thread.currentThread().interrupt();
     } catch (Exception exc) {
       // TODO -> LOG, waht should be logged here?
     }
@@ -396,17 +398,17 @@ public class AggregationSynchronizer extends AbstractEntitySynchronizer
     boolean isRetryAllowed = true;
     if (retryLimitTracker.get(id) != null) {
       Integer currentCount = retryLimitTracker.get(id);
-      if (currentCount.intValue() >= RETRY_COUNT_PER_ENTITY_LIMIT.intValue()) {
+      if (currentCount >= RETRY_COUNT_PER_ENTITY_LIMIT) {
         isRetryAllowed = false;
         String message = "Aggregation entity re-sync limit reached for " + id
             + ", re-sync will no longer be attempted for this entity";
         LOG.error(AaiUiMsgs.ERROR_GENERIC, message);
       } else {
-        Integer newCount = new Integer(currentCount.intValue() + 1);
+        Integer newCount = currentCount + 1;
         retryLimitTracker.put(id, newCount);
       }
     } else {
-      Integer firstRetryCount = new Integer(1);
+      Integer firstRetryCount = 1;
       retryLimitTracker.put(id, firstRetryCount);
     }
 
