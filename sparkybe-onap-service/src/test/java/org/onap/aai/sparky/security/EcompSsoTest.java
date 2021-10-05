@@ -34,6 +34,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertNull;
 
 
 public class EcompSsoTest {
@@ -53,7 +54,7 @@ public class EcompSsoTest {
 
     Mockito.when(portalRestCentralServiceImpl.getUserRoles(Mockito.anyString()))
         .thenReturn(new ArrayList<EcompRole>());
-    assertNotNull(ecompSso.validateUserAccess("ui_view"));
+    assertFalse(ecompSso.validateUserAccess("ui_view"));
   }
 
   @Test
@@ -67,6 +68,7 @@ public class EcompSsoTest {
     HttpServletRequest request = Mockito.mock(HttpServletRequest.class);
     Mockito.when(request.getCookies()).thenReturn(cookies);
     Cookie result = EcompSso.getCookie(request, testCookieName + "1");
+    assertNotNull(result);
     assertEquals(cookie1.getName(), result.getName());
     assertEquals(cookie1.getValue(), result.getValue());
     assertNull(EcompSso.getCookie(request, testCookieName + "3"));

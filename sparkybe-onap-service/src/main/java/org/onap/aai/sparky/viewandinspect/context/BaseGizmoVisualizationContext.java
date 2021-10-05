@@ -168,7 +168,6 @@ public class BaseGizmoVisualizationContext implements VisualizationContext {
     try {
       gizmoEntity = mapper.readValue(ain.getOpResult().getResult(), GizmoEntity.class);
     } catch (Exception exc) {
-      exc.printStackTrace();
       LOG.error(AaiUiMsgs.SELF_LINK_JSON_PARSE_ERROR, "Failed to marshal json"
           + " response str into JsonNode with error, " + exc.getLocalizedMessage());
       ain.changeState(NodeProcessingState.ERROR,

@@ -93,7 +93,7 @@ public class PortalRestAPIServiceImpl implements IPortalRestAPIService {
   public void editUser(String loginId, EcompUser user) throws PortalAPIException {
     LOG.debug("Edit user [loginId:" + loginId + "]");
 
-    userManager.getUser(loginId).orElseThrow(() -> {
+    EcompUser eUser = userManager.getUser(loginId).orElseThrow(() -> {
       String message = getMessage(ERROR_MESSAGE, "edit", loginId) + ", unknown user";
       LOG.error(message);
       return new PortalAPIException(message);

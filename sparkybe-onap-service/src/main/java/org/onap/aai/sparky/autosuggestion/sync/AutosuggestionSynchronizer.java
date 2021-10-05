@@ -229,7 +229,9 @@ public class AutosuggestionSynchronizer extends AbstractEntitySynchronizer
        * syncs
        */
       retryLimitTracker.clear();
-
+    } catch (InterruptedException e) {
+      // Restore interrupted state...
+      Thread.currentThread().interrupt();
     } catch (Exception exc) {
       LOG.error(AaiUiMsgs.ERROR_GENERIC,
           "An error occurred while performing the sync.  Error: " + exc.getMessage());

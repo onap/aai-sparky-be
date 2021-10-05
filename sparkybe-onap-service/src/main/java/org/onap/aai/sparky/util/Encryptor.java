@@ -36,7 +36,7 @@ import org.onap.aai.sparky.logging.AaiUiMsgs;
 public class Encryptor {
 
   private static final Logger LOG = LoggerFactory.getInstance().getLogger(Encryptor.class);
-  private static final String PWD_OBFUSCATION_PATTERN = "OBF:";
+  private static final String START_OBFUSCATION_PATTERN = "OBF:";
 
   /**
    * Instantiates a new encryptor.
@@ -69,7 +69,7 @@ public class Encryptor {
   public String decryptValue(String value) {
     String decyptedValue = "";
     try {
-      decyptedValue = value.startsWith(PWD_OBFUSCATION_PATTERN)? Password.deobfuscate(value) : value;
+      decyptedValue = value.startsWith(START_OBFUSCATION_PATTERN)? Password.deobfuscate(value) : value;
     } catch (Exception exc) {
       LOG.error(AaiUiMsgs.DECRYPTION_ERROR, value, exc.toString());
     }

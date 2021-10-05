@@ -71,7 +71,7 @@ public class NodeUtils {
   private static SecureRandom sRandom = new SecureRandom();
   
   private static final Pattern URL_VERSION_PREFIX = Pattern.compile("/v[0-9]+/(.*)");
-  private static final Pattern OXM_VERSION_PREFIX = Pattern.compile(".*_v([0-9]+).*");
+  private static final Pattern OXM_VERSION_PREFIX = Pattern.compile(".{0,256}_v([0-9]{1,5})[^_]*");
   private static final Pattern GIZMO_VERSION_PREFIX = Pattern.compile("[/]*services/inventory/v[0-9]+/(.*)");
   private static final Pattern GIZMO_RELATIONSHIP_VERSION_PREFIX = Pattern.compile("services/inventory/relationships/v[0-9]+/(.*)");
                                                                                     
@@ -116,9 +116,8 @@ public class NodeUtils {
     
     return null;
     
-  }  
-  
-  
+  }
+
   public static String extractRawPathWithoutVersion(String selfLinkUri) {
 
     try {
