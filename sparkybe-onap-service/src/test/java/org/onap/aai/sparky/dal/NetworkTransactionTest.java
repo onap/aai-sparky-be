@@ -22,6 +22,7 @@
 package org.onap.aai.sparky.dal;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -62,7 +63,6 @@ public class NetworkTransactionTest {
 		networkTransaction.setOperationType(HttpMethod.PUT);
 		assertNotNull(networkTransaction.getOperationType());
 		networkTransaction.setTaskAgeInMs();
-		assertNotNull(networkTransaction.getTaskAgeInMs());
 		networkTransaction.setEntityType("searchedNodeClass");
 		assertNotNull(networkTransaction.getEntityType());
 		networkTransaction.setLink("/etc/aaiEntityNodeDescriptors.json");

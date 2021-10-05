@@ -117,8 +117,7 @@ public class ObjectInspectorPayload {
 			lic.setMessageType(subscriptionConf.getLaunchOIMessageType());
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} 
+		}
 		
 	}
 }

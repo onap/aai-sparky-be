@@ -45,11 +45,6 @@ public class SyncControllerConfigTest {
 	
 	@Test 
 	public void updateValues() {
-		
-
-		
-		
-		
 		syncControllerConfig.setNumInternalSyncWorkers(3);
 		assertEquals(3,syncControllerConfig.getNumInternalSyncWorkers());
 		syncControllerConfig.setNumSyncElasticWorkers(5);
@@ -72,7 +67,7 @@ public class SyncControllerConfigTest {
 		assertTrue(syncControllerConfig.isRunOnceSyncEnabled());
 		syncControllerConfig.setPeriodicSyncEnabled(true);
 		assertTrue(syncControllerConfig.isPeriodicSyncEnabled());
-		assertNotNull(syncControllerConfig.getSyncFrequencyInMs());	
+		assertEquals(259200000,syncControllerConfig.getSyncFrequencyInMs());
 		assertNotNull(syncControllerConfig.getTargetSyncTime());
 		assertNotNull(syncControllerConfig.getNextSyncTime());
 		syncControllerConfig.setTimeZoneOfSyncStartTimeStamp("UTC+00:00");

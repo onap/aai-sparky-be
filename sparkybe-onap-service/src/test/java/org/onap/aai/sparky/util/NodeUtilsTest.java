@@ -21,6 +21,7 @@
 
 package org.onap.aai.sparky.util;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
@@ -58,7 +59,7 @@ public class NodeUtilsTest {
 
 
       assertNotNull(nodeUtils.buildDepthPadding(2));
-      assertNotNull(nodeUtils.isNumeric("234"));
+      assertTrue(nodeUtils.isNumeric("234"));
       assertNull(nodeUtils.calculateEditAttributeUri(null));
       assertNotNull(nodeUtils.generateUniqueShaDigest("unique-101"));
       assertNull(nodeUtils.getNodeFieldAsText(jsonNode,""));
@@ -76,5 +77,16 @@ public class NodeUtilsTest {
       assertNull(nodeUtils.extractFieldValueFromObject(null,null));
 
 
+  }
+
+  @Test
+  public void extractOxmVersionFromPath() {
+    assertEquals("8",NodeUtils.extractOxmVersionFromPath("test_oxm_v8.xml"));
+    assertEquals("9",NodeUtils.extractOxmVersionFromPath("test_oxm_v9.xml"));
+    assertEquals("11",NodeUtils.extractOxmVersionFromPath("test_oxm_v11.xml"));
+    assertEquals("11",NodeUtils.extractOxmVersionFromPath("test_oxm_v11.json"));
+    assertEquals("11",NodeUtils.extractOxmVersionFromPath("test_oxm_v11other.json"));
+    assertEquals("11",NodeUtils.extractOxmVersionFromPath("/path_v10/test_oxm_v11.xml"));
+    assertEquals("11",NodeUtils.extractOxmVersionFromPath("\\pathv10\\test_oxm_v11.xml"));
   }
 }

@@ -101,6 +101,9 @@ public class VnfAliasSuggestionSynchronizer extends AbstractEntitySynchronizer
           syncEntity();
         }
         Thread.sleep(1000);
+      } catch (InterruptedException e) {
+        // Restore interrupted state...
+        Thread.currentThread().interrupt();
       } catch (Exception exc) {
         // We don't care about this exception
       }

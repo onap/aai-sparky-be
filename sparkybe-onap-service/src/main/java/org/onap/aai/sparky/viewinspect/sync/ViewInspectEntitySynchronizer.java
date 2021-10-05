@@ -223,7 +223,9 @@ public class ViewInspectEntitySynchronizer extends AbstractEntitySynchronizer
        * syncs
        */
       retryLimitTracker.clear();
-
+    } catch (InterruptedException e) {
+      // Restore interrupted state...
+      Thread.currentThread().interrupt();
     } catch (Exception exc) {
       // TODO -> LOG, waht should be logged here?
     }

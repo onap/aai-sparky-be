@@ -354,7 +354,7 @@ public class ActiveInventoryAdapter {
   // package protected for test classes instead of private
   OperationResult queryActiveInventory(String url, String acceptContentType, String uiRequestType) {
 
-    if (uiRequestType == UI_REQUEST_TYPE) {
+    if (UI_REQUEST_TYPE.equals(uiRequestType)) {
       messageHeaders = getMessageHeaders();
     } else {
       messageHeaders = getSyncMessageHeaders();
