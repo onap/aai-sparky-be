@@ -15,7 +15,8 @@ Sparky - Inventory UI Service
 
 Overview
 ========
-Sparky is a service that interacts with resources and traversal microservices, and provides users with a user interface to view and analyze AAI data. The main goal behind Sparky is to provide a clear and user friendly view of AAI data.
+Sparky is a service that interacts with resources and traversal microservices,
+and provides users with a user interface to view and analyze AAI data. The main goal behind Sparky is to provide a clear and user friendly view of AAI data.
 
 The key AAI repos for running the Sparky UI are:
 
