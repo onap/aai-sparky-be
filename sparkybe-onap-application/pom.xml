@@ -14,7 +14,7 @@
 	<packaging>jar</packaging>
 
     <properties>
-        <java.version>1.11</java.version>
+        <java.version>11</java.version>
         <frontEndGroupdId>org.onap.aai</frontEndGroupdId>
         <frontEndArtifactId>sparky-fe</frontEndArtifactId>
         <frontEndVersion>2.0.0</frontEndVersion>
