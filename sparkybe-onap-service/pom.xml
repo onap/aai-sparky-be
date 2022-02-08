@@ -4,12 +4,12 @@
   	<parent>
 	  <groupId>org.onap.aai</groupId>
 	  <artifactId>sparky-be</artifactId>
-	  <version>2.0.4-SNAPSHOT</version>
+	  <version>2.0.3-SNAPSHOT</version>
 	</parent>
 
 	<groupId>org.onap.aai.sparky-be</groupId>
 	<artifactId>sparkybe-onap-service</artifactId>
-	<version>2.0.4-SNAPSHOT</version>
+	<version>2.0.3-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<properties>
@@ -388,8 +388,9 @@ some of the depedencies should probably have a scope of provided so they don't a
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
+					<version>3.8.0</version>
 					<configuration>
-						<release>11</release>
+						<release>11</release>  <!--or <release>10</release>-->
 					</configuration>
 				</plugin>
 

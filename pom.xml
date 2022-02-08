@@ -65,6 +65,7 @@
                     <version>${maven-compiler-plugin.version}</version>
                     <inherited>true</inherited>
                     <configuration>
+						<release>${maven-compiler-plugin.source}</release>
                         <source>${maven-compiler-plugin.source}</source>
                         <target>${maven-compiler-plugin.target}</target>
                         <testSource>${maven-compiler-plugin.test.source}</testSource>
