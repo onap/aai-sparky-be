@@ -388,9 +388,6 @@ some of the depedencies should probably have a scope of provided so they don't a
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
-					<configuration>
-						<release>11</release>
-					</configuration>
 				</plugin>
 
 <!-- 				<plugin>
