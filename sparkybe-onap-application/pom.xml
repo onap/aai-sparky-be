@@ -5,16 +5,16 @@
   	<parent>
 	  <groupId>org.onap.aai</groupId>
 	  <artifactId>sparky-be</artifactId>
-	  <version>2.0.4-SNAPSHOT</version>
+	  <version>2.0.3-SNAPSHOT</version>
 	</parent>
 
 	<groupId>org.onap.aai.sparky-be</groupId>
 	<artifactId>sparkybe-onap-application</artifactId>
-	<version>2.0.4-SNAPSHOT</version>
+	<version>2.0.3-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
     <properties>
-        <java.version>1.11</java.version>
+        <java.version>11</java.version>
         <frontEndGroupdId>org.onap.aai</frontEndGroupdId>
         <frontEndArtifactId>sparky-fe</frontEndArtifactId>
         <frontEndVersion>2.0.0</frontEndVersion>
@@ -485,6 +485,7 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.8.0</version>
                     <configuration>
                         <release>11</release>
                     </configuration>
@@ -496,6 +497,7 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring.boot.version}</version>
                 <configuration>
                     <folders>
                         <folder>
