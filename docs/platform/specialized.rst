@@ -1,10 +1,10 @@
 .. This work is licensed under a Creative Commons Attribution 4.0 International License.
 
 Sparky - Specialized Search
-=======================
+===========================
 
 *Specialized Search* Overview
-~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 *Specialized Search* provides a way to easily filter the inventory items in A&AI
 
@@ -14,7 +14,7 @@ Sparky - Specialized Search
    :align: center
 
 *Specialized Search* Features
-~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 With Specialized Search UI, users can:
   * Click on a radio button for a configured node-type and add filters to run and view instance data
   * The user can view the information on the subsequent page in a paginated format (50 results per page)
@@ -28,7 +28,7 @@ With Specialized Search UI, users can:
   * The user can build a query giving the element and all related elements (1 hop) by clicking >>BYOQ
 
 Navigation to *Specialized Search*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The *Specialized Search* view can be reached by clicking on the hamburger menu item Specialized Search
 
@@ -38,7 +38,7 @@ The *Specialized Search* view can be reached by clicking on the hamburger menu i
    :align: center
 
 How to use *Specialized Search*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 1. On Specialized Search a user can select an element type
 
 .. image:: images/specialized-search-1.JPG
