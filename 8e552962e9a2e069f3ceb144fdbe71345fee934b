@@ -1,0 +1,8 @@
+Code-Review+2: Fiete Ostkamp <fiete.ostkamp@telekom.de>
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Verified+1: ONAP Required GHA <releng+onap.required.gha@linuxfoundation.org>
+Submitted-by: Thomas Kulik <thomas.kulik@telekom.de>
+Submitted-at: Wed, 28 Feb 2024 08:27:00 +0000
+Reviewed-on: https://gerrit.onap.org/r/c/aai/sparky-be/+/137423
+Project: aai/sparky-be
+Branch: refs/heads/master
