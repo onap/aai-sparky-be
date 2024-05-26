@@ -4,12 +4,12 @@
   	<parent>
 	  <groupId>org.onap.aai</groupId>
 	  <artifactId>sparky-be</artifactId>
-	  <version>2.0.4-SNAPSHOT</version>
+	  <version>2.0.5-SNAPSHOT</version>
 	</parent>
 
 	<groupId>org.onap.aai.sparky-be</groupId>
 	<artifactId>sparkybe-onap-service</artifactId>
-	<version>2.0.4-SNAPSHOT</version>
+	<version>2.0.5-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<properties>
@@ -123,31 +123,10 @@ some of the depedencies should probably have a scope of provided so they don't a
 			</exclusions>
 		</dependency>
 
-
-		<!-- Camel BOM -->
-		<dependency>
-			<groupId>org.apache.camel</groupId>
-			<artifactId>camel-spring-boot-dependencies</artifactId>
-			<version>${camel-spring-boot.version}</version>
-			<type>pom</type>
-			<scope>import</scope>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/com.sun.xml.bind/jaxb-impl -->
-		<!-- <dependency> <groupId>com.sun.xml.bind</groupId> <artifactId>jaxb-impl</artifactId>
-			</dependency> <dependency> <groupId>com.sun.xml.bind</groupId> <artifactId>jaxb-core</artifactId>
-			</dependency> -->
-
 		<!-- Camel -->
 		<dependency>
 			<groupId>org.apache.camel</groupId>
 			<artifactId>camel-spring-boot-starter</artifactId>
-		</dependency>
-
-		<!-- https://mvnrepository.com/artifact/org.apache.camel/camel-restlet -->
-		<dependency>
-			<groupId>org.apache.camel</groupId>
-			<artifactId>camel-restlet</artifactId>
 		</dependency>
 
 		<dependency>
@@ -165,11 +144,6 @@ some of the depedencies should probably have a scope of provided so they don't a
 		<dependency>
 			<groupId>org.apache.camel</groupId>
 			<artifactId>camel-servlet-starter</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/commons-cli/commons-cli -->
@@ -430,81 +404,6 @@ some of the depedencies should probably have a scope of provided so they don't a
 		</pluginManagement>
 
 		<plugins>
-<!-- 			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
- -->
-
-	<!-- 		<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-resources-plugin</artifactId>
-				<version>2.7</version>
-				<executions>
-					<execution>
-						<id>copy-docker-file</id>
-						<phase>package</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>target</outputDirectory>
-							<overwrite>true</overwrite>
-							<resources>
-								<resource>
-									<directory>${basedir}/src/main/docker</directory>
-									<filtering>true</filtering>
-									<includes>
-										<include>**/*</include>
-									</includes>
-								</resource>
-								<resource>
-									<directory>${basedir}/src/main/bin/</directory>
-								</resource>
-							</resources>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin> -->
-
-<!-- 			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<version>3.0.0</version>
-				<executions>
-					<execution>
-						<id>copy-installed</id>
-						<phase>install</phase>
-						<goals>
-							<goal>copy</goal>
-						</goals>
-						<configuration>
-							<artifactItems>
-								<artifactItem>
-									<groupId>${frontEndGroupdId}</groupId>
-									<artifactId>${frontEndArtifactId}</artifactId>
-									<version>${frontEndVersion}</version>
-									<type>war</type>
-									<outputDirectory>${basedir}/target/</outputDirectory>
-									<destFileName>aai.war</destFileName>
-								</artifactItem>
-							</artifactItems>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
- -->
-
-<!-- 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>cobertura-maven-plugin</artifactId>
-				<executions>
-					<execution>
-						<phase />
-					</execution>
-				</executions>
-			</plugin>
- -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-site-plugin</artifactId>
