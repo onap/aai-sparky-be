@@ -94,6 +94,11 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-restlet</artifactId>
             <exclusions>
@@ -559,7 +564,7 @@
                     </execution>
                     <execution>
                         <id>unpack</id>
-                        <phase>prepare-package</phase>
+                        <phase>initialize</phase>
                         <goals>
                             <goal>unpack</goal>
                         </goals>
@@ -572,6 +577,14 @@
                                     <type>jar</type>
                                     <includes>/${shemaUnpackVersion}/oxm/</includes>
                                     <outputDirectory>${aai.build.directory}</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.onap.aai.schema-service</groupId>
+                                    <artifactId>aai-schema</artifactId>
+                                    <version>${version.aai-schema}</version>
+                                    <type>jar</type>
+                                    <includes>/${shemaUnpackVersion}/oxm/</includes>
+                                    <outputDirectory>${project.basedir}/src/main/resources/schema</outputDirectory>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>
