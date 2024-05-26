@@ -9,3 +9,5 @@ debug-logs/
 /.metadata/
 *.iml
 .idea
+
+**/schema/**/*.xml
