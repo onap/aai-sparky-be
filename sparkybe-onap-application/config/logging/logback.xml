@@ -164,8 +164,8 @@
         <logger name="ch.qos.logback.classic" level="WARN" />
         <logger name="ch.qos.logback.core" level="WARN" />
 
-        <root>
-                <appender-ref ref="asyncEELF" />
+        <root level="INFO">
+                <appender-ref ref="STDOUT" />
                 <!-- <appender-ref ref="asyncEELFDebug" /> -->
         </root>
 

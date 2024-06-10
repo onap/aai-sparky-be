@@ -67,10 +67,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestPropertySource(properties = {
-"schemaIngestPropLoc = src/test/resources/oxm-reader/schema-ingest-single-oxm.properties" })
+"schemaIngestPropLoc = src/test/resources/oxm-reader/schema-ingest-single-oxm.properties",
+"CONFIG_HOME = ./config" })
 @ContextConfiguration(locations = { "classpath:oxm-reader/oxm-reader-bean.xml" })
-
-
 public class BaseVisualizationContextTest {
 
   private static SecureRandom secureRandom = new SecureRandom();
