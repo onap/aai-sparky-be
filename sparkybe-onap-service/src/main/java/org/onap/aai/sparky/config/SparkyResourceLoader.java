@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
@@ -34,7 +35,8 @@ public class SparkyResourceLoader implements ResourceLoaderAware {
 
   private static final String FILE_URI = "file:";
   private ResourceLoader resourceLoader;
-  private String configHomeEnvVar;
+  
+  @Value("${CONFIG_HOME}") private String configHomeEnvVar;
 
   // private static Logger LOG = LoggerFactory.getInstance().getLogger(SparkyResourceLoader.class);
 
@@ -44,7 +46,7 @@ public class SparkyResourceLoader implements ResourceLoaderAware {
   }
 
   public String getFullFileUri(String uriFilePath) {
-    return FILE_URI + System.getProperty(configHomeEnvVar) + uriFilePath;
+    return FILE_URI + configHomeEnvVar + "/" + uriFilePath;
   }
 
   public String getAbsolutePath(String uriFilePath) {

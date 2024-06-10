@@ -94,6 +94,11 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+        </dependency>
+
+        <dependency>
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-restlet</artifactId>
             <exclusions>
@@ -285,6 +290,13 @@
                     <artifactId>slf4j-log4j12</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.30</version>
+            <scope>provided</scope>
         </dependency>
 
         <!-- Test dependencies -->
@@ -534,7 +546,7 @@
                     </execution>
                     <execution>
                         <id>unpack</id>
-                        <phase>prepare-package</phase>
+                        <phase>initialize</phase>
                         <goals>
                             <goal>unpack</goal>
                         </goals>
@@ -547,6 +559,14 @@
                                     <type>jar</type>
                                     <includes>/${shemaUnpackVersion}/oxm/</includes>
                                     <outputDirectory>${aai.build.directory}</outputDirectory>
+                                </artifactItem>
+                                <artifactItem>
+                                    <groupId>org.onap.aai.schema-service</groupId>
+                                    <artifactId>aai-schema</artifactId>
+                                    <version>${version.aai-schema}</version>
+                                    <type>jar</type>
+                                    <outputDirectory>${project.basedir}/src/main/resources/schema/</outputDirectory>
+                                    <includes>**/oxm/**/*.xml</includes>
                                 </artifactItem>
                             </artifactItems>
                         </configuration>

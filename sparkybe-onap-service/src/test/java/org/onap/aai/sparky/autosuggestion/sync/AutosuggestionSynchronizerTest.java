@@ -62,7 +62,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestPropertySource(properties = {
-"schemaIngestPropLoc = src/test/resources/oxm-reader/schema-ingest-single-oxm.properties" })
+"schemaIngestPropLoc = src/test/resources/oxm-reader/schema-ingest-single-oxm.properties",
+"CONFIG_HOME = ./config" })
 @ContextConfiguration(locations = { "classpath:oxm-reader/oxm-reader-bean.xml" })
 
 

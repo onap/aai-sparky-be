@@ -39,7 +39,7 @@
 		class="org.onap.aai.sparky.search.registry.SearchProviderRegistry" />
 
 	<bean id="sparkyResourceLoader" class="org.onap.aai.sparky.config.SparkyResourceLoader">
-		<property name="configHomeEnvVar" value="CONFIG_HOME" />
+		<property name="configHomeEnvVar" value="${CONFIG_HOME}" />
 	</bean>
 
 	<bean id="unifiedSearchProcessor" class="org.onap.aai.sparky.search.UnifiedSearchProcessor">
