@@ -56,7 +56,7 @@ import org.springframework.web.client.RestClientException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@ActiveProfiles({"oxm-default","oxm-schema-dev", "camel","fe-dev"})
+@ActiveProfiles({"test","oxm-default","oxm-schema-dev", "camel","fe-dev"})
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class AggregateSummaryProcessorTest {
@@ -65,7 +65,7 @@ public class AggregateSummaryProcessorTest {
 
   @MockBean SearchServiceAdapter searchServiceAdapter;
   @Mock OperationResult operationResult;
-  
+
   @Autowired
   private TestRestTemplate restTemplate;
 
@@ -83,13 +83,13 @@ public class AggregateSummaryProcessorTest {
     Map<String,String> params = new HashMap<String,String>();
     AggregationFilter filter = new AggregationFilter("1","someOrchestrationStatus");
     FilterAggregationRequest request = new FilterAggregationRequest(Arrays.asList(filter));
-    
+
     ResponseEntity<AggregationsResponse> response = restTemplate.postForEntity("/rest/search/filterAggregation", objectMapper.writeValueAsString(request), AggregationsResponse.class);
     AggregationsResponse aggregationsResponse = response.getBody();
     assertEquals(1L, aggregationsResponse.getTotal());
     BucketResponse bucket = aggregationsResponse.getAggregations().get("someAggregation").get(0);
     assertEquals("someKey", bucket.getKey());
     assertEquals(0, bucket.getDocCount());
-    
+
   }
 }
