@@ -1,0 +1,7 @@
+distribution_type: container
+container_release_tag: 2.0.5
+project: aai/sparky-be
+ref: 44ed2a90cb4eeb0b96b90ae132c52f51d858fced
+containers:
+    - name: sparky-be
+      version: 2.0-STAGING-20240612T110305Z
