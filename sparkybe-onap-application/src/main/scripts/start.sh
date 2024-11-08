@@ -21,4 +21,4 @@ set -x
 #
 cd $APP_HOME
 
-${JAVA_CMD} ${JVM_ARGS} $PROPS -jar ${APP_HOME}/lib/sparkybe-onap-application*.jar 
+${JAVA_CMD} ${PRE_JVM_ARGS} ${JVM_ARGS} $PROPS -jar ${APP_HOME}/lib/sparkybe-onap-application*.jar
