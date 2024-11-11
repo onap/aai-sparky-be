@@ -24,7 +24,6 @@ package org.onap.aai.sparky.personalization;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.junit.Before;
-import org.junit.Test;
 import org.mockito.Mockito;
 import org.onap.aai.sparky.personalization.config.PersonalizationConfig;
 

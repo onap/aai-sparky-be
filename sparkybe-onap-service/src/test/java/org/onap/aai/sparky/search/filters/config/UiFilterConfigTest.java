@@ -22,7 +22,6 @@
 package org.onap.aai.sparky.search.filters.config;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 
 import java.util.ArrayList;

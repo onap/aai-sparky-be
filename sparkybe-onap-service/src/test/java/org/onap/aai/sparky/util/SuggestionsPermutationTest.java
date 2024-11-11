@@ -32,7 +32,6 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.junit.Test;
-import org.onap.aai.sparky.util.SuggestionsPermutation;
 
 public class SuggestionsPermutationTest {
 

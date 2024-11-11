@@ -40,8 +40,6 @@ import org.onap.aai.sparky.sync.config.SyncControllerConfig;
 import org.onap.aai.sparky.sync.enumeration.OperationState;
 import org.onap.aai.sparky.sync.enumeration.SynchronizerState;
 import org.onap.aai.sparky.util.NodeUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 
 /**
  * The Class SyncController.

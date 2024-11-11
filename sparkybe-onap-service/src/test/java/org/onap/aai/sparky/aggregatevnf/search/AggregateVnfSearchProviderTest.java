@@ -24,8 +24,6 @@ package org.onap.aai.sparky.aggregatevnf.search;
 
 import static org.junit.Assert.assertNotNull;
 
-import javax.ws.rs.core.MediaType;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;

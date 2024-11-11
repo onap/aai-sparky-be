@@ -25,7 +25,6 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.onap.aai.sparky.logging.util.LoggingUtils;
 
 public class LoggingUtilsTest {
 	

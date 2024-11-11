@@ -30,7 +30,6 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.onap.aai.sparky.viewandinspect.entity.NodeDebug;
 
 public class NodeDebugTest {
 

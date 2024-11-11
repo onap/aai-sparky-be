@@ -42,7 +42,6 @@ import org.onap.aai.sparky.security.portal.config.PortalAuthenticationConfig;
 import org.onap.portalsdk.core.onboarding.listener.PortalTimeoutHandler;
 import org.onap.portalsdk.core.onboarding.util.PortalApiConstants;
 import org.onap.portalsdk.core.onboarding.util.PortalApiProperties;
-import org.onap.portalsdk.core.onboarding.util.SSOUtil;
 
 /**
  * This filter checks every request for proper ECOMP Portal single sign on initialization. The

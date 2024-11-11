@@ -20,8 +20,6 @@
 
 package org.onap.aai.sparky.exception;
 
-import java.util.Date;
-
 public class ProxyErrorDetails {
   private String message;
   private String details;

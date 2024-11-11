@@ -22,13 +22,11 @@
 package org.onap.aai.sparky.subscription.payload.entity;
 
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.onap.aai.sparky.subscription.config.SubscriptionConfig;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;

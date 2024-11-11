@@ -27,13 +27,10 @@ import org.onap.aai.restclient.enums.RestAuthenticationMode;
 import org.onap.aai.sparky.dal.rest.RestClientConstructionException;
 import org.onap.aai.sparky.dal.rest.RestClientFactory;
 import org.onap.aai.sparky.dal.rest.config.RestEndpointConfig;
-import org.onap.aai.sparky.util.Encryptor;
-import org.onap.aai.sparky.viewandinspect.config.SparkyConstants;
 import org.onap.aai.sparky.exception.ProxyServiceException;
 import org.slf4j.MDC;
 
 import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.MultivaluedMap;
 import javax.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.IOException;

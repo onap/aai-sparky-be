@@ -45,7 +45,6 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.onap.aai.sparky.security.portal.UserManager;
 import org.onap.aai.sparky.util.NodeUtils;
 import org.onap.portalsdk.core.restful.domain.EcompUser;
 import org.slf4j.Logger;

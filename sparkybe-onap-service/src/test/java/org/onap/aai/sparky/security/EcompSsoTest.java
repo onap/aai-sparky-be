@@ -34,7 +34,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertNull;
 
 
 public class EcompSsoTest {

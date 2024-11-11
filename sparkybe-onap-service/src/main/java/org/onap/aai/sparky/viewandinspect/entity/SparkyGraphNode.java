@@ -27,7 +27,6 @@ import java.util.Map;
 
 import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
-import org.onap.aai.sparky.aggregatevnf.search.AggregateSummaryProcessor;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
 import org.onap.aai.sparky.subscription.config.SubscriptionConfig;
 import org.onap.aai.sparky.subscription.payload.entity.ObjectInspectorPayload;

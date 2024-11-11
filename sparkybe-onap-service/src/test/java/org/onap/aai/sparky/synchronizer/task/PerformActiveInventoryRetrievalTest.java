@@ -20,9 +20,6 @@
  */
 
 package org.onap.aai.sparky.synchronizer.task;
-
-import org.junit.BeforeClass;
-import org.onap.aai.sparky.sync.task.PerformActiveInventoryRetrieval;
 /*
  * 
  * TODO-> RestClientBuilder is no longer being use neither is RestAuthenticationMode class 

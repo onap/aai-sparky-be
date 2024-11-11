@@ -34,7 +34,6 @@ import org.onap.aai.sparky.sync.SyncControllerRegistry;
 import org.onap.aai.sparky.sync.config.ElasticSearchSchemaConfig;
 import org.onap.aai.sparky.sync.config.NetworkStatisticsConfig;
 import org.onap.aai.sparky.sync.config.SyncControllerConfig;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class AutoSuggestionSyncController extends SyncControllerImpl implements SyncControllerRegistrar {
 

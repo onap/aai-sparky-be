@@ -37,7 +37,6 @@ import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
 import org.onap.aai.restclient.client.OperationResult;
 import org.onap.aai.restclient.enums.RestAuthenticationMode;
-import org.onap.aai.setup.SchemaVersion;
 import org.onap.aai.sparky.config.oxm.OxmModelLoader;
 import org.onap.aai.sparky.dal.GizmoAdapter;
 import org.onap.aai.sparky.dal.exception.ElasticSearchOperationException;

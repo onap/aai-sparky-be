@@ -20,8 +20,6 @@
  */
 package org.onap.aai.sparky.sync;
 
-import javax.ws.rs.core.MediaType;
-
 import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
 import org.onap.aai.restclient.client.OperationResult;

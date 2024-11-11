@@ -21,15 +21,12 @@
 
 package org.onap.aai.sparky.sync;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.onap.aai.sparky.sync.IndexCleaner;
-import org.onap.aai.sparky.sync.IndexSynchronizer;
-import org.onap.aai.sparky.sync.IndexValidator;
-import org.onap.aai.sparky.sync.SyncControllerImpl;
 import org.onap.aai.sparky.sync.SyncControllerImpl.SyncActions;
 import org.onap.aai.sparky.sync.config.SyncControllerConfig;
 import org.onap.aai.sparky.sync.enumeration.SynchronizerState;

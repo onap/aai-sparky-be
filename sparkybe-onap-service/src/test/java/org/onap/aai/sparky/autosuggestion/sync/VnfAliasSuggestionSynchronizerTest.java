@@ -39,7 +39,6 @@ import org.onap.aai.restclient.client.OperationResult;
 import org.onap.aai.sparky.config.oxm.GeoEntityLookup;
 import org.onap.aai.sparky.config.oxm.OxmEntityDescriptor;
 import org.onap.aai.sparky.config.oxm.OxmEntityLookup;
-import org.onap.aai.sparky.config.oxm.OxmModelLoader;
 import org.onap.aai.sparky.config.oxm.OxmModelProcessor;
 import org.onap.aai.sparky.config.oxm.SuggestionEntityDescriptor;
 import org.onap.aai.sparky.dal.ActiveInventoryAdapter;

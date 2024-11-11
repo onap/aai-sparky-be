@@ -24,15 +24,6 @@
  */
 
 package org.onap.aai.sparky.search.filters;
-
-import static org.junit.Assert.assertEquals;
-
-import java.io.IOException;
-
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.onap.aai.sparky.search.filters.FilteredSearchHelper;
-import org.onap.aai.sparky.search.filters.config.FiltersConfig;
 /*
 public class FilteredSearchHelperTest {
 

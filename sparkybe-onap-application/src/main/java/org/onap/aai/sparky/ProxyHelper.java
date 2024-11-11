@@ -39,7 +39,6 @@ import javax.ws.rs.core.MultivaluedMap;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import static org.onap.aai.sparky.logging.AaiUiMsgs.INFO_GENERIC;
 
