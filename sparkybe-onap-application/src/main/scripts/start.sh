@@ -5,8 +5,6 @@ CONFIG_HOME=${APP_HOME}/config
 
 PROPS="-DAPP_HOME=${APP_HOME} -DCONFIG_HOME=${CONFIG_HOME} -Dlogging.config=${CONFIG_HOME}/logging/logback.xml"
 
-find ${MICRO_HOME}  -name "*.sh" -exec chmod +x {} +
-
 JAVA_CMD="exec java";
 JAR_CMD="exec jar";
 
