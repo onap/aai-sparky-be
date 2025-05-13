@@ -34,8 +34,9 @@ import java.util.Set;
 import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
+import org.mockito.hamcrest.MockitoHamcrest;
 import org.onap.aai.restclient.client.OperationResult;
 import org.onap.aai.sparky.config.oxm.CrossEntityReferenceLookup;
 import org.onap.aai.sparky.config.oxm.OxmEntityDescriptor;
@@ -56,7 +57,7 @@ import org.onap.aai.sparky.util.TestResourceLoader;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class CrossEntityReferenceSynchronizerTest {
-  
+
   private static ObjectMapper mapper = new ObjectMapper();
 
   private CrossEntityReferenceSynchronizer cerSynchronizer;
@@ -192,9 +193,9 @@ public class CrossEntityReferenceSynchronizerTest {
 
     aaiRestEndPointConfig = new RestEndpointConfig();
     aaiRestEndPointConfig.setNumRequestRetries(5);
-    
+
     Mockito.when(aaiAdapter.getEndpointConfig()).thenReturn(aaiRestEndPointConfig);
-    
+
   }
 
   @Test
@@ -202,7 +203,7 @@ public class CrossEntityReferenceSynchronizerTest {
 
     cerSynchronizer = new CrossEntityReferenceSynchronizer(esSchemaConfig, 5, 5, 5, aaiStatConfig,
         esStatConfig, cerLookup, oxmEntityLookup, searchableEntityLookup);
-    
+
     cerSynchronizer.setAaiAdapter(aaiAdapter);
     cerSynchronizer.setSearchServiceAdapter(searchServiceAdapter);
 
@@ -210,7 +211,7 @@ public class CrossEntityReferenceSynchronizerTest {
     assertNotNull(cerSynchronizer.getSearchServiceAdapter());
 
   }
-  
+
   private Matcher<List<String>> listContainsValue(String expectedValue) {
     return new StringCollectionContainsMatcher(expectedValue);
   }
@@ -234,184 +235,184 @@ public class CrossEntityReferenceSynchronizerTest {
 
     Mockito.when(aaiAdapter.getSelfLinksByEntityType("service-subscription"))
         .thenReturn(entitySelfLinks);
-    
+
     Mockito
-        .when(aaiAdapter.repairSelfLink(Matchers.contains("service-subscription-1"),
+        .when(aaiAdapter.repairSelfLink(ArgumentMatchers.contains("service-subscription-1"),
             Mockito.anyString()))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/business/customers/customer/customer-1/service-subscriptions/service-subscription/service-subscription-1");
 
     Mockito
-        .when(aaiAdapter.repairSelfLink(Matchers.contains("service-subscription-2"),
+        .when(aaiAdapter.repairSelfLink(ArgumentMatchers.contains("service-subscription-2"),
             Mockito.anyString()))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/business/customers/customer/customer-2/service-subscriptions/service-subscription/service-subscription-2");
 
     Mockito
         .when(
-            aaiAdapter.repairSelfLink(Matchers.contains("service-subscription-3"), Mockito.anyString()))
+            aaiAdapter.repairSelfLink(ArgumentMatchers.contains("service-subscription-3"), Mockito.anyString()))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/business/customers/customer/customer-3/service-subscriptions/service-subscription/service-subscription-3");
 
     Mockito
         .when(aaiAdapter.queryActiveInventoryWithRetries(
-            Matchers.contains("service-subscription-2"), Mockito.anyString(),
+            ArgumentMatchers.contains("service-subscription-2"), Mockito.anyString(),
             Mockito.anyInt(),Mockito.anyString()))
         .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
             "/sync/aai/service-subscription-service-subscription-2.json")));
 
     Mockito
         .when(aaiAdapter.queryActiveInventoryWithRetries(
-            Matchers.contains("service-subscription-1"), Mockito.anyString(),
+            ArgumentMatchers.contains("service-subscription-1"), Mockito.anyString(),
             Mockito.anyInt(),Mockito.anyString()))
         .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
             "/sync/aai/service-subscription-service-subscription-1.json")));
 
     Mockito
-        .when(aaiAdapter.queryActiveInventoryWithRetries(Matchers.contains("service-subscription-3"),
+        .when(aaiAdapter.queryActiveInventoryWithRetries(ArgumentMatchers.contains("service-subscription-3"),
             Mockito.anyString(), Mockito.anyInt(),Mockito.anyString()))
         .thenReturn(new OperationResult(200, TestResourceLoader
             .getTestResourceDataJson("/sync/aai/service-subscription-service-subscription-3.json")));
-    
+
     Mockito
-        .when(aaiAdapter.getGenericQueryForSelfLink(Matchers.contains("service-instance"),
-            Matchers.argThat(listContainsValue("service-instance-59"))))
+        .when(aaiAdapter.getGenericQueryForSelfLink(ArgumentMatchers.contains("service-instance"),
+            MockitoHamcrest.argThat(listContainsValue("service-instance-59"))))
         .thenReturn("https://server.proxy:8443/aai/v11/search/generic-query/service-instance-59");
 
     Mockito
-        .when(aaiAdapter.getGenericQueryForSelfLink(Matchers.contains("service-instance"),
-            Matchers.argThat(listContainsValue("service-instance-54"))))
+        .when(aaiAdapter.getGenericQueryForSelfLink(ArgumentMatchers.contains("service-instance"),
+            MockitoHamcrest.argThat(listContainsValue("service-instance-54"))))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/search/generic-query/service-instance-54");
 
     Mockito
-        .when(aaiAdapter.getGenericQueryForSelfLink(Matchers.contains("service-instance"),
-            Matchers.argThat(listContainsValue("service-instance-55"))))
+        .when(aaiAdapter.getGenericQueryForSelfLink(ArgumentMatchers.contains("service-instance"),
+            MockitoHamcrest.argThat(listContainsValue("service-instance-55"))))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/search/generic-query/service-instance-55");
 
     Mockito
-        .when(aaiAdapter.getGenericQueryForSelfLink(Matchers.contains("service-instance"),
-            Matchers.argThat(listContainsValue("service-instance-50"))))
+        .when(aaiAdapter.getGenericQueryForSelfLink(ArgumentMatchers.contains("service-instance"),
+            MockitoHamcrest.argThat(listContainsValue("service-instance-50"))))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/search/generic-query/service-instance-50");
 
     Mockito
-        .when(aaiAdapter.getGenericQueryForSelfLink(Matchers.contains("service-instance"),
-            Matchers.argThat(listContainsValue("service-instance-52"))))
+        .when(aaiAdapter.getGenericQueryForSelfLink(ArgumentMatchers.contains("service-instance"),
+            MockitoHamcrest.argThat(listContainsValue("service-instance-52"))))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/search/generic-query/service-instance-52");
 
     Mockito
-        .when(aaiAdapter.getGenericQueryForSelfLink(Matchers.contains("service-instance"),
-            Matchers.argThat(listContainsValue("service-instance-57"))))
+        .when(aaiAdapter.getGenericQueryForSelfLink(ArgumentMatchers.contains("service-instance"),
+            MockitoHamcrest.argThat(listContainsValue("service-instance-57"))))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/search/generic-query/service-instance-57");
 
     Mockito
-        .when(aaiAdapter.getGenericQueryForSelfLink(Matchers.contains("service-instance"),
-            Matchers.argThat(listContainsValue("service-instance-53"))))
+        .when(aaiAdapter.getGenericQueryForSelfLink(ArgumentMatchers.contains("service-instance"),
+            MockitoHamcrest.argThat(listContainsValue("service-instance-53"))))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/search/generic-query/service-instance-53");
 
     Mockito
-        .when(aaiAdapter.getGenericQueryForSelfLink(Matchers.contains("service-instance"),
-            Matchers.argThat(listContainsValue("service-instance-58"))))
+        .when(aaiAdapter.getGenericQueryForSelfLink(ArgumentMatchers.contains("service-instance"),
+            MockitoHamcrest.argThat(listContainsValue("service-instance-58"))))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/search/generic-query/service-instance-58");
 
     Mockito
-        .when(aaiAdapter.getGenericQueryForSelfLink(Matchers.contains("service-instance"),
-            Matchers.argThat(listContainsValue("service-instance-51"))))
+        .when(aaiAdapter.getGenericQueryForSelfLink(ArgumentMatchers.contains("service-instance"),
+            MockitoHamcrest.argThat(listContainsValue("service-instance-51"))))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/search/generic-query/service-instance-51");
-    
+
     Mockito
-        .when(aaiAdapter.getGenericQueryForSelfLink(Matchers.contains("service-instance"),
-            Matchers.argThat(listContainsValue("service-instance-56"))))
+        .when(aaiAdapter.getGenericQueryForSelfLink(ArgumentMatchers.contains("service-instance"),
+            MockitoHamcrest.argThat(listContainsValue("service-instance-56"))))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/search/generic-query/service-instance-56");
-    
-    
-    
-    
+
+
+
+
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
-        Matchers.contains("generic-query/service-instance-59"), Mockito.anyString(),
+        ArgumentMatchers.contains("generic-query/service-instance-59"), Mockito.anyString(),
         Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-59.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
-        Matchers.contains("generic-query/service-instance-54"), Mockito.anyString(),
+        ArgumentMatchers.contains("generic-query/service-instance-54"), Mockito.anyString(),
         Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-54.json")));
-    
+
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
-        Matchers.contains("generic-query/service-instance-55"), Mockito.anyString(),
+        ArgumentMatchers.contains("generic-query/service-instance-55"), Mockito.anyString(),
         Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-55.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
-        Matchers.contains("generic-query/service-instance-50"), Mockito.anyString(),
+        ArgumentMatchers.contains("generic-query/service-instance-50"), Mockito.anyString(),
         Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-50.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
-        Matchers.contains("generic-query/service-instance-52"), Mockito.anyString(),
+        ArgumentMatchers.contains("generic-query/service-instance-52"), Mockito.anyString(),
         Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-52.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
-        Matchers.contains("generic-query/service-instance-57"), Mockito.anyString(),
+        ArgumentMatchers.contains("generic-query/service-instance-57"), Mockito.anyString(),
         Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-57.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
-        Matchers.contains("generic-query/service-instance-53"), Mockito.anyString(),
+        ArgumentMatchers.contains("generic-query/service-instance-53"), Mockito.anyString(),
         Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-53.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
-        Matchers.contains("generic-query/service-instance-58"), Mockito.anyString(),
+        ArgumentMatchers.contains("generic-query/service-instance-58"), Mockito.anyString(),
         Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-58.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
-        Matchers.contains("generic-query/service-instance-51"), Mockito.anyString(),
+        ArgumentMatchers.contains("generic-query/service-instance-51"), Mockito.anyString(),
         Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-51.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
-        Matchers.contains("generic-query/service-instance-56"), Mockito.anyString(),
+        ArgumentMatchers.contains("generic-query/service-instance-56"), Mockito.anyString(),
         Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-56.json")));
 
-    
-    
-    
-    
-    
+
+
+
+
+
     /*
-    
+
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
         Matchers.contains("service-instance-59"), Mockito.anyString(),
@@ -425,7 +426,7 @@ public class CrossEntityReferenceSynchronizerTest {
         Mockito.anyInt()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-resources/service-instance/service-instance-54.json")));
-    
+
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
         Matchers.contains("service-instance-55"), Mockito.anyString(),
@@ -482,12 +483,12 @@ public class CrossEntityReferenceSynchronizerTest {
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-resources/service-instance/service-instance-56.json")));
 
-    
+
     */
-    
-    
-    
-    
+
+
+
+
     Mockito.when(searchServiceAdapter.buildSearchServiceDocUrl(Mockito.anyString(), Mockito.anyString()))
         .thenReturn("http://server.proxy:9200/myindex/mytype/doc1",
             "http://server.proxy:9200/myindex/mytype/doc2",
@@ -496,15 +497,15 @@ public class CrossEntityReferenceSynchronizerTest {
     /*
      * Our initial gets from elastic search should be record-not-found
      */
-    Mockito.when(searchServiceAdapter.doGet(Matchers.contains("doc1"), Mockito.any()))
+    Mockito.when(searchServiceAdapter.doGet(ArgumentMatchers.contains("doc1"), Mockito.any()))
         .thenReturn(new OperationResult(404, null));
-    Mockito.when(searchServiceAdapter.doGet(Matchers.contains("doc2"), Mockito.any()))
+    Mockito.when(searchServiceAdapter.doGet(ArgumentMatchers.contains("doc2"), Mockito.any()))
         .thenReturn(new OperationResult(404, null));
-    Mockito.when(searchServiceAdapter.doGet(Matchers.contains("doc3"), Mockito.any()))
+    Mockito.when(searchServiceAdapter.doGet(ArgumentMatchers.contains("doc3"), Mockito.any()))
         .thenReturn(new OperationResult(404, null));
 
 
-    Mockito.when(searchServiceAdapter.doPut(Matchers.contains("doc"), Mockito.any(), Mockito.any()))
+    Mockito.when(searchServiceAdapter.doPut(ArgumentMatchers.contains("doc"), Mockito.any(), Mockito.any()))
         .thenReturn(new OperationResult(200, null));
 
     OperationState syncState = cerSynchronizer.doSync();
@@ -538,184 +539,184 @@ public class CrossEntityReferenceSynchronizerTest {
 
     Mockito.when(aaiAdapter.getSelfLinksByEntityType("service-subscription"))
         .thenReturn(entitySelfLinks);
-    
+
     Mockito
-        .when(aaiAdapter.repairSelfLink(Matchers.contains("service-subscription-1"),
+        .when(aaiAdapter.repairSelfLink(ArgumentMatchers.contains("service-subscription-1"),
             Mockito.anyString()))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/business/customers/customer/customer-1/service-subscriptions/service-subscription/service-subscription-1");
 
     Mockito
-        .when(aaiAdapter.repairSelfLink(Matchers.contains("service-subscription-2"),
+        .when(aaiAdapter.repairSelfLink(ArgumentMatchers.contains("service-subscription-2"),
             Mockito.anyString()))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/business/customers/customer/customer-2/service-subscriptions/service-subscription/service-subscription-2");
 
     Mockito
         .when(
-            aaiAdapter.repairSelfLink(Matchers.contains("service-subscription-3"), Mockito.anyString()))
+            aaiAdapter.repairSelfLink(ArgumentMatchers.contains("service-subscription-3"), Mockito.anyString()))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/business/customers/customer/customer-3/service-subscriptions/service-subscription/service-subscription-3");
 
     Mockito
         .when(aaiAdapter.queryActiveInventoryWithRetries(
-            Matchers.contains("service-subscription-2"), Mockito.anyString(),
+            ArgumentMatchers.contains("service-subscription-2"), Mockito.anyString(),
             Mockito.anyInt(),Mockito.anyString()))
         .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
             "/sync/aai/service-subscription-service-subscription-2.json")));
 
     Mockito
         .when(aaiAdapter.queryActiveInventoryWithRetries(
-            Matchers.contains("service-subscription-1"), Mockito.anyString(),
+            ArgumentMatchers.contains("service-subscription-1"), Mockito.anyString(),
             Mockito.anyInt(),Mockito.anyString()))
         .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
             "/sync/aai/service-subscription-service-subscription-1.json")));
 
     Mockito
-        .when(aaiAdapter.queryActiveInventoryWithRetries(Matchers.contains("service-subscription-3"),
+        .when(aaiAdapter.queryActiveInventoryWithRetries(ArgumentMatchers.contains("service-subscription-3"),
             Mockito.anyString(), Mockito.anyInt(),Mockito.anyString()))
         .thenReturn(new OperationResult(200, TestResourceLoader
             .getTestResourceDataJson("/sync/aai/service-subscription-service-subscription-3.json")));
-    
+
     Mockito
-        .when(aaiAdapter.getGenericQueryForSelfLink(Matchers.contains("service-instance"),
-            Matchers.argThat(listContainsValue("service-instance-59"))))
+        .when(aaiAdapter.getGenericQueryForSelfLink(ArgumentMatchers.contains("service-instance"),
+            MockitoHamcrest.argThat(listContainsValue("service-instance-59"))))
         .thenReturn("https://server.proxy:8443/aai/v11/search/generic-query/service-instance-59");
 
     Mockito
-        .when(aaiAdapter.getGenericQueryForSelfLink(Matchers.contains("service-instance"),
-            Matchers.argThat(listContainsValue("service-instance-54"))))
+        .when(aaiAdapter.getGenericQueryForSelfLink(ArgumentMatchers.contains("service-instance"),
+            MockitoHamcrest.argThat(listContainsValue("service-instance-54"))))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/search/generic-query/service-instance-54");
 
     Mockito
-        .when(aaiAdapter.getGenericQueryForSelfLink(Matchers.contains("service-instance"),
-            Matchers.argThat(listContainsValue("service-instance-55"))))
+        .when(aaiAdapter.getGenericQueryForSelfLink(ArgumentMatchers.contains("service-instance"),
+            MockitoHamcrest.argThat(listContainsValue("service-instance-55"))))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/search/generic-query/service-instance-55");
 
     Mockito
-        .when(aaiAdapter.getGenericQueryForSelfLink(Matchers.contains("service-instance"),
-            Matchers.argThat(listContainsValue("service-instance-50"))))
+        .when(aaiAdapter.getGenericQueryForSelfLink(ArgumentMatchers.contains("service-instance"),
+            MockitoHamcrest.argThat(listContainsValue("service-instance-50"))))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/search/generic-query/service-instance-50");
 
     Mockito
-        .when(aaiAdapter.getGenericQueryForSelfLink(Matchers.contains("service-instance"),
-            Matchers.argThat(listContainsValue("service-instance-52"))))
+        .when(aaiAdapter.getGenericQueryForSelfLink(ArgumentMatchers.contains("service-instance"),
+            MockitoHamcrest.argThat(listContainsValue("service-instance-52"))))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/search/generic-query/service-instance-52");
 
     Mockito
-        .when(aaiAdapter.getGenericQueryForSelfLink(Matchers.contains("service-instance"),
-            Matchers.argThat(listContainsValue("service-instance-57"))))
+        .when(aaiAdapter.getGenericQueryForSelfLink(ArgumentMatchers.contains("service-instance"),
+            MockitoHamcrest.argThat(listContainsValue("service-instance-57"))))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/search/generic-query/service-instance-57");
 
     Mockito
-        .when(aaiAdapter.getGenericQueryForSelfLink(Matchers.contains("service-instance"),
-            Matchers.argThat(listContainsValue("service-instance-53"))))
+        .when(aaiAdapter.getGenericQueryForSelfLink(ArgumentMatchers.contains("service-instance"),
+            MockitoHamcrest.argThat(listContainsValue("service-instance-53"))))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/search/generic-query/service-instance-53");
 
     Mockito
-        .when(aaiAdapter.getGenericQueryForSelfLink(Matchers.contains("service-instance"),
-            Matchers.argThat(listContainsValue("service-instance-58"))))
+        .when(aaiAdapter.getGenericQueryForSelfLink(ArgumentMatchers.contains("service-instance"),
+            MockitoHamcrest.argThat(listContainsValue("service-instance-58"))))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/search/generic-query/service-instance-58");
 
     Mockito
-        .when(aaiAdapter.getGenericQueryForSelfLink(Matchers.contains("service-instance"),
-            Matchers.argThat(listContainsValue("service-instance-51"))))
+        .when(aaiAdapter.getGenericQueryForSelfLink(ArgumentMatchers.contains("service-instance"),
+            MockitoHamcrest.argThat(listContainsValue("service-instance-51"))))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/search/generic-query/service-instance-51");
-    
+
     Mockito
-        .when(aaiAdapter.getGenericQueryForSelfLink(Matchers.contains("service-instance"),
-            Matchers.argThat(listContainsValue("service-instance-56"))))
+        .when(aaiAdapter.getGenericQueryForSelfLink(ArgumentMatchers.contains("service-instance"),
+            MockitoHamcrest.argThat(listContainsValue("service-instance-56"))))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/search/generic-query/service-instance-56");
-    
-    
-    
-    
+
+
+
+
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
-        Matchers.contains("generic-query/service-instance-59"), Mockito.anyString(),
+        ArgumentMatchers.contains("generic-query/service-instance-59"), Mockito.anyString(),
         Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-59.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
-        Matchers.contains("generic-query/service-instance-54"), Mockito.anyString(),
+        ArgumentMatchers.contains("generic-query/service-instance-54"), Mockito.anyString(),
         Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-54.json")));
-    
+
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
-        Matchers.contains("generic-query/service-instance-55"), Mockito.anyString(),
+        ArgumentMatchers.contains("generic-query/service-instance-55"), Mockito.anyString(),
         Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-55.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
-        Matchers.contains("generic-query/service-instance-50"), Mockito.anyString(),
+        ArgumentMatchers.contains("generic-query/service-instance-50"), Mockito.anyString(),
         Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-50.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
-        Matchers.contains("generic-query/service-instance-52"), Mockito.anyString(),
+        ArgumentMatchers.contains("generic-query/service-instance-52"), Mockito.anyString(),
         Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-52.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
-        Matchers.contains("generic-query/service-instance-57"), Mockito.anyString(),
+        ArgumentMatchers.contains("generic-query/service-instance-57"), Mockito.anyString(),
         Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-57.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
-        Matchers.contains("generic-query/service-instance-53"), Mockito.anyString(),
+        ArgumentMatchers.contains("generic-query/service-instance-53"), Mockito.anyString(),
         Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-53.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
-        Matchers.contains("generic-query/service-instance-58"), Mockito.anyString(),
+        ArgumentMatchers.contains("generic-query/service-instance-58"), Mockito.anyString(),
         Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-58.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
-        Matchers.contains("generic-query/service-instance-51"), Mockito.anyString(),
+        ArgumentMatchers.contains("generic-query/service-instance-51"), Mockito.anyString(),
         Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-51.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
-        Matchers.contains("generic-query/service-instance-56"), Mockito.anyString(),
+        ArgumentMatchers.contains("generic-query/service-instance-56"), Mockito.anyString(),
         Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-56.json")));
 
-    
-    
-    
-    
-    
+
+
+
+
+
     /*
-    
+
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
         Matchers.contains("service-instance-59"), Mockito.anyString(),
@@ -729,7 +730,7 @@ public class CrossEntityReferenceSynchronizerTest {
         Mockito.anyInt()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-resources/service-instance/service-instance-54.json")));
-    
+
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
         Matchers.contains("service-instance-55"), Mockito.anyString(),
@@ -786,12 +787,12 @@ public class CrossEntityReferenceSynchronizerTest {
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-resources/service-instance/service-instance-56.json")));
 
-    
+
     */
-    
-    
-    
-    
+
+
+
+
     Mockito.when(searchServiceAdapter.buildSearchServiceDocUrl(Mockito.anyString(), Mockito.anyString()))
         .thenReturn("http://server.proxy:9200/myindex/mytype/doc1",
             "http://server.proxy:9200/myindex/mytype/doc2",
@@ -800,19 +801,19 @@ public class CrossEntityReferenceSynchronizerTest {
     /*
      * Our initial gets from elastic search should be record-not-found
      */
-    Mockito.when(searchServiceAdapter.doGet(Matchers.contains("doc1"), Mockito.any()))
+    Mockito.when(searchServiceAdapter.doGet(ArgumentMatchers.contains("doc1"), Mockito.any()))
         .thenReturn(new OperationResult(404, null));
-    Mockito.when(searchServiceAdapter.doGet(Matchers.contains("doc2"), Mockito.any()))
+    Mockito.when(searchServiceAdapter.doGet(ArgumentMatchers.contains("doc2"), Mockito.any()))
         .thenReturn(new OperationResult(404, null));
-    Mockito.when(searchServiceAdapter.doGet(Matchers.contains("doc3"), Mockito.any()))
+    Mockito.when(searchServiceAdapter.doGet(ArgumentMatchers.contains("doc3"), Mockito.any()))
         .thenReturn(new OperationResult(404, null));
 
 
     /*
      * Cause version conflict errors on every put to test retry flow
      */
-    
-    Mockito.when(searchServiceAdapter.doPut(Matchers.contains("doc"), Mockito.any(), Mockito.any()))
+
+    Mockito.when(searchServiceAdapter.doPut(ArgumentMatchers.contains("doc"), Mockito.any(), Mockito.any()))
         .thenReturn(new OperationResult(409, null));
 
     OperationState syncState = cerSynchronizer.doSync();
@@ -828,9 +829,9 @@ public class CrossEntityReferenceSynchronizerTest {
 
 
   }
-  
-  
-  
+
+
+
   @Test
   public void validateSmallSyncWithEntityMerges() throws Exception {
 
@@ -850,178 +851,178 @@ public class CrossEntityReferenceSynchronizerTest {
 
     Mockito.when(aaiAdapter.getSelfLinksByEntityType("service-subscription"))
         .thenReturn(entitySelfLinks);
-    
+
     Mockito
-        .when(aaiAdapter.repairSelfLink(Matchers.contains("service-subscription-1"),
+        .when(aaiAdapter.repairSelfLink(ArgumentMatchers.contains("service-subscription-1"),
             Mockito.anyString()))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/business/customers/customer/customer-1/service-subscriptions/service-subscription/service-subscription-1");
 
     Mockito
-        .when(aaiAdapter.repairSelfLink(Matchers.contains("service-subscription-2"),
+        .when(aaiAdapter.repairSelfLink(ArgumentMatchers.contains("service-subscription-2"),
             Mockito.anyString()))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/business/customers/customer/customer-2/service-subscriptions/service-subscription/service-subscription-2");
 
     Mockito
         .when(
-            aaiAdapter.repairSelfLink(Matchers.contains("service-subscription-3"), Mockito.anyString()))
+            aaiAdapter.repairSelfLink(ArgumentMatchers.contains("service-subscription-3"), Mockito.anyString()))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/business/customers/customer/customer-3/service-subscriptions/service-subscription/service-subscription-3");
 
     Mockito
         .when(aaiAdapter.queryActiveInventoryWithRetries(
-            Matchers.contains("service-subscription-2"), Mockito.anyString(),
+            ArgumentMatchers.contains("service-subscription-2"), Mockito.anyString(),
             Mockito.anyInt(),Mockito.anyString()))
         .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
             "/sync/aai/service-subscription-service-subscription-2.json")));
 
     Mockito
         .when(aaiAdapter.queryActiveInventoryWithRetries(
-            Matchers.contains("service-subscription-1"), Mockito.anyString(),
+            ArgumentMatchers.contains("service-subscription-1"), Mockito.anyString(),
             Mockito.anyInt(),Mockito.anyString()))
         .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
             "/sync/aai/service-subscription-service-subscription-1.json")));
 
     Mockito
-        .when(aaiAdapter.queryActiveInventoryWithRetries(Matchers.contains("service-subscription-3"),
+        .when(aaiAdapter.queryActiveInventoryWithRetries(ArgumentMatchers.contains("service-subscription-3"),
             Mockito.anyString(), Mockito.anyInt(),Mockito.anyString()))
         .thenReturn(new OperationResult(200, TestResourceLoader
             .getTestResourceDataJson("/sync/aai/service-subscription-service-subscription-3.json")));
-    
+
     Mockito
-        .when(aaiAdapter.getGenericQueryForSelfLink(Matchers.contains("service-instance"),
-            Matchers.argThat(listContainsValue("service-instance-59"))))
+        .when(aaiAdapter.getGenericQueryForSelfLink(ArgumentMatchers.contains("service-instance"),
+            MockitoHamcrest.argThat(listContainsValue("service-instance-59"))))
         .thenReturn("https://server.proxy:8443/aai/v11/search/generic-query/service-instance-59");
 
     Mockito
-        .when(aaiAdapter.getGenericQueryForSelfLink(Matchers.contains("service-instance"),
-            Matchers.argThat(listContainsValue("service-instance-54"))))
+        .when(aaiAdapter.getGenericQueryForSelfLink(ArgumentMatchers.contains("service-instance"),
+            MockitoHamcrest.argThat(listContainsValue("service-instance-54"))))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/search/generic-query/service-instance-54");
 
     Mockito
-        .when(aaiAdapter.getGenericQueryForSelfLink(Matchers.contains("service-instance"),
-            Matchers.argThat(listContainsValue("service-instance-55"))))
+        .when(aaiAdapter.getGenericQueryForSelfLink(ArgumentMatchers.contains("service-instance"),
+            MockitoHamcrest.argThat(listContainsValue("service-instance-55"))))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/search/generic-query/service-instance-55");
 
     Mockito
-        .when(aaiAdapter.getGenericQueryForSelfLink(Matchers.contains("service-instance"),
-            Matchers.argThat(listContainsValue("service-instance-50"))))
+        .when(aaiAdapter.getGenericQueryForSelfLink(ArgumentMatchers.contains("service-instance"),
+            MockitoHamcrest.argThat(listContainsValue("service-instance-50"))))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/search/generic-query/service-instance-50");
 
     Mockito
-        .when(aaiAdapter.getGenericQueryForSelfLink(Matchers.contains("service-instance"),
-            Matchers.argThat(listContainsValue("service-instance-52"))))
+        .when(aaiAdapter.getGenericQueryForSelfLink(ArgumentMatchers.contains("service-instance"),
+            MockitoHamcrest.argThat(listContainsValue("service-instance-52"))))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/search/generic-query/service-instance-52");
 
     Mockito
-        .when(aaiAdapter.getGenericQueryForSelfLink(Matchers.contains("service-instance"),
-            Matchers.argThat(listContainsValue("service-instance-57"))))
+        .when(aaiAdapter.getGenericQueryForSelfLink(ArgumentMatchers.contains("service-instance"),
+            MockitoHamcrest.argThat(listContainsValue("service-instance-57"))))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/search/generic-query/service-instance-57");
 
     Mockito
-        .when(aaiAdapter.getGenericQueryForSelfLink(Matchers.contains("service-instance"),
-            Matchers.argThat(listContainsValue("service-instance-53"))))
+        .when(aaiAdapter.getGenericQueryForSelfLink(ArgumentMatchers.contains("service-instance"),
+            MockitoHamcrest.argThat(listContainsValue("service-instance-53"))))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/search/generic-query/service-instance-53");
 
     Mockito
-        .when(aaiAdapter.getGenericQueryForSelfLink(Matchers.contains("service-instance"),
-            Matchers.argThat(listContainsValue("service-instance-58"))))
+        .when(aaiAdapter.getGenericQueryForSelfLink(ArgumentMatchers.contains("service-instance"),
+            MockitoHamcrest.argThat(listContainsValue("service-instance-58"))))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/search/generic-query/service-instance-58");
 
     Mockito
-        .when(aaiAdapter.getGenericQueryForSelfLink(Matchers.contains("service-instance"),
-            Matchers.argThat(listContainsValue("service-instance-51"))))
+        .when(aaiAdapter.getGenericQueryForSelfLink(ArgumentMatchers.contains("service-instance"),
+            MockitoHamcrest.argThat(listContainsValue("service-instance-51"))))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/search/generic-query/service-instance-51");
-    
+
     Mockito
-        .when(aaiAdapter.getGenericQueryForSelfLink(Matchers.contains("service-instance"),
-            Matchers.argThat(listContainsValue("service-instance-56"))))
+        .when(aaiAdapter.getGenericQueryForSelfLink(ArgumentMatchers.contains("service-instance"),
+            MockitoHamcrest.argThat(listContainsValue("service-instance-56"))))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/search/generic-query/service-instance-56");
-    
-    
-    
-    
+
+
+
+
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
-        Matchers.contains("generic-query/service-instance-59"), Mockito.anyString(),
+        ArgumentMatchers.contains("generic-query/service-instance-59"), Mockito.anyString(),
         Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-59.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
-        Matchers.contains("generic-query/service-instance-54"), Mockito.anyString(),
+        ArgumentMatchers.contains("generic-query/service-instance-54"), Mockito.anyString(),
         Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-54.json")));
-    
+
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
-        Matchers.contains("generic-query/service-instance-55"), Mockito.anyString(),
+        ArgumentMatchers.contains("generic-query/service-instance-55"), Mockito.anyString(),
         Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-55.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
-        Matchers.contains("generic-query/service-instance-50"), Mockito.anyString(),
+        ArgumentMatchers.contains("generic-query/service-instance-50"), Mockito.anyString(),
         Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-50.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
-        Matchers.contains("generic-query/service-instance-52"), Mockito.anyString(),
+        ArgumentMatchers.contains("generic-query/service-instance-52"), Mockito.anyString(),
         Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-52.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
-        Matchers.contains("generic-query/service-instance-57"), Mockito.anyString(),
+        ArgumentMatchers.contains("generic-query/service-instance-57"), Mockito.anyString(),
         Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-57.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
-        Matchers.contains("generic-query/service-instance-53"), Mockito.anyString(),
+        ArgumentMatchers.contains("generic-query/service-instance-53"), Mockito.anyString(),
         Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-53.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
-        Matchers.contains("generic-query/service-instance-58"), Mockito.anyString(),
+        ArgumentMatchers.contains("generic-query/service-instance-58"), Mockito.anyString(),
         Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-58.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
-        Matchers.contains("generic-query/service-instance-51"), Mockito.anyString(),
+        ArgumentMatchers.contains("generic-query/service-instance-51"), Mockito.anyString(),
         Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-51.json")));
 
     Mockito
     .when(aaiAdapter.queryActiveInventoryWithRetries(
-        Matchers.contains("generic-query/service-instance-56"), Mockito.anyString(),
+        ArgumentMatchers.contains("generic-query/service-instance-56"), Mockito.anyString(),
         Mockito.anyInt(),Mockito.anyString()))
     .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
         "/sync/aai/aai-traversal/generic-query/service-instance-56.json")));
 
-    
+
     Mockito.when(searchServiceAdapter.buildSearchServiceDocUrl(Mockito.anyString(), Mockito.anyString()))
         .thenReturn("http://server.proxy:9200/myindex/mytype/doc1",
             "http://server.proxy:9200/myindex/mytype/doc2",
@@ -1030,27 +1031,27 @@ public class CrossEntityReferenceSynchronizerTest {
     /*
      * Our initial gets from elastic search return 200 ok with a found entity document requiring a doc update
      */
-    Mockito.when(searchServiceAdapter.doGet(Matchers.contains("doc1"), Mockito.any())).thenReturn(new OperationResult(200,
+    Mockito.when(searchServiceAdapter.doGet(ArgumentMatchers.contains("doc1"), Mockito.any())).thenReturn(new OperationResult(200,
             TestResourceLoader.getTestResourceDataJson("/sync/ElasticSearch/docEntityFromElasticSearch1.json")));
 
-    Mockito.when(searchServiceAdapter.doGet(Matchers.contains("doc2"), Mockito.any())).thenReturn(new OperationResult(200,
+    Mockito.when(searchServiceAdapter.doGet(ArgumentMatchers.contains("doc2"), Mockito.any())).thenReturn(new OperationResult(200,
             TestResourceLoader.getTestResourceDataJson("/sync/ElasticSearch/docEntityFromElasticSearch2.json")));
 
-    Mockito.when(searchServiceAdapter.doGet(Matchers.contains("doc3"), Mockito.any())).thenReturn(new OperationResult(200,
+    Mockito.when(searchServiceAdapter.doGet(ArgumentMatchers.contains("doc3"), Mockito.any())).thenReturn(new OperationResult(200,
             TestResourceLoader.getTestResourceDataJson("/sync/ElasticSearch/docEntityFromElasticSearch3.json")));
 
-    Mockito.when(searchServiceAdapter.doGet(Matchers.contains("doc4"), Mockito.any())).thenReturn(new OperationResult(200,
+    Mockito.when(searchServiceAdapter.doGet(ArgumentMatchers.contains("doc4"), Mockito.any())).thenReturn(new OperationResult(200,
             TestResourceLoader.getTestResourceDataJson("/sync/ElasticSearch/docEntityFromElasticSearch4.json")));
 
-    Mockito.when(searchServiceAdapter.doGet(Matchers.contains("doc5"), Mockito.any())).thenReturn(new OperationResult(200,
+    Mockito.when(searchServiceAdapter.doGet(ArgumentMatchers.contains("doc5"), Mockito.any())).thenReturn(new OperationResult(200,
             TestResourceLoader.getTestResourceDataJson("/sync/ElasticSearch/docEntityFromElasticSearch5.json")));
 
-    Mockito.when(searchServiceAdapter.doPut(Matchers.contains("doc"), Mockito.any(), Mockito.any()))
+    Mockito.when(searchServiceAdapter.doPut(ArgumentMatchers.contains("doc"), Mockito.any(), Mockito.any()))
             .thenReturn(new OperationResult(200, null));
-    
 
-    
-    Mockito.when(searchServiceAdapter.doPut(Matchers.contains("doc"), Mockito.any(), Mockito.any()))
+
+
+    Mockito.when(searchServiceAdapter.doPut(ArgumentMatchers.contains("doc"), Mockito.any(), Mockito.any()))
         .thenReturn(new OperationResult(200, null));
 
     OperationState syncState = cerSynchronizer.doSync();
@@ -1066,8 +1067,8 @@ public class CrossEntityReferenceSynchronizerTest {
 
 
   }
-  
-  
-  
-  
+
+
+
+
 }

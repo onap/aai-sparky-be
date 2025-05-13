@@ -33,7 +33,7 @@ import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.onap.aai.restclient.client.OperationResult;
 import org.onap.aai.sparky.config.oxm.GeoEntityLookup;
@@ -234,32 +234,32 @@ public class VnfAliasSuggestionSynchronizerTest {
     Mockito.when(aaiAdapter.getSelfLinksByEntityType("generic-vnf"))
         .thenReturn(genericVnfSelfLinks);
 
-    Mockito.when(aaiAdapter.repairSelfLink(Matchers.contains("generic-vnf-1"), Mockito.anyString()))
+    Mockito.when(aaiAdapter.repairSelfLink(ArgumentMatchers.contains("generic-vnf-1"), Mockito.anyString()))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/network/generic-vnfs/generic-vnf/generic-vnf-1");
 
-    Mockito.when(aaiAdapter.repairSelfLink(Matchers.contains("generic-vnf-2"), Mockito.anyString()))
+    Mockito.when(aaiAdapter.repairSelfLink(ArgumentMatchers.contains("generic-vnf-2"), Mockito.anyString()))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/network/generic-vnfs/generic-vnf/generic-vnf-2");
 
-    Mockito.when(aaiAdapter.repairSelfLink(Matchers.contains("generic-vnf-3"), Mockito.anyString()))
+    Mockito.when(aaiAdapter.repairSelfLink(ArgumentMatchers.contains("generic-vnf-3"), Mockito.anyString()))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/network/generic-vnfs/generic-vnf/generic-vnf-3");
 
     Mockito
-        .when(aaiAdapter.queryActiveInventoryWithRetries(Matchers.contains("generic-vnf-1"),
+        .when(aaiAdapter.queryActiveInventoryWithRetries(ArgumentMatchers.contains("generic-vnf-1"),
             Mockito.anyString(), Mockito.anyInt(),Mockito.anyString()))
         .thenReturn(new OperationResult(200, TestResourceLoader
             .getTestResourceDataJson("/sync/aai/generic-vnf-generic-vnf-1_full_depth.json")));
 
     Mockito
-        .when(aaiAdapter.queryActiveInventoryWithRetries(Matchers.contains("generic-vnf-2"),
+        .when(aaiAdapter.queryActiveInventoryWithRetries(ArgumentMatchers.contains("generic-vnf-2"),
             Mockito.anyString(), Mockito.anyInt(),Mockito.anyString()))
         .thenReturn(new OperationResult(200, TestResourceLoader
             .getTestResourceDataJson("/sync/aai/generic-vnf-generic-vnf-2_full_depth.json")));
 
     Mockito
-        .when(aaiAdapter.queryActiveInventoryWithRetries(Matchers.contains("generic-vnf-3"),
+        .when(aaiAdapter.queryActiveInventoryWithRetries(ArgumentMatchers.contains("generic-vnf-3"),
             Mockito.anyString(), Mockito.anyInt(),Mockito.anyString()))
         .thenReturn(new OperationResult(200, TestResourceLoader
             .getTestResourceDataJson("/sync/aai/generic-vnf-generic-vnf-3_full_depth.json")));
@@ -272,15 +272,15 @@ public class VnfAliasSuggestionSynchronizerTest {
     /*
      * Our initial gets from elastic search should be record-not-found
      */
-    Mockito.when(searchServiceAdapter.doGet(Matchers.contains("doc1"), Mockito.any()))
+    Mockito.when(searchServiceAdapter.doGet(ArgumentMatchers.contains("doc1"), Mockito.any()))
         .thenReturn(new OperationResult(404, null));
-    Mockito.when(searchServiceAdapter.doGet(Matchers.contains("doc2"), Mockito.any()))
+    Mockito.when(searchServiceAdapter.doGet(ArgumentMatchers.contains("doc2"), Mockito.any()))
         .thenReturn(new OperationResult(404, null));
-    Mockito.when(searchServiceAdapter.doGet(Matchers.contains("doc3"), Mockito.any()))
+    Mockito.when(searchServiceAdapter.doGet(ArgumentMatchers.contains("doc3"), Mockito.any()))
         .thenReturn(new OperationResult(404, null));
 
 
-    Mockito.when(searchServiceAdapter.doPut(Matchers.contains("doc"), Mockito.any(), Mockito.any()))
+    Mockito.when(searchServiceAdapter.doPut(ArgumentMatchers.contains("doc"), Mockito.any(), Mockito.any()))
         .thenReturn(new OperationResult(200, null));
 
     OperationState syncState = vnfAliasSuggestionSynchronizer.doSync();
@@ -316,32 +316,32 @@ public class VnfAliasSuggestionSynchronizerTest {
     Mockito.when(aaiAdapter.getSelfLinksByEntityType("generic-vnf"))
         .thenReturn(genericVnfSelfLinks);
 
-    Mockito.when(aaiAdapter.repairSelfLink(Matchers.contains("generic-vnf-1"), Mockito.anyString()))
+    Mockito.when(aaiAdapter.repairSelfLink(ArgumentMatchers.contains("generic-vnf-1"), Mockito.anyString()))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/network/generic-vnfs/generic-vnf/generic-vnf-1");
 
-    Mockito.when(aaiAdapter.repairSelfLink(Matchers.contains("generic-vnf-2"), Mockito.anyString()))
+    Mockito.when(aaiAdapter.repairSelfLink(ArgumentMatchers.contains("generic-vnf-2"), Mockito.anyString()))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/network/generic-vnfs/generic-vnf/generic-vnf-2");
 
-    Mockito.when(aaiAdapter.repairSelfLink(Matchers.contains("generic-vnf-3"), Mockito.anyString()))
+    Mockito.when(aaiAdapter.repairSelfLink(ArgumentMatchers.contains("generic-vnf-3"), Mockito.anyString()))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/network/generic-vnfs/generic-vnf/generic-vnf-3");
 
     Mockito
-        .when(aaiAdapter.queryActiveInventoryWithRetries(Matchers.contains("generic-vnf-1"),
+        .when(aaiAdapter.queryActiveInventoryWithRetries(ArgumentMatchers.contains("generic-vnf-1"),
             Mockito.anyString(), Mockito.anyInt(),Mockito.anyString()))
         .thenReturn(new OperationResult(200, TestResourceLoader
             .getTestResourceDataJson("/sync/aai/generic-vnf-generic-vnf-1_full_depth.json")));
 
     Mockito
-        .when(aaiAdapter.queryActiveInventoryWithRetries(Matchers.contains("generic-vnf-2"),
+        .when(aaiAdapter.queryActiveInventoryWithRetries(ArgumentMatchers.contains("generic-vnf-2"),
             Mockito.anyString(), Mockito.anyInt(),Mockito.anyString()))
         .thenReturn(new OperationResult(200, TestResourceLoader
             .getTestResourceDataJson("/sync/aai/generic-vnf-generic-vnf-2_full_depth.json")));
 
     Mockito
-        .when(aaiAdapter.queryActiveInventoryWithRetries(Matchers.contains("generic-vnf-3"),
+        .when(aaiAdapter.queryActiveInventoryWithRetries(ArgumentMatchers.contains("generic-vnf-3"),
             Mockito.anyString(), Mockito.anyInt(),Mockito.anyString()))
         .thenReturn(new OperationResult(200, TestResourceLoader
             .getTestResourceDataJson("/sync/aai/generic-vnf-generic-vnf-3_full_depth.json")));
@@ -354,11 +354,11 @@ public class VnfAliasSuggestionSynchronizerTest {
     /*
      * Our initial gets from elastic search should be record-not-found
      */
-    Mockito.when(searchServiceAdapter.doGet(Matchers.contains("doc1"), Mockito.any()))
+    Mockito.when(searchServiceAdapter.doGet(ArgumentMatchers.contains("doc1"), Mockito.any()))
         .thenReturn(new OperationResult(404, null));
-    Mockito.when(searchServiceAdapter.doGet(Matchers.contains("doc2"), Mockito.any()))
+    Mockito.when(searchServiceAdapter.doGet(ArgumentMatchers.contains("doc2"), Mockito.any()))
         .thenReturn(new OperationResult(404, null));
-    Mockito.when(searchServiceAdapter.doGet(Matchers.contains("doc3"), Mockito.any()))
+    Mockito.when(searchServiceAdapter.doGet(ArgumentMatchers.contains("doc3"), Mockito.any()))
         .thenReturn(new OperationResult(404, null));
 
 
@@ -366,7 +366,7 @@ public class VnfAliasSuggestionSynchronizerTest {
      * Elastic Search puts always fail with a version conflict = 409
      */
 
-    Mockito.when(searchServiceAdapter.doPut(Matchers.contains("doc"), Mockito.any(), Mockito.any()))
+    Mockito.when(searchServiceAdapter.doPut(ArgumentMatchers.contains("doc"), Mockito.any(), Mockito.any()))
         .thenReturn(new OperationResult(409, null));
 
     OperationState syncState = vnfAliasSuggestionSynchronizer.doSync();
