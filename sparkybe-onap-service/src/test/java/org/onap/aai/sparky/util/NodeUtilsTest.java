@@ -26,13 +26,17 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.JsonNodeFactory;
 
 public class NodeUtilsTest {
@@ -42,6 +46,7 @@ public class NodeUtilsTest {
   private JsonNode jsonNode, jsonNode2;
   private ArrayList<String> lst;
   private Object obj;
+  private static final ObjectMapper mapper = new ObjectMapper();
 
   @Before
   public void init() throws Exception {
@@ -87,5 +92,30 @@ public class NodeUtilsTest {
     assertEquals("11",NodeUtils.extractOxmVersionFromPath("test_oxm_v11other.json"));
     assertEquals("11",NodeUtils.extractOxmVersionFromPath("/path_v10/test_oxm_v11.xml"));
     assertEquals("11",NodeUtils.extractOxmVersionFromPath("\\pathv10\\test_oxm_v11.xml"));
+  }
+
+  @Test
+  public void extractObjectValueByKey() throws JsonProcessingException, IOException {
+    String jsonString = "{ \"name\": \"John\", \"age\": 30, \"isStudent\": false }";
+    JsonNode jsonNode = mapper.readTree(jsonString);
+
+    String result = NodeUtils.extractObjectValueByKey(jsonNode, "age");
+    assertEquals("30", result);
+  }
+
+  @Test
+  public void extractResourceIdFromLink() {
+    String link = "https://ext1.test.onap.com:9292/aai/v7/business/customers/customer/customer-1/service-subscriptions/service-subscription/service-subscription-1/";
+    assertEquals("service-subscription-1", NodeUtils.extractResourceIdFromLink(link));
+
+    link = "https://ext1.test.onap.com:9292/aai/v7/business/customers/customer/customer-1/service-subscriptions/service-subscription/service-subscription-1";
+    assertEquals("service-subscription-1", NodeUtils.extractResourceIdFromLink(link));
+  }
+
+  @Test
+  public void getBodyFromStream() throws IOException {
+    InputStream inputStream = new ByteArrayInputStream("foo".getBytes());
+    String body = NodeUtils.getBodyFromStream(inputStream);
+    assertEquals("foo", body);
   }
 }

@@ -41,8 +41,9 @@ import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
+import org.mockito.hamcrest.MockitoHamcrest;
 import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
 import org.onap.aai.cl.mdc.MdcContext;
@@ -64,7 +65,6 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 
-
 @RunWith(SpringJUnit4ClassRunner.class)
 @TestPropertySource(properties = {
 "schemaIngestPropLoc = src/test/resources/oxm-reader/schema-ingest-single-oxm.properties" })
@@ -79,41 +79,41 @@ public class BaseVisualizationContextTest {
 
   private BaseVisualizationContext baseVisualizationContext;
   private ExecutorService aaiExecutorService;
-  private VisualizationConfigs visualizationConfig; 
+  private VisualizationConfigs visualizationConfig;
 
   private ActiveInventoryAdapter aaiAdapter;
-  private RestEndpointConfig aaiRestEndPointConfig; 
-  
+  private RestEndpointConfig aaiRestEndPointConfig;
+
   @Inject
   private OxmEntityLookup oxmEntityLookup;
-  
+
   @Before
   public void init() throws Exception {
 
     aaiExecutorService = NodeUtils.createNamedExecutor("SLNC-WORKER", 5, LOG);
     visualizationConfig = new VisualizationConfigs();
-    
+
     ArrayList<String> shallowEntities = new ArrayList<String>();
     shallowEntities.add("cloud-region");
-    
+
     visualizationConfig.setShallowEntities(shallowEntities);
-    visualizationConfig.setMaxSelfLinkTraversalDepth(2); 
+    visualizationConfig.setMaxSelfLinkTraversalDepth(2);
 
 
     aaiAdapter = Mockito.mock(ActiveInventoryAdapter.class);
 
     aaiRestEndPointConfig = new RestEndpointConfig();
     aaiRestEndPointConfig.setNumRequestRetries(5);
-    
+
     Mockito.when(aaiAdapter.getEndpointConfig()).thenReturn(aaiRestEndPointConfig);
-    
+
     MdcContext.initialize("" + secureRandom.nextLong(), "AAI-UI", "", "partner-name",
         "localhost:4242");
-    
-    // all our resources are prefixed already, so the repairSelfLink shouldn't do anything to the link
-    Mockito.when(aaiAdapter.repairSelfLink(Matchers.contains(""))).thenReturn("");
 
-    
+    // all our resources are prefixed already, so the repairSelfLink shouldn't do anything to the link
+    Mockito.when(aaiAdapter.repairSelfLink(ArgumentMatchers.contains(""))).thenReturn("");
+
+
   }
 
   private Matcher<List<String>> listContainsValue(String expectedValue) {
@@ -138,12 +138,12 @@ public class BaseVisualizationContextTest {
 
     /**
      * We have a tiny graph that we will validate assembly of:
-     * 
+     *
      * <li>customer -> tenant
      * <li>customer -> service-subscription
      * <li>service-subscription -> service-instance-1
      * <li>service-subscription -> service-instance-2
-     * 
+     *
      * At the end of this success path, we should have 5 nodes in the node cache. Once we have this
      * flow we can experiment with error paths involving resource download failures to ensure graph
      * nodes are in the correct state and that expected nodes are successfully represented in the
@@ -172,7 +172,7 @@ public class BaseVisualizationContextTest {
     // aai customer resource dip
 
     Mockito
-        .when(aaiAdapter.queryActiveInventoryWithRetries(Matchers.contains("customer-4"),
+        .when(aaiAdapter.queryActiveInventoryWithRetries(ArgumentMatchers.contains("customer-4"),
             Mockito.anyString(), Mockito.anyInt(),Mockito.anyString()))
         .thenReturn(new OperationResult(200, TestResourceLoader
             .getTestResourceDataJson("/sync/aai/aai-resources/customer/customer-4.json")));
@@ -180,7 +180,7 @@ public class BaseVisualizationContextTest {
     // aai tenant resource dip
 
     Mockito
-        .when(aaiAdapter.queryActiveInventoryWithRetries(Matchers.contains("tenant/tenant-1"),
+        .when(aaiAdapter.queryActiveInventoryWithRetries(ArgumentMatchers.contains("tenant/tenant-1"),
             Mockito.anyString(), Mockito.anyInt(),Mockito.anyString()))
         .thenReturn(new OperationResult(200, TestResourceLoader
             .getTestResourceDataJson("/sync/aai/aai-resources/tenant/tenant-1.json")));
@@ -188,15 +188,15 @@ public class BaseVisualizationContextTest {
     // generic-queries for service-subscription
 
     Mockito
-        .when(aaiAdapter.getGenericQueryForSelfLink(Matchers.contains("service-subscription"),
-            Matchers.argThat(
+        .when(aaiAdapter.getGenericQueryForSelfLink(ArgumentMatchers.contains("service-subscription"),
+            MockitoHamcrest.argThat(
                 listContainsValue("service-subscription.service-type:service-subscription-2"))))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/search/generic-query/service-subscription-2");
 
     Mockito
         .when(aaiAdapter.queryActiveInventoryWithRetries(
-            Matchers.contains("generic-query/service-subscription-2"), Mockito.anyString(),
+            ArgumentMatchers.contains("generic-query/service-subscription-2"), Mockito.anyString(),
             Mockito.anyInt(),Mockito.anyString()))
         .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
             "/sync/aai/aai-traversal/generic-query/service-subscription/service-subscription-2.json")));
@@ -204,14 +204,14 @@ public class BaseVisualizationContextTest {
     // generic-queries for service-instance-1
 
     Mockito
-        .when(aaiAdapter.getGenericQueryForSelfLink(Matchers.contains("service-instance"),
-            Matchers.argThat(listContainsValue("service-instance-id:service-instance-54"))))
+        .when(aaiAdapter.getGenericQueryForSelfLink(ArgumentMatchers.contains("service-instance"),
+            MockitoHamcrest.argThat(listContainsValue("service-instance-id:service-instance-54"))))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/search/generic-query/service-instance-id/service-instance-54");
 
     Mockito
         .when(aaiAdapter.queryActiveInventoryWithRetries(
-            Matchers.contains("generic-query/service-instance-id/service-instance-54"),
+            ArgumentMatchers.contains("generic-query/service-instance-id/service-instance-54"),
             Mockito.anyString(), Mockito.anyInt(),Mockito.anyString()))
         .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
             "/sync/aai/aai-traversal/generic-query/service-instance/service-instance-54.json")));
@@ -219,14 +219,14 @@ public class BaseVisualizationContextTest {
     // generic-queries for service-instance-2
 
     Mockito
-        .when(aaiAdapter.getGenericQueryForSelfLink(Matchers.contains("service-instance"),
-            Matchers.argThat(listContainsValue("service-instance-id:service-instance-55"))))
+        .when(aaiAdapter.getGenericQueryForSelfLink(ArgumentMatchers.contains("service-instance"),
+            MockitoHamcrest.argThat(listContainsValue("service-instance-id:service-instance-55"))))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/search/generic-query/service-instance-id/service-instance-55");
 
     Mockito
         .when(aaiAdapter.queryActiveInventoryWithRetries(
-            Matchers.contains("generic-query/service-instance-id/service-instance-55"),
+            ArgumentMatchers.contains("generic-query/service-instance-id/service-instance-55"),
             Mockito.anyString(), Mockito.anyInt(),Mockito.anyString()))
         .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
             "/sync/aai/aai-traversal/generic-query/service-instance/service-instance-55.json")));
@@ -299,8 +299,8 @@ public class BaseVisualizationContextTest {
 
   }
 
-  protected DynamicJAXBContext createVersionedOxm() {    
-    Map<String, Object> properties = new HashMap<>(); 
+  protected DynamicJAXBContext createVersionedOxm() {
+    Map<String, Object> properties = new HashMap<>();
     ClassLoader classLoader = null;
     InputStream iStream = classLoader.getResourceAsStream("example/resources/eclipselink/eclipselink-oxm.xml");
 
@@ -310,7 +310,7 @@ public class BaseVisualizationContextTest {
     } catch (Exception e) {
       return null;
     }
-  } 
+  }
 
 
 }
