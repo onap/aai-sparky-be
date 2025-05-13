@@ -20,14 +20,14 @@
 		<serverPort>9517</serverPort>
 		<sslport>8000</sslport>
 		<nexusproxy>https://nexus.onap.org</nexusproxy>
-		<camel-spring-boot.version>2.21.1</camel-spring-boot.version>
+		<camel-spring-boot.version>2.22.5</camel-spring-boot.version>
 		<config-home>${basedir}/</config-home>
 		<version.aai.aai-schema-ingest>1.4.1</version.aai.aai-schema-ingest>
 		<version.aai-schema>1.12.5</version.aai-schema>
 		<sitePath>/content/sites/site/org/onap/aai/sparky-be/${project.artifactId}/${project.version}</sitePath>
 		<onap.nexus.url>https://neexus.onap.org</onap.nexus.url>
 		<jacoco.line.coverage.limit>0.53</jacoco.line.coverage.limit>
-		<spring.boot.version>1.5.22.RELEASE</spring.boot.version>
+		<spring.boot.version>2.0.9.RELEASE</spring.boot.version>
 	</properties>
 
 	<dependencyManagement>
@@ -46,12 +46,6 @@
 				<version>${camel-spring-boot.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
-			</dependency>
-
-			<dependency>
-				<groupId>ch.qos.logback</groupId>
-				<artifactId>logback-classic</artifactId>
-				<version>1.2.3</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -263,7 +257,7 @@ some of the depedencies should probably have a scope of provided so they don't a
 		<dependency>
 			<groupId>org.json</groupId>
 			<artifactId>json</artifactId>
-			<scope>provided</scope>
+			<version>20250107</version>
 		</dependency>
 
 		<dependency>

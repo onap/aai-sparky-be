@@ -72,7 +72,7 @@ public class AggregateSummaryProcessorTest {
   @Value("${schema.ingest.file}") String schemaIngestFileLocation;
 
   @Test
-  public void someTest() throws RestClientException, JsonProcessingException {
+  public void thatFilterAggregationWorks() throws RestClientException, JsonProcessingException {
     when(searchServiceAdapter.doPost(Mockito.any(), Mockito.any())).thenReturn(operationResult);
     when(operationResult.wasSuccessful()).thenReturn(true);
 

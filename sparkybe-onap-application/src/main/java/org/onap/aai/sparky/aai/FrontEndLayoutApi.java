@@ -20,8 +20,7 @@
  */
 package org.onap.aai.sparky.aai;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -34,7 +33,7 @@ public class FrontEndLayoutApi {
   public FrontEndLayoutApi() {
   }
 
-  @RequestMapping(value = "/layouts", method = {RequestMethod.GET})
+  @GetMapping("/layouts")
   @ResponseBody
   public String getLayouts() {
 
