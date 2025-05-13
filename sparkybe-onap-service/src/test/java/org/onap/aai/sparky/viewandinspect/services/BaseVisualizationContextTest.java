@@ -41,7 +41,7 @@ import org.hamcrest.Matcher;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
@@ -62,7 +62,6 @@ import org.onap.aai.sparky.viewandinspect.enumeration.NodeProcessingState;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -111,7 +110,7 @@ public class BaseVisualizationContextTest {
         "localhost:4242");
     
     // all our resources are prefixed already, so the repairSelfLink shouldn't do anything to the link
-    Mockito.when(aaiAdapter.repairSelfLink(Matchers.contains(""))).thenReturn("");
+    Mockito.when(aaiAdapter.repairSelfLink(ArgumentMatchers.contains(""))).thenReturn("");
 
     
   }
@@ -172,7 +171,7 @@ public class BaseVisualizationContextTest {
     // aai customer resource dip
 
     Mockito
-        .when(aaiAdapter.queryActiveInventoryWithRetries(Matchers.contains("customer-4"),
+        .when(aaiAdapter.queryActiveInventoryWithRetries(ArgumentMatchers.contains("customer-4"),
             Mockito.anyString(), Mockito.anyInt(),Mockito.anyString()))
         .thenReturn(new OperationResult(200, TestResourceLoader
             .getTestResourceDataJson("/sync/aai/aai-resources/customer/customer-4.json")));
@@ -180,7 +179,7 @@ public class BaseVisualizationContextTest {
     // aai tenant resource dip
 
     Mockito
-        .when(aaiAdapter.queryActiveInventoryWithRetries(Matchers.contains("tenant/tenant-1"),
+        .when(aaiAdapter.queryActiveInventoryWithRetries(ArgumentMatchers.contains("tenant/tenant-1"),
             Mockito.anyString(), Mockito.anyInt(),Mockito.anyString()))
         .thenReturn(new OperationResult(200, TestResourceLoader
             .getTestResourceDataJson("/sync/aai/aai-resources/tenant/tenant-1.json")));
@@ -188,15 +187,15 @@ public class BaseVisualizationContextTest {
     // generic-queries for service-subscription
 
     Mockito
-        .when(aaiAdapter.getGenericQueryForSelfLink(Matchers.contains("service-subscription"),
-            Matchers.argThat(
+        .when(aaiAdapter.getGenericQueryForSelfLink(ArgumentMatchers.contains("service-subscription"),
+            ArgumentMatchers.argThat(
                 listContainsValue("service-subscription.service-type:service-subscription-2"))))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/search/generic-query/service-subscription-2");
 
     Mockito
         .when(aaiAdapter.queryActiveInventoryWithRetries(
-            Matchers.contains("generic-query/service-subscription-2"), Mockito.anyString(),
+            ArgumentMatchers.contains("generic-query/service-subscription-2"), Mockito.anyString(),
             Mockito.anyInt(),Mockito.anyString()))
         .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
             "/sync/aai/aai-traversal/generic-query/service-subscription/service-subscription-2.json")));
@@ -204,14 +203,14 @@ public class BaseVisualizationContextTest {
     // generic-queries for service-instance-1
 
     Mockito
-        .when(aaiAdapter.getGenericQueryForSelfLink(Matchers.contains("service-instance"),
-            Matchers.argThat(listContainsValue("service-instance-id:service-instance-54"))))
+        .when(aaiAdapter.getGenericQueryForSelfLink(ArgumentMatchers.contains("service-instance"),
+            ArgumentMatchers.argThat(listContainsValue("service-instance-id:service-instance-54"))))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/search/generic-query/service-instance-id/service-instance-54");
 
     Mockito
         .when(aaiAdapter.queryActiveInventoryWithRetries(
-            Matchers.contains("generic-query/service-instance-id/service-instance-54"),
+            ArgumentMatchers.contains("generic-query/service-instance-id/service-instance-54"),
             Mockito.anyString(), Mockito.anyInt(),Mockito.anyString()))
         .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
             "/sync/aai/aai-traversal/generic-query/service-instance/service-instance-54.json")));
@@ -219,14 +218,14 @@ public class BaseVisualizationContextTest {
     // generic-queries for service-instance-2
 
     Mockito
-        .when(aaiAdapter.getGenericQueryForSelfLink(Matchers.contains("service-instance"),
-            Matchers.argThat(listContainsValue("service-instance-id:service-instance-55"))))
+        .when(aaiAdapter.getGenericQueryForSelfLink(ArgumentMatchers.contains("service-instance"),
+            ArgumentMatchers.argThat(listContainsValue("service-instance-id:service-instance-55"))))
         .thenReturn(
             "https://server.proxy:8443/aai/v11/search/generic-query/service-instance-id/service-instance-55");
 
     Mockito
         .when(aaiAdapter.queryActiveInventoryWithRetries(
-            Matchers.contains("generic-query/service-instance-id/service-instance-55"),
+            ArgumentMatchers.contains("generic-query/service-instance-id/service-instance-55"),
             Mockito.anyString(), Mockito.anyInt(),Mockito.anyString()))
         .thenReturn(new OperationResult(200, TestResourceLoader.getTestResourceDataJson(
             "/sync/aai/aai-traversal/generic-query/service-instance/service-instance-55.json")));
