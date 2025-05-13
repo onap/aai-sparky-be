@@ -35,7 +35,7 @@ import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.AdditionalMatchers;
-import org.mockito.Matchers;
+import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.onap.aai.restclient.client.OperationResult;
 import org.onap.aai.restclient.client.RestClient;
@@ -99,7 +99,7 @@ public class AaiUiProxyProcessorTest {
   @Test
   public void testProxyMessage_failurePath() {
     OperationResult failureResultSpy = Mockito.spy(failureResult);
-    Mockito.when(client.post(AdditionalMatchers.not(Matchers.eq(goodDrTargetUrl)),
+    Mockito.when(client.post(AdditionalMatchers.not(ArgumentMatchers.eq(goodDrTargetUrl)),
         Mockito.anyString(), Mockito.anyMap(), Mockito.eq(MediaType.APPLICATION_JSON_TYPE),
         Mockito.eq(MediaType.APPLICATION_JSON_TYPE))).thenReturn(failureResultSpy);
 
@@ -130,7 +130,7 @@ public class AaiUiProxyProcessorTest {
         Mockito.eq(MediaType.APPLICATION_JSON_TYPE), Mockito.eq(MediaType.APPLICATION_JSON_TYPE)))
         .thenReturn(successResult);
 
-    Mockito.when(client.post(AdditionalMatchers.not(Matchers.eq(goodDrTargetUrl)),
+    Mockito.when(client.post(AdditionalMatchers.not(ArgumentMatchers.eq(goodDrTargetUrl)),
         Mockito.anyString(), Mockito.anyMap(), Mockito.eq(MediaType.APPLICATION_JSON_TYPE),
         Mockito.eq(MediaType.APPLICATION_JSON_TYPE))).thenReturn(failureResult);
     

@@ -85,7 +85,7 @@ public class SchemaVisualizationProcessorTest {
     QueryRequest queryBody = nonEmptyMapper.readValue(queryRequest, QueryRequest.class);
     
     Mockito.when(mockVisualizationService.analyzeQueryRequestBody(Mockito.anyString())).thenReturn(queryBody);
-    Mockito.when(mockVisualizationService.buildVisualization(Mockito.anyObject())).thenReturn(SchemaVisualizationTestDataBuilder.getSchemaVisResult());
+    Mockito.when(mockVisualizationService.buildVisualization(Mockito.any())).thenReturn(SchemaVisualizationTestDataBuilder.getSchemaVisResult());
 
     schemaVisProcessor.setVisualizationService(mockVisualizationService);
     schemaVisProcessor.processVisualizationRequest(exchange);
