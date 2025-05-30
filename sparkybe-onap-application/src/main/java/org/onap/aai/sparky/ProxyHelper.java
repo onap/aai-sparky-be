@@ -29,9 +29,8 @@ import org.onap.aai.sparky.exception.GenericServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
@@ -73,7 +72,7 @@ public class ProxyHelper {
      * @return the response
      */
 
-    @PostMapping("/proxy/**")
+    @RequestMapping(value = "/proxy/**", method = {RequestMethod.POST})
     public String postProxy(HttpServletRequest request,  HttpServletResponse response){
         OperationResult or = null;
         String results = "";
@@ -95,7 +94,7 @@ public class ProxyHelper {
      * @throws Exception
      */
 
-    @PutMapping("/proxy/**")
+    @RequestMapping(value = "/proxy/**", method = {RequestMethod.PUT})
     public String putProxy(HttpServletRequest request,  HttpServletResponse response){
         OperationResult or = null;
         String results = "";
@@ -116,7 +115,7 @@ public class ProxyHelper {
      * @return the response
      */
 
-    @GetMapping("/proxy/**")
+    @RequestMapping(value = "/proxy/**", method = {RequestMethod.GET})
     public String getProxy(HttpServletRequest request,  HttpServletResponse response){
         OperationResult or = null;
         String results = "";
@@ -137,7 +136,7 @@ public class ProxyHelper {
      * @return the response
      */
 
-    @PostMapping("/aai/v*/bulk/single-transaction")
+    @RequestMapping(value = "/aai/v*/bulk/single-transaction", method = {RequestMethod.POST})
     public String bulkSingleTransaction(HttpServletRequest request,  HttpServletResponse response){
         String uid = "testuid";
         if(this.isPortalEnabled()) {
