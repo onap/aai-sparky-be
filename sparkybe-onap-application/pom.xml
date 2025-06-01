@@ -27,6 +27,9 @@
         <sitePath>/content/sites/site/org/onap/aai/sparky-be/${project.artifactId}/${project.version}</sitePath>
         <nexusproxy>https://nexus.onap.org</nexusproxy>
         <spring.boot.version>1.5.21.RELEASE</spring.boot.version>
+        <logback.version>1.2.13</logback.version>
+        <guava.version>33.4.8-jre</guava.version>
+        <gson.version>2.8.9</gson.version>
         <shemaUnpackVersion>onap</shemaUnpackVersion>
         <!-- docker related properties -->
         <docker.image.name>sparky-be</docker.image.name>
@@ -61,7 +64,22 @@
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
-                <version>1.2.13</version>
+                <version>${logback.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-core</artifactId>
+                <version>${logback.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${guava.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.code.gson</groupId>
+                <artifactId>gson</artifactId>
+                <version>${gson.version}</version>
             </dependency>
 
         </dependencies>
@@ -95,6 +113,18 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>junit</groupId>
+                    <artifactId>junit</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
         </dependency>
 
         <dependency>
@@ -189,7 +219,6 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>33.3.1-jre</version>
         </dependency>
 
         <dependency>
@@ -202,7 +231,7 @@
             <groupId>org.dom4j</groupId>
             <artifactId>dom4j</artifactId>
             <scope>provided</scope>
-            <version>2.1.1</version>
+            <version>2.1.4</version>
         </dependency>
 
         <dependency>
