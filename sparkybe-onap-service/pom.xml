@@ -171,7 +171,6 @@ some of the depedencies should probably have a scope of provided so they don't a
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>26.0-jre</version>
 		</dependency>
 
 
