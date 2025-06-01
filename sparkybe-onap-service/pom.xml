@@ -28,6 +28,8 @@
 		<onap.nexus.url>https://neexus.onap.org</onap.nexus.url>
 		<jacoco.line.coverage.limit>0.53</jacoco.line.coverage.limit>
 		<spring.boot.version>1.5.22.RELEASE</spring.boot.version>
+		<guava.version>33.4.8-jre</guava.version>
+		<logback.version>1.2.13</logback.version>
 	</properties>
 
 	<dependencyManagement>
@@ -51,7 +53,12 @@
 			<dependency>
 				<groupId>ch.qos.logback</groupId>
 				<artifactId>logback-classic</artifactId>
-				<version>1.2.3</version>
+				<version>${logback.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>ch.qos.logback</groupId>
+				<artifactId>logback-core</artifactId>
+				<version>${logback.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -171,7 +178,7 @@ some of the depedencies should probably have a scope of provided so they don't a
 		<dependency>
 			<groupId>com.google.guava</groupId>
 			<artifactId>guava</artifactId>
-			<version>26.0-jre</version>
+			<version>${guava.version}</version>
 		</dependency>
 
 
