@@ -23,7 +23,7 @@
         <nexusproxy>https://nexus.onap.org</nexusproxy>
         <camel-spring-boot.version>2.21.1</camel-spring-boot.version>
         <config-home>${basedir}/</config-home>
-        <version.aai-schema>1.6.6</version.aai-schema>
+        <version.aai-schema>1.12.10</version.aai-schema>
         <sitePath>/content/sites/site/org/onap/aai/sparky-be/${project.artifactId}/${project.version}</sitePath>
         <nexusproxy>https://nexus.onap.org</nexusproxy>
         <spring.boot.version>1.5.21.RELEASE</spring.boot.version>
@@ -61,7 +61,7 @@
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
-                <version>1.2.3</version>
+                <version>1.2.13</version>
             </dependency>
 
         </dependencies>
