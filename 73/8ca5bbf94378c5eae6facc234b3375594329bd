@@ -1,0 +1,10 @@
+Verified+1: Thomas Kulik <thomas.kulik@telekom.de>
+Verified+1: ONAP Bypass GHA <releng+onap.bypass.gha@linuxfoundation.org>
+Code-Review+2: Thomas Kulik <thomas.kulik@telekom.de>
+Verified+1: ONAP Jobbuilder <onap-jobbuilder@jenkins.onap.org>
+Verified+1: ONAP Required GHA <releng+onap.required.gha@linuxfoundation.org>
+Submitted-by: Thomas Kulik <thomas.kulik@telekom.de>
+Submitted-at: Wed, 04 Mar 2026 17:47:51 +0000
+Reviewed-on: https://gerrit.onap.org/r/c/aai/sparky-be/+/143460
+Project: aai/sparky-be
+Branch: refs/heads/master
