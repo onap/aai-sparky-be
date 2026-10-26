@@ -12,7 +12,7 @@
 
 	<groupId>org.onap.aai</groupId>
 	<artifactId>sparky-be</artifactId>
-	<version>2.1.0-SNAPSHOT</version>
+	<version>2.2.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>aai-sparky-be</name>
 
@@ -31,7 +31,7 @@
 		<sonar.jacoco.reportMissing.force.zero />
 
 		<jacoco.line.coverage.limit>0.90</jacoco.line.coverage.limit>
-		<jacoco.version>0.8.5</jacoco.version>
+		<jacoco.version>0.8.13</jacoco.version>
 		<sonar-jacoco-listeners.version>3.2</sonar-jacoco-listeners.version>
 		<sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
 		<sonar.coverage.jacoco.xmlReportPaths>${project.reporting.outputDirectory}/jacoco-ut/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
@@ -189,8 +189,9 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>3.0.0-M4</version>
 				<configuration>
-					<!-- Sets the VM argument line used when unit tests are run. -->
-					<argLine>${surefireArgLine}</argLine>
+					<!-- Sets the VM argument line used when unit tests are run.
+					     Spring 4 CGLIB needs java.lang opened on JDK 17+. -->
+					<argLine>${surefireArgLine} --add-opens java.base/java.lang=ALL-UNNAMED</argLine>
 					<!-- Excludes integration tests when unit tests are run. -->
 					<excludes>
 						<exclude>**/IT*.java</exclude>
@@ -212,7 +213,7 @@
 						</goals>
 						<configuration>
 							<!-- Sets the VM argument line used when integration tests are run. -->
-							<argLine>${failsafeArgLine}</argLine>
+							<argLine>${failsafeArgLine} --add-opens java.base/java.lang=ALL-UNNAMED</argLine>
 						</configuration>
 					</execution>
 				</executions>
