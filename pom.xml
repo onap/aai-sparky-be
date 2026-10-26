@@ -39,10 +39,10 @@
 		<sonar.scanner.version>3.7.0.1746</sonar.scanner.version>
 
 		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
-		<maven-compiler-plugin.source>17</maven-compiler-plugin.source>
-		<maven-compiler-plugin.target>17</maven-compiler-plugin.target>
-		<maven-compiler-plugin.test.source>17</maven-compiler-plugin.test.source>
-		<maven-compiler-plugin.test.target>17</maven-compiler-plugin.test.target>
+		<maven-compiler-plugin.source>21</maven-compiler-plugin.source>
+		<maven-compiler-plugin.target>21</maven-compiler-plugin.target>
+		<maven-compiler-plugin.test.source>21</maven-compiler-plugin.test.source>
+		<maven-compiler-plugin.test.target>21</maven-compiler-plugin.test.target>
 	</properties>
 
 	<dependencyManagement>
