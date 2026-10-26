@@ -53,7 +53,6 @@ import javax.xml.stream.XMLStreamConstants;
 import org.onap.aai.cl.api.Logger;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
 import org.onap.aai.sparky.viewandinspect.config.SparkyConstants;
-import org.restlet.Request;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -838,17 +837,6 @@ public class NodeUtils {
   
   
 
-  /**
-   * Gets the Restlet Request payload.
-   *
-   * @param request the request
-   * @return the body
-   * @throws IOException Signals that an I/O exception has occurred.
-   */
-  public static String getBody(Request request) throws IOException {
-    InputStream inputStream = request.getEntity().getStream();
-    return getBodyFromStream(inputStream);
-  }
   
 
   /**

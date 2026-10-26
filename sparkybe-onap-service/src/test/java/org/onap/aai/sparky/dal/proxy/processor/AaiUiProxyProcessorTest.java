@@ -42,7 +42,7 @@ import org.onap.aai.restclient.client.RestClient;
 import org.onap.aai.restclient.enums.RestAuthenticationMode;
 import org.onap.aai.sparky.dal.rest.RestClientConstructionException;
 import org.onap.aai.sparky.dal.rest.config.RestEndpointConfig;
-import org.restlet.data.Status;
+import org.springframework.http.HttpStatus;
 
 public class AaiUiProxyProcessorTest {
 
@@ -93,7 +93,7 @@ public class AaiUiProxyProcessorTest {
     aaiUiProxyProcessor.proxyMessage(mockExchange);
 
     //Mockito.verify(successResultSpy).getResult();
-    //assertEquals(Status.SUCCESS_OK.getCode(), aaiUiProxyProcessor.getOperationResult().getResultCode());
+    //assertEquals(HttpStatus.OK.value(), aaiUiProxyProcessor.getOperationResult().getResultCode());
   }
 
   @Test
@@ -108,7 +108,7 @@ public class AaiUiProxyProcessorTest {
     aaiUiProxyProcessor.proxyMessage(mockExchange);
 
     Mockito.verify(failureResultSpy).getFailureCause();
-    assertEquals(Status.SERVER_ERROR_INTERNAL.getCode(), aaiUiProxyProcessor.getOperationResult().getResultCode());
+    assertEquals(HttpStatus.INTERNAL_SERVER_ERROR.value(), aaiUiProxyProcessor.getOperationResult().getResultCode());
   }
 
   private String getProxyRequestJson(String hashId) {

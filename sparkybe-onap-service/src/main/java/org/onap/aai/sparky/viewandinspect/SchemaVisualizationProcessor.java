@@ -30,7 +30,7 @@ import org.onap.aai.restclient.client.OperationResult;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
 import org.onap.aai.sparky.logging.util.ServletUtils;
 import org.onap.aai.sparky.viewandinspect.entity.QueryRequest;
-import org.restlet.data.Status;
+import org.springframework.http.HttpStatus;
 
 public class SchemaVisualizationProcessor {
 
@@ -68,7 +68,7 @@ public class SchemaVisualizationProcessor {
 
       operationResult = this.getVisualizationService().buildVisualization(hashId);
 
-      if (operationResult.getResultCode() != Status.SUCCESS_OK.getCode()) {
+      if (operationResult.getResultCode() != HttpStatus.OK.value()) {
         exchange.getOut().setHeader(Exchange.HTTP_RESPONSE_CODE, operationResult.getResultCode());
         LOG.error(AaiUiMsgs.FAILURE_TO_PROCESS_REQUEST, String
             .format("Failed to process Visualization Schema Payload = '%s'", visualizationPayload));

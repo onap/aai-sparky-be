@@ -33,7 +33,7 @@ import org.onap.aai.sparky.config.oxm.OxmEntityLookup;
 import org.onap.aai.sparky.util.OxmModelAndProcessorHelper;
 import org.onap.aai.sparky.viewandinspect.config.VisualizationConfigs;
 import org.onap.aai.sparky.viewandinspect.entity.ActiveInventoryNode;
-import org.restlet.data.Status;
+import org.springframework.http.HttpStatus;
 
 
 public class SchemaVisualizationTestDataBuilder {
@@ -81,7 +81,7 @@ public class SchemaVisualizationTestDataBuilder {
   public static OperationResult getSchemaVisResult() {
     OperationResult result = new OperationResult();
     
-    result.setResult(Status.SUCCESS_OK.getCode(), "{}");
+    result.setResult(HttpStatus.OK.value(), "{}");
     
     return result;
   }

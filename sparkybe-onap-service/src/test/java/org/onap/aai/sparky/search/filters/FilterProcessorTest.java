@@ -65,8 +65,8 @@ import org.onap.aai.sparky.search.filters.entity.ViewFilter;
 import org.onap.aai.sparky.util.HttpServletHelper;
 import org.onap.aai.sparky.util.NodeUtils;
 import org.onap.aai.sparky.util.SparkyTestConstants;
-import org.restlet.data.Status;
 import org.springframework.core.io.DefaultResourceLoader;
+import org.springframework.http.HttpStatus;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -181,10 +181,10 @@ public class FilterProcessorTest {
     assertNull(filterProcessor.getFilteredSearchHelper());
   }
 
-  private void verifyResponseAndNumFiltersForBadRequest(Exchange exchange, Status expectedStatus, int numExpectedFilters)
+  private void verifyResponseAndNumFiltersForBadRequest(Exchange exchange, HttpStatus expectedStatus, int numExpectedFilters)
       throws JsonParseException, JsonMappingException, IOException {
     
-    assertEquals(expectedStatus.getCode(), exchange.getOut().getHeader(Exchange.HTTP_RESPONSE_CODE));
+    assertEquals(expectedStatus.value(), exchange.getOut().getHeader(Exchange.HTTP_RESPONSE_CODE));
     
     String entityPayload = exchange.getOut().getBody(String.class); 
     assertNotNull(entityPayload);
@@ -251,7 +251,7 @@ public class FilterProcessorTest {
     // Method under test
     filterProcessor.getFiltersWithValues(exchange);
 
-    verifyResponseAndNumFiltersForBadRequest(exchange, Status.CLIENT_ERROR_NOT_FOUND, 0);
+    verifyResponseAndNumFiltersForBadRequest(exchange, HttpStatus.NOT_FOUND, 0);
   }
 
   @Test
@@ -265,7 +265,7 @@ public class FilterProcessorTest {
     // Method under test
     filterProcessor.getFiltersWithValues(exchange);
 
-    verifyResponseAndNumFiltersForBadRequest(exchange, Status.CLIENT_ERROR_NOT_FOUND, 0);
+    verifyResponseAndNumFiltersForBadRequest(exchange, HttpStatus.NOT_FOUND, 0);
   }
 
   @Test
@@ -276,7 +276,7 @@ public class FilterProcessorTest {
     // Method under test
     filterProcessor.getFiltersWithValues(exchange);
 
-    verifyResponseAndNumFiltersForBadRequest(exchange, Status.CLIENT_ERROR_NOT_FOUND, 0);
+    verifyResponseAndNumFiltersForBadRequest(exchange, HttpStatus.NOT_FOUND, 0);
   }
 
   @Test
@@ -287,7 +287,7 @@ public class FilterProcessorTest {
     // Method under test
     filterProcessor.getFiltersWithValues(exchange);
 
-    verifyResponseAndNumFiltersForBadRequest(exchange, Status.CLIENT_ERROR_NOT_FOUND, 0);
+    verifyResponseAndNumFiltersForBadRequest(exchange, HttpStatus.NOT_FOUND, 0);
   }
 
   @Test(expected=JsonParsingException.class)
@@ -298,6 +298,6 @@ public class FilterProcessorTest {
     // Method under test
     filterProcessor.getFiltersWithValues(exchange);
 
-    verifyResponseAndNumFiltersForBadRequest(exchange, Status.SERVER_ERROR_INTERNAL, 0);
+    verifyResponseAndNumFiltersForBadRequest(exchange, HttpStatus.INTERNAL_SERVER_ERROR, 0);
   }
 }

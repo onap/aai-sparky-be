@@ -157,8 +157,6 @@
         <logger name="org.apache.camel.processor.interceptor" level="WARN" />
         <logger name="org.apache.cxf.jaxrs.interceptor" level="WARN" />
         <logger name="org.apache.cxf.service" level="WARN" />
-        <logger name="org.restlet" level="WARN" />
-        <logger name="org.apache.camel.component.restlet" level="WARN" />
 
         <!-- logback internals logging -->
         <logger name="ch.qos.logback.classic" level="WARN" />
