@@ -83,11 +83,6 @@ Listed below are the values that will need to be updated to make _Sparky_ operat
     - endpointIpAddress (AAI server ip address)
     - endpointServerPort (AAI server port.  Default: 8443)
 
-**portal/portal.properties**
-**portal/portal-authentication.properties**
-
-If this instance of _Sparky_ will be served in an ONAP Portal instance, use the two files above to configure against the proper Portal instance.
-
 ### Dependencies
 
 _Sparky_ requires:
@@ -95,4 +90,3 @@ _Sparky_ requires:
 - AAI instance as the main driver behind data.
 - Elasticsearch instance for data storage.
 - Search-Data-Service instance for search functionality.
-- ONAP Portal instance for authentication.

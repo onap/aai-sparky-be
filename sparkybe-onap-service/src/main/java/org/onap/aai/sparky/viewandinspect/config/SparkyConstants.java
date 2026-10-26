@@ -47,11 +47,6 @@ public class SparkyConstants {
   public static String RESOURCE_VERSION = "resource-version";
   public static String URI = "URI";
 
-  public static String AUTHORIZED_USERS_FILE_LOCATION = DYNAMIC_CONFIG_APP_LOCATION + "authorized-users.config";
-  public static String USERS_FILE_LOCATION = DYNAMIC_CONFIG_APP_LOCATION + "users.config";
-  public static String ROLES_FILE_LOCATION = DYNAMIC_CONFIG_APP_LOCATION + "roles.config";
-  public static String PORTAL_AUTHENTICATION_FILE_LOCATION = DYNAMIC_CONFIG_APP_LOCATION + "portal" + FILESEP + "portal-authentication.properties";
-  
   // Related to data-router properties
   public static String DR_URI_SUFFIX = "uriSuffix";
   public static String DR_CERT_NAME = "cert-name";

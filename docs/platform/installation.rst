@@ -47,14 +47,12 @@ Profiles
   * aai-proxy
   * gizmo (retired)
   * sync (retired)
-  * portal (partially retired, only use if needing aaf auth and portal integration)
 
 Profile descriptions:
 
   * camel - Enables spring-boot camel routing rules
   * http - Sets Sparky's communication protocol to HTTP
   * ssl - Sets Sparky's communication protocol to HTTPS
-  * portal - Adds ONAP portal processing to Sparky's flow (currently removed from oom)
   * fe-dev - Exposes the static folder for UI development when running Sparky locally (target/static)
   * fe-prod - Exposes the standard path for the UI in the docker container
   * oxm-default - Sets the default version and version list of OXM files to be used

@@ -20,15 +20,10 @@
  */
 package org.onap.aai.sparky;
 
-import org.onap.aai.cl.api.Logger;
-import org.onap.aai.cl.eelf.LoggerFactory;
 import org.onap.aai.restclient.client.OperationResult;
-import org.onap.aai.sparky.security.portal.PortalRestAPICentralServiceImpl;
 import org.onap.aai.sparky.util.ProxyClient;
 import org.onap.aai.sparky.exception.GenericServiceException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Profile;
-import org.springframework.core.env.Environment;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -36,18 +31,11 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.core.MultivaluedMap;
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
-
-import static org.onap.aai.sparky.logging.AaiUiMsgs.INFO_GENERIC;
 
 @Profile("aai-proxy")
 @RestController
 public class ProxyHelper {
-    @Autowired
-    Environment env;
-    private static final Logger LOG = LoggerFactory.getInstance().getLogger(ProxyHelper.class);
     public static final String SCHEMA_VERSION = "schema-version";
     private ProxyClient proxyClient;
 
@@ -58,11 +46,6 @@ public class ProxyHelper {
      */
     public ProxyHelper(ProxyClient pc){
         proxyClient = pc;
-    }
-
-    public Boolean isPortalEnabled(){
-        List<String> list = Arrays.asList(this.env.getActiveProfiles());
-        return list.contains("portal");
     }
 
     /**
@@ -139,16 +122,6 @@ public class ProxyHelper {
     @RequestMapping(value = "/aai/v*/bulk/single-transaction", method = {RequestMethod.POST})
     public String bulkSingleTransaction(HttpServletRequest request,  HttpServletResponse response){
         String uid = "testuid";
-        if(this.isPortalEnabled()) {
-            PortalRestAPICentralServiceImpl pr = new PortalRestAPICentralServiceImpl();
-            LOG.info(INFO_GENERIC, "Getting UID from portal api");
-            try {
-                uid = pr.getUserId(request);
-            }catch(Exception e){
-                LOG.info(INFO_GENERIC, "error getting user id: " + e);
-            }
-            LOG.info(INFO_GENERIC, "getUserID: uid: " + uid);
-        }
         OperationResult or = null;
         String results = "";
         try {
