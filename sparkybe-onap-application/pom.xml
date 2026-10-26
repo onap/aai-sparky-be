@@ -21,15 +21,14 @@
         <serverPort>9517</serverPort>
         <sslport>8000</sslport>
         <nexusproxy>https://nexus.onap.org</nexusproxy>
-        <camel-spring-boot.version>2.21.5</camel-spring-boot.version>
+        <camel-spring-boot.version>3.22.4</camel-spring-boot.version>
         <config-home>${basedir}/</config-home>
         <version.aai-schema>1.12.10</version.aai-schema>
         <sitePath>/content/sites/site/org/onap/aai/sparky-be/${project.artifactId}/${project.version}</sitePath>
         <nexusproxy>https://nexus.onap.org</nexusproxy>
-        <spring.boot.version>1.5.22.RELEASE</spring.boot.version>
+        <spring.boot.version>2.7.18</spring.boot.version>
         <logback.version>1.2.13</logback.version>
         <guava.version>33.4.8-jre</guava.version>
-        <gson.version>2.8.9</gson.version>
         <shemaUnpackVersion>onap</shemaUnpackVersion>
         <!-- docker related properties -->
         <docker.image.name>sparky-be</docker.image.name>
@@ -54,8 +53,8 @@
             </dependency>
             <!-- Camel BOM -->
             <dependency>
-                <groupId>org.apache.camel</groupId>
-                <artifactId>camel-spring-boot-dependencies</artifactId>
+                <groupId>org.apache.camel.springboot</groupId>
+                <artifactId>camel-spring-boot-bom</artifactId>
                 <version>${camel-spring-boot.version}</version>
                 <type>pom</type>
                 <scope>import</scope>
@@ -75,11 +74,6 @@
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.google.code.gson</groupId>
-                <artifactId>gson</artifactId>
-                <version>${gson.version}</version>
             </dependency>
 
         </dependencies>
@@ -113,6 +107,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
             <exclusions>
                 <exclusion>
                     <groupId>junit</groupId>
@@ -124,6 +119,11 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.vintage</groupId>
+            <artifactId>junit-vintage-engine</artifactId>
             <scope>test</scope>
         </dependency>
 
@@ -142,20 +142,10 @@
             </exclusions>
         </dependency>
 
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-servlet</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>commons-logging</groupId>
-                    <artifactId>commons-logging</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
 
         <!-- Camel -->
         <dependency>
-            <groupId>org.apache.camel</groupId>
+            <groupId>org.apache.camel.springboot</groupId>
             <artifactId>camel-spring-boot-starter</artifactId>
         </dependency>
 
@@ -172,7 +162,7 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.camel</groupId>
+            <groupId>org.apache.camel.springboot</groupId>
             <artifactId>camel-servlet-starter</artifactId>
         </dependency>
 
@@ -290,7 +280,6 @@
         <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
-            <version>2.21.0</version>
             <scope>test</scope>
         </dependency>
 

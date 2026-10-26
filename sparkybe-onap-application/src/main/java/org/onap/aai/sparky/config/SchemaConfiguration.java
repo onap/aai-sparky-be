@@ -24,7 +24,7 @@ package org.onap.aai.sparky.config;
 import org.onap.aai.setup.AAIConfigTranslator;
 import org.onap.aai.setup.ConfigTranslator;
 import org.onap.aai.setup.SchemaLocationsBean;
-import org.onap.aai.setup.SchemaVersions;
+import org.onap.aai.setup.SchemaConfigVersions;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,7 +37,7 @@ public class SchemaConfiguration {
 
     @Bean(name = "configTranslator")
     @ConditionalOnProperty(name = "schema.translator.list", havingValue = "config", matchIfMissing = true)
-    public ConfigTranslator configTranslator(SchemaLocationsBean schemaLocationsBean, SchemaVersions schemaVersions) {
+    public ConfigTranslator configTranslator(SchemaLocationsBean schemaLocationsBean, SchemaConfigVersions schemaVersions) {
         return new AAIConfigTranslator(schemaLocationsBean, schemaVersions);
     }
 }

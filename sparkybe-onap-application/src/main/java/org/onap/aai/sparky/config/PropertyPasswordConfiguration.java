@@ -23,7 +23,6 @@ package org.onap.aai.sparky.config;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.eclipse.jetty.util.security.Password;
 import org.springframework.context.ApplicationContextInitializer;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -64,7 +63,7 @@ public class PropertyPasswordConfiguration
             String decodedValue = Password.deobfuscate(rawValueString);
             propertyOverrides.put(key, decodedValue);
           } else if(rawValueString.startsWith(ENV)){
-            String decodedValue = System.getProperty(StringUtils.removeStart(rawValueString, ENV));
+            String decodedValue = System.getProperty(rawValueString.substring(ENV.length()));
             propertyOverrides.put(key, decodedValue);
           }
         }

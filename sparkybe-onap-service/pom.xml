@@ -20,16 +20,15 @@
 		<serverPort>9517</serverPort>
 		<sslport>8000</sslport>
 		<nexusproxy>https://nexus.onap.org</nexusproxy>
-		<camel-spring-boot.version>2.21.5</camel-spring-boot.version>
+		<camel-spring-boot.version>3.22.4</camel-spring-boot.version>
 		<config-home>${basedir}/</config-home>
-		<version.aai.aai-schema-ingest>1.4.1</version.aai.aai-schema-ingest>
+		<version.aai.aai-schema-ingest>1.15.5</version.aai.aai-schema-ingest>
 		<version.aai-schema>1.12.10</version.aai-schema>
 		<sitePath>/content/sites/site/org/onap/aai/sparky-be/${project.artifactId}/${project.version}</sitePath>
 		<onap.nexus.url>https://neexus.onap.org</onap.nexus.url>
 		<jacoco.line.coverage.limit>0.53</jacoco.line.coverage.limit>
-		<spring.boot.version>1.5.22.RELEASE</spring.boot.version>
+		<spring.boot.version>2.7.18</spring.boot.version>
 		<guava.version>33.4.8-jre</guava.version>
-		<gson.version>2.8.9</gson.version>
 		<logback.version>1.2.13</logback.version>
 	</properties>
 
@@ -44,8 +43,8 @@
 		      </dependency>
 			<!-- Camel BOM -->
 			<dependency>
-				<groupId>org.apache.camel</groupId>
-				<artifactId>camel-spring-boot-dependencies</artifactId>
+				<groupId>org.apache.camel.springboot</groupId>
+				<artifactId>camel-spring-boot-bom</artifactId>
 				<version>${camel-spring-boot.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
@@ -60,11 +59,6 @@
 				<groupId>ch.qos.logback</groupId>
 				<artifactId>logback-core</artifactId>
 				<version>${logback.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>com.google.code.gson</groupId>
-				<artifactId>gson</artifactId>
-				<version>${gson.version}</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
@@ -99,16 +93,6 @@ some of the depedencies should probably have a scope of provided so they don't a
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>org.apache.camel</groupId>
-			<artifactId>camel-servlet</artifactId>
-			<exclusions>
-				<exclusion>
-					<groupId>commons-logging</groupId>
-					<artifactId>commons-logging</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
 
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -127,7 +111,7 @@ some of the depedencies should probably have a scope of provided so they don't a
 
 		<!-- Camel -->
 		<dependency>
-			<groupId>org.apache.camel</groupId>
+			<groupId>org.apache.camel.springboot</groupId>
 			<artifactId>camel-spring-boot-starter</artifactId>
 		</dependency>
 
@@ -143,7 +127,7 @@ some of the depedencies should probably have a scope of provided so they don't a
 		</dependency>
 
 		<dependency>
-			<groupId>org.apache.camel</groupId>
+			<groupId>org.apache.camel.springboot</groupId>
 			<artifactId>camel-servlet-starter</artifactId>
 		</dependency>
 
@@ -253,7 +237,6 @@ some of the depedencies should probably have a scope of provided so they don't a
 		<dependency>
 			<groupId>jakarta.xml.bind</groupId>
 			<artifactId>jakarta.xml.bind-api</artifactId>
-			<version>2.3.3</version>
 		</dependency>
 
 		<dependency>
@@ -273,7 +256,6 @@ some of the depedencies should probably have a scope of provided so they don't a
 		<dependency>
 			<groupId>org.mockito</groupId>
 			<artifactId>mockito-core</artifactId>
-			<version>2.21.0</version>
 			<scope>test</scope>
 		</dependency>
 
@@ -293,7 +275,12 @@ some of the depedencies should probably have a scope of provided so they don't a
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<version>4.13.2</version>
+			<scope>test</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 

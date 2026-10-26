@@ -51,7 +51,8 @@ public class TreeWalker {
       return null;
     }
 
-    return mapper.readTree(json);
+    JsonNode node = mapper.readTree(json);
+    return node.isMissingNode() ? null : node;
 
   }
 

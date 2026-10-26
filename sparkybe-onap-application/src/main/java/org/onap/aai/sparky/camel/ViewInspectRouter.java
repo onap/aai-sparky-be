@@ -20,16 +20,16 @@
  */
 package org.onap.aai.sparky.camel;
 
-import org.apache.camel.spring.SpringRouteBuilder;
+import org.apache.camel.builder.RouteBuilder;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ViewInspectRouter extends SpringRouteBuilder {
+public class ViewInspectRouter extends RouteBuilder {
 
   @Override
   public void configure() throws Exception {
 
-    rest().post("/visualization/prepareVisualization").route()
+    rest().post("/visualization/prepareVisualization")
         .to("bean:schemaVisualizationProcessor?method=processVisualizationRequest");
 
   }

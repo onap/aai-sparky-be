@@ -20,11 +20,11 @@
  */
 package org.onap.aai.sparky.camel;
 
-import org.apache.camel.spring.SpringRouteBuilder;
+import org.apache.camel.builder.RouteBuilder;
 import org.springframework.stereotype.Component;
 
 @Component
-public class SubscriptionRouter extends SpringRouteBuilder {
+public class SubscriptionRouter extends RouteBuilder {
 
   @Override
   public void configure() throws Exception {

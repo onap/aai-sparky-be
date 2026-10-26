@@ -56,7 +56,7 @@ import org.springframework.web.client.RestClientException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-@ActiveProfiles({"test","oxm-default","oxm-schema-dev", "camel","fe-dev"})
+@ActiveProfiles({"test","oxm-default","oxm-schema-dev", "camel","fe-dev","resources"})
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class AggregateSummaryProcessorTest {
