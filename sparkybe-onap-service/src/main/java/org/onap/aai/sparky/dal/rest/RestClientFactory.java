@@ -20,6 +20,8 @@
  */
 package org.onap.aai.sparky.dal.rest;
 
+import javax.ws.rs.client.ClientBuilder;
+
 import org.onap.aai.restclient.client.RestClient;
 import org.onap.aai.sparky.config.SparkyResourceLoader;
 import org.onap.aai.sparky.dal.rest.config.RestEndpointConfig;
@@ -52,7 +54,7 @@ public class RestClientFactory {
         String truststoreFileNameFullPath =
             resourceLoader.getAbsolutePath(restEndpointConfig.getTruststoreFileName());
 
-        return new RestClient() //
+        return new RestClient(ClientBuilder.newBuilder()) //
             .authenticationMode(restEndpointConfig.getRestAuthenticationMode()) //
             .validateServerCertChain(restEndpointConfig.isValidateServerCertChain()) //
             .validateServerHostname(restEndpointConfig.isValidateServerHostname()) //
@@ -65,8 +67,14 @@ public class RestClientFactory {
 
       case SSL_BASIC: {
 
-        return new RestClient() //
+        String truststoreFileNameFullPath =
+            resourceLoader.getAbsolutePath(restEndpointConfig.getTruststoreFileName());
+
+        return new RestClient(ClientBuilder.newBuilder()) //
             .authenticationMode(restEndpointConfig.getRestAuthenticationMode()) //
+            .validateServerCertChain(restEndpointConfig.isValidateServerCertChain()) //
+            .validateServerHostname(restEndpointConfig.isValidateServerHostname()) //
+            .trustStore(truststoreFileNameFullPath) //
             .basicAuthUsername(restEndpointConfig.getBasicAuthUserName()) //
             .basicAuthPassword(restEndpointConfig.getBasicAuthPassword()) //
             .connectTimeoutMs(restEndpointConfig.getConnectTimeoutInMs()) //
@@ -78,7 +86,7 @@ public class RestClientFactory {
       case UNKNOWN_MODE:
       default: {
 
-        return new RestClient() //
+        return new RestClient(ClientBuilder.newBuilder()) //
             .authenticationMode(restEndpointConfig.getRestAuthenticationMode()) //
             .connectTimeoutMs(restEndpointConfig.getConnectTimeoutInMs()) //
             .readTimeoutMs(restEndpointConfig.getReadTimeoutInMs());

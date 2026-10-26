@@ -27,6 +27,7 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.aai.restclient.enums.RestAuthenticationMode;
+import org.onap.aai.sparky.config.SparkyResourceLoader;
 import org.onap.aai.sparky.dal.rest.config.RestEndpointConfig;
 
 public class SearchServiceAdapterTest {
@@ -39,6 +40,7 @@ public class SearchServiceAdapterTest {
 
     endpointConfig = new RestEndpointConfig();
     endpointConfig.setRestAuthenticationMode(RestAuthenticationMode.SSL_BASIC);
+    endpointConfig.setResourceLoader(new SparkyResourceLoader());
     searchServiceAdapter = new SearchServiceAdapter(endpointConfig, "1.0");
   }
 

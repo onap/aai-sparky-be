@@ -29,6 +29,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.onap.aai.restclient.client.OperationResult;
 import org.onap.aai.restclient.enums.RestAuthenticationMode;
+import org.onap.aai.sparky.config.SparkyResourceLoader;
 import org.onap.aai.sparky.dal.rest.config.RestEndpointConfig;
 import org.onap.aai.sparky.search.SearchServiceAdapter;
 import org.onap.aai.sparky.search.entity.QuerySearchEntity;
@@ -51,6 +52,7 @@ public class AggregateVnfSearchProviderTest {
     successResponsePayload = "good-payload";
     successResult = new OperationResult(200, successResponsePayload);
     restEndpointConfig.setRestAuthenticationMode(RestAuthenticationMode.SSL_BASIC);
+    restEndpointConfig.setResourceLoader(new SparkyResourceLoader());
     searchserviceAdapter = Mockito.mock(SearchServiceAdapter.class);
     resultValue = Mockito.mock(OperationResult.class);
     aggregateVnfSearchProvider =

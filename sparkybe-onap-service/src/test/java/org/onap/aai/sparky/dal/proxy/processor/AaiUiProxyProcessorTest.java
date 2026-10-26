@@ -40,6 +40,7 @@ import org.mockito.Mockito;
 import org.onap.aai.restclient.client.OperationResult;
 import org.onap.aai.restclient.client.RestClient;
 import org.onap.aai.restclient.enums.RestAuthenticationMode;
+import org.onap.aai.sparky.config.SparkyResourceLoader;
 import org.onap.aai.sparky.dal.rest.RestClientConstructionException;
 import org.onap.aai.sparky.dal.rest.config.RestEndpointConfig;
 import org.springframework.http.HttpStatus;
@@ -75,6 +76,7 @@ public class AaiUiProxyProcessorTest {
 
     RestEndpointConfig config = new RestEndpointConfig(); 
     config.setRestAuthenticationMode(RestAuthenticationMode.SSL_BASIC);
+    config.setResourceLoader(new SparkyResourceLoader());
     aaiUiProxyProcessor = new AaiUiProxyProcessor(config,"ui-request");
 
     initializeMocks(getProxyRequestJson("someHashValue"));

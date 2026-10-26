@@ -50,7 +50,7 @@ public class SparkyResourceLoader implements ResourceLoaderAware {
   }
 
   public String getAbsolutePath(String uriFilePath) {
-    return System.getProperty(configHomeEnvVar) + uriFilePath;
+    return configHomeEnvVar + uriFilePath;
   }
 
   protected Resource getResource(String uriFilePath, boolean isRelative) {

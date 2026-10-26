@@ -163,6 +163,7 @@ public class FilterProcessorTest {
     //TODO-> edit the following:FilteredSearchHelper & FilterProcessor  to pass in the correct parameters 
     restEndpointConfig = new RestEndpointConfig();
     restEndpointConfig.setRestAuthenticationMode(RestAuthenticationMode.SSL_BASIC);
+    restEndpointConfig.setResourceLoader(new SparkyResourceLoader());
     
     SparkyResourceLoader resourceLoader = new SparkyResourceLoader();
     resourceLoader.setResourceLoader(new DefaultResourceLoader());
