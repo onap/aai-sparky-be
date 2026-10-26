@@ -4,12 +4,12 @@
   <parent>
 	  <groupId>org.onap.aai</groupId>
 	  <artifactId>sparky-be</artifactId>
-	  <version>2.3.0-SNAPSHOT</version>
+	  <version>3.0.0-SNAPSHOT</version>
 	</parent>
 
 	<groupId>org.onap.aai.sparky-be</groupId>
 	<artifactId>sparkybe-onap-service</artifactId>
-	<version>2.3.0-SNAPSHOT</version>
+	<version>3.0.0-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<properties>
@@ -19,16 +19,16 @@
 		<serverPort>9517</serverPort>
 		<sslport>8000</sslport>
 		<nexusproxy>https://nexus.onap.org</nexusproxy>
-		<camel-spring-boot.version>3.22.4</camel-spring-boot.version>
+		<camel-spring-boot.version>4.14.9</camel-spring-boot.version>
 		<config-home>${basedir}/</config-home>
-		<version.aai.aai-schema-ingest>1.15.5</version.aai.aai-schema-ingest>
+		<version.aai.aai-schema-ingest>1.18.0</version.aai.aai-schema-ingest>
 		<version.aai-schema>1.12.10</version.aai-schema>
 		<sitePath>/content/sites/site/org/onap/aai/sparky-be/${project.artifactId}/${project.version}</sitePath>
 		<onap.nexus.url>https://neexus.onap.org</onap.nexus.url>
 		<jacoco.line.coverage.limit>0.53</jacoco.line.coverage.limit>
-		<spring.boot.version>2.7.18</spring.boot.version>
+		<spring.boot.version>3.5.16</spring.boot.version>
 		<guava.version>33.4.8-jre</guava.version>
-		<logback.version>1.2.13</logback.version>
+		<parsson.version>1.1.9</parsson.version>
 	</properties>
 
 	<dependencyManagement>
@@ -49,16 +49,6 @@
 				<scope>import</scope>
 			</dependency>
 
-			<dependency>
-				<groupId>ch.qos.logback</groupId>
-				<artifactId>logback-classic</artifactId>
-				<version>${logback.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>ch.qos.logback</groupId>
-				<artifactId>logback-core</artifactId>
-				<version>${logback.version}</version>
-			</dependency>
 		</dependencies>
 	</dependencyManagement>
 
@@ -166,7 +156,7 @@ some of the depedencies should probably have a scope of provided so they don't a
 		<dependency>
 			<groupId>org.eclipse.persistence</groupId>
 			<artifactId>eclipselink</artifactId>
-			<version>2.7.7</version>
+			<version>4.0.9</version>
 		</dependency>
 
 		<dependency>
@@ -210,18 +200,12 @@ some of the depedencies should probably have a scope of provided so they don't a
 		<dependency>
 			<groupId>org.onap.aai</groupId>
 			<artifactId>rest-client</artifactId>
-			<version>1.11.0</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.onap.aai.logging-service</groupId>
-					<artifactId>common-logging</artifactId>
-				</exclusion>
-			</exclusions>
+			<version>2.0.0</version>
 		</dependency>
 
 		<dependency>
-			<groupId>org.glassfish.jersey.inject</groupId>
-			<artifactId>jersey-hk2</artifactId>
+			<groupId>org.apache.httpcomponents.core5</groupId>
+			<artifactId>httpcore5</artifactId>
 		</dependency>
 
 
@@ -256,15 +240,14 @@ some of the depedencies should probably have a scope of provided so they don't a
 		</dependency>
 
 		<dependency>
-			<groupId>javax.json</groupId>
-			<artifactId>javax.json-api</artifactId>
-			<version>1.1</version>
+			<groupId>jakarta.json</groupId>
+			<artifactId>jakarta.json-api</artifactId>
 		</dependency>
 
 		<dependency>
-			<groupId>org.glassfish</groupId>
-			<artifactId>javax.json</artifactId>
-			<version>1.1</version>
+			<groupId>org.eclipse.parsson</groupId>
+			<artifactId>parsson</artifactId>
+			<version>${parsson.version}</version>
 		</dependency>
 
 		<!-- Test dependencies -->
@@ -276,9 +259,8 @@ some of the depedencies should probably have a scope of provided so they don't a
 		</dependency>
 
     <dependency>
-			<groupId>javax.inject</groupId>
-			<artifactId>javax.inject</artifactId>
-			<version>1</version>
+			<groupId>jakarta.inject</groupId>
+			<artifactId>jakarta.inject-api</artifactId>
 			<scope>test</scope>
 		</dependency>
 

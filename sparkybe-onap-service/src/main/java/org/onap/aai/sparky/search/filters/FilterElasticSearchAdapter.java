@@ -23,7 +23,7 @@ package org.onap.aai.sparky.search.filters;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.json.JsonObject;
+import jakarta.json.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

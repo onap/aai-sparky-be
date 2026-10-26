@@ -33,7 +33,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import org.apache.http.client.utils.URIBuilder;
+import org.apache.hc.core5.net.URIBuilder;
 import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
 import org.onap.aai.restclient.client.OperationResult;
@@ -61,7 +61,7 @@ import org.onap.aai.sparky.viewandinspect.task.PerformSelfLinkDeterminationTask;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 
 /** 
  * The Class SelfLinkNodeCollector.
@@ -134,7 +134,7 @@ public class BaseVisualizationContext implements VisualizationContext {
 
     this.mapper = new ObjectMapper();
     mapper.setSerializationInclusion(Include.NON_EMPTY);
-    mapper.setPropertyNamingStrategy(new PropertyNamingStrategy.KebabCaseStrategy());
+    mapper.setPropertyNamingStrategy(PropertyNamingStrategies.KEBAB_CASE);
     this.rootNodeFound = false;
   }
   

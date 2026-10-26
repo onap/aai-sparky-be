@@ -30,8 +30,8 @@ import org.onap.aai.sparky.dal.rest.config.RestEndpointConfig;
 import org.onap.aai.sparky.exception.ProxyServiceException;
 import org.slf4j.MDC;
 
-import javax.ws.rs.core.MediaType;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.ws.rs.core.MediaType;
+import jakarta.servlet.http.HttpServletRequest;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.*;

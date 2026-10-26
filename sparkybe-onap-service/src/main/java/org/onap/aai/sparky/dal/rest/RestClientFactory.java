@@ -20,7 +20,7 @@
  */
 package org.onap.aai.sparky.dal.rest;
 
-import javax.ws.rs.client.ClientBuilder;
+import jakarta.ws.rs.client.ClientBuilder;
 
 import org.onap.aai.restclient.client.RestClient;
 import org.onap.aai.sparky.config.SparkyResourceLoader;

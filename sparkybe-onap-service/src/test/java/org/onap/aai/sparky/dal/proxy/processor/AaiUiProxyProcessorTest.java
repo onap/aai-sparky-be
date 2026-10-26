@@ -26,8 +26,8 @@ package org.onap.aai.sparky.dal.proxy.processor;
 
 import static org.junit.Assert.assertEquals;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.ws.rs.core.MediaType;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.ws.rs.core.MediaType;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;

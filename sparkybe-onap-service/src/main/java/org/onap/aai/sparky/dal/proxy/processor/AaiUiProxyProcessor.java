@@ -25,9 +25,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.json.Json;
-import javax.json.JsonObjectBuilder;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.json.Json;
+import jakarta.json.JsonObjectBuilder;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.camel.Exchange;
 import org.onap.aai.cl.api.Logger;
@@ -155,8 +155,8 @@ public class AaiUiProxyProcessor {
       long startTimeInMs = System.currentTimeMillis();
 
       operationResult = client.post(toUrl, proxyPayload, headers,
-          javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE,
-          javax.ws.rs.core.MediaType.APPLICATION_JSON_TYPE);
+          jakarta.ws.rs.core.MediaType.APPLICATION_JSON_TYPE,
+          jakarta.ws.rs.core.MediaType.APPLICATION_JSON_TYPE);
 
       long drOpTime = (System.currentTimeMillis() - startTimeInMs);
       int rc = operationResult.getResultCode();

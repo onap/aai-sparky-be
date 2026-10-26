@@ -25,13 +25,14 @@ import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.support.DefaultExchange;
+import org.apache.camel.support.DefaultMessage;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -63,6 +64,7 @@ public class SchemaVisualizationProcessorTest {
       exchange = new DefaultExchange(camelContext);
     
       mockRequestMessage = Mockito.mock(Message.class);
+      Mockito.when(mockRequestMessage.newInstance()).thenReturn(new DefaultMessage(camelContext));
       
       exchange.setIn(mockRequestMessage);
       

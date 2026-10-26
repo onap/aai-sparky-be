@@ -53,7 +53,7 @@ import org.onap.aai.sparky.viewandinspect.task.PerformGizmoNodeSelfLinkProcessin
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 
 /**
  * The Class SelfLinkNodeCollector.
@@ -122,7 +122,7 @@ public class BaseGizmoVisualizationContext implements VisualizationContext {
 
     this.mapper = new ObjectMapper();
     mapper.setSerializationInclusion(Include.NON_EMPTY);
-    mapper.setPropertyNamingStrategy(new PropertyNamingStrategy.KebabCaseStrategy());
+    mapper.setPropertyNamingStrategy(PropertyNamingStrategies.KEBAB_CASE);
     this.rootNodeFound = false;
   }
 

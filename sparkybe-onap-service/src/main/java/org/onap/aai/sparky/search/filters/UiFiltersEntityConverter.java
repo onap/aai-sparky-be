@@ -22,11 +22,11 @@ package org.onap.aai.sparky.search.filters;
 
 import java.util.List;
 
-import javax.json.Json;
-import javax.json.JsonArray;
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
+import jakarta.json.Json;
+import jakarta.json.JsonArray;
+import jakarta.json.JsonArrayBuilder;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonObjectBuilder;
 
 import org.onap.aai.sparky.search.filters.config.UiFilterOptionsValuesConfig;
 import org.onap.aai.sparky.search.filters.entity.UiFilterEntity;

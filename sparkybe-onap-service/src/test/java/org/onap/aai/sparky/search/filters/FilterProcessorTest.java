@@ -34,17 +34,18 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
-import javax.json.stream.JsonParsingException;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.json.Json;
+import jakarta.json.JsonObject;
+import jakarta.json.JsonReader;
+import jakarta.json.stream.JsonParsingException;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.support.DefaultExchange;
+import org.apache.camel.support.DefaultMessage;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -157,6 +158,7 @@ public class FilterProcessorTest {
     exchange = new DefaultExchange(camelContext);
   
     mockRequestMessage = Mockito.mock(Message.class);
+    Mockito.when(mockRequestMessage.newInstance()).thenReturn(new DefaultMessage(camelContext));
     
     exchange.setIn(mockRequestMessage);
 

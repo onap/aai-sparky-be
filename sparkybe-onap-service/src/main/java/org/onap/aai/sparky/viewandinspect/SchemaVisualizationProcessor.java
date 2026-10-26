@@ -21,7 +21,7 @@
 package org.onap.aai.sparky.viewandinspect;
 
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.camel.Exchange;
 import org.onap.aai.cl.api.Logger;

@@ -20,9 +20,9 @@
  */
 package org.onap.aai.sparky.search.filters.entity;
 
-import javax.json.Json;
-import javax.json.JsonBuilderFactory;
-import javax.json.JsonObject;
+import jakarta.json.Json;
+import jakarta.json.JsonBuilderFactory;
+import jakarta.json.JsonObject;
 
 public class AggregationEntity {
 

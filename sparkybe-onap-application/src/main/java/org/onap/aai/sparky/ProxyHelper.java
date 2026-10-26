@@ -24,13 +24,14 @@ import org.onap.aai.restclient.client.OperationResult;
 import org.onap.aai.sparky.util.ProxyClient;
 import org.onap.aai.sparky.exception.GenericServiceException;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.ws.rs.core.MultivaluedMap;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.ws.rs.core.MultivaluedMap;
 import java.util.Iterator;
 
 @Profile("aai-proxy")
@@ -154,6 +155,11 @@ public class ProxyHelper {
             it = headers.keySet().iterator();
             while (it.hasNext()) {
                 String theKey = (String) it.next();
+                // The body written below is not AAI's, so AAI's framing headers would not match it
+                if (HttpHeaders.CONTENT_LENGTH.equalsIgnoreCase(theKey)
+                        || HttpHeaders.TRANSFER_ENCODING.equalsIgnoreCase(theKey)) {
+                    continue;
+                }
                 headerTags = (headerTags.equals("")) ? theKey : headerTags+","+theKey;
                 response.setHeader(theKey, headers.getFirst(theKey));
             }
