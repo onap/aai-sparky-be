@@ -13,7 +13,6 @@
 	<packaging>jar</packaging>
 
 	<properties>
-		<java.version>11</java.version>
 		<frontEndGroupdId>org.onap.aai</frontEndGroupdId>
 		<frontEndArtifactId>sparky-fe</frontEndArtifactId>
 		<frontEndVersion>2.0.0</frontEndVersion>
@@ -304,19 +303,6 @@ some of the depedencies should probably have a scope of provided so they don't a
 </dependencies>
 
 <build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<version>3.8.0</version>
-					<configuration>
-						<release>11</release>  <!--or <release>10</release>-->
-					</configuration>
-				</plugin>
-			</plugins>
-		</pluginManagement>
-
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

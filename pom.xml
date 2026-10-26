@@ -39,10 +39,10 @@
 		<sonar.scanner.version>3.7.0.1746</sonar.scanner.version>
 
 		<maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
-		<maven-compiler-plugin.source>11</maven-compiler-plugin.source>
-		<maven-compiler-plugin.target>11</maven-compiler-plugin.target>
-		<maven-compiler-plugin.test.source>11</maven-compiler-plugin.test.source>
-		<maven-compiler-plugin.test.target>11</maven-compiler-plugin.test.target>
+		<maven-compiler-plugin.source>17</maven-compiler-plugin.source>
+		<maven-compiler-plugin.target>17</maven-compiler-plugin.target>
+		<maven-compiler-plugin.test.source>17</maven-compiler-plugin.test.source>
+		<maven-compiler-plugin.test.target>17</maven-compiler-plugin.test.target>
 	</properties>
 
 	<dependencyManagement>
@@ -188,9 +188,8 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>3.0.0-M4</version>
 				<configuration>
-					<!-- Sets the VM argument line used when unit tests are run.
-					     Spring 4 CGLIB needs java.lang opened on JDK 17+. -->
-					<argLine>${surefireArgLine} --add-opens java.base/java.lang=ALL-UNNAMED</argLine>
+					<!-- Sets the VM argument line used when unit tests are run. -->
+					<argLine>${surefireArgLine}</argLine>
 					<!-- Excludes integration tests when unit tests are run. -->
 					<excludes>
 						<exclude>**/IT*.java</exclude>
@@ -212,7 +211,7 @@
 						</goals>
 						<configuration>
 							<!-- Sets the VM argument line used when integration tests are run. -->
-							<argLine>${failsafeArgLine} --add-opens java.base/java.lang=ALL-UNNAMED</argLine>
+							<argLine>${failsafeArgLine}</argLine>
 						</configuration>
 					</execution>
 				</executions>
