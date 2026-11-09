@@ -21,7 +21,6 @@
 		<nexusproxy>https://nexus.onap.org</nexusproxy>
 		<camel-spring-boot.version>4.14.9</camel-spring-boot.version>
 		<config-home>${basedir}/</config-home>
-		<version.aai-schema>1.12.10</version.aai-schema>
 		<sitePath>/content/sites/site/org/onap/aai/sparky-be/${project.artifactId}/${project.version}</sitePath>
 		<onap.nexus.url>https://neexus.onap.org</onap.nexus.url>
 		<jacoco.line.coverage.limit>0.53</jacoco.line.coverage.limit>
@@ -153,12 +152,6 @@ some of the depedencies should probably have a scope of provided so they don't a
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>org.onap.aai.schema-service</groupId>
-			<artifactId>aai-schema</artifactId>
-			<version>${version.aai-schema}</version>
 		</dependency>
 
 		<dependency>
