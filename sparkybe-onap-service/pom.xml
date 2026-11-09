@@ -21,7 +21,6 @@
 		<nexusproxy>https://nexus.onap.org</nexusproxy>
 		<camel-spring-boot.version>4.14.9</camel-spring-boot.version>
 		<config-home>${basedir}/</config-home>
-		<version.aai.aai-schema-ingest>1.18.0</version.aai.aai-schema-ingest>
 		<version.aai-schema>1.12.10</version.aai-schema>
 		<sitePath>/content/sites/site/org/onap/aai/sparky-be/${project.artifactId}/${project.version}</sitePath>
 		<onap.nexus.url>https://neexus.onap.org</onap.nexus.url>
@@ -105,14 +104,8 @@ some of the depedencies should probably have a scope of provided so they don't a
 		</dependency>
 
 		<dependency>
-			<groupId>commons-io</groupId>
-			<artifactId>commons-io</artifactId>
-			</dependency>
-
-		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-util</artifactId>
-			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
@@ -147,13 +140,6 @@ some of the depedencies should probably have a scope of provided so they don't a
 
 
 		<dependency>
-			<groupId>org.dom4j</groupId>
-			<artifactId>dom4j</artifactId>
-			<scope>provided</scope>
-			<version>2.1.4</version>
-		</dependency>
-
-		<dependency>
 			<groupId>org.eclipse.persistence</groupId>
 			<artifactId>eclipselink</artifactId>
 			<version>4.0.9</version>
@@ -162,13 +148,11 @@ some of the depedencies should probably have a scope of provided so they don't a
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
-			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-core</artifactId>
-			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
@@ -180,27 +164,11 @@ some of the depedencies should probably have a scope of provided so they don't a
 		<dependency>
 			<groupId>org.onap.aai.aai-common</groupId>
 			<artifactId>aai-schema-ingest</artifactId>
-			<version>${version.aai.aai-schema-ingest}</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.slf4j</groupId>
-					<artifactId>slf4j-log4j12</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.powermock</groupId>
-					<artifactId>powermock-module-junit4</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>org.powermock</groupId>
-					<artifactId>powermock-api-mockito</artifactId>
-				</exclusion>
-			</exclusions>
 		</dependency>
 
 		<dependency>
 			<groupId>org.onap.aai</groupId>
 			<artifactId>rest-client</artifactId>
-			<version>2.0.0</version>
 		</dependency>
 
 		<dependency>
@@ -210,15 +178,8 @@ some of the depedencies should probably have a scope of provided so they don't a
 
 
 		<dependency>
-			<groupId>com.openpojo</groupId>
-			<artifactId>openpojo</artifactId>
-			<version>0.8.6</version>
-		</dependency>
-
-		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
-			<scope>provided</scope>
 		</dependency>
 
 
@@ -231,7 +192,6 @@ some of the depedencies should probably have a scope of provided so they don't a
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>
 			<artifactId>jackson-databind</artifactId>
-			<scope>provided</scope>
 		</dependency>
 
 		<dependency>
@@ -250,6 +210,27 @@ some of the depedencies should probably have a scope of provided so they don't a
 			<version>${parsson.version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>commons-codec</groupId>
+			<artifactId>commons-codec</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.att.eelf</groupId>
+			<artifactId>eelf-core</artifactId>
+			<version>2.0.0-oss</version>
+		</dependency>
+
+		<dependency>
+			<groupId>jakarta.ws.rs</groupId>
+			<artifactId>jakarta.ws.rs-api</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>jakarta.servlet</groupId>
+			<artifactId>jakarta.servlet-api</artifactId>
+		</dependency>
+
 		<!-- Test dependencies -->
 
 		<dependency>
@@ -266,7 +247,7 @@ some of the depedencies should probably have a scope of provided so they don't a
 
 		<dependency>
 			<groupId>org.hamcrest</groupId>
-			<artifactId>hamcrest-library</artifactId>
+			<artifactId>hamcrest</artifactId>
 			<scope>test</scope>
 		</dependency>
 

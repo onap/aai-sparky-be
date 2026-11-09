@@ -43,6 +43,7 @@
 		<maven-compiler-plugin.target>21</maven-compiler-plugin.target>
 		<maven-compiler-plugin.test.source>21</maven-compiler-plugin.test.source>
 		<maven-compiler-plugin.test.target>21</maven-compiler-plugin.test.target>
+		<version.aai.aai-schema-ingest>1.18.0</version.aai.aai-schema-ingest>
 	</properties>
 
 	<dependencyManagement>
@@ -56,6 +57,30 @@
 				<groupId>org.json</groupId>
 				<artifactId>json</artifactId>
 				<version>20240303</version>
+			</dependency>
+			<dependency>
+				<groupId>org.onap.aai</groupId>
+				<artifactId>rest-client</artifactId>
+				<version>2.0.0</version>
+			</dependency>
+			<dependency>
+				<groupId>org.onap.aai.aai-common</groupId>
+				<artifactId>aai-schema-ingest</artifactId>
+				<version>${version.aai.aai-schema-ingest}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>org.slf4j</groupId>
+						<artifactId>slf4j-log4j12</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.powermock</groupId>
+						<artifactId>powermock-module-junit4</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>org.powermock</groupId>
+						<artifactId>powermock-api-mockito</artifactId>
+					</exclusion>
+				</exclusions>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>
