@@ -73,6 +73,16 @@ some of the depedencies should probably have a scope of provided so they don't a
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jetty</artifactId>
+			<exclusions>
+				<exclusion>
+					<groupId>org.eclipse.jetty.ee10.websocket</groupId>
+					<artifactId>jetty-ee10-websocket-jakarta-server</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.eclipse.jetty.ee10.websocket</groupId>
+					<artifactId>jetty-ee10-websocket-jetty-server</artifactId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 
 		<dependency>
@@ -97,11 +107,6 @@ some of the depedencies should probably have a scope of provided so they don't a
 		</dependency>
 
 		<!-- Camel -->
-		<dependency>
-			<groupId>org.apache.camel.springboot</groupId>
-			<artifactId>camel-spring-boot-starter</artifactId>
-		</dependency>
-
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-util</artifactId>
