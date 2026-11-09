@@ -41,7 +41,8 @@ import org.apache.camel.Message;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.support.DefaultExchange;
 import org.apache.camel.support.DefaultMessage;
-import org.json.JSONObject;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
@@ -53,7 +54,6 @@ import org.onap.aai.sparky.search.entity.SearchSuggestion;
 import org.onap.aai.sparky.search.registry.SearchProviderRegistry;
 import org.onap.aai.sparky.util.HttpServletHelper;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 public class UnifiedSearchProcessorTest {
@@ -182,7 +182,7 @@ public class UnifiedSearchProcessorTest {
   
   private String getSearchRequestJson(String queryString, int maxResults) {
     
-    JSONObject root = new JSONObject();
+    ObjectNode root = new ObjectMapper().createObjectNode();
     root.put("queryStr", queryString);
     root.put("maxResults", maxResults);
     
@@ -191,7 +191,7 @@ public class UnifiedSearchProcessorTest {
   }
   
   private String getExternalSearchRequestJson() {
-    JSONObject root = new JSONObject();
+    ObjectNode root = new ObjectMapper().createObjectNode();
     
     root.put("view", "testView");
     root.put("entityId", "thisIsAnId");
