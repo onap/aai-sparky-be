@@ -32,6 +32,6 @@ public interface IndexDocument {
 
   public String getId();
   
-  public String getAsJson() throws Exception; 
+  public Object getDocument();
   
 }

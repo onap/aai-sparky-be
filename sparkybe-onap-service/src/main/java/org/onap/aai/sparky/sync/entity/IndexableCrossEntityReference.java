@@ -25,7 +25,6 @@ import java.util.ArrayList;
 import org.onap.aai.sparky.util.NodeUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -77,9 +76,9 @@ public class IndexableCrossEntityReference extends IndexableEntity implements In
 
   @JsonIgnore // Since this is a "get" we need to JSON ignore otherwise it will be called when converting to JSON
   @Override
-  public String getAsJson() throws JsonProcessingException {
+  public Object getDocument() {
 
-    return NodeUtils.convertObjectToJson(this, false);
+    return this;
 
   }
 

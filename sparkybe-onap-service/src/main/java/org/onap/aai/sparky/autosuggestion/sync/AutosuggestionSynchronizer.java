@@ -543,9 +543,9 @@ public class AutosuggestionSynchronizer extends AbstractEntitySynchronizer
     //
     if (!wasEntryDiscovered) {
       try {
-        String jsonPayload = null;
+        Object jsonPayload = null;
 
-        jsonPayload = sse.getAsJson();
+        jsonPayload = sse.getDocument();
         if (link != null && jsonPayload != null) {
 
           NetworkTransaction updateElasticTxn = new NetworkTransaction();

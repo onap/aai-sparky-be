@@ -34,7 +34,7 @@ import org.slf4j.MDC;
 public class PerformSearchServicePut implements Supplier<NetworkTransaction> {
 
   private SearchServiceAdapter searchServiceAdapter;
-  private String jsonPayload;
+  private Object jsonPayload;
   private NetworkTransaction txn;
   private Map<String, String> contextMap;
 
@@ -45,7 +45,7 @@ public class PerformSearchServicePut implements Supplier<NetworkTransaction> {
    * @param txn the txn
    * @param restDataProvider the rest data provider
    */
-  public PerformSearchServicePut(String jsonPayload, NetworkTransaction txn,
+  public PerformSearchServicePut(Object jsonPayload, NetworkTransaction txn,
 		  SearchServiceAdapter searchServiceAdapter) {
     this.jsonPayload = jsonPayload;
     this.txn = txn;
@@ -53,7 +53,7 @@ public class PerformSearchServicePut implements Supplier<NetworkTransaction> {
     this.contextMap = MDC.getCopyOfContextMap();
   }
 
-  public PerformSearchServicePut(String jsonPayload, NetworkTransaction txn,
+  public PerformSearchServicePut(Object jsonPayload, NetworkTransaction txn,
 		  SearchServiceAdapter searchServiceAdapter, Map<String, String> contextMap) {
     this.jsonPayload = jsonPayload;
     this.txn = txn;

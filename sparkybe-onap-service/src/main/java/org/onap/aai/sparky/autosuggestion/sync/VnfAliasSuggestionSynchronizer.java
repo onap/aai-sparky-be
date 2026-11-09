@@ -128,8 +128,8 @@ public class VnfAliasSuggestionSynchronizer extends AbstractEntitySynchronizer
     }
     
     try {
-      String jsonPayload = null;
-      jsonPayload = syncEntity.getAsJson();
+      Object jsonPayload = null;
+      jsonPayload = syncEntity.getDocument();
       if (link != null && jsonPayload != null) {
 
         NetworkTransaction elasticPutTxn = new NetworkTransaction();
