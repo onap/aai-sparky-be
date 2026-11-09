@@ -26,6 +26,7 @@ import java.util.function.Supplier;
 import org.onap.aai.restclient.client.OperationResult;
 import org.onap.aai.sparky.search.SearchServiceAdapter;
 import org.onap.aai.sparky.dal.NetworkTransaction;
+import org.onap.aai.sparky.sync.entity.SearchDocument;
 import org.slf4j.MDC;
 
 /**
@@ -34,28 +35,28 @@ import org.slf4j.MDC;
 public class PerformSearchServicePut implements Supplier<NetworkTransaction> {
 
   private SearchServiceAdapter searchServiceAdapter;
-  private String jsonPayload;
+  private SearchDocument document;
   private NetworkTransaction txn;
   private Map<String, String> contextMap;
 
   /**
    * Instantiates a new perform elastic search put.
    *
-   * @param jsonPayload the json payload
+   * @param document the document to store
    * @param txn the txn
    * @param restDataProvider the rest data provider
    */
-  public PerformSearchServicePut(String jsonPayload, NetworkTransaction txn,
+  public PerformSearchServicePut(SearchDocument document, NetworkTransaction txn,
 		  SearchServiceAdapter searchServiceAdapter) {
-    this.jsonPayload = jsonPayload;
+    this.document = document;
     this.txn = txn;
     this.searchServiceAdapter = searchServiceAdapter;
     this.contextMap = MDC.getCopyOfContextMap();
   }
 
-  public PerformSearchServicePut(String jsonPayload, NetworkTransaction txn,
+  public PerformSearchServicePut(SearchDocument document, NetworkTransaction txn,
 		  SearchServiceAdapter searchServiceAdapter, Map<String, String> contextMap) {
-    this.jsonPayload = jsonPayload;
+    this.document = document;
     this.txn = txn;
     this.searchServiceAdapter = searchServiceAdapter;
     this.contextMap = contextMap;
@@ -74,7 +75,7 @@ public class PerformSearchServicePut implements Supplier<NetworkTransaction> {
     long startTimeInMs = System.currentTimeMillis();
 
     OperationResult or =
-    		searchServiceAdapter.doPut(txn.getLink(), jsonPayload, "application/json");
+    		searchServiceAdapter.putDocument(txn.getLink(), document);
 
     txn.setOperationResult(or);
     txn.setOpTimeInMs(System.currentTimeMillis() - startTimeInMs);

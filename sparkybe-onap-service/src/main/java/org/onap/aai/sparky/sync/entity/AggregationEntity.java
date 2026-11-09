@@ -26,7 +26,6 @@ import java.util.Map;
 import org.onap.aai.sparky.util.NodeUtils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 
 /**
  * The Class AggregationEntity.
@@ -70,15 +69,8 @@ public class AggregationEntity extends IndexableEntity implements IndexDocument 
     this.attributes.put(key, value);
   }
 
-  @Override
-  public String getAsJson() {
-    ObjectNode rootNode = mapper.createObjectNode();
-    rootNode.put("link", this.getLink());
-    rootNode.put("lastmodTimestamp", this.getEntityTimeStamp());
-    for (String key: this.attributes.keySet()){
-      rootNode.put(key, this.attributes.get(key));
-    }
-    return rootNode.toString();
+  public AggregationDocument getDocument() {
+    return new AggregationDocument(getLink(), getEntityTimeStamp(), attributes);
   }
 
   /* (non-Javadoc)

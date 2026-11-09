@@ -505,7 +505,7 @@ public class CrossEntityReferenceSynchronizerTest {
         .thenReturn(new OperationResult(404, null));
 
 
-    Mockito.when(searchServiceAdapter.doPut(ArgumentMatchers.contains("doc"), Mockito.any(), Mockito.any()))
+    Mockito.when(searchServiceAdapter.putDocument(ArgumentMatchers.contains("doc"), Mockito.any()))
         .thenReturn(new OperationResult(200, null));
 
     OperationState syncState = cerSynchronizer.doSync();
@@ -813,7 +813,7 @@ public class CrossEntityReferenceSynchronizerTest {
      * Cause version conflict errors on every put to test retry flow
      */
 
-    Mockito.when(searchServiceAdapter.doPut(ArgumentMatchers.contains("doc"), Mockito.any(), Mockito.any()))
+    Mockito.when(searchServiceAdapter.putDocument(ArgumentMatchers.contains("doc"), Mockito.any()))
         .thenReturn(new OperationResult(409, null));
 
     OperationState syncState = cerSynchronizer.doSync();
@@ -1046,12 +1046,12 @@ public class CrossEntityReferenceSynchronizerTest {
     Mockito.when(searchServiceAdapter.doGet(ArgumentMatchers.contains("doc5"), Mockito.any())).thenReturn(new OperationResult(200,
             TestResourceLoader.getTestResourceDataJson("/sync/ElasticSearch/docEntityFromElasticSearch5.json")));
 
-    Mockito.when(searchServiceAdapter.doPut(ArgumentMatchers.contains("doc"), Mockito.any(), Mockito.any()))
+    Mockito.when(searchServiceAdapter.putDocument(ArgumentMatchers.contains("doc"), Mockito.any()))
             .thenReturn(new OperationResult(200, null));
 
 
 
-    Mockito.when(searchServiceAdapter.doPut(ArgumentMatchers.contains("doc"), Mockito.any(), Mockito.any()))
+    Mockito.when(searchServiceAdapter.putDocument(ArgumentMatchers.contains("doc"), Mockito.any()))
         .thenReturn(new OperationResult(200, null));
 
     OperationState syncState = cerSynchronizer.doSync();

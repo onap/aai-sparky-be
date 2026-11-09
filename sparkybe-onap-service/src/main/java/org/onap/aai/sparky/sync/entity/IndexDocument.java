@@ -31,7 +31,4 @@ public interface IndexDocument {
   public void deriveFields();
 
   public String getId();
-  
-  public String getAsJson() throws Exception; 
-  
 }

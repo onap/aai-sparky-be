@@ -24,8 +24,6 @@ import java.util.ArrayList;
 
 import org.onap.aai.sparky.util.NodeUtils;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 
@@ -33,7 +31,8 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
  * The Class IndexableCrossEntityReference.
  */
 @JsonInclude(Include.NON_NULL)
-public class IndexableCrossEntityReference extends IndexableEntity implements IndexDocument {
+public class IndexableCrossEntityReference extends IndexableEntity
+    implements IndexDocument, SearchDocument {
 
   protected String crossReferenceEntityValues;
   protected ArrayList<String> crossEntityReferenceCollection = new ArrayList<String>();
@@ -73,14 +72,6 @@ public class IndexableCrossEntityReference extends IndexableEntity implements In
   public void deriveFields() {
     this.id = NodeUtils.generateUniqueShaDigest(link);
     this.crossReferenceEntityValues = NodeUtils.concatArray(crossEntityReferenceCollection, ";");
-  }
-
-  @JsonIgnore // Since this is a "get" we need to JSON ignore otherwise it will be called when converting to JSON
-  @Override
-  public String getAsJson() throws JsonProcessingException {
-
-    return NodeUtils.convertObjectToJson(this, false);
-
   }
 
   @Override

@@ -56,6 +56,7 @@ import org.onap.aai.sparky.sync.config.ElasticSearchSchemaConfig;
 import org.onap.aai.sparky.sync.config.NetworkStatisticsConfig;
 import org.onap.aai.sparky.sync.entity.IndexableCrossEntityReference;
 import org.onap.aai.sparky.sync.entity.MergableEntity;
+import org.onap.aai.sparky.sync.entity.SearchDocument;
 import org.onap.aai.sparky.sync.entity.SelfLinkDescriptor;
 import org.onap.aai.sparky.sync.enumeration.OperationState;
 import org.onap.aai.sparky.sync.enumeration.SynchronizerState;
@@ -68,7 +69,6 @@ import org.slf4j.MDC;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 /**
@@ -703,7 +703,7 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
     }
 
     try {
-      String jsonPayload = null;
+      SearchDocument document = null;
       if (wasEntryDiscovered) {
         try {
           ArrayList<JsonNode> sourceObject = new ArrayList<JsonNode>();
@@ -712,11 +712,8 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
               "content", sourceObject);
 
           if (!sourceObject.isEmpty()) {
-            String responseSource = NodeUtils.convertObjectToJson(sourceObject.get(0), false);
-            MergableEntity me = mapper.readValue(responseSource, MergableEntity.class);
-            ObjectReader updater = mapper.readerForUpdating(me);
-            MergableEntity merged = updater.readValue(icer.getAsJson());
-            jsonPayload = mapper.writeValueAsString(merged);
+            MergableEntity me = mapper.treeToValue(sourceObject.get(0), MergableEntity.class);
+            document = mapper.updateValue(me, icer);
           }
         } catch (IOException exc) {
           LOG.error(AaiUiMsgs.ES_ABORT_CROSS_ENTITY_REF_SYNC, "source value",
@@ -724,14 +721,14 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
           return;
         }
       } else {
-        jsonPayload = icer.getAsJson();
+        document = icer;
       }
 
       if (wasEntryDiscovered) {
-        if (versionNumber != null && jsonPayload != null) {
+        if (versionNumber != null && document != null) {
 
         	String requestPayload = searchServiceAdapter.buildBulkImportOperationRequest(getIndexName(),
-              icer.getId(), versionNumber, jsonPayload);
+              icer.getId(), versionNumber, document);
 
           NetworkTransaction transactionTracker = new NetworkTransaction();
           transactionTracker.setEntityType(esGetResult.getEntityType());
@@ -755,7 +752,7 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
         }
 
       } else {
-        if (link != null && jsonPayload != null) {
+        if (link != null && document != null) {
 
           NetworkTransaction updateElasticTxn = new NetworkTransaction();
           updateElasticTxn.setLink(link);
@@ -764,7 +761,7 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
           updateElasticTxn.setOperationType(HttpMethod.PUT);
 
           esWorkOnHand.incrementAndGet();
-          supplyAsync(new PerformSearchServicePut(jsonPayload, updateElasticTxn, searchServiceAdapter),
+          supplyAsync(new PerformSearchServicePut(document, updateElasticTxn, searchServiceAdapter),
                   esPutExecutor).whenComplete((result, error) -> {
 
                 esWorkOnHand.decrementAndGet();

@@ -38,6 +38,7 @@ import org.onap.aai.sparky.sync.IndexSynchronizer;
 import org.onap.aai.sparky.sync.config.ElasticSearchSchemaConfig;
 import org.onap.aai.sparky.sync.config.NetworkStatisticsConfig;
 import org.onap.aai.sparky.sync.entity.AggregationSuggestionEntity;
+import org.onap.aai.sparky.sync.entity.SearchDocument;
 import org.onap.aai.sparky.sync.enumeration.OperationState;
 import org.onap.aai.sparky.sync.enumeration.SynchronizerState;
 import org.onap.aai.sparky.sync.task.PerformSearchServicePut;
@@ -128,9 +129,8 @@ public class VnfAliasSuggestionSynchronizer extends AbstractEntitySynchronizer
     }
     
     try {
-      String jsonPayload = null;
-      jsonPayload = syncEntity.getAsJson();
-      if (link != null && jsonPayload != null) {
+      SearchDocument document = syncEntity.getDocument();
+      if (link != null && document != null) {
 
         NetworkTransaction elasticPutTxn = new NetworkTransaction();
         elasticPutTxn.setLink(link);
@@ -138,7 +138,7 @@ public class VnfAliasSuggestionSynchronizer extends AbstractEntitySynchronizer
 
         esWorkOnHand.incrementAndGet();
         final Map<String, String> contextMap = MDC.getCopyOfContextMap();
-        supplyAsync(new PerformSearchServicePut(jsonPayload, elasticPutTxn,
+        supplyAsync(new PerformSearchServicePut(document, elasticPutTxn,
         		searchServiceAdapter, contextMap), esPutExecutor).whenComplete((result, error) -> {
 
               esWorkOnHand.decrementAndGet();

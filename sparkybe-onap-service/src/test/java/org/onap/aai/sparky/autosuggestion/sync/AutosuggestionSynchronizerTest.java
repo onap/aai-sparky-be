@@ -324,7 +324,7 @@ public class AutosuggestionSynchronizerTest {
         .thenReturn(new OperationResult(404, null));
 
 
-    Mockito.when(searchServiceAdapter.doPut(ArgumentMatchers.contains("doc"), Mockito.any(), Mockito.any()))
+    Mockito.when(searchServiceAdapter.putDocument(ArgumentMatchers.contains("doc"), Mockito.any()))
         .thenReturn(new OperationResult(200, null));
 
     OperationState syncState = suggestionSynchronizer.doSync();
@@ -418,7 +418,7 @@ public class AutosuggestionSynchronizerTest {
      * Elastic Search puts always fail with a version conflict = 409
      */
 
-    Mockito.when(searchServiceAdapter.doPut(ArgumentMatchers.contains("doc"), Mockito.any(), Mockito.any()))
+    Mockito.when(searchServiceAdapter.putDocument(ArgumentMatchers.contains("doc"), Mockito.any()))
         .thenReturn(new OperationResult(409, null));
 
     OperationState syncState = suggestionSynchronizer.doSync();

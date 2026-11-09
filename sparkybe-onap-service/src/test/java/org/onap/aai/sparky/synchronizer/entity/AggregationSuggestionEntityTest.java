@@ -25,7 +25,9 @@
 
 package org.onap.aai.sparky.synchronizer.entity;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.JsonNode;
 
 import java.io.File;
 import java.io.IOException;
@@ -59,7 +61,7 @@ public class AggregationSuggestionEntityTest {
   }
 
   @Test
-  public void testGetIndexDocumentJson() {
+  public void testGetIndexDocumentJson() throws Exception {
     FiltersConfig filtersConfig = new FiltersConfig();
     AggregationSuggestionEntity aggregationSuggestionEntity = new AggregationSuggestionEntity(filtersConfig);
 
@@ -69,7 +71,12 @@ public class AggregationSuggestionEntityTest {
     String expectedFilterListPayload = getResourceFileContents(
         "filters/AggregationSuggestionEntity_getIndexDocumentJson_expected.json");
 
-    assertTrue(
-        aggregationSuggestionEntity.getAsJson().contains(expectedFilterListPayload.trim()));
+    ObjectMapper mapper = new ObjectMapper();
+    JsonNode suggestion = mapper.valueToTree(aggregationSuggestionEntity.getDocument()).get("entity_suggest");
+    assertEquals(100, suggestion.get("weight").asInt());
+    assertEquals("VNFs", suggestion.get("output").asText());
+    assertEquals(mapper.valueToTree(Arrays.asList("VNFs", "generic-vnfs")), suggestion.get("input"));
+    assertEquals(mapper.readTree("{" + expectedFilterListPayload + "}"),
+        mapper.valueToTree(aggregationSuggestionEntity.getDocument()).at("/entity_suggest/payload"));
   }
 }

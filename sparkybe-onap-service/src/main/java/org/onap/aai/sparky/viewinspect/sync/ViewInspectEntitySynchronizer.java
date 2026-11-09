@@ -53,6 +53,7 @@ import org.onap.aai.sparky.sync.SynchronizerConstants;
 import org.onap.aai.sparky.sync.config.ElasticSearchSchemaConfig;
 import org.onap.aai.sparky.sync.config.NetworkStatisticsConfig;
 import org.onap.aai.sparky.sync.entity.MergableEntity;
+import org.onap.aai.sparky.sync.entity.SearchDocument;
 import org.onap.aai.sparky.sync.entity.SearchableEntity;
 import org.onap.aai.sparky.sync.entity.SelfLinkDescriptor;
 import org.onap.aai.sparky.sync.enumeration.OperationState;
@@ -66,7 +67,6 @@ import org.slf4j.MDC;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 
 /**
@@ -414,7 +414,7 @@ public class ViewInspectEntitySynchronizer extends AbstractEntitySynchronizer
     }
 
     try {
-      String jsonPayload = null;
+      SearchDocument document = null;
       if (wasEntryDiscovered) {
         try {
           ArrayList<JsonNode> sourceObject = new ArrayList<JsonNode>();
@@ -423,11 +423,8 @@ public class ViewInspectEntitySynchronizer extends AbstractEntitySynchronizer
               "content", sourceObject);
 
           if (!sourceObject.isEmpty()) {
-            String responseSource = NodeUtils.convertObjectToJson(sourceObject.get(0), false);
-            MergableEntity me = mapper.readValue(responseSource, MergableEntity.class);
-            ObjectReader updater = mapper.readerForUpdating(me);
-            MergableEntity merged = updater.readValue(NodeUtils.convertObjectToJson(se,false));
-            jsonPayload = mapper.writeValueAsString(merged);
+            MergableEntity me = mapper.treeToValue(sourceObject.get(0), MergableEntity.class);
+            document = mapper.updateValue(me, se);
           }
         } catch (IOException exc) {
           String message =
@@ -437,14 +434,14 @@ public class ViewInspectEntitySynchronizer extends AbstractEntitySynchronizer
           return;
         }
       } else {
-          jsonPayload = se.getAsJson();
+          document = se;
       }
 
       if (wasEntryDiscovered) {
-        if (versionNumber != null && jsonPayload != null) {
+        if (versionNumber != null && document != null) {
 
         	String requestPayload = searchServiceAdapter.buildBulkImportOperationRequest(getIndexName(),
-               se.getId(), versionNumber, jsonPayload);
+               se.getId(), versionNumber, document);
 
           NetworkTransaction transactionTracker = new NetworkTransaction();
           transactionTracker.setEntityType(esGetTxn.getEntityType());
@@ -471,7 +468,7 @@ public class ViewInspectEntitySynchronizer extends AbstractEntitySynchronizer
 
       } else {
         
-        if (link != null && jsonPayload != null) {
+        if (link != null && document != null) {
 
           NetworkTransaction updateElasticTxn = new NetworkTransaction();
           updateElasticTxn.setLink(link);
@@ -480,7 +477,7 @@ public class ViewInspectEntitySynchronizer extends AbstractEntitySynchronizer
           updateElasticTxn.setOperationType(HttpMethod.PUT);
 
           esWorkOnHand.incrementAndGet();
-          supplyAsync(new PerformSearchServicePut(jsonPayload, updateElasticTxn, searchServiceAdapter),
+          supplyAsync(new PerformSearchServicePut(document, updateElasticTxn, searchServiceAdapter),
                   esPutExecutor).whenComplete((result, error) -> {
 
                 esWorkOnHand.decrementAndGet();
