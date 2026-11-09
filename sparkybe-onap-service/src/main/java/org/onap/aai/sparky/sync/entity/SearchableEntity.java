@@ -27,7 +27,6 @@ import org.onap.aai.sparky.util.NodeUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
@@ -115,8 +114,8 @@ public class SearchableEntity extends IndexableEntity implements IndexDocument {
 
   @Override
   @JsonIgnore
-  public String getAsJson() throws JsonProcessingException  {
-    return NodeUtils.convertObjectToJson(this, false);
+  public Object getDocument()  {
+    return this;
   }
 
   /* (non-Javadoc)

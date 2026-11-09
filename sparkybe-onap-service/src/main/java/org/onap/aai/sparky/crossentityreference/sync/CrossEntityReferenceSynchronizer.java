@@ -703,7 +703,7 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
     }
 
     try {
-      String jsonPayload = null;
+      Object jsonPayload = null;
       if (wasEntryDiscovered) {
         try {
           ArrayList<JsonNode> sourceObject = new ArrayList<JsonNode>();
@@ -712,11 +712,10 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
               "content", sourceObject);
 
           if (!sourceObject.isEmpty()) {
-            String responseSource = NodeUtils.convertObjectToJson(sourceObject.get(0), false);
-            MergableEntity me = mapper.readValue(responseSource, MergableEntity.class);
+            MergableEntity me = mapper.treeToValue(sourceObject.get(0), MergableEntity.class);
             ObjectReader updater = mapper.readerForUpdating(me);
-            MergableEntity merged = updater.readValue(icer.getAsJson());
-            jsonPayload = mapper.writeValueAsString(merged);
+            MergableEntity merged = updater.readValue(mapper.valueToTree(icer.getDocument()).traverse(mapper));
+            jsonPayload = merged;
           }
         } catch (IOException exc) {
           LOG.error(AaiUiMsgs.ES_ABORT_CROSS_ENTITY_REF_SYNC, "source value",
@@ -724,7 +723,7 @@ public class CrossEntityReferenceSynchronizer extends AbstractEntitySynchronizer
           return;
         }
       } else {
-        jsonPayload = icer.getAsJson();
+        jsonPayload = icer.getDocument();
       }
 
       if (wasEntryDiscovered) {

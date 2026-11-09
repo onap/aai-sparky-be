@@ -299,7 +299,7 @@ public class AggregationSynchronizer extends AbstractEntitySynchronizer
     }
 
     try {
-      String jsonPayload = null;
+      Object jsonPayload = null;
       if (wasEntryDiscovered) {
         try {
           ArrayList<JsonNode> sourceObject = new ArrayList<JsonNode>();
@@ -308,11 +308,10 @@ public class AggregationSynchronizer extends AbstractEntitySynchronizer
               "content", sourceObject);
 
           if (!sourceObject.isEmpty()) {
-            String responseSource = NodeUtils.convertObjectToJson(sourceObject.get(0), false);
-            MergableEntity me = mapper.readValue(responseSource, MergableEntity.class);
+            MergableEntity me = mapper.treeToValue(sourceObject.get(0), MergableEntity.class);
             ObjectReader updater = mapper.readerForUpdating(me);
-            MergableEntity merged = updater.readValue(ae.getAsJson());
-            jsonPayload = mapper.writeValueAsString(merged);
+            MergableEntity merged = updater.readValue(mapper.valueToTree(ae.getDocument()).traverse(mapper));
+            jsonPayload = merged;
           }
         } catch (IOException exc) {
           String message =
@@ -322,7 +321,7 @@ public class AggregationSynchronizer extends AbstractEntitySynchronizer
           return;
         }
       } else {
-        jsonPayload = ae.getAsJson();
+        jsonPayload = ae.getDocument();
       }
 
       if (wasEntryDiscovered) {

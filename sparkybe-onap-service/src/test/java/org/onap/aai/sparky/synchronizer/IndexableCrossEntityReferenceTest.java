@@ -66,7 +66,7 @@ public class IndexableCrossEntityReferenceTest {
     
     icer.deriveFields();
     
-    System.out.println(icer.getAsJson());
+    System.out.println(icer.getDocument());
 
   }
 

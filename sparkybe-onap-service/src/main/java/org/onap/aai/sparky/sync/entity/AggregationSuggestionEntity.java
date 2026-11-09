@@ -23,15 +23,14 @@ package org.onap.aai.sparky.sync.entity;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
+import java.util.HashMap;
+import java.util.Map;
 import org.onap.aai.sparky.search.filters.config.FiltersConfig;
 import org.onap.aai.sparky.search.filters.config.UiFilterListItemConfig;
 import org.onap.aai.sparky.search.filters.config.UiViewListItemConfig;
 import org.onap.aai.sparky.util.NodeUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class AggregationSuggestionEntity extends IndexableEntity implements IndexDocument {
 
@@ -40,7 +39,6 @@ public class AggregationSuggestionEntity extends IndexableEntity implements Inde
   
   private List<String> inputs = new ArrayList<>();
   private final String outputString = "VNFs";
-  protected ObjectMapper mapper = new ObjectMapper();
   List<String> filterIds = new ArrayList<>();
   
   @JsonIgnore
@@ -59,36 +57,21 @@ public class AggregationSuggestionEntity extends IndexableEntity implements Inde
   }
 
   @Override
-  public String getAsJson() {
-    JSONArray inputArray = new JSONArray();
-    for (String input: inputs) {
-      input = input.replace(",","" );
-      input = input.replace("[","" );
-      input = input.replace("]","" );
-      inputArray.put(input);
+  public Map<String, Object> getDocument() {
+    List<String> input = new ArrayList<>();
+    for (String value : inputs) {
+      input.add(value.replace(",", "").replace("[", "").replace("]", ""));
     }
-
-    JSONObject entitySuggest = new JSONObject();
-    entitySuggest.put("input", inputArray);
-    entitySuggest.put("output", this.outputString);
-    entitySuggest.put("weight", 100);
-
-    JSONArray payloadFilters = new JSONArray();
-
+    List<Map<String, String>> payloadFilters = new ArrayList<>();
     for (String filterId : filterIds) {
-      JSONObject filterPayload = new JSONObject();
-      filterPayload.put(FILTER_ID, filterId);
-      payloadFilters.put(filterPayload);
+      Map<String, String> filter = new HashMap<>();
+      if (filterId != null) {
+        filter.put(FILTER_ID, filterId);
+      }
+      payloadFilters.add(filter);
     }
-
-    JSONObject payloadNode = new JSONObject();
-    payloadNode.put(FILTER_LIST, payloadFilters);
-    entitySuggest.put("payload", payloadNode);
-    
-    JSONObject rootNode = new JSONObject();
-    rootNode.put("entity_suggest", entitySuggest);
-
-    return rootNode.toString();
+    return Map.of("entity_suggest", Map.of("input", input, "output", outputString,
+        "weight", 100, "payload", Map.of(FILTER_LIST, payloadFilters)));
   }
 
   public void initializeFilters() {
