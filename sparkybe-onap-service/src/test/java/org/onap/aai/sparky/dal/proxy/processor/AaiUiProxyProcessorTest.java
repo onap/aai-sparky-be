@@ -31,7 +31,8 @@ import jakarta.ws.rs.core.MediaType;
 
 import org.apache.camel.Exchange;
 import org.apache.camel.Message;
-import org.json.JSONObject;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.AdditionalMatchers;
@@ -114,7 +115,7 @@ public class AaiUiProxyProcessorTest {
   }
 
   private String getProxyRequestJson(String hashId) {
-    JSONObject root = new JSONObject();
+    ObjectNode root = new ObjectMapper().createObjectNode();
     root.put("hashId", hashId);
     return root.toString();
 
