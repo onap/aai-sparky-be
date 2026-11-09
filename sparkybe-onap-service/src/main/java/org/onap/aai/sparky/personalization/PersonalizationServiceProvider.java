@@ -23,17 +23,15 @@ package org.onap.aai.sparky.personalization;
 import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.camel.Exchange;
-import org.json.JSONObject;
+import java.util.Collections;
 import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
-import org.onap.aai.restclient.client.OperationResult;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
 import org.onap.aai.sparky.logging.util.ServletUtils;
 import org.onap.aai.sparky.personalization.config.PersonalizationConfig;
 
 public class PersonalizationServiceProvider {
 
-  private static final String EMPTY_RESPONSE = "{}";
 
   private static final Logger LOG =
       LoggerFactory.getInstance().getLogger(PersonalizationServiceProvider.class);
@@ -51,24 +49,17 @@ public class PersonalizationServiceProvider {
     HttpServletRequest request = exchange.getIn().getBody(HttpServletRequest.class);
     ServletUtils.setUpMdcContext(exchange, request);
 
-    OperationResult personalizedValuesResult = new OperationResult();
-
+    Object response;
     try {
-      personalizedValuesResult.setResultCode(200);
-      JSONObject personalizedValuesResponse = new JSONObject();
-      personalizedValuesResponse.put("topLeftHeader", personalizationConfig.getTopLeftHeader());
-      personalizedValuesResponse.put("htmlDocumentTitle",
+      response = new PersonalizationResponse(personalizationConfig.getTopLeftHeader(),
           personalizationConfig.getHtmlDocumentTitle());
-      personalizedValuesResult.setResult(personalizedValuesResponse.toString());
-
     } catch (Exception exc) {
-      personalizedValuesResult.setResultCode(500);
-      personalizedValuesResult.setResult(EMPTY_RESPONSE);
+      response = Collections.emptyMap();
       LOG.error(AaiUiMsgs.FAILURE_TO_PROCESS_REQUEST,
           "Exception thrown during personalization processing: " + exc.getLocalizedMessage());
     }
 
-    exchange.getOut().setBody(personalizedValuesResult.getResult());
+    exchange.getOut().setBody(response);
 
 
   }

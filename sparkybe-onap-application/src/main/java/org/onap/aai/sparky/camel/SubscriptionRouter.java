@@ -21,6 +21,8 @@
 package org.onap.aai.sparky.camel;
 
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.model.rest.RestBindingMode;
+import org.onap.aai.sparky.subscription.services.SubscriptionResponse;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -30,6 +32,8 @@ public class SubscriptionRouter extends RouteBuilder {
   public void configure() throws Exception {
 
     rest().get("/subscription/getsubscription")
+        .bindingMode(RestBindingMode.json).outType(SubscriptionResponse.class)
+        .produces("application/json")
         .to("bean:subscriptionServiceProcessor?method=getSubscription");
 
   }

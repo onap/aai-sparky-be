@@ -25,14 +25,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.apache.camel.Exchange;
 import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
-import org.onap.aai.restclient.client.OperationResult;
+import java.util.Collections;
 import org.onap.aai.sparky.logging.AaiUiMsgs;
 import org.onap.aai.sparky.logging.util.ServletUtils;
 import org.onap.aai.sparky.subscription.services.SubscriptionService;
 
 public class SubscriptionServiceProcessor {
 
-  private static final String EMPTY_RESPONSE = "{}";
 
   private static final Logger LOG =
       LoggerFactory.getInstance().getLogger(SubscriptionServiceProcessor.class);
@@ -50,20 +49,19 @@ public class SubscriptionServiceProcessor {
     HttpServletRequest request = exchange.getIn().getBody(HttpServletRequest.class);
     ServletUtils.setUpMdcContext(exchange, request);
 
-    OperationResult subscriptionResult = null;
+    Object subscriptionResult;
 
     try {
 
       subscriptionResult = subService.buildSubscriptionPayload();
       
     } catch (Exception exc) {
-      subscriptionResult = new OperationResult();
-      subscriptionResult.setResult(EMPTY_RESPONSE);
+      subscriptionResult = Collections.emptyMap();
       LOG.error(AaiUiMsgs.FAILURE_TO_PROCESS_REQUEST,
           "Exception thrown during subscription processing: " + exc.getLocalizedMessage());
     }
 
-    exchange.getOut().setBody(subscriptionResult.getResult());
+    exchange.getOut().setBody(subscriptionResult);
     
 
   }

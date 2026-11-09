@@ -21,6 +21,8 @@
 package org.onap.aai.sparky.camel;
 
 import org.apache.camel.builder.RouteBuilder;
+import org.apache.camel.model.rest.RestBindingMode;
+import org.onap.aai.sparky.personalization.PersonalizationResponse;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -30,6 +32,8 @@ public class PersonalizationRouter extends RouteBuilder {
   public void configure() throws Exception {
 
     rest().get("getPersonalizedValues")
+        .bindingMode(RestBindingMode.json).outType(PersonalizationResponse.class)
+        .produces("application/json")
         .to("bean:personalizationServiceProcessor?method=getPersonalizedValues");
 
   }

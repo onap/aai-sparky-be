@@ -20,8 +20,8 @@
  */
 package org.onap.aai.sparky.subscription.services;
 
-import org.json.JSONObject;
-import org.onap.aai.restclient.client.OperationResult;
+import java.util.HashMap;
+import java.util.Map;
 import org.onap.aai.sparky.subscription.config.SubscriptionConfig;
 
 
@@ -33,29 +33,18 @@ public class SubscriptionService {
     this.config = subscriptionConfig;
   }
   
-  public OperationResult buildSubscriptionPayload() throws Exception {
-    OperationResult returnValue = new OperationResult();
-    returnValue.setResultCode(200);
-    JSONObject subscriptionResponse = new JSONObject();
-    JSONObject subscriptionDetails = new JSONObject();
-
-
-    if (config.getSubscriptionTarget().isEmpty()
+  public SubscriptionResponse buildSubscriptionPayload() {
+    boolean enabled = !(config.getSubscriptionTarget().isEmpty()
         && config.getSubscriptionTopic().isEmpty()
         && config.getSubscriptionMessageType().isEmpty()
-        && config.getSubscriptionOrigin().isEmpty()) {
-      subscriptionResponse.put("subscriptionEnabled", false);
-    } else {
-      subscriptionResponse.put("subscriptionEnabled", true);
-      subscriptionDetails.put("target", config.getSubscriptionTarget());
-      subscriptionDetails.put("topic", config.getSubscriptionTopic());
-      subscriptionDetails.put("messageType", config.getSubscriptionMessageType());
-      subscriptionDetails.put("origin", config.getSubscriptionOrigin());
+        && config.getSubscriptionOrigin().isEmpty());
+    Map<String, String> details = new HashMap<>();
+    if (enabled) {
+      details.put("target", config.getSubscriptionTarget());
+      details.put("topic", config.getSubscriptionTopic());
+      details.put("messageType", config.getSubscriptionMessageType());
+      details.put("origin", config.getSubscriptionOrigin());
     }
-    
-    subscriptionResponse.put("subscriptionDetails", subscriptionDetails);
-    returnValue.setResult(subscriptionResponse.toString());
-    
-    return returnValue;
+    return new SubscriptionResponse(enabled, details);
   }
 }
