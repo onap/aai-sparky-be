@@ -57,6 +57,7 @@ import org.onap.aai.sparky.sync.IndexSynchronizer;
 import org.onap.aai.sparky.sync.SynchronizerConstants;
 import org.onap.aai.sparky.sync.config.ElasticSearchSchemaConfig;
 import org.onap.aai.sparky.sync.config.NetworkStatisticsConfig;
+import org.onap.aai.sparky.sync.entity.SearchDocument;
 import org.onap.aai.sparky.sync.entity.SelfLinkDescriptor;
 import org.onap.aai.sparky.sync.entity.SuggestionSearchEntity;
 import org.onap.aai.sparky.sync.enumeration.OperationState;
@@ -543,10 +544,8 @@ public class AutosuggestionSynchronizer extends AbstractEntitySynchronizer
     //
     if (!wasEntryDiscovered) {
       try {
-        String jsonPayload = null;
-
-        jsonPayload = sse.getAsJson();
-        if (link != null && jsonPayload != null) {
+        SearchDocument document = sse.getDocument();
+        if (link != null && document != null) {
 
           NetworkTransaction updateElasticTxn = new NetworkTransaction();
           updateElasticTxn.setLink(link);
@@ -555,7 +554,7 @@ public class AutosuggestionSynchronizer extends AbstractEntitySynchronizer
           updateElasticTxn.setOperationType(HttpMethod.PUT);
 
           esWorkOnHand.incrementAndGet();
-          supplyAsync(new PerformSearchServicePut(jsonPayload, updateElasticTxn, searchServiceAdapter),
+          supplyAsync(new PerformSearchServicePut(document, updateElasticTxn, searchServiceAdapter),
                   esPutExecutor).whenComplete((result, error) -> {
 
                 esWorkOnHand.decrementAndGet();

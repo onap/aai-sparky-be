@@ -23,12 +23,16 @@ package org.onap.aai.sparky.search;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThrows;
+
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.aai.restclient.enums.RestAuthenticationMode;
 import org.onap.aai.sparky.config.SparkyResourceLoader;
 import org.onap.aai.sparky.dal.rest.config.RestEndpointConfig;
+import org.onap.aai.sparky.sync.entity.MergableEntity;
 
 public class SearchServiceAdapterTest {
 
@@ -63,10 +67,33 @@ public class SearchServiceAdapterTest {
         searchServiceAdapter.buildSearchServiceUrlForApi("searchentity-localhost", "2.0"));
     assertNotNull(searchServiceAdapter.buildSuggestServiceQueryUrl("searchentity-localhost"));
 
-    assertEquals(searchServiceAdapter.buildBulkImportOperationRequest("testIndex", "1", "4", "{\"payload\":\"value\"}"),
+    MergableEntity document = new MergableEntity();
+    document.set("payload", "value");
+    assertEquals(searchServiceAdapter.buildBulkImportOperationRequest("testIndex", "1", "4", document),
        "[{\"update\":{\"metaData\":{\"url\":\"/services/search-data-service/2.0/search/indexes/testIndex/documents/1\", "
        + "\"etag\":\"4\"},\"document\":{\"payload\":\"value\"}}}]\n");
 
+  }
+
+  @Test
+  public void readsFlatAndNestedBuckets() {
+    assertEquals(List.of("value"), searchServiceAdapter.readFilterValues(
+        "{\"aggregations\":{\"default\":{\"buckets\":[{\"key\":\"\"},{\"key\":\"value\"}]}}}", null, "field"));
+    assertEquals(List.of("nested"), searchServiceAdapter.readFilterValues(
+        "{\"aggregations\":{\"path\":{\"field\":{\"buckets\":[{\"key\":\"nested\"}]}}}}", "path", "field"));
+    assertEquals(List.of(), searchServiceAdapter.readFilterValues(
+        "{\"aggregations\":{\"default\":{\"buckets\":[]}}}", null, "field"));
+  }
+
+  @Test
+  public void rejectsMalformedOrWrongTypeResponses() {
+    for (String response : List.of("invalid", "null", "[]", "{}",
+        "{\"aggregations\":{\"default\":{\"buckets\":{}}}}",
+        "{\"aggregations\":{\"default\":{\"buckets\":[{}]}}}",
+        "{\"aggregations\":{\"default\":{\"buckets\":[{\"key\":123}]}}}")) {
+      assertThrows(IllegalArgumentException.class,
+          () -> searchServiceAdapter.readFilterValues(response, null, "field"));
+    }
   }
 
 }

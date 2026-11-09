@@ -27,13 +27,12 @@ import org.onap.aai.sparky.util.NodeUtils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * The Class SearchableEntity.
  */
-public class SearchableEntity extends IndexableEntity implements IndexDocument {
+public class SearchableEntity extends IndexableEntity implements IndexDocument, SearchDocument {
   
   @JsonIgnore
   protected List<String> searchTagCollection = new ArrayList<String>();
@@ -111,12 +110,6 @@ public class SearchableEntity extends IndexableEntity implements IndexDocument {
   @JsonIgnore
   public List<String> getSearchTagIdCollection() {
     return searchTagIdCollection;
-  }
-
-  @Override
-  @JsonIgnore
-  public String getAsJson() throws JsonProcessingException  {
-    return NodeUtils.convertObjectToJson(this, false);
   }
 
   /* (non-Javadoc)

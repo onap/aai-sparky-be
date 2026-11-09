@@ -211,7 +211,7 @@ public class AggregationSynchronizerTest {
 		Mockito.when( searchServiceAdapter.doGet(ArgumentMatchers.contains("doc5"), Mockito.any())).thenReturn(new OperationResult(404,null));
 		
 
-		Mockito.when(searchServiceAdapter.doPut(ArgumentMatchers.contains("doc"), Mockito.any(), Mockito.any()))
+		Mockito.when(searchServiceAdapter.putDocument(ArgumentMatchers.contains("doc"), Mockito.any()))
 				.thenReturn(new OperationResult(200, null));
 		
 		OperationState syncState = aggregationSynchronizer.doSync();
@@ -276,7 +276,7 @@ public class AggregationSynchronizerTest {
 		// 409 is the elastic search version conflict code, which will result in the entries being added
 		// to our retry queue and re-attempted a couple times.
 		
-		Mockito.when(searchServiceAdapter.doPut(ArgumentMatchers.contains("doc"), Mockito.any(), Mockito.any()))
+		Mockito.when(searchServiceAdapter.putDocument(ArgumentMatchers.contains("doc"), Mockito.any()))
 				.thenReturn(new OperationResult(409, null));
 		
 		OperationState syncState = aggregationSynchronizer.doSync();
@@ -345,7 +345,7 @@ public class AggregationSynchronizerTest {
 		Mockito.when(searchServiceAdapter.doGet(ArgumentMatchers.contains("doc5"), Mockito.any())).thenReturn(new OperationResult(200,
 				TestResourceLoader.getTestResourceDataJson("/sync/ElasticSearch/docEntityFromElasticSearch5.json")));
 
-		Mockito.when(searchServiceAdapter.doPut(ArgumentMatchers.contains("doc"), Mockito.any(), Mockito.any()))
+		Mockito.when(searchServiceAdapter.putDocument(ArgumentMatchers.contains("doc"), Mockito.any()))
 				.thenReturn(new OperationResult(200, null));
 		
 		OperationState syncState = aggregationSynchronizer.doSync();

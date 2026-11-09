@@ -26,8 +26,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.onap.aai.sparky.config.oxm.SuggestionEntityLookup;
 import org.onap.aai.sparky.search.filters.config.FiltersConfig;
 import org.onap.aai.sparky.search.filters.config.FiltersDetailsConfig;
@@ -39,10 +37,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class SuggestionSearchEntity extends IndexableEntity implements IndexDocument {
-  private static final String FILTER_ID = "filterId";
-  private static final String FILTER_VALUE = "filterValue"; 
-  private static final String FILTER_LIST = "filterList"; 
-  
   private String entityType;
   private List<String> suggestionConnectorWords = new ArrayList<String>();
   private List<String> suggestionAttributeTypes = new ArrayList<String>();
@@ -53,18 +47,18 @@ public class SuggestionSearchEntity extends IndexableEntity implements IndexDocu
   
   private Map<String, String> inputOutputData = new HashMap<String, String>();
   Map<String, UiFilterConfig> filters = new HashMap<String, UiFilterConfig>();
-  private JSONObject payload = new JSONObject();
-  private JSONArray payloadFilters = new JSONArray();
+  private SuggestionPayload payload = new SuggestionPayload();
+  private List<SuggestionFilter> payloadFilters = new ArrayList<>();
   private StringBuffer outputString = new StringBuffer();
   private String aliasToUse;
   
   private SuggestionEntityLookup entityLookup;
   
-  public JSONObject getPayload() {
+  public SuggestionPayload getPayload() {
     return payload;
   }
 
-  public void setPayload(JSONObject payload) {
+  public void setPayload(SuggestionPayload payload) {
     this.payload = payload;
   }
   
@@ -114,11 +108,10 @@ public class SuggestionSearchEntity extends IndexableEntity implements IndexDocu
 
   public void setPayloadFromResponse(JsonNode node) {
     if (suggestableAttr != null) {
-      JSONObject nodePayload = new JSONObject();
       for (String attribute : suggestableAttr) {
         if (node.get(attribute) != null) {
           inputOutputData.put(attribute, node.get(attribute).asText());
-          this.payload.put(attribute, node.get(attribute).asText());
+          this.payload.addAttribute(attribute, node.get(attribute).asText());
         }
       }
     }
@@ -156,23 +149,19 @@ public class SuggestionSearchEntity extends IndexableEntity implements IndexDocu
         if (node.get(attribute) != null && uniqueList.contains(attribute)) {
           UiFilterConfig filterConfig = filters.get(attribute);
           if(filterConfig != null) {
-            JSONObject filterPayload = new JSONObject();
-            filterPayload.put(FILTER_ID, filterConfig.getFilterId());
-            filterPayload.put(FILTER_VALUE, node.get(attribute).asText());
-            this.payloadFilters.put(filterPayload);
+            this.payloadFilters.add(
+                new SuggestionFilter(filterConfig.getFilterId(), node.get(attribute).asText()));
           } else {
-            this.payload.put(attribute, node.get(attribute).asText()); 
+            this.payload.addAttribute(attribute, node.get(attribute).asText());
           }
         } else {
           UiFilterConfig emptyValueFilterConfig = filters.get(attribute);
           if(emptyValueFilterConfig != null) {
-            JSONObject emptyValueFilterPayload = new JSONObject();
-            emptyValueFilterPayload.put(FILTER_ID, emptyValueFilterConfig.getFilterId());
-            this.payloadFilters.put(emptyValueFilterPayload);
+            this.payloadFilters.add(new SuggestionFilter(emptyValueFilterConfig.getFilterId(), null));
           }
         }
       }
-      this.payload.put(FILTER_LIST, this.payloadFilters);
+      this.payload.setFilterList(this.payloadFilters);
     }
   }
 
@@ -253,7 +242,7 @@ public class SuggestionSearchEntity extends IndexableEntity implements IndexDocu
   }
 
   public boolean isSuggestableDoc() {
-    return this.getPayload().length() != 0;
+    return !this.getPayload().isEmpty();
   }
 
 
@@ -277,24 +266,9 @@ public class SuggestionSearchEntity extends IndexableEntity implements IndexDocu
     this.id = NodeUtils.generateUniqueShaDigest(outputString.toString());
   }
 
-  @Override
-  public String getAsJson() {
-    // TODO Auto-generated method stub
-    JSONObject rootNode = new JSONObject();
-
-    JSONArray suggestionsArray = new JSONArray();
-    for (String suggestion : suggestionInputPermutations) {
-      suggestionsArray.put(suggestion);
-    }
-
-    JSONObject entitySuggest = new JSONObject();
-
-    entitySuggest.put("input", suggestionsArray);
-    entitySuggest.put("output", this.outputString);
-    entitySuggest.put("payload", this.payload);
-    rootNode.put("entity_suggest", entitySuggest);
-
-    return rootNode.toString();
+  public SuggestionDocument getDocument() {
+    return new SuggestionDocument(suggestionInputPermutations, outputString.toString(), null,
+        payload);
   }
 
   public String getAliasToUse() {

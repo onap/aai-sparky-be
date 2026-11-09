@@ -25,8 +25,6 @@ import java.util.List;
 
 import jakarta.json.JsonObject;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.onap.aai.cl.api.Logger;
 import org.onap.aai.cl.eelf.LoggerFactory;
 import org.onap.aai.restclient.client.OperationResult;
@@ -45,10 +43,6 @@ import org.onap.aai.sparky.search.filters.entity.UiFilterEntity;
 public class FilterElasticSearchAdapter {
   
   private static final Logger LOG = LoggerFactory.getInstance().getLogger(FilterElasticSearchAdapter.class);
-  private static final String AGGS = "aggregations";
-  private static final String CONTAINER = "default";
-  private static final String BUCKETS = "buckets";
-  private static final String FILTER_VALUE_KEY = "key";
   private SearchServiceAdapter searchServiceAdapter;
   
   public FilterElasticSearchAdapter(SearchServiceAdapter searchServiceAdapter) {
@@ -80,28 +74,8 @@ public class FilterElasticSearchAdapter {
       
       String result = opResult.getResult();
       if(opResult.wasSuccessful() && result != null) {
-        JSONObject responseJson = new JSONObject(result);
-        JSONObject aggJson = responseJson.getJSONObject(AGGS);
-        
-        JSONObject containerJson = null;
-        if(dataSourceConfig.getPathToField() != null) {
-          JSONObject nestedContainer = aggJson.getJSONObject(dataSourceConfig.getPathToField());
-          containerJson = nestedContainer.getJSONObject(dataSourceConfig.getFieldName());
-        } else {
-          containerJson = aggJson.getJSONObject(CONTAINER);
-        }
-        
-        JSONArray buckets = containerJson.getJSONArray(BUCKETS);
-        
-        int bucketLength = buckets.length();
-        for(int i = 0; i < bucketLength; i++) {
-          JSONObject filterBucket = buckets.getJSONObject(i);
-          
-          String filterValue = filterBucket.getString(FILTER_VALUE_KEY);
-          if(filterValue != null && !filterValue.isEmpty()) {
-            filterValues.add(filterValue);
-          }
-        }
+        filterValues.addAll(searchServiceAdapter.readFilterValues(result,
+            dataSourceConfig.getPathToField(), dataSourceConfig.getFieldName()));
       } else {
         LOG.error(AaiUiMsgs.ERROR_FETCHING_FILTER_VALUES, String.valueOf(opResult.getResultCode()), filter.getFilterName());
       }

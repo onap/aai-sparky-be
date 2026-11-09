@@ -28,9 +28,15 @@ package org.onap.aai.sparky.synchronizer;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.onap.aai.sparky.sync.entity.IndexableCrossEntityReference;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class IndexableCrossEntityReferenceTest {
 
@@ -66,7 +72,10 @@ public class IndexableCrossEntityReferenceTest {
     
     icer.deriveFields();
     
-    System.out.println(icer.getAsJson());
+    JsonNode document = new ObjectMapper().valueToTree(icer);
+    assertEquals("meow;kitty-goes;kitty-goes-meow",
+        document.get("crossReferenceEntityValues").asText());
+    assertFalse(document.has("id"));
 
   }
 

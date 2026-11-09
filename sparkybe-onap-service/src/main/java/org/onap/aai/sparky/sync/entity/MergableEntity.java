@@ -29,7 +29,7 @@ import com.fasterxml.jackson.annotation.JsonAnySetter;
 /**
  * The Class MergableEntity.
  */
-public class MergableEntity {
+public class MergableEntity implements SearchDocument {
   private Map<String, String> other = new HashMap<String, String>();
 
   /**

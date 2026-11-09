@@ -20,6 +20,8 @@
  */
 package org.onap.aai.sparky.search;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -33,7 +35,12 @@ import org.onap.aai.restclient.client.OperationResult;
 import org.onap.aai.restclient.client.RestClient;
 import org.onap.aai.sparky.dal.rest.RestClientFactory;
 import org.onap.aai.sparky.dal.rest.config.RestEndpointConfig;
+import org.onap.aai.sparky.sync.entity.SearchDocument;
 import org.slf4j.MDC;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 
 /**
@@ -50,6 +57,8 @@ public class SearchServiceAdapter {
   
   private static final String SEARH_SERVICE_SINGLE_ENTITY_TEMPLATE =
 	      "{\"queries\":[{\"must\":{\"match\":{\"field\":\"_id\",\"value\":\"%s\"}}}]}\n";
+
+  private final ObjectMapper mapper = new ObjectMapper();
 
   private RestClient client;
   private RestEndpointConfig endpointConfig;
@@ -124,6 +133,47 @@ public class SearchServiceAdapter {
     return new OperationResult(or.getResultCode(), or.getResult());
   }
 
+  public OperationResult putDocument(String url, SearchDocument document) {
+    return doPut(url, encode(document), "application/json");
+  }
+
+  /** Decode aggregation responses at the search transport boundary. */
+  public List<String> readFilterValues(String response, String pathToField, String fieldName) {
+    try {
+      JsonNode aggregations = requireObject(mapper.readTree(response), "response").required("aggregations");
+      JsonNode container = requireObject(aggregations, "aggregations");
+      if (pathToField != null) {
+        container = requireObject(container.required(pathToField), pathToField).required(fieldName);
+      } else {
+        container = container.required("default");
+      }
+      JsonNode buckets = requireObject(container, "aggregation").required("buckets");
+      if (!buckets.isArray()) {
+        throw new IllegalArgumentException("Aggregation buckets must be an array");
+      }
+      List<String> values = new ArrayList<>();
+      for (JsonNode bucket : buckets) {
+        JsonNode key = requireObject(bucket, "bucket").required("key");
+        if (!key.isTextual()) {
+          throw new IllegalArgumentException("Aggregation bucket key must be a string");
+        }
+        if (!key.textValue().isEmpty()) {
+          values.add(key.textValue());
+        }
+      }
+      return values;
+    } catch (IOException exc) {
+      throw new IllegalArgumentException("Invalid search aggregation response", exc);
+    }
+  }
+
+  private JsonNode requireObject(JsonNode node, String name) {
+    if (node == null || !node.isObject()) {
+      throw new IllegalArgumentException(name + " must be an object");
+    }
+    return node;
+  }
+
   public OperationResult doDelete(String url, String acceptContentType) {
 
     OperationResult or = client.delete(url, getTxnHeader(), MediaType.APPLICATION_JSON_TYPE);
@@ -145,13 +195,23 @@ public class SearchServiceAdapter {
     return headers;
   }
   
-public String buildBulkImportOperationRequest(String indexName, String id, String version, String payload){
+public String buildBulkImportOperationRequest(String indexName, String id, String version,
+      SearchDocument document) {
 	  
 	  StringBuilder requestPayload = new StringBuilder(128);
 	  String SearchTarget = buildSearchServiceDocBulkPayloadUrl(indexName,id);
 	  
-	  requestPayload.append(String.format(SEARCH_SERVICE_BULK_TEMPLATE,SearchTarget,version, payload));
+	  requestPayload.append(String.format(SEARCH_SERVICE_BULK_TEMPLATE,SearchTarget,version,
+	      encode(document)));
 	  return requestPayload.toString();   
+  }
+
+  private String encode(SearchDocument document) {
+    try {
+      return mapper.writeValueAsString(document);
+    } catch (JsonProcessingException exc) {
+      throw new IllegalArgumentException("Cannot serialize search document", exc);
+    }
   }
 
   /**
