@@ -222,11 +222,6 @@ some of the depedencies should probably have a scope of provided so they don't a
 		</dependency>
 
 
-		<dependency>
-			<groupId>org.json</groupId>
-			<artifactId>json</artifactId>
-			<scope>provided</scope>
-		</dependency>
 
 		<dependency>
 			<groupId>com.fasterxml.jackson.core</groupId>

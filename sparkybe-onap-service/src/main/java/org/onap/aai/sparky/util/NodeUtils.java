@@ -607,25 +607,6 @@ public class NodeUtils {
   }
 
   /**
-   * Convert object to xml.
-   *
-   * @param object the object
-   * @return the string
-   * @throws JsonProcessingException the json processing exception
-   */
-  public static String convertObjectToXml(Object object) throws JsonProcessingException {
-    ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
-    String jsonOutput = ow.writeValueAsString(object);
-
-    if (jsonOutput == null) {
-      return null;
-    }
-
-    return JsonXmlConverter.convertJsonToXml(jsonOutput);
-
-  }
-
-  /**
    * Extract objects by key.
    *
    * @param node the node
