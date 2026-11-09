@@ -80,6 +80,16 @@
 						<groupId>org.powermock</groupId>
 						<artifactId>powermock-api-mockito</artifactId>
 					</exclusion>
+					<!-- Only the edge-rule classes need these, and sparky never loads
+					     them: Application excludes EdgesConfiguration from its scan. -->
+					<exclusion>
+						<groupId>org.apache.tinkerpop</groupId>
+						<artifactId>gremlin-core</artifactId>
+					</exclusion>
+					<exclusion>
+						<groupId>com.jayway.jsonpath</groupId>
+						<artifactId>json-path</artifactId>
+					</exclusion>
 				</exclusions>
 			</dependency>
 		</dependencies>
