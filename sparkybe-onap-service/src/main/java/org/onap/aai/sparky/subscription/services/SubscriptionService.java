@@ -20,8 +20,6 @@
  */
 package org.onap.aai.sparky.subscription.services;
 
-import org.json.JSONObject;
-import org.onap.aai.restclient.client.OperationResult;
 import org.onap.aai.sparky.subscription.config.SubscriptionConfig;
 
 
@@ -33,29 +31,15 @@ public class SubscriptionService {
     this.config = subscriptionConfig;
   }
   
-  public OperationResult buildSubscriptionPayload() throws Exception {
-    OperationResult returnValue = new OperationResult();
-    returnValue.setResultCode(200);
-    JSONObject subscriptionResponse = new JSONObject();
-    JSONObject subscriptionDetails = new JSONObject();
-
-
+  public SubscriptionResponse buildSubscriptionPayload() {
     if (config.getSubscriptionTarget().isEmpty()
         && config.getSubscriptionTopic().isEmpty()
         && config.getSubscriptionMessageType().isEmpty()
         && config.getSubscriptionOrigin().isEmpty()) {
-      subscriptionResponse.put("subscriptionEnabled", false);
-    } else {
-      subscriptionResponse.put("subscriptionEnabled", true);
-      subscriptionDetails.put("target", config.getSubscriptionTarget());
-      subscriptionDetails.put("topic", config.getSubscriptionTopic());
-      subscriptionDetails.put("messageType", config.getSubscriptionMessageType());
-      subscriptionDetails.put("origin", config.getSubscriptionOrigin());
+      return new SubscriptionResponse(false, SubscriptionDetails.NONE);
     }
-    
-    subscriptionResponse.put("subscriptionDetails", subscriptionDetails);
-    returnValue.setResult(subscriptionResponse.toString());
-    
-    return returnValue;
+    return new SubscriptionResponse(true, new SubscriptionDetails(config.getSubscriptionTarget(),
+        config.getSubscriptionTopic(), config.getSubscriptionMessageType(),
+        config.getSubscriptionOrigin()));
   }
 }

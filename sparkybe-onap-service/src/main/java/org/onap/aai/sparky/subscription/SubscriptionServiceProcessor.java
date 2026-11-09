@@ -23,19 +23,11 @@ package org.onap.aai.sparky.subscription;
 import jakarta.servlet.http.HttpServletRequest;
 
 import org.apache.camel.Exchange;
-import org.onap.aai.cl.api.Logger;
-import org.onap.aai.cl.eelf.LoggerFactory;
-import org.onap.aai.restclient.client.OperationResult;
-import org.onap.aai.sparky.logging.AaiUiMsgs;
 import org.onap.aai.sparky.logging.util.ServletUtils;
+import org.onap.aai.sparky.subscription.services.SubscriptionResponse;
 import org.onap.aai.sparky.subscription.services.SubscriptionService;
 
 public class SubscriptionServiceProcessor {
-
-  private static final String EMPTY_RESPONSE = "{}";
-
-  private static final Logger LOG =
-      LoggerFactory.getInstance().getLogger(SubscriptionServiceProcessor.class);
 
   SubscriptionService subService;
 
@@ -45,26 +37,9 @@ public class SubscriptionServiceProcessor {
   }
 
 
-  public void getSubscription(Exchange exchange) {
-    
+  public SubscriptionResponse getSubscription(Exchange exchange) {
     HttpServletRequest request = exchange.getIn().getBody(HttpServletRequest.class);
     ServletUtils.setUpMdcContext(exchange, request);
-
-    OperationResult subscriptionResult = null;
-
-    try {
-
-      subscriptionResult = subService.buildSubscriptionPayload();
-      
-    } catch (Exception exc) {
-      subscriptionResult = new OperationResult();
-      subscriptionResult.setResult(EMPTY_RESPONSE);
-      LOG.error(AaiUiMsgs.FAILURE_TO_PROCESS_REQUEST,
-          "Exception thrown during subscription processing: " + exc.getLocalizedMessage());
-    }
-
-    exchange.getOut().setBody(subscriptionResult.getResult());
-    
-
+    return subService.buildSubscriptionPayload();
   }
 }
