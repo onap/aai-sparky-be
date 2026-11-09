@@ -175,12 +175,6 @@
 
         <!-- Utility dependencies -->
 
-        <dependency>
-            <groupId>org.onap.aai.schema-service</groupId>
-            <artifactId>aai-schema</artifactId>
-            <version>${version.aai-schema}</version>
-        </dependency>
-
 
 
         <dependency>
@@ -343,6 +337,9 @@
         <resources>
             <resource>
                 <directory>${project.basedir}/src/main/resources</directory>
+                <excludes>
+                    <exclude>schema/**</exclude>
+                </excludes>
             </resource>
         </resources>
 
